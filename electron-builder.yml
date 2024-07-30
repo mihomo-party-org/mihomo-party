@@ -1,0 +1,49 @@
+appId: party.mihomo.app
+productName: mihomo-party
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+asarUnpack:
+  - resources/**
+win:
+  target:
+    - nsis
+  executableName: mihomo-party
+nsis:
+  artifactName: ${name}.${version}.setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  deleteAppDataOnUninstall: true
+  allowToChangeInstallationDirectory: true
+  oneClick: false
+  perMachine: true
+  createDesktopShortcut: always
+mac:
+  target:
+    - dmg
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to the device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  notarize: false
+dmg:
+  artifactName: ${name}.${version}.installer.${ext}
+linux:
+  target:
+    - deb
+  maintainer: mihomo-party
+  category: Utility
+deb:
+  artifactName: ${name}.${version}.installer.${ext}
+npmRebuild: false
+publish:
+  provider: generic
+  url: https://updater.mihomo.party
