@@ -1,7 +1,7 @@
 {
   "name": "mihomo-party",
   "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "description": "Mihomo Party",
   "main": "./out/main/index.js",
   "author": "mihomo-party",
   "homepage": "https://mihomo.party",
@@ -26,7 +26,9 @@
     "@nextui-org/react": "^2.4.6",
     "electron-updater": "^6.2.1",
     "framer-motion": "^11.3.19",
-    "next-themes": "^0.3.0"
+    "next-themes": "^0.3.0",
+    "react-icons": "^5.2.1",
+    "react-router-dom": "^6.25.1"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
@@ -36,17 +38,17 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
     "electron": "^31.3.1",
     "electron-builder": "^25.0.2",
     "electron-vite": "^2.3.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.35.0",
-    "autoprefixer": "^10.4.19",
     "postcss": "^8.4.40",
-    "tailwindcss": "^3.4.7",
     "prettier": "^3.3.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.7",
     "typescript": "^5.5.4",
     "vite": "^5.3.5"
   }
