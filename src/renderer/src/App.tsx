@@ -41,9 +41,9 @@ function App(): JSX.Element {
 
   return (
     <div className="w-full h-[100vh] flex">
-      <div className="side w-[250px] h-full border-r border-neutral-700">
+      <div className="side w-[250px] h-full border-r border-default-200">
         <div className="flex justify-between h-[32px] m-2">
-          <h3 className="select-none text-lg font-bold leading-[32px]">出站</h3>
+          <h3 className="select-none text-lg font-bold leading-[32px]">出站模式</h3>
           <Button
             size="sm"
             isIconOnly
@@ -59,7 +59,7 @@ function App(): JSX.Element {
           <OutboundModeSwitcher />
         </div>
 
-        <h3 className="select-none text-lg font-bold m-2">代理</h3>
+        <h3 className="select-none text-lg font-bold m-2">代理模式</h3>
         <div className="flex justify-between mx-2">
           <SysproxySwitcher />
           <TunSwitcher />
