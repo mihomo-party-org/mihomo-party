@@ -1,34 +1,12 @@
-# mihomo-party
+<h1 align="center">
+  <img src="resources/icon.png" alt="Mihomo Party" width="200">
+  <br>Mihomo Party<br>
+</h1>
 
-An Electron application with React and TypeScript
+<h3 align="center">Another Mihomo GUI.</h3>
 
-## Recommended IDE Setup
-
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
-## Project Setup
-
-### Install
-
-```bash
-$ pnpm install
-```
-
-### Development
-
-```bash
-$ pnpm dev
-```
-
-### Build
-
-```bash
-# For windows
-$ pnpm build:win
-
-# For macOS
-$ pnpm build:mac
-
-# For Linux
-$ pnpm build:linux
-```
+<p align="center">
+  <a href="https://github.com/pompurin404/mihomo-party/releases">
+    <img src="https://img.shields.io/github/release/pompurin404/mihomo-party/all.svg">
+  </a>
+</p>
