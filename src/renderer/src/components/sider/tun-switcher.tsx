@@ -3,7 +3,7 @@ import { IoSettings } from 'react-icons/io5'
 
 export default function SysproxySwitcher(): JSX.Element {
   return (
-    <Card className="w-[48%]">
+    <Card className="w-[50%] ml-1">
       <CardBody className="pb-1 pt-0 px-0">
         <div className="flex justify-between">
           <Button isIconOnly className="bg-transparent" variant="flat" color="default">

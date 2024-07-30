@@ -1,21 +1,23 @@
 import { useTheme } from 'next-themes'
 import { useEffect } from 'react'
-import { useRoutes } from 'react-router-dom'
+import { useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import OutboundModeSwitcher from '@renderer/components/sider/outbound-mode-switcher'
 import SysproxySwitcher from '@renderer/components/sider/sysproxy-switcher'
 import TunSwitcher from '@renderer/components/sider/tun-switcher'
 import { Button } from '@nextui-org/react'
-import { IoHome, IoSettings } from 'react-icons/io5'
-import { IoWifi } from 'react-icons/io5'
-import { IoGitNetwork } from 'react-icons/io5'
-import { IoLogoGithub } from 'react-icons/io5'
+import { IoSettings } from 'react-icons/io5'
 import routes from '@renderer/routes'
-import RouteItem from './components/sider/route-item'
-import ProfileSwitcher from './components/sider/profile-switcher'
+import ProfileCard from '@renderer/components/sider/profile-card'
+import ProxyCard from '@renderer/components/sider/proxy-card'
+import RuleCard from '@renderer/components/sider/rule-card'
+import OverrideCard from '@renderer/components/sider/override-card'
+import ConnCard from '@renderer/components/sider/conn-card'
+import LogCard from '@renderer/components/sider/log-card'
 
 function App(): JSX.Element {
   const { setTheme } = useTheme()
-
+  const navigate = useNavigate()
+  const location = useLocation()
   const page = useRoutes(routes)
 
   useEffect(() => {
@@ -39,32 +41,45 @@ function App(): JSX.Element {
 
   return (
     <div className="w-full h-[100vh] flex">
-      <div className="side w-[250px] h-full p-2 border-r border-neutral-700">
-        <div className="flex justify-between h-[32px] mb-2">
+      <div className="side w-[250px] h-full border-r border-neutral-700">
+        <div className="flex justify-between h-[32px] m-2">
           <h3 className="select-none text-lg font-bold leading-[32px]">出站</h3>
           <Button
             size="sm"
             isIconOnly
-            variant="light"
+            color={location.pathname.includes('/settings') ? 'primary' : 'default'}
+            variant={location.pathname.includes('/settings') ? 'solid' : 'light'}
             onPress={() => {
-              open('https://github.com/pompurin404/mihomo-party')
+              navigate('/settings')
             }}
-            startContent={<IoLogoGithub className="text-[20px]" />}
+            startContent={<IoSettings className="text-[20px]" />}
           />
         </div>
+        <div className="mx-2">
+          <OutboundModeSwitcher />
+        </div>
 
-        <OutboundModeSwitcher />
-        <h3 className="select-none text-lg font-bold my-2">代理</h3>
-        <div className="flex justify-between">
+        <h3 className="select-none text-lg font-bold m-2">代理</h3>
+        <div className="flex justify-between mx-2">
           <SysproxySwitcher />
           <TunSwitcher />
         </div>
-        <h3 className="select-none text-lg font-bold my-2">配置</h3>
-        <ProfileSwitcher />
-        <RouteItem title="概览" pathname="/overview" icon={IoHome} />
-        <RouteItem title="代理" pathname="/proxies" icon={IoWifi} />
-        <RouteItem title="规则" pathname="/rules" icon={IoGitNetwork} />
-        <RouteItem title="设置" pathname="/settings" icon={IoSettings} />
+        <h3 className="select-none text-lg font-bold m-2">配置</h3>
+        <div className="w-full h-[calc(100%-260px)] overflow-y-auto no-scrollbar">
+          <div className="mx-2">
+            <ProfileCard />
+            <ProxyCard />
+          </div>
+
+          <div className="flex justify-between mx-2">
+            <ConnCard />
+            <LogCard />
+          </div>
+          <div className="flex justify-between mx-2">
+            <RuleCard />
+            <OverrideCard />
+          </div>
+        </div>
       </div>
       <div className="main w-[calc(100%-250px)] h-full overflow-y-auto">{page}</div>
     </div>
