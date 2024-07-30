@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { NextUIProvider } from '@nextui-org/react'
 
@@ -10,7 +11,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <NextUIProvider>
       <NextThemesProvider attribute="class" defaultTheme="dark">
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </NextThemesProvider>
     </NextUIProvider>
   </React.StrictMode>
