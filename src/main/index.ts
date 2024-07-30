@@ -1,29 +1,39 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, Tray, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/icon.ico?asset'
+
+let window: BrowserWindow | null = null
+let tray: Tray | null = null
+let trayContextMenu: Menu | null = null
 
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  window = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
     width: 800,
     height: 600,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
 
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
+  window.on('ready-to-show', () => {
+    window?.show()
+    window?.focusOnWebView()
   })
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
+  window.on('close', (event) => {
+    event.preventDefault()
+    window?.hide()
+  })
+
+  window.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
@@ -31,10 +41,42 @@ function createWindow(): void {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    window.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    window.loadFile(join(__dirname, '../renderer/index.html'))
   }
+}
+
+function createTray(): void {
+  tray = new Tray(icon)
+  trayContextMenu = Menu.buildFromTemplate([
+    {
+      label: '显示窗口',
+      type: 'normal',
+      click: (): void => {
+        window?.show()
+        window?.focusOnWebView()
+      }
+    },
+    {
+      label: '重启应用',
+      type: 'normal',
+      click: (): void => {
+        app.relaunch()
+        app.quit()
+      }
+    },
+    { type: 'separator' },
+    { label: '退出应用', type: 'normal', click: (): void => app.quit() }
+  ])
+
+  tray.setContextMenu(trayContextMenu)
+  tray.setIgnoreDoubleClickEvents(true)
+  tray.setToolTip('Another Mihomo GUI.')
+  tray.setTitle('Mihomo Party')
+  tray.addListener('click', () => {
+    window?.isVisible() ? window?.hide() : window?.show()
+  })
 }
 
 // This method will be called when Electron has finished
@@ -51,10 +93,8 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
   createWindow()
+  createTray()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -72,5 +112,6 @@ app.on('window-all-closed', () => {
   }
 })
 
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.
+app.on('before-quit', () => {
+  app.exit()
+})

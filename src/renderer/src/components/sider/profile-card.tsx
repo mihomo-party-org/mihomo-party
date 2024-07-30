@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardFooter, Slider } from '@nextui-org/react'
 import { IoMdRefresh } from 'react-icons/io'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-export default function ProfileSwitcher(): JSX.Element {
+export default function ProfileCard(): JSX.Element {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -17,7 +17,7 @@ export default function ProfileSwitcher(): JSX.Element {
         <div className="flex justify-between h-[32px]">
           <h3 className="select-none text-md font-bold leading-[32px]">订阅名称</h3>
           <Button isIconOnly size="sm" variant="light" color="default">
-            <IoMdRefresh color="default" className="text-[20px]" />
+            <IoMdRefresh color="default" className="text-[24px]" />
           </Button>
         </div>
       </CardBody>
