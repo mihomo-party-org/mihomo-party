@@ -1,0 +1,110 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+permissions: write-all
+
+jobs:
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - x64
+          - ia32
+          - arm64
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm build:win --${{ matrix.arch }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows ${{ matrix.arch }}
+          path: dist/*.exe
+          if-no-files-found: error
+
+  linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - x64
+          - arm64
+          - armv7l
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm build:linux --${{ matrix.arch }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Linux ${{ matrix.arch }}
+          path: |
+            dist/*.deb
+            dist/*.rpm
+          if-no-files-found: error
+
+  macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - x64
+          - arm64
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm build:mac --${{ matrix.arch }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: MacOS ${{ matrix.arch }}
+          path: dist/*.dmg
+          if-no-files-found: error

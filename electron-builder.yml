@@ -16,7 +16,7 @@ win:
     - nsis
   executableName: mihomo-party
 nsis:
-  artifactName: ${name}.${version}.setup.${ext}
+  artifactName: ${name}-windows-${version}-${arch}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   deleteAppDataOnUninstall: true
@@ -35,14 +35,17 @@ mac:
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
 dmg:
-  artifactName: ${name}.${version}.installer.${ext}
+  artifactName: ${name}-macos-${version}-${arch}-installer.${ext}
 linux:
   target:
     - deb
+    - rpm
   maintainer: mihomo-party
   category: Utility
 deb:
-  artifactName: ${name}.${version}.installer.${ext}
+  artifactName: ${name}-linux-${version}-${arch}-installer.${ext}
+rpm:
+  artifactName: ${name}-linux-${version}-${arch}-installer.${ext}
 npmRebuild: false
 publish:
   provider: generic
