@@ -24,11 +24,13 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
     "@nextui-org/react": "^2.4.6",
+    "axios": "^1.7.2",
     "electron-updater": "^6.2.1",
     "framer-motion": "^11.3.19",
     "next-themes": "^0.3.0",
     "react-icons": "^5.2.1",
-    "react-router-dom": "^6.25.1"
+    "react-router-dom": "^6.25.1",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
