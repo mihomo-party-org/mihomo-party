@@ -1,7 +1,9 @@
 import { app, shell, BrowserWindow, Tray, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import pngIcon from '../../resources/icon.png?asset'
+import icoIcon from '../../resources/icon.ico?asset'
+import { registerIpcMainHandlers } from './mihomo-api'
 
 let window: BrowserWindow | null = null
 let tray: Tray | null = null
@@ -16,7 +18,7 @@ function createWindow(): void {
     height: 600,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    ...(process.platform === 'linux' ? { icon: pngIcon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -48,7 +50,11 @@ function createWindow(): void {
 }
 
 function createTray(): void {
-  tray = new Tray(icon)
+  if (process.platform === 'linux') {
+    tray = new Tray(pngIcon)
+  } else {
+    tray = new Tray(icoIcon)
+  }
   trayContextMenu = Menu.buildFromTemplate([
     {
       label: '显示窗口',
@@ -92,7 +98,7 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-
+  registerIpcMainHandlers()
   createWindow()
   createTray()
 
