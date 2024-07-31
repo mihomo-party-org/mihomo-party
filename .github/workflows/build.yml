@@ -29,7 +29,9 @@ jobs:
         with:
           version: 9
       - name: Install Dependencies
-        run: pnpm install
+        run: |
+          pnpm install
+          pnpm prepare --${{ matrix.arch }}
       - name: Build
         run: pnpm build:win --${{ matrix.arch }}
 
@@ -47,7 +49,6 @@ jobs:
         arch:
           - x64
           - arm64
-          - armv7l
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -63,7 +64,9 @@ jobs:
         with:
           version: 9
       - name: Install Dependencies
-        run: pnpm install
+        run: |
+          pnpm install
+          pnpm prepare --${{ matrix.arch }}
       - name: Build
         run: pnpm build:linux --${{ matrix.arch }}
 
@@ -98,7 +101,9 @@ jobs:
         with:
           version: 9
       - name: Install Dependencies
-        run: pnpm install
+        run: |
+          pnpm install
+          pnpm prepare --${{ matrix.arch }}
       - name: Build
         run: pnpm build:mac --${{ matrix.arch }}
 
