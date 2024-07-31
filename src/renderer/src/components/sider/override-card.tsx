@@ -22,7 +22,7 @@ export default function OverrideCard(): JSX.Element {
           >
             <MdFormatOverline color="default" className="text-[24px]" />
           </Button>
-          <Switch />
+          <Switch size="sm" />
         </div>
       </CardBody>
       <CardFooter className="pt-1">
