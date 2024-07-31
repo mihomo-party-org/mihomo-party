@@ -11,9 +11,13 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
+extraResources:
+  - from: './resources/'
+    to: ''
 win:
   target:
     - nsis
+  requestedExecutionLevel: requireAdministrator
   executableName: mihomo-party
 nsis:
   artifactName: ${name}-windows-${version}-${arch}-setup.${ext}
