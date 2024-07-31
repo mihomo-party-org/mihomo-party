@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { IoJournal } from 'react-icons/io5'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-export default function LogCard(): JSX.Element {
+const LogCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -30,3 +30,5 @@ export default function LogCard(): JSX.Element {
     </Card>
   )
 }
+
+export default LogCard

@@ -1,3 +1,5 @@
-export default function Override(): JSX.Element {
+const Override: React.FC = () => {
   return <div>Override</div>
 }
+
+export default Override

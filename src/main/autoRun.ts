@@ -119,6 +119,10 @@ export function disableAutoRun(): void {
   }
   if (process.platform === 'linux') {
     const desktopFilePath = `${app.getPath('home')}/.config/autostart/${appName}.desktop`
-    fs.rmSync(desktopFilePath)
+    try {
+      fs.rmSync(desktopFilePath)
+    } catch (e) {
+      console.error(e)
+    }
   }
 }

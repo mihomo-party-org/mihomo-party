@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
 import { IoLink } from 'react-icons/io5'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-export default function ConnCard(): JSX.Element {
+const ConnCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -33,3 +33,5 @@ export default function ConnCard(): JSX.Element {
     </Card>
   )
 }
+
+export default ConnCard

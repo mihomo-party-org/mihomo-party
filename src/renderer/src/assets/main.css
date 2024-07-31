@@ -2,9 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+
+/* Light mode */
+@media (prefers-color-scheme: light) {
+  *::-webkit-scrollbar-thumb {
+    background: #c0c1c58f;
+    border-radius: 5px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #c0c1c550;
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  *::-webkit-scrollbar-thumb {
+    background: #c0c1c550;
+    border-radius: 5px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: #c0c1c58f;
   }
 }
