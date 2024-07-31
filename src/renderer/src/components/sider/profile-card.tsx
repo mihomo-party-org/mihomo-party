@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardFooter, Slider } from '@nextui-org/react'
 import { IoMdRefresh } from 'react-icons/io'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-export default function ProfileCard(): JSX.Element {
+const ProfileCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -27,3 +27,5 @@ export default function ProfileCard(): JSX.Element {
     </Card>
   )
 }
+
+export default ProfileCard

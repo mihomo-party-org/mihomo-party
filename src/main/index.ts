@@ -4,10 +4,13 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import pngIcon from '../../resources/icon.png?asset'
 import icoIcon from '../../resources/icon.ico?asset'
 import { registerIpcMainHandlers } from './cmds'
+import { initConfig, appConfig } from './config'
 
 let window: BrowserWindow | null = null
 let tray: Tray | null = null
 let trayContextMenu: Menu | null = null
+
+initConfig()
 
 function createWindow(): void {
   // Create the browser window.
@@ -26,8 +29,10 @@ function createWindow(): void {
   })
 
   window.on('ready-to-show', () => {
-    window?.show()
-    window?.focusOnWebView()
+    if (!appConfig.silentStart) {
+      window?.show()
+      window?.focusOnWebView()
+    }
   })
 
   window.on('close', (event) => {

@@ -1,3 +1,5 @@
-export default function Proxies(): JSX.Element {
+const Proxies: React.FC = () => {
   return <div>Proxies</div>
 }
+
+export default Proxies

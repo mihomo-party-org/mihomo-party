@@ -4,7 +4,7 @@ import { useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import OutboundModeSwitcher from '@renderer/components/sider/outbound-mode-switcher'
 import SysproxySwitcher from '@renderer/components/sider/sysproxy-switcher'
 import TunSwitcher from '@renderer/components/sider/tun-switcher'
-import { Button } from '@nextui-org/react'
+import { Button, Divider } from '@nextui-org/react'
 import { IoSettings } from 'react-icons/io5'
 import routes from '@renderer/routes'
 import ProfileCard from '@renderer/components/sider/profile-card'
@@ -14,7 +14,7 @@ import OverrideCard from '@renderer/components/sider/override-card'
 import ConnCard from '@renderer/components/sider/conn-card'
 import LogCard from '@renderer/components/sider/log-card'
 
-function App(): JSX.Element {
+const App: React.FC = () => {
   const { setTheme } = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
@@ -41,7 +41,7 @@ function App(): JSX.Element {
 
   return (
     <div className="w-full h-[100vh] flex">
-      <div className="side w-[250px] h-full border-r border-default-200">
+      <div className="side w-[250px] h-full">
         <div className="flex justify-between h-[32px] m-2">
           <h3 className="select-none text-lg font-bold leading-[32px]">出站模式</h3>
           <Button
@@ -81,7 +81,8 @@ function App(): JSX.Element {
           </div>
         </div>
       </div>
-      <div className="main w-[calc(100%-250px)] h-full overflow-y-auto">{page}</div>
+      <Divider orientation="vertical" />
+      <div className="main w-[calc(100%-251px)] h-full overflow-y-auto">{page}</div>
     </div>
   )
 }

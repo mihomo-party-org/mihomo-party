@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardFooter, Switch } from '@nextui-org/react'
 import { IoSettings } from 'react-icons/io5'
 
-export default function SysproxySwitcher(): JSX.Element {
+const TunSwitcher: React.FC = () => {
   return (
     <Card className="w-[50%] ml-1">
       <CardBody className="pb-1 pt-0 px-0">
@@ -18,3 +18,5 @@ export default function SysproxySwitcher(): JSX.Element {
     </Card>
   )
 }
+
+export default TunSwitcher

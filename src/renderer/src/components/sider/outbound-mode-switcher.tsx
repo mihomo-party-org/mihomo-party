@@ -1,14 +1,17 @@
 import { Tabs, Tab } from '@nextui-org/react'
-import { Key, useState } from 'react'
+import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
+import { Key } from 'react'
 
-export default function OutboundModeSwitcher(): JSX.Element {
-  const [mode, setMode] = useState<OutboundMode>('rule')
+const OutboundModeSwitcher: React.FC = () => {
+  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { mode } = controledMihomoConfig || {}
+
   return (
     <Tabs
       fullWidth
       color="primary"
       selectedKey={mode}
-      onSelectionChange={(key: Key) => setMode(key as OutboundMode)}
+      onSelectionChange={(key: Key) => patchControledMihomoConfig({ mode: key as OutboundMode })}
     >
       <Tab
         className={`select-none ${mode === 'rule' ? 'font-bold' : ''}`}
@@ -28,3 +31,5 @@ export default function OutboundModeSwitcher(): JSX.Element {
     </Tabs>
   )
 }
+
+export default OutboundModeSwitcher

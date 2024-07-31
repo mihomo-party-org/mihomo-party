@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { SiSpeedtest } from 'react-icons/si'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-export default function ProxyCard(): JSX.Element {
+const ProxyCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -27,3 +27,5 @@ export default function ProxyCard(): JSX.Element {
     </Card>
   )
 }
+
+export default ProxyCard

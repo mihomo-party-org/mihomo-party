@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardFooter, Switch } from '@nextui-org/react'
 import { MdFormatOverline } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-export default function OverrideCard(): JSX.Element {
+const OverrideCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -31,3 +31,5 @@ export default function OverrideCard(): JSX.Element {
     </Card>
   )
 }
+
+export default OverrideCard
