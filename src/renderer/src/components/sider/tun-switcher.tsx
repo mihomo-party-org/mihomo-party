@@ -9,7 +9,7 @@ export default function SysproxySwitcher(): JSX.Element {
           <Button isIconOnly className="bg-transparent" variant="flat" color="default">
             <IoSettings color="default" className="text-lg" />
           </Button>
-          <Switch />
+          <Switch size="sm" />
         </div>
       </CardBody>
       <CardFooter className="pt-1">
