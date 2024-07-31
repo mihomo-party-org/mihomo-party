@@ -11,12 +11,10 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
-    "start": "electron-vite preview",
+    "prepare": "node scripts/prepare.mjs",
     "dev": "electron-vite dev",
-    "build": "npm run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps",
-    "build:unpack": "npm run build && electron-builder --dir",
-    "build:win": "npm run build && electron-builder --win",
+    "build:win": "electron-vite build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux"
   },
@@ -41,6 +39,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "adm-zip": "^0.5.14",
     "autoprefixer": "^10.4.19",
     "electron": "^31.3.1",
     "electron-builder": "^25.0.2",
@@ -52,6 +51,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.7",
+    "tar": "^7.4.3",
+    "tsx": "^4.16.3",
     "typescript": "^5.5.4",
     "vite": "^5.3.5"
   }
