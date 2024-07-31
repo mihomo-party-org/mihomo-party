@@ -30,7 +30,8 @@
     "next-themes": "^0.3.0",
     "react-icons": "^5.2.1",
     "react-router-dom": "^6.25.1",
-    "swr": "^2.2.5"
+    "swr": "^2.2.5",
+    "yaml": "^2.5.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",

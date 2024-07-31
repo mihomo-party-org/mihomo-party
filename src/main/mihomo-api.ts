@@ -1,4 +1,3 @@
-import { ipcMain } from 'electron'
 import axios, { AxiosInstance } from 'axios'
 
 let axiosIns: AxiosInstance = null!
@@ -21,11 +20,7 @@ export const getAxios = async (force: boolean = false): Promise<AxiosInstance> =
   return axiosIns
 }
 
-async function mihomoVersion(): Promise<IMihomoVersion> {
+export async function mihomoVersion(): Promise<IMihomoVersion> {
   const instance = await getAxios()
   return instance.get('/version') as Promise<IMihomoVersion>
-}
-
-export function registerIpcMainHandlers(): void {
-  ipcMain.handle('mihomoVersion', mihomoVersion)
 }

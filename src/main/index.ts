@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import pngIcon from '../../resources/icon.png?asset'
 import icoIcon from '../../resources/icon.ico?asset'
-import { registerIpcMainHandlers } from './mihomo-api'
+import { registerIpcMainHandlers } from './cmds'
 
 let window: BrowserWindow | null = null
 let tray: Tray | null = null
