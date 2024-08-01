@@ -7,9 +7,9 @@ import { registerIpcMainHandlers } from './cmds'
 import { initConfig, appConfig, controledMihomoConfig, setControledMihomoConfig } from './config'
 import { stopCore, startCore } from './manager'
 import { initDirs } from './dirs'
-import { patchMihomoConfig } from './mihomo-api'
+import { mihomoTraffic, patchMihomoConfig } from './mihomo-api'
 
-let window: BrowserWindow | null = null
+export let window: BrowserWindow | null = null
 let tray: Tray | null = null
 let trayContextMenu: Menu | null = null
 
@@ -57,7 +57,7 @@ if (!gotTheLock) {
     registerIpcMainHandlers()
     createWindow()
     createTray()
-
+    mihomoTraffic()
     app.on('activate', function () {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.

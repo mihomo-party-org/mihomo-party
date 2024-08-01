@@ -6,6 +6,14 @@ export async function mihomoConfig(): Promise<IMihomoConfig> {
   return await window.electron.ipcRenderer.invoke('mihomoConfig')
 }
 
+export async function mihomoConnections(): Promise<IMihomoConnectionsInfo> {
+  return await window.electron.ipcRenderer.invoke('mihomoConnections')
+}
+
+export async function mihomoRules(): Promise<IMihomoRulesInfo> {
+  return await window.electron.ipcRenderer.invoke('mihomoRules')
+}
+
 export async function patchMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
   await window.electron.ipcRenderer.invoke('patchMihomoConfig', patch)
 }

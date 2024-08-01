@@ -1,10 +1,26 @@
-import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
-import { IoLink } from 'react-icons/io5'
+import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { IoLink } from 'react-icons/io5'
+import { useEffect } from 'react'
+import useSWR from 'swr'
+import { mihomoConnections } from '@renderer/utils/ipc'
 
 const ConnCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
+
+  const { data: connections } = useSWR<IMihomoConnectionsInfo>('/connections', mihomoConnections, {
+    refreshInterval: 5000
+  })
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on('mihomoTraffic', (_e, info: IMihomoTrafficInfo) => {
+      console.log(info)
+    })
+    return (): void => {
+      window.electron.ipcRenderer.removeAllListeners('mihomoTraffic')
+    }
+  }, [])
 
   return (
     <Card
@@ -22,6 +38,9 @@ const ConnCard: React.FC = () => {
           >
             <IoLink color="default" className="text-[20px]" />
           </Button>
+          <Chip size="sm" color="secondary" variant="bordered" className="mr-3 mt-2">
+            {connections?.connections?.length ?? 0}
+          </Chip>
         </div>
       </CardBody>
       <CardFooter className="pt-1">

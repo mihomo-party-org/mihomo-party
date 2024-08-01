@@ -38,6 +38,9 @@ importers:
       swr:
         specifier: ^2.2.5
         version: 2.2.5(react@18.3.1)
+      ws:
+        specifier: ^8.18.0
+        version: 8.18.0
       yaml:
         specifier: ^2.5.0
         version: 2.5.0
@@ -60,6 +63,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.3.0
         version: 18.3.0
+      '@types/ws':
+        specifier: ^8.5.12
+        version: 8.5.12
       '@vitejs/plugin-react':
         specifier: ^4.3.1
         version: 4.3.1(vite@5.3.5(@types/node@22.0.0))
@@ -1745,6 +1751,9 @@ packages:
 
   '@types/verror@1.10.10':
     resolution: {integrity: sha512-l4MM0Jppn18hb9xmM6wwD1uTdShpf9Pn80aXTStnK1C94gtPvJcV2FrDmbOQUAQfJ1cKZHktkQUDwEqaAKXMMg==}
+
+  '@types/ws@8.5.12':
+    resolution: {integrity: sha512-3tPRkv1EtkDpzlgyKyI8pGsGZAGPEaXeu0DOj5DI25Ja91bdAYddYHbADRYVrZMRbfW+1l5YwXVDKohDJNQxkQ==}
 
   '@types/yauzl@2.10.3':
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
@@ -4169,6 +4178,18 @@ packages:
 
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+
+  ws@8.18.0:
+    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
 
   xmlbuilder@15.1.1:
     resolution: {integrity: sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==}
@@ -6739,6 +6760,10 @@ snapshots:
 
   '@types/verror@1.10.10':
     optional: true
+
+  '@types/ws@8.5.12':
+    dependencies:
+      '@types/node': 22.0.0
 
   '@types/yauzl@2.10.3':
     dependencies:
@@ -9560,6 +9585,8 @@ snapshots:
       strip-ansi: 7.1.0
 
   wrappy@1.0.2: {}
+
+  ws@8.18.0: {}
 
   xmlbuilder@15.1.1: {}
 

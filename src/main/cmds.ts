@@ -1,5 +1,11 @@
 import { ipcMain } from 'electron'
-import { mihomoConfig, mihomoVersion, patchMihomoConfig } from './mihomo-api'
+import {
+  mihomoConfig,
+  mihomoConnections,
+  mihomoRules,
+  mihomoVersion,
+  patchMihomoConfig
+} from './mihomo-api'
 import { checkAutoRun, disableAutoRun, enableAutoRun } from './autoRun'
 import {
   getAppConfig,
@@ -13,6 +19,8 @@ import { restartCore } from './manager'
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
   ipcMain.handle('mihomoConfig', mihomoConfig)
+  ipcMain.handle('mihomoConnections', mihomoConnections)
+  ipcMain.handle('mihomeRules', mihomoRules)
   ipcMain.handle('patchMihomoConfig', async (_e, patch) => await patchMihomoConfig(patch))
   ipcMain.handle('checkAutoRun', checkAutoRun)
   ipcMain.handle('enableAutoRun', enableAutoRun)

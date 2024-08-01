@@ -1,10 +1,16 @@
 import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
+import { mihomoRules } from '@renderer/utils/ipc'
 import { IoGitNetwork } from 'react-icons/io5'
 import { useLocation, useNavigate } from 'react-router-dom'
+import useSWR from 'swr'
 
 const RuleCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
+
+  const { data: rules } = useSWR<IMihomoRulesInfo>('/connections', mihomoRules, {
+    refreshInterval: 5000
+  })
 
   return (
     <Card
@@ -23,7 +29,7 @@ const RuleCard: React.FC = () => {
             <IoGitNetwork color="default" className="text-[20px]" />
           </Button>
           <Chip size="sm" color="secondary" variant="bordered" className="mr-3 mt-2">
-            1103
+            {rules?.rules?.length ?? 0}
           </Chip>
         </div>
       </CardBody>
