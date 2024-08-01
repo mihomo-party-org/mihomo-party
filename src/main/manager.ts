@@ -9,9 +9,7 @@ export function startCore(): void {
   const corePath = mihomoCorePath(appConfig.core ?? 'mihomo')
   generateProfile()
   stopCore()
-  child = execFile(corePath, ['-d', mihomoWorkDir()], (error, stdout) => {
-    console.log(stdout)
-  })
+  child = execFile(corePath, ['-d', mihomoWorkDir()], () => {})
 }
 
 export function stopCore(): void {
