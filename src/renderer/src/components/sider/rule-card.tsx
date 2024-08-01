@@ -7,14 +7,14 @@ import useSWR from 'swr'
 const RuleCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-
+  const match = location.pathname.includes('/rules')
   const { data: rules } = useSWR<IMihomoRulesInfo>('/connections', mihomoRules, {
     refreshInterval: 5000
   })
 
   return (
     <Card
-      className={`w-[50%] mr-1 mb-2 ${location.pathname.includes('/rules') ? 'bg-primary' : ''}`}
+      className={`w-[50%] mr-1 mb-2 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/rules')}
     >
@@ -28,7 +28,22 @@ const RuleCard: React.FC = () => {
           >
             <IoGitNetwork color="default" className="text-[20px]" />
           </Button>
-          <Chip size="sm" color="secondary" variant="bordered" className="mr-3 mt-2">
+          <Chip
+            classNames={
+              match
+                ? {
+                    base: 'border-foreground',
+                    content: 'text-foreground'
+                  }
+                : {
+                    base: 'border-primary',
+                    content: 'text-primary'
+                  }
+            }
+            size="sm"
+            variant="bordered"
+            className="mr-3 mt-2"
+          >
             {rules?.rules?.length ?? 0}
           </Chip>
         </div>

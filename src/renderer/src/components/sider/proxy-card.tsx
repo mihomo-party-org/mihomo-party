@@ -5,11 +5,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 const ProxyCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-
+  const match = location.pathname.includes('/proxies')
   return (
     <Card
       fullWidth
-      className={`mb-2 ${location.pathname.includes('/proxies') ? 'bg-primary' : ''}`}
+      className={`mb-2 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/proxies')}
     >

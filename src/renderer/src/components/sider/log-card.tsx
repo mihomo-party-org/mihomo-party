@@ -5,10 +5,10 @@ import { useLocation, useNavigate } from 'react-router-dom'
 const LogCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-
+  const match = location.pathname.includes('/logs')
   return (
     <Card
-      className={`w-[50%] ml-1 mb-2 ${location.pathname.includes('/logs') ? 'bg-primary' : ''}`}
+      className={`w-[50%] ml-1 mb-2 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/logs')}
     >

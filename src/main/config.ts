@@ -8,10 +8,10 @@ import {
 } from './template'
 import { appConfigPath, controledMihomoConfigPath, profileConfigPath, profilePath } from './dirs'
 
-export let appConfig: IAppConfig
-export let profileConfig: IProfileConfig
-export let currentProfile: Partial<IMihomoConfig>
-export let controledMihomoConfig: Partial<IMihomoConfig>
+export let appConfig: IAppConfig // config.yaml
+export let profileConfig: IProfileConfig // profile.yaml
+export let currentProfile: Partial<IMihomoConfig> // profiles/xxx.yaml
+export let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
 
 export function initConfig(): void {
   if (!fs.existsSync(appConfigPath())) {
@@ -63,11 +63,30 @@ export function getProfileConfig(force = false): IProfileConfig {
   return profileConfig
 }
 
-export function setProfileConfig(patch: Partial<IProfileConfig>): void {
-  profileConfig = Object.assign(profileConfig, patch)
+export function getProfileItem(id: string | undefined): IProfileItem {
+  const items = profileConfig.items
+  return items?.find((item) => item.id === id) || { id: 'default', type: 'local', name: '空白订阅' }
+}
+
+export function addProfileItem(item: IProfileItem): void {
+  profileConfig.items.push(item)
+  if (!profileConfig.current) {
+    profileConfig.current = item.id
+  }
   fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
 }
 
+export function removeProfileItem(id: string): void {
+  profileConfig.items = profileConfig.items?.filter((item) => item.id !== id)
+  if (profileConfig.current === id) {
+    profileConfig.current = profileConfig.items[0]?.id
+  }
+  fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
+}
+
+export function getCurrentProfileItem(): IProfileItem {
+  return getProfileItem(profileConfig.current)
+}
 export function getCurrentProfile(force = false): Partial<IMihomoConfig> {
   if (force || !currentProfile) {
     if (profileConfig.current) {

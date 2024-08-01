@@ -13,14 +13,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
 }
 
 export const defaultProfileConfig: IProfileConfig = {
-  current: 'default',
-  profiles: [
-    {
-      id: 'default',
-      type: 'local',
-      name: '默认'
-    }
-  ]
+  items: []
 }
 
 export const defaultProfile: Partial<IMihomoConfig> = {
