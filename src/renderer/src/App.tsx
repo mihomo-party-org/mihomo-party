@@ -13,6 +13,7 @@ import RuleCard from '@renderer/components/sider/rule-card'
 import OverrideCard from '@renderer/components/sider/override-card'
 import ConnCard from '@renderer/components/sider/conn-card'
 import LogCard from '@renderer/components/sider/log-card'
+import MihomoCoreCard from './components/sider/mihomo-core-card.tsx'
 
 const App: React.FC = () => {
   const { setTheme } = useTheme()
@@ -67,6 +68,7 @@ const App: React.FC = () => {
         <h3 className="select-none text-lg font-bold m-2">配置</h3>
         <div className="w-full h-[calc(100%-260px)] overflow-y-auto no-scrollbar">
           <div className="mx-2">
+            <MihomoCoreCard />
             <ProfileCard />
             <ProxyCard />
           </div>

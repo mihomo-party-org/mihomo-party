@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { IoLink } from 'react-icons/io5'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -22,9 +22,6 @@ const ConnCard: React.FC = () => {
           >
             <IoLink color="default" className="text-[20px]" />
           </Button>
-          <Chip size="sm" color="secondary" variant="bordered" className="mr-3 mt-2">
-            1103
-          </Chip>
         </div>
       </CardBody>
       <CardFooter className="pt-1">

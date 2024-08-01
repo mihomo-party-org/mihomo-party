@@ -29,3 +29,7 @@ export async function getControledMihomoConfig(force = false): Promise<Partial<I
 export async function setControledMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
   await window.electron.ipcRenderer.invoke('setControledMihomoConfig', patch)
 }
+
+export async function restartCore(): Promise<void> {
+  await window.electron.ipcRenderer.invoke('restartCore')
+}

@@ -4,7 +4,7 @@ import { getAppConfig, setAppConfig } from '@renderer/utils/ipc'
 interface RetuenType {
   appConfig: IAppConfig | undefined
   mutateAppConfig: () => void
-  patchAppConfig: (value: Partial<IAppConfig>) => void
+  patchAppConfig: (value: Partial<IAppConfig>) => Promise<void>
 }
 
 export const useAppConfig = (): RetuenType => {
