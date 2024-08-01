@@ -131,7 +131,8 @@ interface IProfileItem {
   id: string
   type: 'remote' | 'local'
   name: string
-  url?: string
+  url?: string // remote
+  file?: string // local
   updated?: number
   extra?: {
     upload: number

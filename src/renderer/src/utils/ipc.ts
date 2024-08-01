@@ -58,7 +58,7 @@ export async function getProfileItem(id: string | undefined): Promise<IProfileIt
   return await window.electron.ipcRenderer.invoke('getProfileItem', id)
 }
 
-export async function addProfileItem(item: IProfileItem): Promise<void> {
+export async function addProfileItem(item: Partial<IProfileItem>): Promise<void> {
   await window.electron.ipcRenderer.invoke('addProfileItem', item)
 }
 
