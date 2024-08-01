@@ -5,7 +5,7 @@ import {
   mihomoRules,
   mihomoVersion,
   patchMihomoConfig
-} from './mihomo-api'
+} from './mihomoApi'
 import { checkAutoRun, disableAutoRun, enableAutoRun } from './autoRun'
 import {
   getAppConfig,

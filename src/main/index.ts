@@ -6,7 +6,7 @@ import { registerIpcMainHandlers } from './cmds'
 import { initConfig, appConfig } from './config'
 import { stopCore, startCore } from './manager'
 import { initDirs } from './dirs'
-import { mihomoTraffic } from './mihomo-api'
+import { mihomoTraffic } from './mihomoApi'
 import { createTray } from './tray'
 
 export let window: BrowserWindow | null = null
