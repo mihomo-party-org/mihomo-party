@@ -1,17 +1,15 @@
-import { app, shell, BrowserWindow, Tray, Menu, ipcMain } from 'electron'
+import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import pngIcon from '../../resources/icon.png?asset'
-import icoIcon from '../../resources/icon.ico?asset'
+import icon from '../../resources/icon.png?asset'
 import { registerIpcMainHandlers } from './cmds'
-import { initConfig, appConfig, controledMihomoConfig, setControledMihomoConfig } from './config'
+import { initConfig, appConfig } from './config'
 import { stopCore, startCore } from './manager'
 import { initDirs } from './dirs'
-import { mihomoTraffic, patchMihomoConfig } from './mihomo-api'
+import { mihomoTraffic } from './mihomo-api'
+import { createTray } from './tray'
 
 export let window: BrowserWindow | null = null
-let tray: Tray | null = null
-let trayContextMenu: Menu | null = null
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -75,7 +73,7 @@ function createWindow(): void {
     height: 600,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon: pngIcon } : {}),
+    ...(process.platform === 'linux' ? { icon: icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -106,84 +104,4 @@ function createWindow(): void {
   } else {
     window.loadFile(join(__dirname, '../renderer/index.html'))
   }
-}
-
-function createTray(): void {
-  if (process.platform === 'linux') {
-    tray = new Tray(pngIcon)
-  } else {
-    tray = new Tray(icoIcon)
-  }
-  trayContextMenu = Menu.buildFromTemplate([
-    {
-      id: 'show',
-      label: '显示窗口',
-      type: 'normal',
-      click: (): void => {
-        window?.show()
-        window?.focusOnWebView()
-      }
-    },
-    {
-      id: 'rule',
-      label: '规则模式',
-      type: 'radio',
-      checked: controledMihomoConfig.mode === 'rule',
-      click: (): void => {
-        setControledMihomoConfig({ mode: 'rule' })
-        patchMihomoConfig({ mode: 'rule' })
-        window?.webContents.send('controledMihomoConfigUpdated')
-      }
-    },
-    {
-      id: 'global',
-      label: '全局模式',
-      type: 'radio',
-      checked: controledMihomoConfig.mode === 'global',
-      click: (): void => {
-        setControledMihomoConfig({ mode: 'global' })
-        patchMihomoConfig({ mode: 'global' })
-        window?.webContents.send('controledMihomoConfigUpdated')
-      }
-    },
-    {
-      id: 'direct',
-      label: '直连模式',
-      type: 'radio',
-      checked: controledMihomoConfig.mode === 'direct',
-      click: (): void => {
-        setControledMihomoConfig({ mode: 'direct' })
-        patchMihomoConfig({ mode: 'direct' })
-        window?.webContents.send('controledMihomoConfigUpdated')
-      }
-    },
-    { type: 'separator' },
-    { id: 'version', label: app.getVersion(), type: 'normal', enabled: false },
-    { type: 'separator' },
-    {
-      id: 'restart',
-      label: '重启应用',
-      type: 'normal',
-      click: (): void => {
-        app.relaunch()
-        app.quit()
-      }
-    },
-    { id: 'quit', label: '退出应用', type: 'normal', click: (): void => app.quit() }
-  ])
-
-  ipcMain.on('controledMihomoConfigUpdated', () => {
-    const { mode } = controledMihomoConfig
-    if (mode) {
-      trayContextMenu?.getMenuItemById(mode)?.click()
-    }
-  })
-
-  tray.setContextMenu(trayContextMenu)
-  tray.setIgnoreDoubleClickEvents(true)
-  tray.setToolTip('Another Mihomo GUI.')
-  tray.setTitle('Mihomo Party')
-  tray.addListener('click', () => {
-    window?.isVisible() ? window?.hide() : window?.show()
-  })
 }
