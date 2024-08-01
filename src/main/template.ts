@@ -1,6 +1,7 @@
 export const defaultConfig: IAppConfig = {
   core: 'mihomo',
-  silentStart: false
+  silentStart: false,
+  sysProxy: { enable: false, mode: 'manual' }
 }
 
 export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
@@ -9,7 +10,8 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
   mode: 'rule',
   'mixed-port': 7890,
   'allow-lan': false,
-  'log-level': 'info'
+  'log-level': 'info',
+  tun: { enable: false }
 }
 
 export const defaultProfileConfig: IProfileConfig = {

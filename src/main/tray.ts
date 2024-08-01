@@ -1,9 +1,11 @@
-import { controledMihomoConfig, setControledMihomoConfig } from './config'
+import { appConfig, controledMihomoConfig, setAppConfig, setControledMihomoConfig } from './config'
 import icoIcon from '../../resources/icon.ico?asset'
 import pngIcon from '../../resources/icon.png?asset'
 import { patchMihomoConfig } from './mihomoApi'
 import { window } from '.'
-import { app, ipcMain, Menu, Tray } from 'electron'
+import { app, ipcMain, Menu, shell, Tray } from 'electron'
+import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from './dirs'
+import { triggerSysProxy } from './sysproxy'
 
 let tray: Tray | null = null
 
@@ -56,6 +58,58 @@ const buildContextMenu = (): Menu => {
     },
     { type: 'separator' },
     {
+      type: 'checkbox',
+      label: '系统代理',
+      checked: appConfig.sysProxy.enable,
+      click: (item): void => {
+        const enable = item.checked
+        setAppConfig({ sysProxy: { enable } })
+        triggerSysProxy(enable)
+        window?.webContents.send('appConfigUpdated')
+        updateTrayMenu()
+      }
+    },
+    {
+      type: 'checkbox',
+      label: '虚拟网卡',
+      checked: controledMihomoConfig.tun?.enable ?? false,
+      click: (item): void => {
+        const enable = item.checked
+        setControledMihomoConfig({ tun: { enable } })
+        patchMihomoConfig({ tun: { enable } })
+        window?.webContents.send('controledMihomoConfigUpdated')
+        updateTrayMenu()
+      }
+    },
+    { type: 'separator' },
+    {
+      type: 'submenu',
+      label: '打开目录',
+      submenu: [
+        {
+          type: 'normal',
+          label: '应用目录',
+          click: (): Promise<string> => shell.openPath(dataDir)
+        },
+        {
+          type: 'normal',
+          label: '工作目录',
+          click: (): Promise<string> => shell.openPath(mihomoWorkDir())
+        },
+        {
+          type: 'normal',
+          label: '内核目录',
+          click: (): Promise<string> => shell.openPath(mihomoCoreDir())
+        },
+        {
+          type: 'normal',
+          label: '日志目录',
+          click: (): Promise<string> => shell.openPath(logDir())
+        }
+      ]
+    },
+    { type: 'separator' },
+    {
       id: 'restart',
       label: '重启应用',
       type: 'normal',
@@ -78,6 +132,9 @@ export function createTray(): void {
   const menu = buildContextMenu()
 
   ipcMain.on('controledMihomoConfigUpdated', () => {
+    updateTrayMenu()
+  })
+  ipcMain.on('appConfigUpdated', () => {
     updateTrayMenu()
   })
 

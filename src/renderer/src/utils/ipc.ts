@@ -69,3 +69,7 @@ export async function removeProfileItem(id: string): Promise<void> {
 export async function restartCore(): Promise<void> {
   await window.electron.ipcRenderer.invoke('restartCore')
 }
+
+export async function triggerSysProxy(enable: boolean): Promise<void> {
+  await window.electron.ipcRenderer.invoke('triggerSysProxy', enable)
+}

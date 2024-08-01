@@ -19,6 +19,7 @@ import {
   removeProfileItem
 } from './config'
 import { restartCore } from './manager'
+import { triggerSysProxy } from './sysproxy'
 
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
@@ -39,4 +40,5 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('addProfileItem', (_e, item) => addProfileItem(item))
   ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))
   ipcMain.handle('restartCore', () => restartCore())
+  ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
 }

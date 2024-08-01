@@ -1,13 +1,22 @@
 import { Button, Card, CardBody, CardFooter, Switch } from '@nextui-org/react'
-import React, { useState } from 'react'
-import { AiOutlineGlobal } from 'react-icons/ai'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useAppConfig } from '@renderer/hooks/use-config'
+import { AiOutlineGlobal } from 'react-icons/ai'
+import React from 'react'
+import { triggerSysProxy } from '@renderer/utils/ipc'
 
 const SysproxySwitcher: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/sysproxy')
-  const [enable, setEnable] = useState(false)
+  const { appConfig, patchAppConfig } = useAppConfig()
+  const { sysProxy } = appConfig || {}
+  const { enable } = sysProxy || {}
+
+  const onChange = async (enable: boolean): Promise<void> => {
+    await patchAppConfig({ sysProxy: { enable } })
+    await triggerSysProxy(enable)
+  }
 
   return (
     <Card
@@ -31,7 +40,7 @@ const SysproxySwitcher: React.FC = () => {
             }}
             size="sm"
             isSelected={enable}
-            onValueChange={setEnable}
+            onValueChange={onChange}
           />
         </div>
       </CardBody>
