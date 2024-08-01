@@ -10,12 +10,6 @@ const OutboundModeSwitcher: React.FC = () => {
   const onChangeMode = async (mode: OutboundMode): Promise<void> => {
     await patchControledMihomoConfig({ mode })
     await patchMihomoConfig({ mode })
-    window.electron.ipcRenderer.send(mode)
-    window.electron.ipcRenderer.send('test')
-  }
-
-  if (!mode) {
-    return null
   }
 
   return (
