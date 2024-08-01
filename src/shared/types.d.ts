@@ -63,11 +63,49 @@ interface IMihomoConnectionDetail {
   rulePayload: string
 }
 
+interface ISysProxyConfig {
+  enable: boolean
+  mode?: 'auto' | 'manual'
+  bypass?: string[]
+  pacScript?: string
+}
+
 interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha'
   silentStart: boolean
+  sysProxy: ISysProxyConfig
 }
 
+interface IMihomoTunConfig {
+  enable: boolean
+  stack?: 'system' | 'gvisor' | 'mixed'
+  'auto-route'?: boolean
+  'auto-redirect'?: boolean
+  'auto-detect-interface'?: boolean
+  'dns-hijack'?: string[]
+  device?: string
+  mtu?: number
+  'strict-route'?: boolean
+  gso?: boolean
+  'gso-max-size'?: number
+  'udp-timeout'?: number
+  'iproute2-table-index'?: number
+  'iproute2-rule-index'?: number
+  'endpoint-independent-nat'?: boolean
+  'route-address-set'?: string[]
+  'route-exclude-address-set'?: string[]
+  'route-address'?: string[]
+  'route-exclude-address'?: string[]
+  'include-interface'?: string[]
+  'exclude-interface'?: string[]
+  'include-uid'?: number[]
+  'include-uid-range'?: string[]
+  'exclude-uid'?: number[]
+  'exclude-uid-range'?: string[]
+  'include-android-user'?: string[]
+  'include-package'?: string[]
+  'exclude-package'?: string[]
+}
 interface IMihomoConfig {
   'external-controller': string
   secret?: string
@@ -81,6 +119,7 @@ interface IMihomoConfig {
   proxies?: []
   'proxy-groups'?: []
   rules?: []
+  tun: IMihomoTunConfig
 }
 
 interface IProfileConfig {

@@ -1,13 +1,23 @@
 import { Button, Card, CardBody, CardFooter, Switch } from '@nextui-org/react'
-import React, { useState } from 'react'
+import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { TbDeviceIpadHorizontalBolt } from 'react-icons/tb'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { patchMihomoConfig } from '@renderer/utils/ipc'
+import React from 'react'
 
 const TunSwitcher: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/tun')
-  const [enable, setEnable] = useState(false)
+
+  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { tun } = controledMihomoConfig || {}
+  const { enable } = tun || {}
+
+  const onChange = async (enable: boolean): Promise<void> => {
+    await patchControledMihomoConfig({ tun: { enable } })
+    await patchMihomoConfig({ tun: { enable } })
+  }
 
   return (
     <Card
@@ -31,7 +41,7 @@ const TunSwitcher: React.FC = () => {
             }}
             size="sm"
             isSelected={enable}
-            onValueChange={setEnable}
+            onValueChange={onChange}
           />
         </div>
       </CardBody>
