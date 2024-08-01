@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
+import { controledMihomoConfig } from './config'
 
 let axiosIns: AxiosInstance = null!
 
@@ -7,8 +8,9 @@ let axiosIns: AxiosInstance = null!
 export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
   if (axiosIns && !force) return axiosIns
 
-  const server = '127.0.0.1:9097'
-  const secret = ''
+  let server = controledMihomoConfig['external-controller']
+  const secret = controledMihomoConfig.secret ?? ''
+  if (server?.startsWith(':')) server = `127.0.0.1${server}`
 
   axiosIns = axios.create({
     baseURL: `http://${server}`,

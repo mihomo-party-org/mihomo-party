@@ -5,13 +5,16 @@ import pngIcon from '../../resources/icon.png?asset'
 import icoIcon from '../../resources/icon.ico?asset'
 import { registerIpcMainHandlers } from './cmds'
 import { initConfig, appConfig } from './config'
+import { stopCore, startCore } from './manager'
+import { initDirs } from './dirs'
 
 let window: BrowserWindow | null = null
 let tray: Tray | null = null
 let trayContextMenu: Menu | null = null
 
+initDirs()
 initConfig()
-
+startCore()
 function createWindow(): void {
   // Create the browser window.
   window = new BrowserWindow({
@@ -124,5 +127,6 @@ app.on('window-all-closed', () => {
 })
 
 app.on('before-quit', () => {
+  stopCore()
   app.exit()
 })
