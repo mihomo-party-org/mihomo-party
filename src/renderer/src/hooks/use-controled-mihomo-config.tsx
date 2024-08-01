@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import { getControledMihomoConfig, setControledMihomoConfig } from '@renderer/utils/ipc'
+import { useEffect } from 'react'
 
 interface RetuenType {
   controledMihomoConfig: Partial<IMihomoConfig> | undefined
@@ -15,8 +16,17 @@ export const useControledMihomoConfig = (): RetuenType => {
 
   const patchControledMihomoConfig = async (value: Partial<IMihomoConfig>): Promise<void> => {
     await setControledMihomoConfig(value)
-    mutateControledMihomoConfig()
+    window.electron.ipcRenderer.send('controledMihomoConfigUpdated')
   }
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on('controledMihomoConfigUpdated', () => {
+      mutateControledMihomoConfig()
+    })
+    return (): void => {
+      window.electron.ipcRenderer.removeAllListeners('controledMihomoConfigUpdated')
+    }
+  }, [])
 
   return {
     controledMihomoConfig,
