@@ -15,6 +15,9 @@ export function initDirs(): void {
   if (!fs.existsSync(mihomoWorkDir())) {
     fs.mkdirSync(mihomoWorkDir())
   }
+  if (!fs.existsSync(logDir())) {
+    fs.mkdirSync(logDir())
+  }
 }
 
 export function mihomoCoreDir(): string {
@@ -56,4 +59,14 @@ export function mihomoWorkDir(): string {
 
 export function mihomoWorkConfigPath(): string {
   return path.join(mihomoWorkDir(), 'config.yaml')
+}
+
+export function logDir(): string {
+  return path.join(dataDir, 'logs')
+}
+
+export function logPath(): string {
+  const date = new Date()
+  const name = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  return path.join(logDir(), `${name}.log`)
 }
