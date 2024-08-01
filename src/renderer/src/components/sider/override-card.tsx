@@ -1,7 +1,8 @@
-import { Button, Card, CardBody, CardFooter, Switch } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, cn } from '@nextui-org/react'
 import React, { useState } from 'react'
 import { MdFormatOverline } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { SiderSwitch } from './index'
 
 const OverrideCard: React.FC = () => {
   const navigate = useNavigate()
@@ -25,11 +26,8 @@ const OverrideCard: React.FC = () => {
           >
             <MdFormatOverline color="default" className="text-[24px]" />
           </Button>
-          <Switch
-            classNames={{
-              wrapper: `${match && enable ? 'border-2' : ''}`
-            }}
-            size="sm"
+          <SiderSwitch
+            isShowBorder={match && enable}
             isSelected={enable}
             onValueChange={setEnable}
           />
