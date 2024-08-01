@@ -4,7 +4,7 @@ import { getControledMihomoConfig, setControledMihomoConfig } from '@renderer/ut
 interface RetuenType {
   controledMihomoConfig: Partial<IMihomoConfig> | undefined
   mutateControledMihomoConfig: () => void
-  patchControledMihomoConfig: (value: Partial<IMihomoConfig>) => void
+  patchControledMihomoConfig: (value: Partial<IMihomoConfig>) => Promise<void>
 }
 
 export const useControledMihomoConfig = (): RetuenType => {
@@ -15,7 +15,7 @@ export const useControledMihomoConfig = (): RetuenType => {
 
   const patchControledMihomoConfig = async (value: Partial<IMihomoConfig>): Promise<void> => {
     await setControledMihomoConfig(value)
-    await mutateControledMihomoConfig()
+    mutateControledMihomoConfig()
   }
 
   return {

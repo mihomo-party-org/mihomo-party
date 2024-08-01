@@ -12,7 +12,7 @@ export const useAppConfig = (): RetuenType => {
 
   const patchAppConfig = async (value: Partial<IAppConfig>): Promise<void> => {
     await setAppConfig(value)
-    await mutateAppConfig()
+    mutateAppConfig()
   }
 
   return {

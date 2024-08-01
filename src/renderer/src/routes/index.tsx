@@ -6,8 +6,23 @@ import Settings from '@renderer/pages/settings'
 import Profiles from '@renderer/pages/profiles'
 import Logs from '@renderer/pages/logs'
 import Connections from '@renderer/pages/connections'
+import Mihomo from '@renderer/pages/mihomo'
+import Sysproxy from '@renderer/pages/syspeoxy'
+import Tun from '@renderer/pages/tun'
 
 const routes = [
+  {
+    path: '/mihomo',
+    element: <Mihomo />
+  },
+  {
+    path: '/sysproxy',
+    element: <Sysproxy />
+  },
+  {
+    path: '/tun',
+    element: <Tun />
+  },
   {
     path: '/proxies',
     element: <Proxies />

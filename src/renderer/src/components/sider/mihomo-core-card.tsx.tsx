@@ -11,22 +11,27 @@ import {
 import { useAppConfig } from '@renderer/hooks/use-config'
 import { mihomoVersion, restartCore } from '@renderer/utils/ipc'
 import { IoMdRefresh } from 'react-icons/io'
+import { useLocation, useNavigate } from 'react-router-dom'
 import useSWR from 'swr'
 
 const CoreMap = {
-  mihomo: 'Mihomo',
-  'mihomo-alpha': 'Mihomo Alpha'
+  mihomo: '稳定版',
+  'mihomo-alpha': '预览版'
 }
 
 const MihomoCoreCard: React.FC = () => {
   const { data: version, mutate } = useSWR('mihomoVersion', mihomoVersion)
   const { appConfig, patchAppConfig } = useAppConfig()
   const { core } = appConfig || {}
+  const navigate = useNavigate()
+  const location = useLocation()
 
   return (
     <Card
       fullWidth
-      className={`mb-2 ${location.pathname.includes('/profiles') ? 'bg-primary' : ''}`}
+      isPressable
+      onPress={() => navigate('/mihomo')}
+      className={`mb-2 ${location.pathname.includes('/mihomo') ? 'bg-primary' : ''}`}
     >
       <CardBody>
         <div className="flex justify-between h-[32px]">
@@ -49,7 +54,7 @@ const MihomoCoreCard: React.FC = () => {
       <CardFooter className="pt-1">
         <Dropdown>
           <DropdownTrigger>
-            <Button variant="faded" fullWidth>
+            <Button fullWidth size="sm" variant="solid">
               {core ? CoreMap[core] : ''}
             </Button>
           </DropdownTrigger>
@@ -60,8 +65,8 @@ const MihomoCoreCard: React.FC = () => {
               await mutate()
             }}
           >
-            <DropdownItem key="mihomo">Mihomo </DropdownItem>
-            <DropdownItem key="mihomo-alpha">Mihomo Alpha</DropdownItem>
+            <DropdownItem key="mihomo">{CoreMap['mihomo']}</DropdownItem>
+            <DropdownItem key="mihomo-alpha">{CoreMap['mihomo-alpha']}</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </CardFooter>
