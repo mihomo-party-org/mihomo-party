@@ -1,14 +1,17 @@
 import { Button, Card, CardBody, CardFooter, Switch } from '@nextui-org/react'
+import React, { useState } from 'react'
 import { MdFormatOverline } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const OverrideCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const match = location.pathname.includes('/override')
+  const [enable, setEnable] = useState(false)
 
   return (
     <Card
-      className={`w-[50%] ml-1 mb-2 ${location.pathname.includes('/override') ? 'bg-primary' : ''}`}
+      className={`w-[50%] ml-1 mb-2 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/override')}
     >
@@ -22,7 +25,14 @@ const OverrideCard: React.FC = () => {
           >
             <MdFormatOverline color="default" className="text-[24px]" />
           </Button>
-          <Switch size="sm" />
+          <Switch
+            classNames={{
+              wrapper: `${match && enable ? 'border-2' : ''}`
+            }}
+            size="sm"
+            isSelected={enable}
+            onValueChange={setEnable}
+          />
         </div>
       </CardBody>
       <CardFooter className="pt-1">

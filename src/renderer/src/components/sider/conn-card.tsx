@@ -8,6 +8,7 @@ import { mihomoConnections } from '@renderer/utils/ipc'
 const ConnCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const match = location.pathname.includes('/connections')
 
   const { data: connections } = useSWR<IMihomoConnectionsInfo>('/connections', mihomoConnections, {
     refreshInterval: 5000
@@ -24,7 +25,7 @@ const ConnCard: React.FC = () => {
 
   return (
     <Card
-      className={`w-[50%] mr-1 mb-2 ${location.pathname.includes('/connections') ? 'bg-primary' : ''}`}
+      className={`w-[50%] mr-1 mb-2 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/connections')}
     >
@@ -38,7 +39,22 @@ const ConnCard: React.FC = () => {
           >
             <IoLink color="default" className="text-[20px]" />
           </Button>
-          <Chip size="sm" color="secondary" variant="bordered" className="mr-3 mt-2">
+          <Chip
+            classNames={
+              match
+                ? {
+                    base: 'border-foreground',
+                    content: 'text-foreground'
+                  }
+                : {
+                    base: 'border-primary',
+                    content: 'text-primary'
+                  }
+            }
+            size="sm"
+            variant="bordered"
+            className="mr-3 mt-2"
+          >
             {connections?.connections?.length ?? 0}
           </Chip>
         </div>

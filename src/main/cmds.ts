@@ -10,9 +10,13 @@ import { checkAutoRun, disableAutoRun, enableAutoRun } from './autoRun'
 import {
   getAppConfig,
   setAppConfig,
-  getProfileConfig,
   getControledMihomoConfig,
-  setControledMihomoConfig
+  setControledMihomoConfig,
+  getProfileConfig,
+  getCurrentProfileItem,
+  getProfileItem,
+  addProfileItem,
+  removeProfileItem
 } from './config'
 import { restartCore } from './manager'
 
@@ -30,5 +34,9 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('getControledMihomoConfig', (_e, force) => getControledMihomoConfig(force))
   ipcMain.handle('setControledMihomoConfig', (_e, config) => setControledMihomoConfig(config))
   ipcMain.handle('getProfileConfig', (_e, force) => getProfileConfig(force))
+  ipcMain.handle('getCurrentProfileItem', getCurrentProfileItem)
+  ipcMain.handle('getProfileItem', (_e, id) => getProfileItem(id))
+  ipcMain.handle('addProfileItem', (_e, item) => addProfileItem(item))
+  ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))
   ipcMain.handle('restartCore', () => restartCore())
 }

@@ -25,13 +25,13 @@ const MihomoCoreCard: React.FC = () => {
   const { core } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
-
+  const match = location.pathname.includes('/mihomo')
   return (
     <Card
       fullWidth
       isPressable
       onPress={() => navigate('/mihomo')}
-      className={`mb-2 ${location.pathname.includes('/mihomo') ? 'bg-primary' : ''}`}
+      className={`mb-2 ${match ? 'bg-primary' : ''}`}
     >
       <CardBody>
         <div className="flex justify-between h-[32px]">

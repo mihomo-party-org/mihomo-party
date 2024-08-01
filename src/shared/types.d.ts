@@ -85,11 +85,19 @@ interface IMihomoConfig {
 
 interface IProfileConfig {
   current?: string
-  profiles?: IProfileItem[]
+  items: IProfileItem[]
 }
 
 interface IProfileItem {
   id: string
   type: 'remote' | 'local'
   name: string
+  url?: string
+  updated?: number
+  extra?: {
+    upload: number
+    download: number
+    total: number
+    expire: number
+  }
 }
