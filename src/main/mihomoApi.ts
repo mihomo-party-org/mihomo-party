@@ -55,12 +55,17 @@ export const mihomoTraffic = (): void => {
 
   mihomoTrafficWs = new WebSocket(`ws://${server}/traffic?secret=${secret}`)
 
-  mihomoTrafficWs.onmessage = (e: { data: string }): void => {
-    window?.webContents.send('mihomoTraffic', JSON.parse(e.data) as IMihomoTrafficInfo)
+  mihomoTrafficWs.onmessage = (e): void => {
+    const data = e.data as string
+    window?.webContents.send('mihomoTraffic', JSON.parse(data) as IMihomoTrafficInfo)
   }
-
+  mihomoTrafficWs.onclose = (): void => {
+    mihomoTraffic()
+  }
   mihomoTrafficWs.onerror = (): void => {
-    console.error('Traffic ws error')
-    mihomoConfig()
+    if (mihomoTrafficWs) {
+      mihomoTrafficWs.close()
+      mihomoTrafficWs = null!
+    }
   }
 }

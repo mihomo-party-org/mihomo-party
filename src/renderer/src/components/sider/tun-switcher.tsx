@@ -26,7 +26,9 @@ const TunSwitcher: React.FC = () => {
             <TbDeviceIpadHorizontalBolt color="default" className="text-[24px] font-bold" />
           </Button>
           <Switch
-            classNames={{ wrapper: `${match && enable ? 'border-2' : ''}` }}
+            classNames={{
+              wrapper: `${match && enable ? 'border-2' : ''}`
+            }}
             size="sm"
             isSelected={enable}
             onValueChange={setEnable}

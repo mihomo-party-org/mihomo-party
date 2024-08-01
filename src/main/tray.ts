@@ -1,7 +1,7 @@
 import { controledMihomoConfig, setControledMihomoConfig } from './config'
 import icoIcon from '../../resources/icon.ico?asset'
 import pngIcon from '../../resources/icon.png?asset'
-import { patchMihomoConfig } from './mihomo-api'
+import { patchMihomoConfig } from './mihomoApi'
 import { window } from '.'
 import { app, ipcMain, Menu, Tray } from 'electron'
 
