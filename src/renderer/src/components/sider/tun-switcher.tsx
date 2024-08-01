@@ -1,13 +1,21 @@
 import { Button, Card, CardBody, CardFooter, Switch } from '@nextui-org/react'
-import { IoSettings } from 'react-icons/io5'
+import { TbDeviceIpadHorizontalBolt } from 'react-icons/tb'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const TunSwitcher: React.FC = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   return (
-    <Card className="w-[50%] ml-1">
+    <Card
+      className={`w-[50%] ml-1 ${location.pathname.includes('/tun') ? 'bg-primary' : ''}`}
+      isPressable
+      onPress={() => navigate('/tun')}
+    >
       <CardBody className="pb-1 pt-0 px-0">
         <div className="flex justify-between">
           <Button isIconOnly className="bg-transparent" variant="flat" color="default">
-            <IoSettings color="default" className="text-lg" />
+            <TbDeviceIpadHorizontalBolt color="default" className="text-[24px] font-bold" />
           </Button>
           <Switch size="sm" />
         </div>

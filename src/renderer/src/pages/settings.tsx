@@ -43,7 +43,7 @@ const Settings: React.FC = () => {
               } else {
                 disableAutoRun()
               }
-              mutate(v)
+              mutate()
             }}
           />
         </SettingItem>
@@ -53,7 +53,6 @@ const Settings: React.FC = () => {
             isSelected={silentStart}
             onValueChange={(v) => {
               patchAppConfig({ silentStart: v })
-              mutate()
             }}
           />
         </SettingItem>

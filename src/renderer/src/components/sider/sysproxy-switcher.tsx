@@ -1,13 +1,26 @@
 import { Button, Card, CardBody, CardFooter, Switch } from '@nextui-org/react'
-import { IoSettings } from 'react-icons/io5'
+import { AiOutlineGlobal } from 'react-icons/ai'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const SysproxySwitcher: React.FC = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   return (
-    <Card className="w-[50%] mr-1">
+    <Card
+      className={`w-[50%] mr-1 ${location.pathname.includes('/sysproxy') ? 'bg-primary' : ''}`}
+      isPressable
+      onPress={() => navigate('/sysproxy')}
+    >
       <CardBody className="pb-1 pt-0 px-0">
         <div className="flex justify-between">
-          <Button isIconOnly className="bg-transparent" variant="flat" color="default">
-            <IoSettings color="default" className="text-lg" />
+          <Button
+            isIconOnly
+            className="bg-transparent pointer-events-none"
+            variant="flat"
+            color="default"
+          >
+            <AiOutlineGlobal color="default" className="text-[24px]" />
           </Button>
           <Switch size="sm" />
         </div>
