@@ -62,7 +62,10 @@ const MihomoCoreCard: React.FC = () => {
             onAction={async (key) => {
               await patchAppConfig({ core: key as 'mihomo' | 'mihomo-alpha' })
               await restartCore()
-              await mutate()
+              mutate()
+              setTimeout(() => {
+                mutate()
+              }, 200)
             }}
           >
             <DropdownItem key="mihomo">{CoreMap['mihomo']}</DropdownItem>
