@@ -1,14 +1,25 @@
 import { Button, Input } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
+import { useProfileConfig } from '@renderer/hooks/use-profile'
 import { useState } from 'react'
 import { MdContentPaste } from 'react-icons/md'
 
 const Profiles: React.FC = () => {
+  const { profileConfig, addProfileItem } = useProfileConfig()
+  const [importing, setImporting] = useState(false)
   const [url, setUrl] = useState('')
 
   const handleImport = async (): Promise<void> => {
-    console.log('import', url)
+    setImporting(true)
+    try {
+      await addProfileItem({ name: 'Remote File', type: 'remote', url })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setImporting(false)
+    }
   }
+
   return (
     <BasePage title="订阅">
       <div className="flex m-2">
@@ -33,10 +44,11 @@ const Profiles: React.FC = () => {
             </Button>
           }
         />
-        <Button size="sm" color="primary" onPress={handleImport}>
+        <Button size="sm" color="primary" isLoading={importing} onPress={handleImport}>
           导入
         </Button>
       </div>
+      {JSON.stringify(profileConfig)}
     </BasePage>
   )
 }
