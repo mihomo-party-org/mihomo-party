@@ -1,11 +1,11 @@
-import { appConfig, controledMihomoConfig, setAppConfig, setControledMihomoConfig } from './config'
-import icoIcon from '../../resources/icon.ico?asset'
-import pngIcon from '../../resources/icon.png?asset'
+import { appConfig, controledMihomoConfig, setAppConfig, setControledMihomoConfig } from '../config'
+import icoIcon from '../../../resources/icon.ico?asset'
+import pngIcon from '../../../resources/icon.png?asset'
 import { patchMihomoConfig } from './mihomoApi'
-import { window } from '.'
+import { window } from '..'
 import { app, ipcMain, Menu, shell, Tray } from 'electron'
-import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from './dirs'
-import { triggerSysProxy } from './sysproxy'
+import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
+import { triggerSysProxy } from '../resolve/sysproxy'
 
 let tray: Tray | null = null
 
@@ -60,7 +60,7 @@ const buildContextMenu = (): Menu => {
     {
       type: 'checkbox',
       label: '系统代理',
-      checked: appConfig.sysProxy.enable,
+      checked: appConfig.sysProxy?.enable ?? false,
       click: (item): void => {
         const enable = item.checked
         setAppConfig({ sysProxy: { enable } })

@@ -1,13 +1,13 @@
-import { app, shell, BrowserWindow } from 'electron'
-import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { registerIpcMainHandlers } from './utils/cmds'
+import { app, shell, BrowserWindow } from 'electron'
+import { stopCore, startCore } from './core/manager'
 import icon from '../../resources/icon.png?asset'
-import { registerIpcMainHandlers } from './cmds'
-import { initConfig, appConfig } from './config'
-import { stopCore, startCore } from './manager'
-import { initDirs } from './dirs'
-import { mihomoTraffic } from './mihomoApi'
-import { createTray } from './tray'
+import { mihomoTraffic } from './core/mihomoApi'
+import { createTray } from './core/tray'
+import { init } from './resolve/init'
+import { appConfig } from './config'
+import { join } from 'path'
 
 export let window: BrowserWindow | null = null
 
@@ -16,8 +16,7 @@ const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
   app.quit()
 } else {
-  initDirs()
-  initConfig()
+  init()
   startCore()
 
   app.on('second-instance', () => {

@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
-import { controledMihomoConfig } from './config'
+import { controledMihomoConfig } from '../config'
 import WebSocket from 'ws'
-import { window } from '.'
+import { window } from '..'
 
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket = null!

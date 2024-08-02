@@ -1,5 +1,5 @@
-import { controledMihomoConfig, currentProfile } from './config'
-import { mihomoWorkConfigPath } from './dirs'
+import { controledMihomoConfig, currentProfile } from '../config'
+import { mihomoWorkConfigPath } from '../utils/dirs'
 import yaml from 'yaml'
 import fs from 'fs'
 
