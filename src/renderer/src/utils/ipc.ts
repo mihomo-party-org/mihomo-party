@@ -14,15 +14,15 @@ export async function mihomoRules(): Promise<IMihomoRulesInfo> {
   return await window.electron.ipcRenderer.invoke('mihomoRules')
 }
 export async function startMihomoLogs(): Promise<void> {
-  await window.electron.ipcRenderer.invoke('startMihomoLogs')
+  return await window.electron.ipcRenderer.invoke('startMihomoLogs')
 }
 
 export async function stopMihomoLogs(): Promise<void> {
-  await window.electron.ipcRenderer.invoke('stopMihomoLogs')
+  return await window.electron.ipcRenderer.invoke('stopMihomoLogs')
 }
 
 export async function patchMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
-  await window.electron.ipcRenderer.invoke('patchMihomoConfig', patch)
+  return await window.electron.ipcRenderer.invoke('patchMihomoConfig', patch)
 }
 
 export async function checkAutoRun(): Promise<boolean> {
@@ -30,11 +30,11 @@ export async function checkAutoRun(): Promise<boolean> {
 }
 
 export async function enableAutoRun(): Promise<void> {
-  await window.electron.ipcRenderer.invoke('enableAutoRun')
+  return await window.electron.ipcRenderer.invoke('enableAutoRun')
 }
 
 export async function disableAutoRun(): Promise<void> {
-  await window.electron.ipcRenderer.invoke('disableAutoRun')
+  return await window.electron.ipcRenderer.invoke('disableAutoRun')
 }
 
 export async function getAppConfig(force = false): Promise<IAppConfig> {
@@ -42,7 +42,7 @@ export async function getAppConfig(force = false): Promise<IAppConfig> {
 }
 
 export async function setAppConfig(patch: Partial<IAppConfig>): Promise<void> {
-  await window.electron.ipcRenderer.invoke('setAppConfig', patch)
+  return await window.electron.ipcRenderer.invoke('setAppConfig', patch)
 }
 
 export async function getControledMihomoConfig(force = false): Promise<Partial<IMihomoConfig>> {
@@ -50,7 +50,7 @@ export async function getControledMihomoConfig(force = false): Promise<Partial<I
 }
 
 export async function setControledMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
-  await window.electron.ipcRenderer.invoke('setControledMihomoConfig', patch)
+  return await window.electron.ipcRenderer.invoke('setControledMihomoConfig', patch)
 }
 
 export async function getProfileConfig(force = false): Promise<IProfileConfig> {
@@ -65,18 +65,22 @@ export async function getProfileItem(id: string | undefined): Promise<IProfileIt
   return await window.electron.ipcRenderer.invoke('getProfileItem', id)
 }
 
+export async function changeCurrentProfile(id: string): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('changeCurrentProfile', id)
+}
+
 export async function addProfileItem(item: Partial<IProfileItem>): Promise<void> {
-  await window.electron.ipcRenderer.invoke('addProfileItem', item)
+  return await window.electron.ipcRenderer.invoke('addProfileItem', item)
 }
 
 export async function removeProfileItem(id: string): Promise<void> {
-  await window.electron.ipcRenderer.invoke('removeProfileItem', id)
+  return await window.electron.ipcRenderer.invoke('removeProfileItem', id)
 }
 
 export async function restartCore(): Promise<void> {
-  await window.electron.ipcRenderer.invoke('restartCore')
+  return await window.electron.ipcRenderer.invoke('restartCore')
 }
 
 export async function triggerSysProxy(enable: boolean): Promise<void> {
-  await window.electron.ipcRenderer.invoke('triggerSysProxy', enable)
+  return await window.electron.ipcRenderer.invoke('triggerSysProxy', enable)
 }
