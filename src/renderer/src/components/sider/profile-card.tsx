@@ -1,29 +1,25 @@
 import { Button, Card, CardBody, CardFooter, Progress } from '@nextui-org/react'
-import { getCurrentProfileItem } from '@renderer/utils/ipc'
-import { useEffect } from 'react'
-import { IoMdRefresh } from 'react-icons/io'
+import { useProfileConfig } from '@renderer/hooks/use-profile'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic } from '@renderer/utils/calc'
-import useSWR from 'swr'
+import { IoMdRefresh } from 'react-icons/io'
 
 const ProfileCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/profiles')
 
-  const { data: info, mutate } = useSWR('getCurrentProfileItem', getCurrentProfileItem)
+  const { profileConfig } = useProfileConfig()
+  const { current, items } = profileConfig ?? {}
+  const info = items?.find((item) => item.id === current) ?? {
+    id: 'default',
+    type: 'local',
+    name: '空白订阅'
+  }
   const extra = info?.extra
   const usage = (extra?.upload ?? 0) + (extra?.download ?? 0)
   const total = extra?.total ?? 0
 
-  useEffect(() => {
-    window.electron.ipcRenderer.on('profileConfigUpdated', () => {
-      mutate()
-    })
-    return (): void => {
-      window.electron.ipcRenderer.removeAllListeners('profileConfigUpdated')
-    }
-  })
   return (
     <Card
       fullWidth
@@ -43,8 +39,8 @@ const ProfileCard: React.FC = () => {
       </CardBody>
       <CardFooter className="pt-1">
         <Progress
-          classNames={{ indicator: 'bg-foreground' }}
-          label={`${calcTraffic(usage)}/${calcTraffic(total)}`}
+          classNames={{ indicator: 'bg-foreground', label: 'select-none' }}
+          label={extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}
           value={calcPercent(extra?.upload, extra?.download, extra?.total)}
           className="max-w-md"
         />

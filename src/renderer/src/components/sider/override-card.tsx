@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, cn } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import React, { useState } from 'react'
 import { MdFormatOverline } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'

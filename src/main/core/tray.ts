@@ -1,4 +1,9 @@
-import { appConfig, controledMihomoConfig, setAppConfig, setControledMihomoConfig } from '../config'
+import {
+  getAppConfig,
+  getControledMihomoConfig,
+  setAppConfig,
+  setControledMihomoConfig
+} from '../config'
 import icoIcon from '../../../resources/icon.ico?asset'
 import pngIcon from '../../../resources/icon.png?asset'
 import { patchMihomoConfig } from './mihomoApi'
@@ -24,7 +29,7 @@ const buildContextMenu = (): Menu => {
       id: 'rule',
       label: '规则模式',
       type: 'radio',
-      checked: controledMihomoConfig.mode === 'rule',
+      checked: getControledMihomoConfig().mode === 'rule',
       click: (): void => {
         setControledMihomoConfig({ mode: 'rule' })
         patchMihomoConfig({ mode: 'rule' })
@@ -36,7 +41,7 @@ const buildContextMenu = (): Menu => {
       id: 'global',
       label: '全局模式',
       type: 'radio',
-      checked: controledMihomoConfig.mode === 'global',
+      checked: getControledMihomoConfig().mode === 'global',
       click: (): void => {
         setControledMihomoConfig({ mode: 'global' })
         patchMihomoConfig({ mode: 'global' })
@@ -48,7 +53,7 @@ const buildContextMenu = (): Menu => {
       id: 'direct',
       label: '直连模式',
       type: 'radio',
-      checked: controledMihomoConfig.mode === 'direct',
+      checked: getControledMihomoConfig().mode === 'direct',
       click: (): void => {
         setControledMihomoConfig({ mode: 'direct' })
         patchMihomoConfig({ mode: 'direct' })
@@ -60,7 +65,7 @@ const buildContextMenu = (): Menu => {
     {
       type: 'checkbox',
       label: '系统代理',
-      checked: appConfig.sysProxy?.enable ?? false,
+      checked: getAppConfig().sysProxy?.enable ?? false,
       click: (item): void => {
         const enable = item.checked
         setAppConfig({ sysProxy: { enable } })
@@ -72,7 +77,7 @@ const buildContextMenu = (): Menu => {
     {
       type: 'checkbox',
       label: '虚拟网卡',
-      checked: controledMihomoConfig.tun?.enable ?? false,
+      checked: getControledMihomoConfig().tun?.enable ?? false,
       click: (item): void => {
         const enable = item.checked
         setControledMihomoConfig({ tun: { enable } })

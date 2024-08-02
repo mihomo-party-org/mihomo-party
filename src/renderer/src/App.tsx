@@ -14,6 +14,7 @@ import OverrideCard from '@renderer/components/sider/override-card'
 import ConnCard from '@renderer/components/sider/conn-card'
 import LogCard from '@renderer/components/sider/log-card'
 import MihomoCoreCard from './components/sider/mihomo-core-card.tsx'
+import TestCard from './components/sider/test-card.js'
 
 const App: React.FC = () => {
   const { setTheme } = useTheme()
@@ -74,14 +75,15 @@ const App: React.FC = () => {
           <ProfileCard />
           <ProxyCard />
           <MihomoCoreCard />
+          <ConnCard />
         </div>
 
         <div className="flex justify-between mx-2">
-          <ConnCard />
           <LogCard />
+          <RuleCard />
         </div>
         <div className="flex justify-between mx-2">
-          <RuleCard />
+          <TestCard />
           <OverrideCard />
         </div>
         {/* </div> */}

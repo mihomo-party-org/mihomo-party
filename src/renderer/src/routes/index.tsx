@@ -9,6 +9,7 @@ import Connections from '@renderer/pages/connections'
 import Mihomo from '@renderer/pages/mihomo'
 import Sysproxy from '@renderer/pages/syspeoxy'
 import Tun from '@renderer/pages/tun'
+import Tests from '@renderer/pages/tests'
 
 const routes = [
   {
@@ -30,6 +31,10 @@ const routes = [
   {
     path: '/rules',
     element: <Rules />
+  },
+  {
+    path: '/tests',
+    element: <Tests />
   },
   {
     path: '/logs',

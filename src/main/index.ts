@@ -6,7 +6,7 @@ import icon from '../../resources/icon.png?asset'
 import { mihomoTraffic } from './core/mihomoApi'
 import { createTray } from './core/tray'
 import { init } from './resolve/init'
-import { appConfig } from './config'
+import { getAppConfig } from './config'
 import { join } from 'path'
 
 export let window: BrowserWindow | null = null
@@ -80,7 +80,7 @@ function createWindow(): void {
   })
 
   window.on('ready-to-show', () => {
-    if (!appConfig.silentStart) {
+    if (!getAppConfig().silentStart) {
       window?.show()
       window?.focusOnWebView()
     }

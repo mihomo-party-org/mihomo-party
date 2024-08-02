@@ -10,12 +10,6 @@ import {
   resourcesFilesDir
 } from '../utils/dirs'
 import {
-  getAppConfig,
-  getControledMihomoConfig,
-  getCurrentProfile,
-  getProfileConfig
-} from '../config'
-import {
   defaultConfig,
   defaultControledMihomoConfig,
   defaultProfile,
@@ -53,16 +47,12 @@ function initConfig(): void {
   if (!fs.existsSync(controledMihomoConfigPath())) {
     fs.writeFileSync(controledMihomoConfigPath(), yaml.stringify(defaultControledMihomoConfig))
   }
-  getAppConfig(true)
-  getControledMihomoConfig(true)
-  getProfileConfig(true)
-  getCurrentProfile(true)
 }
 
 function initFiles(): void {
   const fileList = ['Country.mmdb', 'geoip.dat', 'geosite.dat']
   for (const file of fileList) {
-    const targetPath = path.join(profilesDir(), file)
+    const targetPath = path.join(mihomoWorkDir(), file)
     const sourcePath = path.join(resourcesFilesDir(), file)
     if (!fs.existsSync(targetPath) && fs.existsSync(sourcePath)) {
       fs.copyFileSync(sourcePath, targetPath)

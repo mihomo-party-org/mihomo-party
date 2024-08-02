@@ -1,4 +1,4 @@
-import { controledMihomoConfig } from '../config'
+import { getControledMihomoConfig } from '../config'
 
 export function triggerSysProxy(enable: boolean): void {
   if (enable) {
@@ -9,7 +9,7 @@ export function triggerSysProxy(enable: boolean): void {
 }
 
 export function enableSysProxy(): void {
-  console.log('enableSysProxy', controledMihomoConfig['mixed-port'])
+  console.log('enableSysProxy', getControledMihomoConfig()['mixed-port'])
 }
 
 export function disableSysProxy(): void {
