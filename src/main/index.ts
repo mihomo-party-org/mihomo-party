@@ -2,6 +2,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcMainHandlers } from './utils/cmds'
 import { app, shell, BrowserWindow } from 'electron'
 import { stopCore, startCore } from './core/manager'
+import { triggerSysProxy } from './resolve/sysproxy'
 import icon from '../../resources/icon.png?asset'
 import { mihomoTraffic } from './core/mihomoApi'
 import { createTray } from './core/tray'
@@ -35,6 +36,7 @@ if (!gotTheLock) {
 
   app.on('before-quit', () => {
     stopCore()
+    triggerSysProxy(false)
     app.exit()
   })
 
@@ -84,6 +86,10 @@ function createWindow(): void {
       window?.show()
       window?.focusOnWebView()
     }
+  })
+
+  window.on('resize', () => {
+    window?.webContents.send('resize')
   })
 
   window.on('close', (event) => {

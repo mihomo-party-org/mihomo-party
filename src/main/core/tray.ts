@@ -68,10 +68,16 @@ const buildContextMenu = (): Menu => {
       checked: getAppConfig().sysProxy?.enable ?? false,
       click: (item): void => {
         const enable = item.checked
-        setAppConfig({ sysProxy: { enable } })
-        triggerSysProxy(enable)
-        window?.webContents.send('appConfigUpdated')
-        updateTrayMenu()
+        try {
+          triggerSysProxy(enable)
+          setAppConfig({ sysProxy: { enable } })
+          window?.webContents.send('appConfigUpdated')
+        } catch (e) {
+          setAppConfig({ sysProxy: { enable: !enable } })
+          console.error(e)
+        } finally {
+          updateTrayMenu()
+        }
       }
     },
     {

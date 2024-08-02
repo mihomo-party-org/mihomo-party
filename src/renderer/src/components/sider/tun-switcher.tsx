@@ -15,7 +15,6 @@ const TunSwitcher: React.FC = () => {
   const { tun } = controledMihomoConfig || {}
   const { enable } = tun || {}
 
-  console.log('controledMihomoConfig', controledMihomoConfig)
   const onChange = async (enable: boolean): Promise<void> => {
     await patchControledMihomoConfig({ tun: { enable } })
     await patchMihomoConfig({ tun: { enable } })

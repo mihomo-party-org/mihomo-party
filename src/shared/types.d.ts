@@ -1,6 +1,6 @@
 type OutboundMode = 'rule' | 'global' | 'direct'
 type LogLevel = 'info' | 'debug' | 'warn' | 'error' | 'silent'
-
+type SysProxyMode = 'auto' | 'manual'
 interface IMihomoVersion {
   version: string
   meta: boolean
@@ -65,7 +65,8 @@ interface IMihomoConnectionDetail {
 
 interface ISysProxyConfig {
   enable: boolean
-  mode?: 'auto' | 'manual'
+  host?: string
+  mode?: SysProxyMode
   bypass?: string[]
   pacScript?: string
 }
