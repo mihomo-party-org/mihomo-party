@@ -1,10 +1,10 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
+import BorderSwitch from '@renderer/components/base/border-swtich'
 import { TbDeviceIpadHorizontalBolt } from 'react-icons/tb'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { patchMihomoConfig } from '@renderer/utils/ipc'
 import React from 'react'
-import { SiderSwitch } from './index'
 
 const TunSwitcher: React.FC = () => {
   const navigate = useNavigate()
@@ -15,6 +15,7 @@ const TunSwitcher: React.FC = () => {
   const { tun } = controledMihomoConfig || {}
   const { enable } = tun || {}
 
+  console.log('controledMihomoConfig', controledMihomoConfig)
   const onChange = async (enable: boolean): Promise<void> => {
     await patchControledMihomoConfig({ tun: { enable } })
     await patchMihomoConfig({ tun: { enable } })
@@ -36,7 +37,7 @@ const TunSwitcher: React.FC = () => {
           >
             <TbDeviceIpadHorizontalBolt color="default" className="text-[24px] font-bold" />
           </Button>
-          <SiderSwitch
+          <BorderSwitch
             isShowBorder={match && enable}
             isSelected={enable}
             onValueChange={onChange}

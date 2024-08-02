@@ -1,8 +1,8 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
+import BorderSwitch from '@renderer/components/base/border-swtich'
 import React, { useState } from 'react'
 import { MdFormatOverline } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { SiderSwitch } from './index'
 
 const OverrideCard: React.FC = () => {
   const navigate = useNavigate()
@@ -26,7 +26,7 @@ const OverrideCard: React.FC = () => {
           >
             <MdFormatOverline color="default" className="text-[24px]" />
           </Button>
-          <SiderSwitch
+          <BorderSwitch
             isShowBorder={match && enable}
             isSelected={enable}
             onValueChange={setEnable}

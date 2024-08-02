@@ -1,10 +1,10 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
+import BorderSwitch from '@renderer/components/base/border-swtich'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAppConfig } from '@renderer/hooks/use-config'
+import { triggerSysProxy } from '@renderer/utils/ipc'
 import { AiOutlineGlobal } from 'react-icons/ai'
 import React from 'react'
-import { triggerSysProxy } from '@renderer/utils/ipc'
-import { SiderSwitch } from './index'
 
 const SysproxySwitcher: React.FC = () => {
   const navigate = useNavigate()
@@ -35,7 +35,7 @@ const SysproxySwitcher: React.FC = () => {
           >
             <AiOutlineGlobal color="default" className="text-[24px]" />
           </Button>
-          <SiderSwitch
+          <BorderSwitch
             isShowBorder={match && enable}
             isSelected={enable}
             onValueChange={onChange}
