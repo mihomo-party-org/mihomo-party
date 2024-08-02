@@ -1,32 +1,21 @@
 import { Button, Card, CardBody, CardFooter, Progress } from '@nextui-org/react'
-import { useProfileConfig } from '@renderer/hooks/use-profile'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { calcTraffic, calcPercent } from '@renderer/utils/calc'
+import { calcPercent, calcTraffic } from '@renderer/utils/calc'
+import React from 'react'
 import { IoMdRefresh } from 'react-icons/io'
 
-const ProfileCard: React.FC = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const match = location.pathname.includes('/profiles')
+interface Props {
+  info: IProfileItem
+  isCurrent: boolean
+  onClick: () => void
+}
 
-  const { profileConfig } = useProfileConfig()
-  const { current, items } = profileConfig ?? {}
-  const info = items?.find((item) => item.id === current) ?? {
-    id: 'default',
-    type: 'local',
-    name: '空白订阅'
-  }
+const ProfileItem: React.FC<Props> = (props) => {
+  const { info, onClick, isCurrent } = props
   const extra = info?.extra
   const usage = (extra?.upload ?? 0) + (extra?.download ?? 0)
   const total = extra?.total ?? 0
-
   return (
-    <Card
-      fullWidth
-      className={`mb-2 ${match ? 'bg-primary' : ''}`}
-      isPressable
-      onPress={() => navigate('/profiles')}
-    >
+    <Card fullWidth isPressable onPress={onClick} className={isCurrent ? 'bg-primary' : ''}>
       <CardBody>
         <div className="flex justify-between h-[32px]">
           <h3 className="select-none text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px]">
@@ -49,4 +38,4 @@ const ProfileCard: React.FC = () => {
   )
 }
 
-export default ProfileCard
+export default ProfileItem

@@ -44,7 +44,7 @@ const App: React.FC = () => {
   return (
     <div className="w-full h-[100vh] flex">
       <div className="side w-[250px] h-full overflow-y-auto no-scrollbar">
-        <div className="sticky top-0 z-40 backdrop-blur h-[48px]">
+        <div className="sticky top-0 z-40 backdrop-blur bg-background/70 h-[48px]">
           <div className="flex justify-between p-2">
             <h3 className="select-none text-lg font-bold leading-[32px]">Mihomo Party</h3>
             <Button
