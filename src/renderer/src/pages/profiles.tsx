@@ -23,7 +23,7 @@ const Profiles: React.FC = () => {
   }
 
   return (
-    <BasePage title="订阅">
+    <BasePage title="订阅管理">
       <div className="sticky top-[48px] z-40 backdrop-blur bg-background/70 flex p-2">
         <Input
           variant="bordered"

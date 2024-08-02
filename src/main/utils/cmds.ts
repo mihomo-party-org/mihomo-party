@@ -4,7 +4,9 @@ import {
   mihomoConnections,
   mihomoRules,
   mihomoVersion,
-  patchMihomoConfig
+  patchMihomoConfig,
+  startMihomoLogs,
+  stopMihomoLogs
 } from '../core/mihomoApi'
 import { checkAutoRun, disableAutoRun, enableAutoRun } from '../resolve/autoRun'
 import {
@@ -26,6 +28,8 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoConfig', mihomoConfig)
   ipcMain.handle('mihomoConnections', mihomoConnections)
   ipcMain.handle('mihomoRules', mihomoRules)
+  ipcMain.handle('startMihomoLogs', startMihomoLogs)
+  ipcMain.handle('stopMihomoLogs', () => stopMihomoLogs())
   ipcMain.handle('patchMihomoConfig', async (_e, patch) => await patchMihomoConfig(patch))
   ipcMain.handle('checkAutoRun', checkAutoRun)
   ipcMain.handle('enableAutoRun', enableAutoRun)

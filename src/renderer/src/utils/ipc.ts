@@ -13,6 +13,13 @@ export async function mihomoConnections(): Promise<IMihomoConnectionsInfo> {
 export async function mihomoRules(): Promise<IMihomoRulesInfo> {
   return await window.electron.ipcRenderer.invoke('mihomoRules')
 }
+export async function startMihomoLogs(): Promise<void> {
+  await window.electron.ipcRenderer.invoke('startMihomoLogs')
+}
+
+export async function stopMihomoLogs(): Promise<void> {
+  await window.electron.ipcRenderer.invoke('stopMihomoLogs')
+}
 
 export async function patchMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
   await window.electron.ipcRenderer.invoke('patchMihomoConfig', patch)

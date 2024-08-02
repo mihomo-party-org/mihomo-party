@@ -11,6 +11,11 @@ interface IMihomoTrafficInfo {
   down: number
 }
 
+interface IMihomoLogInfo {
+  type: LogLevel
+  payload: string
+}
+
 interface IMihomoRulesInfo {
   rules: IMihomoRulesDetail[]
 }
