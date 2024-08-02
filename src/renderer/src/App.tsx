@@ -44,7 +44,7 @@ const App: React.FC = () => {
   return (
     <div className="w-full h-[100vh] flex">
       <div className="side w-[250px] h-full overflow-y-auto no-scrollbar">
-        <div className="sticky top-0 z-40 backdrop-blur bg-background/70 h-[48px]">
+        <div className="sticky top-0 z-40 backdrop-blur bg-background/40 h-[48px]">
           <div className="flex justify-between p-2">
             <h3 className="select-none text-lg font-bold leading-[32px]">Mihomo Party</h3>
             <Button
@@ -58,19 +58,14 @@ const App: React.FC = () => {
               startContent={<IoSettings className="text-[20px]" />}
             />
           </div>
-          <Divider />
         </div>
         <div className="m-2">
           <OutboundModeSwitcher />
         </div>
-
-        {/* <h3 className="select-none text-lg font-bold m-2">代理模式</h3> */}
         <div className="flex justify-between mx-2 mb-2">
           <SysproxySwitcher />
           <TunSwitcher />
         </div>
-        {/* <h3 className="select-none text-lg font-bold m-2">配置</h3> */}
-        {/* <div className="w-full h-[calc(100%-260px)]"> */}
         <div className="mx-2">
           <ProfileCard />
           <ProxyCard />
@@ -86,7 +81,6 @@ const App: React.FC = () => {
           <TestCard />
           <OverrideCard />
         </div>
-        {/* </div> */}
       </div>
       <Divider orientation="vertical" />
       <div className="main w-[calc(100%-251px)] h-full overflow-y-auto">{page}</div>

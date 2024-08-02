@@ -40,7 +40,7 @@ const ConnCard: React.FC = () => {
           >
             <IoLink color="default" className="text-[20px]" />
           </Button>
-          <div className="p-2 w-full">
+          <div className="p-2 w-full select-none">
             <div className="flex justify-between">
               <div className="w-full text-right mr-2">{calcTraffic(upload)}/s</div>
               <FaCircleArrowUp className="h-[24px] leading-[24px]" />
