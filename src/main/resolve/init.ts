@@ -18,6 +18,9 @@ import {
 import yaml from 'yaml'
 import fs from 'fs'
 import path from 'path'
+import { startPacServer } from './server'
+import { triggerSysProxy } from './sysproxy'
+import { getAppConfig } from '../config'
 
 function initDirs(): void {
   if (!fs.existsSync(dataDir)) {
@@ -64,4 +67,7 @@ export function init(): void {
   initDirs()
   initConfig()
   initFiles()
+  startPacServer().then(() => {
+    triggerSysProxy(getAppConfig().sysProxy.enable)
+  })
 }

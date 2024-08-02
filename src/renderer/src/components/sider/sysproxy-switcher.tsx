@@ -15,8 +15,12 @@ const SysproxySwitcher: React.FC = () => {
   const { enable } = sysProxy || {}
 
   const onChange = async (enable: boolean): Promise<void> => {
-    await patchAppConfig({ sysProxy: { enable } })
-    await triggerSysProxy(enable)
+    try {
+      await triggerSysProxy(enable)
+      await patchAppConfig({ sysProxy: { enable } })
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   return (
