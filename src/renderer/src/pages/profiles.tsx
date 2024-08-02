@@ -1,11 +1,13 @@
 import { Button, Input } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
+import ProfileItem from '@renderer/components/profiles/profile-item'
 import { useProfileConfig } from '@renderer/hooks/use-profile'
 import { useState } from 'react'
 import { MdContentPaste } from 'react-icons/md'
 
 const Profiles: React.FC = () => {
   const { profileConfig, addProfileItem } = useProfileConfig()
+  const { current, items } = profileConfig || {}
   const [importing, setImporting] = useState(false)
   const [url, setUrl] = useState('')
 
@@ -22,7 +24,7 @@ const Profiles: React.FC = () => {
 
   return (
     <BasePage title="订阅">
-      <div className="flex m-2">
+      <div className="sticky top-[48px] z-40 backdrop-blur bg-background/70 flex p-2">
         <Input
           variant="bordered"
           className="mr-2"
@@ -48,7 +50,16 @@ const Profiles: React.FC = () => {
           导入
         </Button>
       </div>
-      {JSON.stringify(profileConfig)}
+      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mx-2">
+        {items?.map((item) => (
+          <ProfileItem
+            key={item.id}
+            isCurrent={item.id === current}
+            info={item}
+            onClick={() => {}}
+          />
+        ))}
+      </div>
     </BasePage>
   )
 }
