@@ -1,5 +1,7 @@
+import BasePage from '@renderer/components/base/base-page'
+
 const Proxies: React.FC = () => {
-  return <div>Proxies</div>
+  return <BasePage title="代理组"></BasePage>
 }
 
 export default Proxies

@@ -19,7 +19,7 @@ const Settings: React.FC = () => {
 
   return (
     <BasePage
-      title="设置"
+      title="应用设置"
       header={
         <Button
           isIconOnly

@@ -4,11 +4,11 @@ import { app, shell, BrowserWindow } from 'electron'
 import { stopCore, startCore } from './core/manager'
 import { triggerSysProxy } from './resolve/sysproxy'
 import icon from '../../resources/icon.png?asset'
-import { mihomoTraffic } from './core/mihomoApi'
 import { createTray } from './core/tray'
 import { init } from './resolve/init'
 import { getAppConfig } from './config'
 import { join } from 'path'
+import { startMihomoTraffic, stopMihomoTraffic } from './core/mihomoApi'
 
 export let window: BrowserWindow | null = null
 
@@ -56,7 +56,6 @@ if (!gotTheLock) {
     registerIpcMainHandlers()
     createWindow()
     createTray()
-    mihomoTraffic()
     app.on('activate', function () {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
@@ -92,7 +91,12 @@ function createWindow(): void {
     window?.webContents.send('resize')
   })
 
+  window.on('show', () => {
+    startMihomoTraffic()
+  })
+
   window.on('close', (event) => {
+    stopMihomoTraffic()
     event.preventDefault()
     window?.hide()
   })
