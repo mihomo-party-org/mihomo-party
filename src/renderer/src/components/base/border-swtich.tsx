@@ -5,8 +5,8 @@ interface SiderSwitchProps extends SwitchProps {
   isShowBorder?: boolean
 }
 
-const SiderSwitch: React.FC<SiderSwitchProps> = (props) => {
-  const { isShowBorder = false, isSelected, classNames, ...switchProps } = props
+const BorderSwitch: React.FC<SiderSwitchProps> = (props) => {
+  const { isShowBorder = false, classNames, ...switchProps } = props
 
   return (
     <Switch
@@ -14,7 +14,7 @@ const SiderSwitch: React.FC<SiderSwitchProps> = (props) => {
         wrapper: cn('border-2', {
           'border-transparent': !isShowBorder
         }),
-        thumb: cn('absolute z-4', { 'transform -translate-x-[2px]': isSelected }),
+        thumb: cn('absolute z-4', 'transform -translate-x-[2px]'),
         ...classNames
       }}
       size="sm"
@@ -23,4 +23,4 @@ const SiderSwitch: React.FC<SiderSwitchProps> = (props) => {
   )
 }
 
-export default SiderSwitch
+export default BorderSwitch
