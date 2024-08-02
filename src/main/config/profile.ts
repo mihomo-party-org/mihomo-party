@@ -22,21 +22,29 @@ export function getProfileItem(id: string | undefined): IProfileItem {
   return items?.find((item) => item.id === id) || { id: 'default', type: 'local', name: '空白订阅' }
 }
 
+export async function changeCurrentProfile(id: string): Promise<void> {
+  const oldId = getProfileConfig().current
+  profileConfig.current = id
+  getCurrentProfile(true)
+  try {
+    restartCore()
+  } catch (e) {
+    profileConfig.current = oldId
+    getCurrentProfile(true)
+  } finally {
+    window?.webContents.send('profileConfigUpdated')
+    fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
+  }
+}
+
 export async function addProfileItem(item: Partial<IProfileItem>): Promise<void> {
   const newItem = await createProfile(item)
-  profileConfig.items = getProfileConfig().items.filter((item) => item.id !== newItem.id)
   profileConfig.items.push(newItem)
-  let changeProfile = false
   if (!getProfileConfig().current) {
-    profileConfig.current = newItem.id
-    changeProfile = true
+    changeCurrentProfile(newItem.id)
   }
   fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
   window?.webContents.send('profileConfigUpdated')
-  if (changeProfile) {
-    getCurrentProfile(true)
-    restartCore()
-  }
 }
 
 export function removeProfileItem(id: string): void {

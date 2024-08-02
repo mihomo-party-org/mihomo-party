@@ -3,6 +3,7 @@ import {
   controledMihomoConfigPath,
   dataDir,
   logDir,
+  mihomoTestDir,
   mihomoWorkDir,
   profileConfigPath,
   profilePath,
@@ -35,6 +36,9 @@ function initDirs(): void {
   if (!fs.existsSync(logDir())) {
     fs.mkdirSync(logDir())
   }
+  if (!fs.existsSync(mihomoTestDir())) {
+    fs.mkdirSync(mihomoTestDir())
+  }
 }
 
 function initConfig(): void {
@@ -56,9 +60,13 @@ function initFiles(): void {
   const fileList = ['Country.mmdb', 'geoip.dat', 'geosite.dat']
   for (const file of fileList) {
     const targetPath = path.join(mihomoWorkDir(), file)
+    const testTargrtPath = path.join(mihomoTestDir(), file)
     const sourcePath = path.join(resourcesFilesDir(), file)
     if (!fs.existsSync(targetPath) && fs.existsSync(sourcePath)) {
       fs.copyFileSync(sourcePath, targetPath)
+    }
+    if (!fs.existsSync(testTargrtPath) && fs.existsSync(sourcePath)) {
+      fs.copyFileSync(sourcePath, testTargrtPath)
     }
   }
 }

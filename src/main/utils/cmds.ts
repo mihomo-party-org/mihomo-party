@@ -22,6 +22,7 @@ import {
 } from '../config'
 import { restartCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
+import { changeCurrentProfile } from '../config/profile'
 
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
@@ -41,6 +42,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('getProfileConfig', (_e, force) => getProfileConfig(force))
   ipcMain.handle('getCurrentProfileItem', getCurrentProfileItem)
   ipcMain.handle('getProfileItem', (_e, id) => getProfileItem(id))
+  ipcMain.handle('changeCurrentProfile', (_e, id) => changeCurrentProfile(id))
   ipcMain.handle('addProfileItem', (_e, item) => addProfileItem(item))
   ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))
   ipcMain.handle('restartCore', () => restartCore())

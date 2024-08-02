@@ -6,7 +6,7 @@ import { IoMdRefresh } from 'react-icons/io'
 interface Props {
   info: IProfileItem
   isCurrent: boolean
-  onClick: () => void
+  onClick: () => Promise<void>
 }
 
 const ProfileItem: React.FC<Props> = (props) => {
@@ -14,6 +14,7 @@ const ProfileItem: React.FC<Props> = (props) => {
   const extra = info?.extra
   const usage = (extra?.upload ?? 0) + (extra?.download ?? 0)
   const total = extra?.total ?? 0
+
   return (
     <Card fullWidth isPressable onPress={onClick} className={isCurrent ? 'bg-primary' : ''}>
       <CardBody>

@@ -49,6 +49,10 @@ export function mihomoWorkDir(): string {
   return path.join(dataDir, 'work')
 }
 
+export function mihomoTestDir(): string {
+  return path.join(dataDir, 'test')
+}
+
 export function mihomoWorkConfigPath(): string {
   return path.join(mihomoWorkDir(), 'config.yaml')
 }

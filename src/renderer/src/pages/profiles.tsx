@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { MdContentPaste } from 'react-icons/md'
 
 const Profiles: React.FC = () => {
-  const { profileConfig, addProfileItem } = useProfileConfig()
+  const { profileConfig, addProfileItem, changeCurrentProfile } = useProfileConfig()
   const { current, items } = profileConfig || {}
   const [importing, setImporting] = useState(false)
   const [url, setUrl] = useState('')
@@ -56,7 +56,9 @@ const Profiles: React.FC = () => {
             key={item.id}
             isCurrent={item.id === current}
             info={item}
-            onClick={() => {}}
+            onClick={async () => {
+              await changeCurrentProfile(item.id)
+            }}
           />
         ))}
       </div>

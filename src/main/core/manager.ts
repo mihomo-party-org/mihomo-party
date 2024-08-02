@@ -1,13 +1,21 @@
 import { ChildProcess, execSync, spawn } from 'child_process'
-import { logPath, mihomoCorePath, mihomoWorkDir } from '../utils/dirs'
+import {
+  logPath,
+  mihomoCorePath,
+  mihomoTestDir,
+  mihomoWorkConfigPath,
+  mihomoWorkDir
+} from '../utils/dirs'
 import { generateProfile } from '../resolve/factory'
 import { getAppConfig } from '../config'
 import fs from 'fs'
+
 let child: ChildProcess
 
-export async function startCore(): Promise<void> {
+export function startCore(): void {
   const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
   generateProfile()
+  checkProfile()
   stopCore()
   if (process.platform !== 'win32') {
     execSync(`chmod +x ${corePath}`)
@@ -40,4 +48,15 @@ export function stopCore(): void {
 
 export function restartCore(): void {
   startCore()
+}
+
+// mihomo -t -d path return status code
+export function checkProfile(): void {
+  const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
+  generateProfile()
+  if (process.platform !== 'win32') {
+    execSync(`chmod +x ${corePath}`)
+  }
+
+  execSync(`${corePath} -t -f ${mihomoWorkConfigPath()} -d ${mihomoTestDir()}`)
 }

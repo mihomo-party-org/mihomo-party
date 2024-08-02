@@ -2,7 +2,8 @@ import useSWR from 'swr'
 import {
   getProfileConfig,
   addProfileItem as add,
-  removeProfileItem as remove
+  removeProfileItem as remove,
+  changeCurrentProfile as change
 } from '@renderer/utils/ipc'
 import { useEffect } from 'react'
 
@@ -10,7 +11,8 @@ interface RetuenType {
   profileConfig: IProfileConfig | undefined
   mutateProfileConfig: () => void
   addProfileItem: (item: Partial<IProfileItem>) => Promise<void>
-  removeProfileItem: (id: string) => void
+  removeProfileItem: (id: string) => Promise<void>
+  changeCurrentProfile: (id: string) => Promise<void>
 }
 
 export const useProfileConfig = (): RetuenType => {
@@ -27,6 +29,12 @@ export const useProfileConfig = (): RetuenType => {
     await remove(id)
     mutateProfileConfig()
   }
+
+  const changeCurrentProfile = async (id: string): Promise<void> => {
+    await change(id)
+    mutateProfileConfig()
+  }
+
   useEffect(() => {
     window.electron.ipcRenderer.on('profileConfigUpdated', () => {
       mutateProfileConfig()
@@ -40,6 +48,7 @@ export const useProfileConfig = (): RetuenType => {
     profileConfig,
     mutateProfileConfig,
     addProfileItem,
-    removeProfileItem
+    removeProfileItem,
+    changeCurrentProfile
   }
 }
