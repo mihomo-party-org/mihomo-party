@@ -74,6 +74,7 @@ interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha'
   silentStart: boolean
   sysProxy: ISysProxyConfig
+  userAgent?: string
 }
 
 interface IMihomoTunConfig {
@@ -127,17 +128,21 @@ interface IProfileConfig {
   items: IProfileItem[]
 }
 
+interface ISubscriptionUserInfo {
+  upload: number
+  download: number
+  total: number
+  expire: number
+}
+
 interface IProfileItem {
   id: string
   type: 'remote' | 'local'
   name: string
   url?: string // remote
   file?: string // local
+  interval?: number
+  home?: string
   updated?: number
-  extra?: {
-    upload: number
-    download: number
-    total: number
-    expire: number
-  }
+  extra?: ISubscriptionUserInfo
 }

@@ -21,15 +21,12 @@ export const useProfileConfig = (): RetuenType => {
   const addProfileItem = async (item: Partial<IProfileItem>): Promise<void> => {
     await add(item)
     mutateProfileConfig()
-    window.electron.ipcRenderer.send('profileConfigUpdated')
   }
 
   const removeProfileItem = async (id: string): Promise<void> => {
     await remove(id)
     mutateProfileConfig()
-    window.electron.ipcRenderer.send('profileConfigUpdated')
   }
-
   useEffect(() => {
     window.electron.ipcRenderer.on('profileConfigUpdated', () => {
       mutateProfileConfig()

@@ -1,22 +1,22 @@
-import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
+import { FaCircleArrowDown, FaCircleArrowUp } from 'react-icons/fa6'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { calcTraffic } from '@renderer/utils/calc'
+import { useEffect, useState } from 'react'
 import { IoLink } from 'react-icons/io5'
-import { useEffect } from 'react'
-import useSWR from 'swr'
-import { mihomoConnections } from '@renderer/utils/ipc'
 
 const ConnCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/connections')
 
-  const { data: connections } = useSWR<IMihomoConnectionsInfo>('/connections', mihomoConnections, {
-    refreshInterval: 5000
-  })
+  const [upload, setUpload] = useState(0)
+  const [download, setDownload] = useState(0)
 
   useEffect(() => {
     window.electron.ipcRenderer.on('mihomoTraffic', (_e, info: IMihomoTrafficInfo) => {
-      console.log(info)
+      setUpload(info.up)
+      setDownload(info.down)
     })
     return (): void => {
       window.electron.ipcRenderer.removeAllListeners('mihomoTraffic')
@@ -25,7 +25,8 @@ const ConnCard: React.FC = () => {
 
   return (
     <Card
-      className={`w-[50%] mr-1 mb-2 ${match ? 'bg-primary' : ''}`}
+      fullWidth
+      className={`mb-2 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/connections')}
     >
@@ -39,24 +40,16 @@ const ConnCard: React.FC = () => {
           >
             <IoLink color="default" className="text-[20px]" />
           </Button>
-          <Chip
-            classNames={
-              match
-                ? {
-                    base: 'border-foreground',
-                    content: 'text-foreground'
-                  }
-                : {
-                    base: 'border-primary',
-                    content: 'text-primary'
-                  }
-            }
-            size="sm"
-            variant="bordered"
-            className="mr-3 mt-2"
-          >
-            {connections?.connections?.length ?? 0}
-          </Chip>
+          <div className="p-2 w-full">
+            <div className="flex justify-between">
+              <div className="w-full text-right mr-2">{calcTraffic(upload)}/s</div>
+              <FaCircleArrowUp className="h-[24px] leading-[24px]" />
+            </div>
+            <div className="flex justify-between">
+              <div className="w-full text-right mr-2">{calcTraffic(download)}/s</div>
+              <FaCircleArrowDown className="h-[24px] leading-[24px]" />
+            </div>
+          </div>
         </div>
       </CardBody>
       <CardFooter className="pt-1">

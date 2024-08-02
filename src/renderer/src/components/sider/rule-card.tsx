@@ -8,13 +8,13 @@ const RuleCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/rules')
-  const { data: rules } = useSWR<IMihomoRulesInfo>('/connections', mihomoRules, {
+  const { data: rules } = useSWR<IMihomoRulesInfo>('/rules', mihomoRules, {
     refreshInterval: 5000
   })
 
   return (
     <Card
-      className={`w-[50%] mr-1 mb-2 ${match ? 'bg-primary' : ''}`}
+      className={`w-[50%] ml-1 mb-2 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/rules')}
     >

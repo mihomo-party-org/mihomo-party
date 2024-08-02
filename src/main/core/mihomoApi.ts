@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { controledMihomoConfig } from '../config'
+import { getControledMihomoConfig } from '../config'
 import WebSocket from 'ws'
 import { window } from '..'
 
@@ -9,8 +9,8 @@ let mihomoTrafficWs: WebSocket = null!
 export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
   if (axiosIns && !force) return axiosIns
 
-  let server = controledMihomoConfig['external-controller']
-  const secret = controledMihomoConfig.secret ?? ''
+  let server = getControledMihomoConfig()['external-controller']
+  const secret = getControledMihomoConfig().secret ?? ''
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
 
   axiosIns = axios.create({
@@ -49,8 +49,8 @@ export const mihomoRules = async (): Promise<IMihomoRulesInfo> => {
 }
 
 export const mihomoTraffic = (): void => {
-  let server = controledMihomoConfig['external-controller']
-  const secret = controledMihomoConfig.secret ?? ''
+  let server = getControledMihomoConfig()['external-controller']
+  const secret = getControledMihomoConfig().secret ?? ''
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
 
   mihomoTrafficWs = new WebSocket(`ws://${server}/traffic?secret=${secret}`)

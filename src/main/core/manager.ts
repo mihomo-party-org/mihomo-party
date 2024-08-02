@@ -1,12 +1,12 @@
 import { ChildProcess, execSync, spawn } from 'child_process'
 import { logPath, mihomoCorePath, mihomoWorkDir } from '../utils/dirs'
 import { generateProfile } from '../resolve/factory'
-import { appConfig } from '../config'
+import { getAppConfig } from '../config'
 import fs from 'fs'
 let child: ChildProcess
 
 export async function startCore(): Promise<void> {
-  const corePath = mihomoCorePath(appConfig.core ?? 'mihomo')
+  const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
   generateProfile()
   stopCore()
   if (process.platform !== 'win32') {

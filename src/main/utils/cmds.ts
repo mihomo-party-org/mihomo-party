@@ -25,7 +25,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
   ipcMain.handle('mihomoConfig', mihomoConfig)
   ipcMain.handle('mihomoConnections', mihomoConnections)
-  ipcMain.handle('mihomeRules', mihomoRules)
+  ipcMain.handle('mihomoRules', mihomoRules)
   ipcMain.handle('patchMihomoConfig', async (_e, patch) => await patchMihomoConfig(patch))
   ipcMain.handle('checkAutoRun', checkAutoRun)
   ipcMain.handle('enableAutoRun', enableAutoRun)
