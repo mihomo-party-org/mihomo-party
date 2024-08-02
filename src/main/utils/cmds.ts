@@ -5,8 +5,8 @@ import {
   mihomoRules,
   mihomoVersion,
   patchMihomoConfig
-} from './mihomoApi'
-import { checkAutoRun, disableAutoRun, enableAutoRun } from './autoRun'
+} from '../core/mihomoApi'
+import { checkAutoRun, disableAutoRun, enableAutoRun } from '../resolve/autoRun'
 import {
   getAppConfig,
   setAppConfig,
@@ -17,9 +17,9 @@ import {
   getProfileItem,
   addProfileItem,
   removeProfileItem
-} from './config'
-import { restartCore } from './manager'
-import { triggerSysProxy } from './sysproxy'
+} from '../config'
+import { restartCore } from '../core/manager'
+import { triggerSysProxy } from '../resolve/sysproxy'
 
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)

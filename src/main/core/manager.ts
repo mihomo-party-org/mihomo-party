@@ -1,7 +1,7 @@
 import { ChildProcess, execSync, spawn } from 'child_process'
-import { logPath, mihomoCorePath, mihomoWorkDir } from './dirs'
-import { generateProfile } from './factory'
-import { appConfig } from './config'
+import { logPath, mihomoCorePath, mihomoWorkDir } from '../utils/dirs'
+import { generateProfile } from '../resolve/factory'
+import { appConfig } from '../config'
 import fs from 'fs'
 let child: ChildProcess
 

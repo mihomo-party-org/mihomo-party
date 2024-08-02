@@ -1,4 +1,4 @@
-import { controledMihomoConfig } from './config'
+import { controledMihomoConfig } from '../config'
 
 export function triggerSysProxy(enable: boolean): void {
   if (enable) {

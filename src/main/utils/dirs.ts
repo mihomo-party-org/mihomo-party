@@ -1,31 +1,23 @@
 import { is } from '@electron-toolkit/utils'
 import { app } from 'electron'
 import path from 'path'
-import fs from 'fs'
 
 export const dataDir = app.getPath('userData')
 
-export function initDirs(): void {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir)
-  }
-  if (!fs.existsSync(profilesDir())) {
-    fs.mkdirSync(profilesDir())
-  }
-  if (!fs.existsSync(mihomoWorkDir())) {
-    fs.mkdirSync(mihomoWorkDir())
-  }
-  if (!fs.existsSync(logDir())) {
-    fs.mkdirSync(logDir())
+export function resourcesDir(): string {
+  if (is.dev) {
+    return path.join(__dirname, '../../resources')
+  } else {
+    return path.join(process.resourcesPath)
   }
 }
 
+export function resourcesFilesDir(): string {
+  return path.join(resourcesDir(), 'files')
+}
+
 export function mihomoCoreDir(): string {
-  if (is.dev) {
-    return path.join(__dirname, '../../resources/sidecar')
-  } else {
-    return path.join(process.resourcesPath, 'sidecar')
-  }
+  return path.join(resourcesDir(), 'sidecar')
 }
 
 export function mihomoCorePath(core: string): string {
