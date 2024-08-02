@@ -14,6 +14,7 @@ interface IMihomoTrafficInfo {
 interface IMihomoLogInfo {
   type: LogLevel
   payload: string
+  time?: string
 }
 
 interface IMihomoRulesInfo {
