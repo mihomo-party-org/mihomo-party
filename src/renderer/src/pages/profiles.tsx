@@ -1,7 +1,7 @@
 import { Button, Input } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import ProfileItem from '@renderer/components/profiles/profile-item'
-import { useProfileConfig } from '@renderer/hooks/use-profile'
+import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useState } from 'react'
 import { MdContentPaste } from 'react-icons/md'
 

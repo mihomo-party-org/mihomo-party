@@ -1,5 +1,5 @@
 import { Button, Card, CardBody, Divider } from '@nextui-org/react'
-import { useAppConfig } from '@renderer/hooks/use-config'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 import PubSub from 'pubsub-js'
 import React, { useEffect, useState } from 'react'
 
