@@ -1,5 +1,5 @@
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import { registerIpcMainHandlers } from './utils/cmds'
+import { registerIpcMainHandlers } from './utils/ipc'
 import { app, shell, BrowserWindow } from 'electron'
 import { stopCore, startCore } from './core/manager'
 import { triggerSysProxy } from './resolve/sysproxy'

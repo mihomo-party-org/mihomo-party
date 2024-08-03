@@ -1,6 +1,8 @@
 import { app, ipcMain } from 'electron'
 import {
   mihomoChangeProxy,
+  mihomoCloseAllConnections,
+  mihomoCloseConnection,
   mihomoConfig,
   mihomoConnections,
   mihomoProxies,
@@ -31,6 +33,8 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
   ipcMain.handle('mihomoConfig', mihomoConfig)
   ipcMain.handle('mihomoConnections', mihomoConnections)
+  ipcMain.handle('mihomoCloseConnection', (_e, id) => mihomoCloseConnection(id))
+  ipcMain.handle('mihomoCloseAllConnections', mihomoCloseAllConnections)
   ipcMain.handle('mihomoRules', mihomoRules)
   ipcMain.handle('mihomoProxies', mihomoProxies)
   ipcMain.handle('mihomoChangeProxy', (_e, group, proxy) => mihomoChangeProxy(group, proxy))
