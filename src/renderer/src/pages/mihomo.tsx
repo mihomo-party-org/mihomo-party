@@ -2,11 +2,19 @@ import { Button, Input, Select, SelectItem, Switch } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { patchMihomoConfig, restartCore } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 
+const CoreMap = {
+  mihomo: '稳定版',
+  'mihomo-alpha': '预览版'
+}
+
 const Mihomo: React.FC = () => {
+  const { appConfig, patchAppConfig } = useAppConfig()
+  const { core = 'mihomo' } = appConfig || {}
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const {
     ipv6,
@@ -34,6 +42,20 @@ const Mihomo: React.FC = () => {
   return (
     <BasePage title="内核设置">
       <SettingCard>
+        <SettingItem title="内核版本" divider>
+          <Select
+            className="w-[100px]"
+            size="sm"
+            selectedKeys={new Set([core])}
+            onSelectionChange={async (v) => {
+              await patchAppConfig({ core: v.currentKey as 'mihomo' | 'mihomo-alpha' })
+              restartCore().then(() => PubSub.publish('mihomo-core-changed'))
+            }}
+          >
+            <SelectItem key="mihomo">{CoreMap['mihomo']}</SelectItem>
+            <SelectItem key="mihomo-alpha">{CoreMap['mihomo-alpha']}</SelectItem>
+          </Select>
+        </SettingItem>
         <SettingItem title="混合端口" divider>
           <div className="flex">
             {mixedPortInput !== mixedPort && (

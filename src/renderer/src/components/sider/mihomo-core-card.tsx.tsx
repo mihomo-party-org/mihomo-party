@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import useSWR from 'swr'
 
 const MihomoCoreCard: React.FC = () => {
-  const { data: version } = useSWR('mihomoVersion', mihomoVersion)
+  const { data: version, mutate } = useSWR('mihomoVersion', mihomoVersion)
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/mihomo')
@@ -15,10 +15,17 @@ const MihomoCoreCard: React.FC = () => {
   const [mem, setMem] = useState(0)
 
   useEffect(() => {
+    const token = PubSub.subscribe('mihomo-core-changed', () => {
+      mutate()
+      setTimeout(() => {
+        mutate()
+      }, 1000)
+    })
     window.electron.ipcRenderer.on('mihomoMemory', (_e, info: IMihomoMemoryInfo) => {
       setMem(info.inuse)
     })
     return (): void => {
+      PubSub.unsubscribe(token)
       window.electron.ipcRenderer.removeAllListeners('mihomoMemory')
     }
   }, [])
