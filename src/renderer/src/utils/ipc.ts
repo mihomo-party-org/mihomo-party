@@ -97,3 +97,7 @@ export async function restartCore(): Promise<void> {
 export async function triggerSysProxy(enable: boolean): Promise<void> {
   return await window.electron.ipcRenderer.invoke('triggerSysProxy', enable)
 }
+
+export async function quitApp(): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('quitApp')
+}
