@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { app, ipcMain } from 'electron'
 import {
   mihomoChangeProxy,
   mihomoConfig,
@@ -32,12 +32,12 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoConfig', mihomoConfig)
   ipcMain.handle('mihomoConnections', mihomoConnections)
   ipcMain.handle('mihomoRules', mihomoRules)
-  ipcMain.handle('mihomoProxies', () => mihomoProxies())
+  ipcMain.handle('mihomoProxies', mihomoProxies)
   ipcMain.handle('mihomoChangeProxy', (_e, group, proxy) => mihomoChangeProxy(group, proxy))
   ipcMain.handle('mihomoProxyDelay', (_e, proxy, url) => mihomoProxyDelay(proxy, url))
   ipcMain.handle('startMihomoLogs', startMihomoLogs)
-  ipcMain.handle('stopMihomoLogs', () => stopMihomoLogs())
-  ipcMain.handle('patchMihomoConfig', async (_e, patch) => await patchMihomoConfig(patch))
+  ipcMain.handle('stopMihomoLogs', stopMihomoLogs)
+  ipcMain.handle('patchMihomoConfig', (_e, patch) => patchMihomoConfig(patch))
   ipcMain.handle('checkAutoRun', checkAutoRun)
   ipcMain.handle('enableAutoRun', enableAutoRun)
   ipcMain.handle('disableAutoRun', disableAutoRun)
@@ -51,6 +51,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('changeCurrentProfile', (_e, id) => changeCurrentProfile(id))
   ipcMain.handle('addProfileItem', (_e, item) => addProfileItem(item))
   ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))
-  ipcMain.handle('restartCore', () => restartCore())
+  ipcMain.handle('restartCore', restartCore)
   ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
+  ipcMain.handle('quitApp', () => app.quit())
 }
