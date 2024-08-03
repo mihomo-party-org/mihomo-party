@@ -71,16 +71,8 @@ const Sysproxy: React.FC = () => {
             selectedKey={values.mode}
             onSelectionChange={(key: Key) => setValues({ ...values, mode: key as SysProxyMode })}
           >
-            <Tab
-              className={`select-none ${values.mode === 'manual' ? 'font-bold' : ''}`}
-              key="manual"
-              title="手动"
-            />
-            <Tab
-              className={`select-none ${values.mode === 'auto' ? 'font-bold' : ''}`}
-              key="auto"
-              title="PAC"
-            />
+            <Tab className="select-none" key="manual" title="手动" />
+            <Tab className="select-none" key="auto" title="PAC" />
           </Tabs>
         </SettingItem>
         <SettingItem title="代理模式">

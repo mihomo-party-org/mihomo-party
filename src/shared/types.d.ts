@@ -3,6 +3,7 @@ type LogLevel = 'info' | 'debug' | 'warning' | 'error' | 'silent'
 type SysProxyMode = 'auto' | 'manual'
 type MihomoGroupType = 'Selector'
 type MihomoProxyType = 'Shadowsocks'
+type TunStack = 'gvisor' | 'mixed' | 'system'
 
 interface IMihomoVersion {
   version: string
@@ -138,8 +139,8 @@ interface IAppConfig {
 }
 
 interface IMihomoTunConfig {
-  enable: boolean
-  stack?: 'system' | 'gvisor' | 'mixed'
+  enable?: boolean
+  stack?: TunStack
   'auto-route'?: boolean
   'auto-redirect'?: boolean
   'auto-detect-interface'?: boolean
