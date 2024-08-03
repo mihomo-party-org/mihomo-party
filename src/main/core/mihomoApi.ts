@@ -49,6 +49,16 @@ export const mihomoRules = async (): Promise<IMihomoRulesInfo> => {
   return instance.get('/rules') as Promise<IMihomoRulesInfo>
 }
 
+export const mihomoProxies = async (): Promise<IMihomoProxies> => {
+  const instance = await getAxios()
+  return instance.get('/proxies') as Promise<IMihomoProxies>
+}
+
+export const mihomoChangeProxy = async (group: string, proxy: string): Promise<IMihomoProxy> => {
+  const instance = await getAxios()
+  return instance.put(`/proxies/${encodeURIComponent(group)}`, { name: proxy })
+}
+
 export const startMihomoTraffic = (): void => {
   mihomoTraffic()
 }

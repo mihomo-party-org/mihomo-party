@@ -1,6 +1,9 @@
 type OutboundMode = 'rule' | 'global' | 'direct'
 type LogLevel = 'info' | 'debug' | 'warning' | 'error' | 'silent'
 type SysProxyMode = 'auto' | 'manual'
+type MihomoGroupType = 'Selector'
+type MihomoProxyType = 'Shadowsocks'
+
 interface IMihomoVersion {
   version: string
   meta: boolean
@@ -67,6 +70,42 @@ interface IMihomoConnectionDetail {
   chains: string[]
   rule: string
   rulePayload: string
+}
+
+interface IMihomoHistory {
+  time: string
+  delay: number
+}
+
+interface IMihomoProxy {
+  alive: boolean
+  extra: Record<string, { alive: boolean; history: IMihomoHistory[] }>
+  history: IMihomoHistory[]
+  id: string
+  name: string
+  tfo: boolean
+  type: MihomoProxyType
+  udp: boolean
+  xudp: boolean
+}
+
+interface IMihomoGroup {
+  alive: boolean
+  all: string[]
+  extra: Record<string, { alive: boolean; history: IMihomoHistory[] }>
+  hidden: boolean
+  history: IMihomoHistory[]
+  icon: string
+  name: string
+  now: string
+  tfo: boolean
+  type: MihomoGroupType
+  udp: boolean
+  xudp: boolean
+}
+
+interface IMihomoProxies {
+  proxies: Record<string, IMihomoProxy | IMihomoGroup>
 }
 
 interface ISysProxyConfig {
