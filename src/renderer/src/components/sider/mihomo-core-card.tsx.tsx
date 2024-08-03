@@ -1,31 +1,28 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger
-} from '@nextui-org/react'
-import { useAppConfig } from '@renderer/hooks/use-config'
+import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
+import { calcTraffic } from '@renderer/utils/calc'
 import { mihomoVersion, restartCore } from '@renderer/utils/ipc'
+import { useEffect, useState } from 'react'
 import { IoMdRefresh } from 'react-icons/io'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useSWR from 'swr'
 
-const CoreMap = {
-  mihomo: '稳定版',
-  'mihomo-alpha': '预览版'
-}
-
 const MihomoCoreCard: React.FC = () => {
-  const { data: version, mutate } = useSWR('mihomoVersion', mihomoVersion)
-  const { appConfig, patchAppConfig } = useAppConfig()
-  const { core } = appConfig || {}
+  const { data: version } = useSWR('mihomoVersion', mihomoVersion)
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/mihomo')
+
+  const [mem, setMem] = useState(0)
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on('mihomoMemory', (_e, info: IMihomoMemoryInfo) => {
+      setMem(info.inuse)
+    })
+    return (): void => {
+      window.electron.ipcRenderer.removeAllListeners('mihomoMemory')
+    }
+  }, [])
+
   return (
     <Card
       fullWidth
@@ -38,6 +35,7 @@ const MihomoCoreCard: React.FC = () => {
           <h3 className="select-none text-md font-bold leading-[32px]">
             {version?.version ?? '-'}
           </h3>
+
           <Button
             isIconOnly
             size="sm"
@@ -52,26 +50,10 @@ const MihomoCoreCard: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <Dropdown>
-          <DropdownTrigger>
-            <Button fullWidth size="sm" variant="solid">
-              {core ? CoreMap[core] : ''}
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            onAction={async (key) => {
-              await patchAppConfig({ core: key as 'mihomo' | 'mihomo-alpha' })
-              await restartCore()
-              mutate()
-              setTimeout(() => {
-                mutate()
-              }, 200)
-            }}
-          >
-            <DropdownItem key="mihomo">{CoreMap['mihomo']}</DropdownItem>
-            <DropdownItem key="mihomo-alpha">{CoreMap['mihomo-alpha']}</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+        <div className="flex justify-between w-full">
+          <h4 className="select-none text-md font-bold">内核设置</h4>
+          <h4 className="select-none text-md">{calcTraffic(mem)}</h4>
+        </div>
       </CardFooter>
     </Card>
   )

@@ -8,7 +8,12 @@ import { createTray } from './core/tray'
 import { init } from './resolve/init'
 import { getAppConfig } from './config'
 import { join } from 'path'
-import { startMihomoTraffic, stopMihomoTraffic } from './core/mihomoApi'
+import {
+  startMihomoMemory,
+  startMihomoTraffic,
+  stopMihomoMemory,
+  stopMihomoTraffic
+} from './core/mihomoApi'
 
 export let window: BrowserWindow | null = null
 
@@ -93,10 +98,12 @@ function createWindow(): void {
 
   window.on('show', () => {
     startMihomoTraffic()
+    startMihomoMemory()
   })
 
   window.on('close', (event) => {
     stopMihomoTraffic()
+    stopMihomoMemory()
     event.preventDefault()
     window?.hide()
   })
