@@ -6,7 +6,7 @@ import useSWR from 'swr'
 import { mihomoRules } from '@renderer/utils/ipc'
 
 const Rules: React.FC = () => {
-  const { data: rules = { rules: [] } } = useSWR<IMihomoRulesInfo>('/rules', mihomoRules, {
+  const { data: rules = { rules: [] } } = useSWR<IMihomoRulesInfo>('mihomoRules', mihomoRules, {
     refreshInterval: 5000
   })
   const [filter, setFilter] = useState('')
