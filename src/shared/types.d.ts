@@ -14,6 +14,11 @@ interface IMihomoTrafficInfo {
   down: number
 }
 
+interface IMihomoMemoryInfo {
+  inuse: number
+  oslimit: number
+}
+
 interface IMihomoLogInfo {
   type: LogLevel
   payload: string

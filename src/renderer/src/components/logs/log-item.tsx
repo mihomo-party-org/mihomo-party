@@ -3,7 +3,7 @@ import React from 'react'
 
 const colorMap = {
   error: 'danger',
-  warn: 'warning',
+  warning: 'warning',
   info: 'primary',
   debug: 'default'
 }

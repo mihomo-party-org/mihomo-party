@@ -5,6 +5,7 @@ import { window } from '..'
 
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
+let mihomoMemoryWs: WebSocket | null = null
 let mihomoLogsWs: WebSocket | null = null
 
 export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
@@ -107,6 +108,45 @@ const mihomoTraffic = (): void => {
     if (mihomoTrafficWs) {
       mihomoTrafficWs.close()
       mihomoTrafficWs = null
+    }
+  }
+}
+
+export const startMihomoMemory = (): void => {
+  mihomoMemory()
+}
+
+export const stopMihomoMemory = (): void => {
+  if (mihomoMemoryWs) {
+    mihomoMemoryWs.removeAllListeners()
+    if (mihomoMemoryWs.readyState === WebSocket.OPEN) {
+      mihomoMemoryWs.close()
+    }
+    mihomoMemoryWs = null
+  }
+}
+
+const mihomoMemory = (): void => {
+  let server = getControledMihomoConfig()['external-controller']
+  const secret = getControledMihomoConfig().secret ?? ''
+  if (server?.startsWith(':')) server = `127.0.0.1${server}`
+  stopMihomoMemory()
+
+  mihomoMemoryWs = new WebSocket(`ws://${server}/memory?secret=${secret}`)
+
+  mihomoMemoryWs.onmessage = (e): void => {
+    const data = e.data as string
+    window?.webContents.send('mihomoMemory', JSON.parse(data) as IMihomoMemoryInfo)
+  }
+
+  mihomoMemoryWs.onclose = (): void => {
+    mihomoMemory()
+  }
+
+  mihomoMemoryWs.onerror = (): void => {
+    if (mihomoMemoryWs) {
+      mihomoMemoryWs.close()
+      mihomoMemoryWs = null
     }
   }
 }
