@@ -1,6 +1,7 @@
 export const defaultConfig: IAppConfig = {
   core: 'mihomo',
   silentStart: false,
+  proxyDisplayMode: 'simple',
   sysProxy: { enable: false, mode: 'manual' }
 }
 
@@ -11,7 +12,15 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
   'mixed-port': 7890,
   'allow-lan': false,
   'log-level': 'info',
-  tun: { enable: false }
+  tun: {
+    enable: false,
+    device: 'Mihomo',
+    stack: 'mixed',
+    'auto-route': true,
+    'auto-detect-interface': true,
+    'dns-hijack': ['any:53'],
+    mtu: 1500
+  }
 }
 
 export const defaultProfileConfig: IProfileConfig = {

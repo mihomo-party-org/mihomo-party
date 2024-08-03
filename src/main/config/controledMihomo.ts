@@ -13,6 +13,11 @@ export function getControledMihomoConfig(force = false): Partial<IMihomoConfig> 
 }
 
 export function setControledMihomoConfig(patch: Partial<IMihomoConfig>): void {
+  if (patch.tun) {
+    const oldTun = controledMihomoConfig.tun || {}
+    const newTun = Object.assign(oldTun, patch.tun)
+    patch.tun = newTun
+  }
   controledMihomoConfig = Object.assign(controledMihomoConfig, patch)
   if (patch['external-controller'] || patch.secret) {
     getAxios(true)
