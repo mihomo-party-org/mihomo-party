@@ -10,6 +10,14 @@ export async function mihomoConnections(): Promise<IMihomoConnectionsInfo> {
   return await window.electron.ipcRenderer.invoke('mihomoConnections')
 }
 
+export async function mihomoCloseConnection(id: string): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('mihomoCloseConnection', id)
+}
+
+export async function mihomoCloseAllConnections(): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('mihomoCloseAllConnections')
+}
+
 export async function mihomoRules(): Promise<IMihomoRulesInfo> {
   return await window.electron.ipcRenderer.invoke('mihomoRules')
 }

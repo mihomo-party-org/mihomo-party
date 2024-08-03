@@ -45,6 +45,16 @@ export const mihomoConnections = async (): Promise<IMihomoConnectionsInfo> => {
   return instance.get('/connections') as Promise<IMihomoConnectionsInfo>
 }
 
+export const mihomoCloseConnection = async (id: string): Promise<void> => {
+  const instance = await getAxios()
+  return instance.delete(`/connections/${encodeURIComponent(id)}`)
+}
+
+export const mihomoCloseAllConnections = async (): Promise<void> => {
+  const instance = await getAxios()
+  return instance.delete('/connections')
+}
+
 export const mihomoRules = async (): Promise<IMihomoRulesInfo> => {
   const instance = await getAxios()
   return instance.get('/rules') as Promise<IMihomoRulesInfo>
