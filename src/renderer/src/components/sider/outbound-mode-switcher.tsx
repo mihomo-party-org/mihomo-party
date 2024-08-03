@@ -4,7 +4,7 @@ import { patchMihomoConfig } from '@renderer/utils/ipc'
 import { Key } from 'react'
 
 const OutboundModeSwitcher: React.FC = () => {
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
   const { mode } = controledMihomoConfig || {}
 
   const onChangeMode = async (mode: OutboundMode): Promise<void> => {

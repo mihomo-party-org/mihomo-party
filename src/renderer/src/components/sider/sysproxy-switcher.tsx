@@ -10,7 +10,7 @@ const SysproxySwitcher: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/sysproxy')
-  const { appConfig, patchAppConfig } = useAppConfig()
+  const { appConfig, patchAppConfig } = useAppConfig(true)
   const { sysProxy } = appConfig || {}
   const { enable } = sysProxy || {}
 

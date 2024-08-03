@@ -8,7 +8,7 @@ interface RetuenType {
   patchControledMihomoConfig: (value: Partial<IMihomoConfig>) => Promise<void>
 }
 
-export const useControledMihomoConfig = (): RetuenType => {
+export const useControledMihomoConfig = (listenUpdate = false): RetuenType => {
   const { data: controledMihomoConfig, mutate: mutateControledMihomoConfig } = useSWR(
     'getControledMihomoConfig',
     () => getControledMihomoConfig()
@@ -21,6 +21,7 @@ export const useControledMihomoConfig = (): RetuenType => {
   }
 
   useEffect(() => {
+    if (!listenUpdate) return
     window.electron.ipcRenderer.on('controledMihomoConfigUpdated', () => {
       mutateControledMihomoConfig()
     })

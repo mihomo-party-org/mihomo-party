@@ -11,7 +11,7 @@ const TunSwitcher: React.FC = () => {
   const location = useLocation()
   const match = location.pathname.includes('/tun')
 
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
   const { tun } = controledMihomoConfig || {}
   const { enable } = tun || {}
 
