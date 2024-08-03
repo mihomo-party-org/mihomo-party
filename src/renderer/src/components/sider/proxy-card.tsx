@@ -1,11 +1,14 @@
-import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
-import { SiSpeedtest } from 'react-icons/si'
+import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
+import { mihomoProxies } from '@renderer/utils/ipc'
+import { SiNginxproxymanager } from 'react-icons/si'
 import { useLocation, useNavigate } from 'react-router-dom'
+import useSWR from 'swr'
 
 const ProxyCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/proxies')
+  const { data: proxies = { proxies: {} } } = useSWR('mihomoProxies', mihomoProxies)
   return (
     <Card
       fullWidth
@@ -13,16 +16,38 @@ const ProxyCard: React.FC = () => {
       isPressable
       onPress={() => navigate('/proxies')}
     >
-      <CardBody>
-        <div className="flex justify-between h-[32px]">
-          <h3 className="select-none text-md font-bold leading-[32px]">节点名称</h3>
-          <Button isIconOnly size="sm" variant="light" color="default">
-            <SiSpeedtest color="default" className="text-[20px]" />
+      <CardBody className="pb-1 pt-0 px-0">
+        <div className="flex justify-between">
+          <Button
+            isIconOnly
+            className="bg-transparent pointer-events-none"
+            variant="flat"
+            color="default"
+          >
+            <SiNginxproxymanager color="default" className="text-[20px]" />
           </Button>
+          <Chip
+            classNames={
+              match
+                ? {
+                    base: 'border-foreground',
+                    content: 'text-foreground'
+                  }
+                : {
+                    base: 'border-primary',
+                    content: 'text-primary'
+                  }
+            }
+            size="sm"
+            variant="bordered"
+            className="mr-3 mt-2"
+          >
+            {Object.keys(proxies.proxies).length ?? 0}
+          </Chip>
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <small>二级节点</small>
+        <h3 className="select-none text-md font-bold">代理组</h3>
       </CardFooter>
     </Card>
   )

@@ -1,4 +1,4 @@
-import { Button, Switch } from '@nextui-org/react'
+import { Button, Input, Switch } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
@@ -15,7 +15,7 @@ const Settings: React.FC = () => {
   })
 
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { silentStart = false } = appConfig || {}
+  const { silentStart = false, delayTestUrl, delayTestTimeout } = appConfig || {}
 
   return (
     <BasePage
@@ -55,6 +55,32 @@ const Settings: React.FC = () => {
               patchAppConfig({ silentStart: v })
             }}
           />
+        </SettingItem>
+      </SettingCard>
+      <SettingCard>
+        <SettingItem title="延迟测试地址" divider>
+          <Input
+            size="sm"
+            className="w-[60%]"
+            spellCheck={false}
+            value={delayTestUrl}
+            placeholder="默认https://www.gstatic.com/generate_204"
+            onValueChange={(v) => {
+              patchAppConfig({ delayTestUrl: v })
+            }}
+          ></Input>
+        </SettingItem>
+        <SettingItem title="延迟测试超时时间">
+          <Input
+            type="number"
+            size="sm"
+            className="w-[60%]"
+            value={delayTestTimeout?.toString()}
+            placeholder="默认5000"
+            onValueChange={(v) => {
+              patchAppConfig({ delayTestTimeout: parseInt(v) })
+            }}
+          ></Input>
         </SettingItem>
       </SettingCard>
     </BasePage>

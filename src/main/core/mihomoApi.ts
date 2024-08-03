@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { getControledMihomoConfig } from '../config'
+import { getAppConfig, getControledMihomoConfig } from '../config'
 import WebSocket from 'ws'
 import { window } from '..'
 
@@ -57,6 +57,19 @@ export const mihomoProxies = async (): Promise<IMihomoProxies> => {
 export const mihomoChangeProxy = async (group: string, proxy: string): Promise<IMihomoProxy> => {
   const instance = await getAxios()
   return instance.put(`/proxies/${encodeURIComponent(group)}`, { name: proxy })
+}
+
+export const mihomoProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
+  const appConfig = getAppConfig()
+  const { delayTestUrl, delayTestTimeout } = appConfig
+  const instance = await getAxios()
+  return instance.get(`/proxies/${encodeURIComponent(proxy)}/delay`, {
+    params: {
+      url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
+      timeout: delayTestTimeout || 5000
+    },
+    timeout: delayTestTimeout || 5000
+  })
 }
 
 export const startMihomoTraffic = (): void => {

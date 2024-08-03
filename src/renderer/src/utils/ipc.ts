@@ -22,6 +22,10 @@ export async function mihomoChangeProxy(group: string, proxy: string): Promise<I
   return await window.electron.ipcRenderer.invoke('mihomoChangeProxy', group, proxy)
 }
 
+export async function mihomoProxyDelay(proxy: string, url?: string): Promise<IMihomoDelay> {
+  return await window.electron.ipcRenderer.invoke('mihomoProxyDelay', proxy, url)
+}
+
 export async function startMihomoLogs(): Promise<void> {
   return await window.electron.ipcRenderer.invoke('startMihomoLogs')
 }
