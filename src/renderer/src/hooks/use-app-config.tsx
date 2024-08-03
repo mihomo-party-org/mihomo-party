@@ -8,7 +8,7 @@ interface RetuenType {
   patchAppConfig: (value: Partial<IAppConfig>) => Promise<void>
 }
 
-export const useAppConfig = (): RetuenType => {
+export const useAppConfig = (listenUpdate = false): RetuenType => {
   const { data: appConfig, mutate: mutateAppConfig } = useSWR('getConfig', () => getAppConfig())
 
   const patchAppConfig = async (value: Partial<IAppConfig>): Promise<void> => {
@@ -18,6 +18,7 @@ export const useAppConfig = (): RetuenType => {
   }
 
   useEffect(() => {
+    if (!listenUpdate) return
     window.electron.ipcRenderer.on('appConfigUpdated', () => {
       mutateAppConfig()
     })
