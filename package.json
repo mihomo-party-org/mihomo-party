@@ -30,6 +30,7 @@
     "react-icons": "^5.2.1",
     "react-monaco-editor": "^0.55.0",
     "react-router-dom": "^6.25.1",
+    "react-virtuoso": "^4.9.0",
     "swr": "^2.2.5",
     "ws": "^8.18.0",
     "yaml": "^2.5.0"
