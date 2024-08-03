@@ -78,10 +78,19 @@ const Proxies: React.FC = () => {
         {groups.map((group) => {
           return (
             <AccordionItem
+              textValue={group.name}
               key={group.name}
               title={
                 <div className="flex justify-between">
-                  <div>{group.name}</div>
+                  <div className="">
+                    <div className="inline">{group.name}</div>
+                    {proxyDisplayMode === 'full' && (
+                      <>
+                        <div className="inline ml-2 text-sm text-default-500">{group.type}</div>
+                        <div className="inline ml-2 text-sm text-default-500">{group.now}</div>
+                      </>
+                    )}
+                  </div>
                   <Button
                     variant="light"
                     size="sm"
@@ -93,15 +102,6 @@ const Proxies: React.FC = () => {
                     <MdOutlineSpeed className="text-lg text-default-500" />
                   </Button>
                 </div>
-              }
-              subtitle={
-                proxyDisplayMode === 'full' && (
-                  <div>
-                    {group.type}
-                    &nbsp;
-                    {group.now}
-                  </div>
-                )
               }
               classNames={{ title: 'select-none', base: 'px-2', content: 'pt-2', trigger: 'py-2' }}
               startContent={
