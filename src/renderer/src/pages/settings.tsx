@@ -2,7 +2,7 @@ import { Button, Input, Switch } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
-import { useAppConfig } from '@renderer/hooks/use-config'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { checkAutoRun, enableAutoRun, disableAutoRun, quitApp } from '@renderer/utils/ipc'
 import { IoLogoGithub } from 'react-icons/io5'
 

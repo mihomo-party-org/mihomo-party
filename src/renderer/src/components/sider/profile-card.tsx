@@ -1,5 +1,5 @@
 import { Button, Card, CardBody, CardFooter, Progress } from '@nextui-org/react'
-import { useProfileConfig } from '@renderer/hooks/use-profile'
+import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic, calcPercent } from '@renderer/utils/calc'
 import { IoMdRefresh } from 'react-icons/io'

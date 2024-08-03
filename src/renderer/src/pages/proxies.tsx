@@ -1,7 +1,7 @@
 import { Accordion, AccordionItem, Avatar, Button } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import ProxyList from '@renderer/components/proxies/proxy-list'
-import { useAppConfig } from '@renderer/hooks/use-config'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { MdOutlineSpeed } from 'react-icons/md'
 import { mihomoChangeProxy, mihomoProxies, mihomoProxyDelay } from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
