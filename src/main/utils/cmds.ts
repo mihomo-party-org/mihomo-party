@@ -4,6 +4,7 @@ import {
   mihomoConfig,
   mihomoConnections,
   mihomoProxies,
+  mihomoProxyDelay,
   mihomoRules,
   mihomoVersion,
   patchMihomoConfig,
@@ -33,6 +34,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoRules', mihomoRules)
   ipcMain.handle('mihomoProxies', () => mihomoProxies())
   ipcMain.handle('mihomoChangeProxy', (_e, group, proxy) => mihomoChangeProxy(group, proxy))
+  ipcMain.handle('mihomoProxyDelay', (_e, proxy, url) => mihomoProxyDelay(proxy, url))
   ipcMain.handle('startMihomoLogs', startMihomoLogs)
   ipcMain.handle('stopMihomoLogs', () => stopMihomoLogs())
   ipcMain.handle('patchMihomoConfig', async (_e, patch) => await patchMihomoConfig(patch))

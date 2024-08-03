@@ -77,6 +77,11 @@ interface IMihomoHistory {
   delay: number
 }
 
+interface IMihomoDelay {
+  delay?: number
+  message?: string
+}
+
 interface IMihomoProxy {
   alive: boolean
   extra: Record<string, { alive: boolean; history: IMihomoHistory[] }>
@@ -93,6 +98,7 @@ interface IMihomoGroup {
   alive: boolean
   all: string[]
   extra: Record<string, { alive: boolean; history: IMihomoHistory[] }>
+  testUrl?: string
   hidden: boolean
   history: IMihomoHistory[]
   icon: string
@@ -118,9 +124,12 @@ interface ISysProxyConfig {
 
 interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha'
+  proxyDisplayMode: 'simple' | 'full'
   silentStart: boolean
   sysProxy: ISysProxyConfig
   userAgent?: string
+  delayTestUrl?: string
+  delayTestTimeout?: number
 }
 
 interface IMihomoTunConfig {
