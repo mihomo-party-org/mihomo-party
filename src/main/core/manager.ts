@@ -1,4 +1,4 @@
-import { ChildProcess, execSync, spawn } from 'child_process'
+import { ChildProcess, execFileSync, execSync, spawn } from 'child_process'
 import {
   logPath,
   mihomoCorePath,
@@ -50,13 +50,11 @@ export function restartCore(): void {
   startCore()
 }
 
-// mihomo -t -d path return status code
 export function checkProfile(): void {
   const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
-  generateProfile()
   if (process.platform !== 'win32') {
     execSync(`chmod +x ${corePath}`)
   }
 
-  execSync(`${corePath} -t -f ${mihomoWorkConfigPath()} -d ${mihomoTestDir()}`)
+  execFileSync(corePath, ['-t', '-f', mihomoWorkConfigPath(), '-d', mihomoTestDir()])
 }

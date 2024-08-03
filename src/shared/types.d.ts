@@ -1,5 +1,5 @@
 type OutboundMode = 'rule' | 'global' | 'direct'
-type LogLevel = 'info' | 'debug' | 'warn' | 'error' | 'silent'
+type LogLevel = 'info' | 'debug' | 'warning' | 'error' | 'silent'
 type SysProxyMode = 'auto' | 'manual'
 interface IMihomoVersion {
   version: string
