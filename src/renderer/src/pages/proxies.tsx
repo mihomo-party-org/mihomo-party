@@ -3,9 +3,13 @@ import BasePage from '@renderer/components/base/base-page'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { mihomoChangeProxy, mihomoProxies, mihomoProxyDelay } from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
-import { useMemo, useState } from 'react'
+import { FaBoltLightning } from 'react-icons/fa6'
+import { TbCircleLetterD } from 'react-icons/tb'
+import { FaLocationCrosshairs } from 'react-icons/fa6'
+import { RxLetterCaseCapitalize } from 'react-icons/rx'
+import { useMemo, useRef, useState } from 'react'
 import useSWR from 'swr'
-import { GroupedVirtuoso } from 'react-virtuoso'
+import { GroupedVirtuoso, GroupedVirtuosoHandle } from 'react-virtuoso'
 import ProxyItem from '@renderer/components/proxies/proxy-item'
 import { IoIosArrowBack } from 'react-icons/io'
 import { MdOutlineSpeed } from 'react-icons/md'
@@ -13,7 +17,7 @@ import { MdOutlineSpeed } from 'react-icons/md'
 const Proxies: React.FC = () => {
   const { data: proxies, mutate } = useSWR('mihomoProxies', mihomoProxies)
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { proxyDisplayMode = 'simple' } = appConfig || {}
+  const { proxyDisplayMode = 'simple', proxyDisplayOrder = 'default' } = appConfig || {}
 
   const groups = useMemo(() => {
     const groups: IMihomoGroup[] = []
@@ -36,7 +40,7 @@ const Proxies: React.FC = () => {
   }, [proxies])
 
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
-
+  const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const { groupCounts, allProxies } = useMemo(() => {
     const groupCounts = groups.map((group, index) => {
       return isOpen[index] ? group.all.length : 0
@@ -44,12 +48,25 @@ const Proxies: React.FC = () => {
     const allProxies: (IMihomoProxy | IMihomoGroup)[] = []
     groups.forEach((group, index) => {
       if (isOpen[index] && proxies) {
-        allProxies.push(...group.all.map((name) => proxies.proxies[name]))
+        let groupProxies = group.all.map((name) => proxies.proxies[name])
+        if (proxyDisplayOrder === 'delay') {
+          groupProxies = groupProxies.sort((a, b) => {
+            if (a.history.length === 0) return -1
+            if (b.history.length === 0) return 1
+            if (a.history[a.history.length - 1].delay === 0) return 1
+            if (b.history[b.history.length - 1].delay === 0) return -1
+            return a.history[a.history.length - 1].delay - b.history[b.history.length - 1].delay
+          })
+        }
+        if (proxyDisplayOrder === 'name') {
+          groupProxies = groupProxies.sort((a, b) => a.name.localeCompare(b.name))
+        }
+        allProxies.push(...groupProxies)
       }
     })
 
     return { groupCounts, allProxies }
-  }, [groups, isOpen])
+  }, [groups, isOpen, proxyDisplayOrder])
 
   const onChangeProxy = (group: string, proxy: string): void => {
     mihomoChangeProxy(group, proxy).then(() => {
@@ -69,22 +86,50 @@ const Proxies: React.FC = () => {
     <BasePage
       title="代理组"
       header={
-        <Button
-          size="sm"
-          isIconOnly
-          onPress={() => {
-            patchAppConfig({ proxyDisplayMode: proxyDisplayMode === 'simple' ? 'full' : 'simple' })
-          }}
-        >
-          {proxyDisplayMode === 'simple' ? (
-            <CgDetailsMore size={20} />
-          ) : (
-            <CgDetailsLess size={20} />
-          )}
-        </Button>
+        <div>
+          <Button
+            size="sm"
+            isIconOnly
+            onPress={() => {
+              patchAppConfig({
+                proxyDisplayOrder:
+                  proxyDisplayOrder === 'default'
+                    ? 'delay'
+                    : proxyDisplayOrder === 'delay'
+                      ? 'name'
+                      : 'default'
+              })
+            }}
+          >
+            {proxyDisplayOrder === 'default' ? (
+              <TbCircleLetterD size={20} title="默认" />
+            ) : proxyDisplayOrder === 'delay' ? (
+              <FaBoltLightning size={20} title="延迟" />
+            ) : (
+              <RxLetterCaseCapitalize size={20} title="名称" />
+            )}
+          </Button>
+          <Button
+            size="sm"
+            isIconOnly
+            className="ml-2"
+            onPress={() => {
+              patchAppConfig({
+                proxyDisplayMode: proxyDisplayMode === 'simple' ? 'full' : 'simple'
+              })
+            }}
+          >
+            {proxyDisplayMode === 'simple' ? (
+              <CgDetailsMore size={20} title="详细信息" />
+            ) : (
+              <CgDetailsLess size={20} title="简洁信息" />
+            )}
+          </Button>
+        </div>
       }
     >
       <GroupedVirtuoso
+        ref={virtuosoRef}
         style={{ height: 'calc(100vh - 50px)' }}
         groupCounts={groupCounts}
         groupContent={(index) => {
@@ -112,7 +157,7 @@ const Proxies: React.FC = () => {
                           src={groups[index].icon}
                         />
                       ) : null}
-                      <div className="h-[32px] text-md leading-[32px]">
+                      <div className="h-[32px] text-ellipsis whitespace-nowrap overflow-hidden text-md leading-[32px]">
                         {groups[index].name}
                         {proxyDisplayMode === 'full' && (
                           <>
@@ -128,6 +173,29 @@ const Proxies: React.FC = () => {
                     </div>
                     <div className="flex">
                       <Button
+                        title="定位到当前节点"
+                        variant="light"
+                        size="sm"
+                        isIconOnly
+                        onPress={() => {
+                          if (!isOpen[index]) return
+                          let i = 0
+                          for (let j = 0; j < index; j++) {
+                            i += groupCounts[j]
+                          }
+                          for (let j = 0; j < groupCounts[index]; j++) {
+                            if (allProxies[i + j].name === groups[index].now) {
+                              i += j
+                              break
+                            }
+                          }
+                          virtuosoRef.current?.scrollToIndex({ index: i, align: 'start' })
+                        }}
+                      >
+                        <FaLocationCrosshairs className="text-lg text-default-500" />
+                      </Button>
+                      <Button
+                        title="延迟测试"
                         variant="light"
                         size="sm"
                         isIconOnly

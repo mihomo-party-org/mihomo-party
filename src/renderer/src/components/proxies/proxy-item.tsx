@@ -1,5 +1,5 @@
 import { Button, Card, CardBody } from '@nextui-org/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import PubSub from 'pubsub-js'
 
 interface Props {
@@ -14,12 +14,14 @@ interface Props {
 
 const ProxyItem: React.FC<Props> = (props) => {
   const { mutateProxies, proxyDisplayMode, group, proxy, selected, onSelect, onProxyDelay } = props
-  const [delay, setDelay] = useState(() => {
+
+  const delay = useMemo(() => {
     if (proxy.history.length > 0) {
       return proxy.history[proxy.history.length - 1].delay
     }
     return -1
-  })
+  }, [proxy])
+
   const [loading, setLoading] = useState(false)
 
   function delayColor(delay: number): 'primary' | 'success' | 'warning' | 'danger' {
@@ -37,19 +39,11 @@ const ProxyItem: React.FC<Props> = (props) => {
 
   const onDelay = (): void => {
     setLoading(true)
-    onProxyDelay(proxy.name, group.testUrl).then(
-      (delay) => {
-        setDelay(delay.delay || 0)
-        mutateProxies()
-        setLoading(false)
-      },
-      () => {
-        setDelay(0)
-        setLoading(false)
-      }
-    )
+    onProxyDelay(proxy.name, group.testUrl).finally(() => {
+      mutateProxies()
+      setLoading(false)
+    })
   }
-  console.log(delay)
 
   useEffect(() => {
     const token = PubSub.subscribe(`${group.name}-delay`, onDelay)
@@ -58,6 +52,7 @@ const ProxyItem: React.FC<Props> = (props) => {
       PubSub.unsubscribe(token)
     }
   }, [])
+
   return (
     <Card
       onPress={() => onSelect(group.name, proxy.name)}
@@ -66,12 +61,16 @@ const ProxyItem: React.FC<Props> = (props) => {
       className={`${selected ? 'bg-primary/30' : ''}`}
       radius="sm"
     >
-      <CardBody className="p-1">
+      <CardBody className="p-2">
         <div className="flex justify-between items-center">
           <div>
-            <div className="inline">{proxy.name}</div>
+            <div className="inline text-ellipsis whitespace-nowrap overflow-hidden">
+              {proxy.name}
+            </div>
             {proxyDisplayMode === 'full' && (
-              <div className="inline ml-2 text-default-500">{proxy.type}</div>
+              <div className="inline ml-2 text-ellipsis whitespace-nowrap overflow-hidden text-default-500">
+                {proxy.type}
+              </div>
             )}
           </div>
           <Button
