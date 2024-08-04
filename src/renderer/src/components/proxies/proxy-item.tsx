@@ -1,14 +1,14 @@
-import { Button, Card, CardBody, Divider } from '@nextui-org/react'
+import { Button, Card, CardBody } from '@nextui-org/react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import PubSub from 'pubsub-js'
 import React, { useEffect, useState } from 'react'
 
 interface Props {
-  onProxyDelay: (proxy: string) => Promise<IMihomoDelay>
+  onProxyDelay: (proxy: string, url?: string) => Promise<IMihomoDelay>
   proxyDisplayMode: 'simple' | 'full'
   proxy: IMihomoProxy | IMihomoGroup
   group: string
-  onSelect: (proxy: string) => void
+  onSelect: (group: string, proxy: string) => void
   selected: boolean
 }
 
@@ -61,36 +61,33 @@ const ProxyItem: React.FC<Props> = (props) => {
     }
   }, [])
   return (
-    <>
-      <Divider />
-      <Card
-        onPress={() => onSelect(proxy.name)}
-        isPressable
-        fullWidth
-        className={`my-1 ${selected ? 'bg-primary/30' : ''}`}
-        radius="sm"
-      >
-        <CardBody className="p-1">
-          <div className="flex justify-between items-center">
-            <div>
-              <div className="inline">{proxy.name}</div>
-              {proxyDisplayMode === 'full' && (
-                <div className="inline ml-2 text-default-500">{proxy.type}</div>
-              )}
-            </div>
-            <Button
-              isLoading={loading}
-              color={delayColor(delay)}
-              onPress={onDelay}
-              variant="light"
-              className="h-full min-w-[50px] p-0 mx-2 text-sm hover:bg-content"
-            >
-              {delayText(delay)}
-            </Button>
+    <Card
+      onPress={() => onSelect(group, proxy.name)}
+      isPressable
+      fullWidth
+      className={`${selected ? 'bg-primary/30' : ''}`}
+      radius="sm"
+    >
+      <CardBody className="p-1">
+        <div className="flex justify-between items-center">
+          <div>
+            <div className="inline">{proxy.name}</div>
+            {proxyDisplayMode === 'full' && (
+              <div className="inline ml-2 text-default-500">{proxy.type}</div>
+            )}
           </div>
-        </CardBody>
-      </Card>
-    </>
+          <Button
+            isLoading={loading}
+            color={delayColor(delay)}
+            onPress={onDelay}
+            variant="light"
+            className="h-full min-w-[50px] p-0 mx-2 text-sm hover:bg-content"
+          >
+            {delayText(delay)}
+          </Button>
+        </div>
+      </CardBody>
+    </Card>
   )
 }
 
