@@ -59,5 +59,6 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
+  ipcMain.handle('platform', () => process.platform)
   ipcMain.handle('quitApp', () => app.quit())
 }

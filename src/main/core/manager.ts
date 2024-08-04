@@ -8,7 +8,7 @@ import {
 } from '../utils/dirs'
 import { generateProfile } from '../resolve/factory'
 import { getAppConfig, setAppConfig } from '../config'
-import { safeStorage } from 'electron'
+import { dialog, safeStorage } from 'electron'
 import fs from 'fs'
 
 let child: ChildProcess
@@ -51,7 +51,12 @@ export function restartCore(): void {
 
 export function checkProfile(): void {
   const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
-  execFileSync(corePath, ['-t', '-f', mihomoWorkConfigPath(), '-d', mihomoTestDir()])
+  try {
+    execFileSync(corePath, ['-t', '-f', mihomoWorkConfigPath(), '-d', mihomoTestDir()])
+  } catch (e) {
+    dialog.showErrorBox('Profile check failed', `${e}`)
+    throw new Error('Profile check failed')
+  }
 }
 
 export function grantCorePermition(corePath: string): void {
