@@ -1,3 +1,4 @@
+import { Divider } from '@nextui-org/react'
 import React from 'react'
 interface Props {
   title?: React.ReactNode
@@ -14,6 +15,7 @@ const BasePage: React.FC<Props> = (props) => {
           <div className="select-none title h-full text-lg leading-[32px]">{props.title}</div>
           <div className="header h-full">{props.header}</div>
         </div>
+        <Divider />
       </div>
       <div className="content">{props.children}</div>
     </div>

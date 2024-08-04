@@ -1,13 +1,14 @@
-import { Accordion, AccordionItem, Avatar, Button } from '@nextui-org/react'
+import { Avatar, Button, Card, CardBody } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
-import ProxyList from '@renderer/components/proxies/proxy-list'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { MdOutlineSpeed } from 'react-icons/md'
 import { mihomoChangeProxy, mihomoProxies, mihomoProxyDelay } from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
-import { useEffect, useMemo } from 'react'
-import PubSub from 'pubsub-js'
+import { useMemo, useState } from 'react'
 import useSWR from 'swr'
+import { GroupedVirtuoso } from 'react-virtuoso'
+import ProxyItem from '@renderer/components/proxies/proxy-item'
+import { IoIosArrowBack } from 'react-icons/io'
+import { MdOutlineSpeed } from 'react-icons/md'
 
 const Proxies: React.FC = () => {
   const { data: proxies, mutate } = useSWR('mihomoProxies', mihomoProxies)
@@ -34,15 +35,21 @@ const Proxies: React.FC = () => {
     return groups
   }, [proxies])
 
-  const groupProxies = useMemo(() => {
-    const groupProxies: Record<string, (IMihomoProxy | IMihomoGroup)[]> = {}
-    if (proxies) {
-      for (const group of groups) {
-        groupProxies[group.name] = group.all.map((name) => proxies.proxies[name])
+  const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
+
+  const { groupCounts, allProxies } = useMemo(() => {
+    const groupCounts = groups.map((group, index) => {
+      return isOpen[index] ? group.all.length : 0
+    })
+    const allProxies: (IMihomoProxy | IMihomoGroup)[] = []
+    groups.forEach((group, index) => {
+      if (isOpen[index] && proxies) {
+        allProxies.push(...group.all.map((name) => proxies.proxies[name]))
       }
-    }
-    return groupProxies
-  }, [proxies])
+    })
+
+    return { groupCounts, allProxies }
+  }, [groups, isOpen])
 
   const onChangeProxy = (group: string, proxy: string): void => {
     mihomoChangeProxy(group, proxy).then(() => {
@@ -54,7 +61,6 @@ const Proxies: React.FC = () => {
     return await mihomoProxyDelay(proxy, url)
   }
 
-  useEffect(() => {}, [])
   return (
     <BasePage
       title="代理组"
@@ -74,54 +80,86 @@ const Proxies: React.FC = () => {
         </Button>
       }
     >
-      <Accordion variant="splitted" className="p-2">
-        {groups.map((group) => {
+      <GroupedVirtuoso
+        style={{ height: 'calc(100vh - 50px)' }}
+        groupCounts={groupCounts}
+        groupContent={(index) => {
           return (
-            <AccordionItem
-              textValue={group.name}
-              key={group.name}
-              title={
-                <div className="flex justify-between">
-                  <div className="">
-                    <div className="inline">{group.name}</div>
-                    {proxyDisplayMode === 'full' && (
-                      <>
-                        <div className="inline ml-2 text-sm text-default-500">{group.type}</div>
-                        <div className="inline ml-2 text-sm text-default-500">{group.now}</div>
-                      </>
-                    )}
+            <div className={`w-full pt-2 ${index === groupCounts.length - 1 ? 'pb-2' : ''} px-2`}>
+              <Card
+                isPressable
+                fullWidth
+                onPress={() => {
+                  setIsOpen((prev) => {
+                    const newOpen = [...prev]
+                    newOpen[index] = !prev[index]
+                    return newOpen
+                  })
+                }}
+              >
+                <CardBody>
+                  <div className="flex justify-between">
+                    <div className="flex">
+                      {groups[index].icon.length > 0 ? (
+                        <Avatar
+                          className="bg-transparent mr-2"
+                          size="sm"
+                          radius="sm"
+                          src={groups[index].icon}
+                        />
+                      ) : null}
+                      <div className="h-[32px] text-md leading-[32px]">
+                        {groups[index].name}
+                        {proxyDisplayMode === 'full' && (
+                          <>
+                            <div className="inline ml-2 text-sm text-default-500">
+                              {groups[index].type}
+                            </div>
+                            <div className="inline ml-2 text-sm text-default-500">
+                              {groups[index].now}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex">
+                      <Button
+                        variant="light"
+                        size="sm"
+                        isIconOnly
+                        onPress={() => {
+                          PubSub.publish(`${groups[index].name}-delay`)
+                        }}
+                      >
+                        <MdOutlineSpeed className="text-lg text-default-500" />
+                      </Button>
+                      <IoIosArrowBack
+                        className={`transition duration-200 ml-2 h-[32px] text-lg text-default-500 ${isOpen[index] ? '-rotate-90' : ''}`}
+                      />
+                    </div>
                   </div>
-                  <Button
-                    variant="light"
-                    size="sm"
-                    isIconOnly
-                    onPress={() => {
-                      PubSub.publish(`${group.name}-delay`)
-                    }}
-                  >
-                    <MdOutlineSpeed className="text-lg text-default-500" />
-                  </Button>
-                </div>
-              }
-              classNames={{ title: 'select-none', base: 'px-2', content: 'pt-2', trigger: 'py-2' }}
-              startContent={
-                group.icon.length > 0 ? (
-                  <Avatar className="bg-transparent" size="sm" radius="sm" src={group.icon} />
-                ) : null
-              }
-            >
-              <ProxyList
-                onProxyDelay={(proxy) => onProxyDelay(proxy, group.testUrl)}
-                onChangeProxy={(proxy) => onChangeProxy(group.name, proxy)}
-                proxyDisplayMode={proxyDisplayMode}
-                proxies={groupProxies[group.name]}
-                group={group.name}
-                now={group.now}
-              />
-            </AccordionItem>
+                </CardBody>
+              </Card>
+            </div>
           )
-        })}
-      </Accordion>
+        }}
+        itemContent={(index, groupIndex) => {
+          return allProxies[index] ? (
+            <div className="pt-2 mx-2">
+              <ProxyItem
+                onProxyDelay={onProxyDelay}
+                onSelect={onChangeProxy}
+                proxy={allProxies[index]}
+                group={groups[groupIndex].name}
+                proxyDisplayMode={proxyDisplayMode}
+                selected={allProxies[index]?.name === groups[groupIndex].now}
+              />
+            </div>
+          ) : (
+            <div>Never See This</div>
+          )
+        }}
+      />
     </BasePage>
   )
 }
