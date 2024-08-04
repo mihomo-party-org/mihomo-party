@@ -131,6 +131,7 @@ interface ISysProxyConfig {
 interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha'
   proxyDisplayMode: 'simple' | 'full'
+  proxyDisplayOrder: 'default' | 'delay' | 'name'
   silentStart: boolean
   sysProxy: ISysProxyConfig
   userAgent?: string
