@@ -1,60 +1,58 @@
 import { Button, Card, CardBody } from '@nextui-org/react'
-import { useAppConfig } from '@renderer/hooks/use-app-config'
-import PubSub from 'pubsub-js'
 import React, { useEffect, useState } from 'react'
+import PubSub from 'pubsub-js'
 
 interface Props {
+  mutateProxies: () => void
   onProxyDelay: (proxy: string, url?: string) => Promise<IMihomoDelay>
   proxyDisplayMode: 'simple' | 'full'
   proxy: IMihomoProxy | IMihomoGroup
-  group: string
+  group: IMihomoGroup
   onSelect: (group: string, proxy: string) => void
   selected: boolean
 }
 
 const ProxyItem: React.FC<Props> = (props) => {
-  const { proxyDisplayMode, group, proxy, selected, onSelect, onProxyDelay } = props
-  const { appConfig } = useAppConfig()
-  const { delayTestTimeout = 5000 } = appConfig || {}
+  const { mutateProxies, proxyDisplayMode, group, proxy, selected, onSelect, onProxyDelay } = props
   const [delay, setDelay] = useState(() => {
     if (proxy.history.length > 0) {
-      return proxy.history[0].delay
+      return proxy.history[proxy.history.length - 1].delay
     }
-    return 0
+    return -1
   })
   const [loading, setLoading] = useState(false)
 
   function delayColor(delay: number): 'primary' | 'success' | 'warning' | 'danger' {
-    if (delay < 0) return 'danger'
-    if (delay === 0) return 'primary'
+    if (delay === -1) return 'primary'
+    if (delay === 0) return 'danger'
     if (delay < 500) return 'success'
-    if (delay < delayTestTimeout) return 'warning'
-    return 'danger'
+    return 'warning'
   }
 
   function delayText(delay: number): string {
-    if (delay < 0) return 'Error'
-    if (delay === 0) return 'Delay'
-    if (delay < delayTestTimeout) return delay.toString()
-    return 'Timeout'
+    if (delay === -1) return 'Delay'
+    if (delay === 0) return 'Timeout'
+    return delay.toString()
   }
 
   const onDelay = (): void => {
     setLoading(true)
-    onProxyDelay(proxy.name).then(
+    onProxyDelay(proxy.name, group.testUrl).then(
       (delay) => {
-        setDelay(delay.delay || delayTestTimeout + 1)
+        setDelay(delay.delay || 0)
+        mutateProxies()
         setLoading(false)
       },
       () => {
-        setDelay(-1)
+        setDelay(0)
         setLoading(false)
       }
     )
   }
+  console.log(delay)
 
   useEffect(() => {
-    const token = PubSub.subscribe(`${group}-delay`, onDelay)
+    const token = PubSub.subscribe(`${group.name}-delay`, onDelay)
 
     return (): void => {
       PubSub.unsubscribe(token)
@@ -62,7 +60,7 @@ const ProxyItem: React.FC<Props> = (props) => {
   }, [])
   return (
     <Card
-      onPress={() => onSelect(group, proxy.name)}
+      onPress={() => onSelect(group.name, proxy.name)}
       isPressable
       fullWidth
       className={`${selected ? 'bg-primary/30' : ''}`}

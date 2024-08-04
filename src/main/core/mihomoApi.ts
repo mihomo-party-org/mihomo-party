@@ -27,60 +27,81 @@ export const getAxios = async (force: boolean = false): Promise<AxiosInstance> =
 
 export async function mihomoVersion(): Promise<IMihomoVersion> {
   const instance = await getAxios()
-  return instance.get('/version') as Promise<IMihomoVersion>
+  return instance.get('/version').catch((e) => {
+    return e.response.data
+  })
 }
 
 export const mihomoConfig = async (): Promise<IMihomoConfig> => {
   const instance = await getAxios()
-  return instance.get('/configs') as Promise<IMihomoConfig>
+  return instance.get('/configs').catch((e) => {
+    return e.response.data
+  })
 }
 
 export const patchMihomoConfig = async (patch: Partial<IMihomoConfig>): Promise<void> => {
   const instance = await getAxios()
-  return instance.patch('/configs', patch)
+  return instance.patch('/configs', patch).catch((e) => {
+    return e.response.data
+  })
 }
 
 export const mihomoConnections = async (): Promise<IMihomoConnectionsInfo> => {
   const instance = await getAxios()
-  return instance.get('/connections') as Promise<IMihomoConnectionsInfo>
+  return instance.get('/connections').catch((e) => {
+    return e.response.data
+  })
 }
 
 export const mihomoCloseConnection = async (id: string): Promise<void> => {
   const instance = await getAxios()
-  return instance.delete(`/connections/${encodeURIComponent(id)}`)
+  return instance.delete(`/connections/${encodeURIComponent(id)}`).catch((e) => {
+    return e.response.data
+  })
 }
 
 export const mihomoCloseAllConnections = async (): Promise<void> => {
   const instance = await getAxios()
-  return instance.delete('/connections')
+  return instance.delete('/connections').catch((e) => {
+    return e.response.data
+  })
 }
 
 export const mihomoRules = async (): Promise<IMihomoRulesInfo> => {
   const instance = await getAxios()
-  return instance.get('/rules') as Promise<IMihomoRulesInfo>
+  return instance.get('/rules').catch((e) => {
+    return e.response.data
+  })
 }
 
 export const mihomoProxies = async (): Promise<IMihomoProxies> => {
   const instance = await getAxios()
-  return instance.get('/proxies') as Promise<IMihomoProxies>
+  return instance.get('/proxies').catch((e) => {
+    return e.response.data
+  })
 }
 
 export const mihomoChangeProxy = async (group: string, proxy: string): Promise<IMihomoProxy> => {
   const instance = await getAxios()
-  return instance.put(`/proxies/${encodeURIComponent(group)}`, { name: proxy })
+  return instance.put(`/proxies/${encodeURIComponent(group)}`, { name: proxy }).catch((e) => {
+    return e.response.data
+  })
 }
 
 export const mihomoProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
   const appConfig = getAppConfig()
   const { delayTestUrl, delayTestTimeout } = appConfig
   const instance = await getAxios()
-  return instance.get(`/proxies/${encodeURIComponent(proxy)}/delay`, {
-    params: {
-      url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
-      timeout: delayTestTimeout || 5000
-    },
-    timeout: delayTestTimeout || 5000
-  })
+  return instance
+    .get(`/proxies/${encodeURIComponent(proxy)}/delay`, {
+      params: {
+        url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
+        timeout: delayTestTimeout || 5000
+      }
+    })
+    .catch((e) => {
+      return e.response.data
+    })
 }
 
 export const startMihomoTraffic = (): void => {

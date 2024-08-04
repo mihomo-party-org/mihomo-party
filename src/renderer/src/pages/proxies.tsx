@@ -61,6 +61,10 @@ const Proxies: React.FC = () => {
     return await mihomoProxyDelay(proxy, url)
   }
 
+  const onGroupDelay = async (group: string): Promise<void> => {
+    PubSub.publish(`${group}-delay`)
+  }
+
   return (
     <BasePage
       title="代理组"
@@ -128,7 +132,7 @@ const Proxies: React.FC = () => {
                         size="sm"
                         isIconOnly
                         onPress={() => {
-                          PubSub.publish(`${groups[index].name}-delay`)
+                          onGroupDelay(groups[index].name)
                         }}
                       >
                         <MdOutlineSpeed className="text-lg text-default-500" />
@@ -147,10 +151,11 @@ const Proxies: React.FC = () => {
           return allProxies[index] ? (
             <div className="pt-2 mx-2">
               <ProxyItem
+                mutateProxies={mutate}
                 onProxyDelay={onProxyDelay}
                 onSelect={onChangeProxy}
                 proxy={allProxies[index]}
-                group={groups[groupIndex].name}
+                group={groups[groupIndex]}
                 proxyDisplayMode={proxyDisplayMode}
                 selected={allProxies[index]?.name === groups[groupIndex].now}
               />
