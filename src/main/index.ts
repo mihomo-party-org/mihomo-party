@@ -6,7 +6,7 @@ import { triggerSysProxy } from './resolve/sysproxy'
 import icon from '../../resources/icon.png?asset'
 import { createTray } from './core/tray'
 import { init } from './resolve/init'
-import { getAppConfig } from './config'
+import { addProfileItem, getAppConfig } from './config'
 import { join } from 'path'
 import {
   startMihomoMemory,
@@ -23,11 +23,19 @@ if (!gotTheLock) {
   app.quit()
 } else {
   init()
-  app.on('second-instance', () => {
+  app.on('second-instance', (_event, commandline) => {
     window?.show()
     window?.focusOnWebView()
+    const url = commandline.pop()
+    if (url) {
+      handleDeepLink(url)
+    }
   })
-
+  app.on('open-url', (_event, url) => {
+    window?.show()
+    window?.focusOnWebView()
+    handleDeepLink(url)
+  })
   // Quit when all windows are closed, except on macOS. There, it's common
   // for applications and their menu bar to stay active until the user quits
   // explicitly with Cmd + Q.
@@ -65,6 +73,27 @@ if (!gotTheLock) {
       if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
   })
+}
+
+function handleDeepLink(url: string): void {
+  if (url.startsWith('clash://install-config')) {
+    url = url.replace('clash://install-config/?url=', '').replace('clash://install-config?url=', '')
+    addProfileItem({
+      type: 'remote',
+      name: 'Remote File',
+      url
+    })
+  }
+  if (url.startsWith('mihomo://install-config')) {
+    url = url
+      .replace('mihomo://install-config/?url=', '')
+      .replace('mihomo://install-config?url=', '')
+    addProfileItem({
+      type: 'remote',
+      name: 'Remote File',
+      url
+    })
+  }
 }
 
 function createWindow(): void {

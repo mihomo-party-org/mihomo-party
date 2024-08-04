@@ -3,7 +3,12 @@ import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-c
 import BorderSwitch from '@renderer/components/base/border-swtich'
 import { TbDeviceIpadHorizontalBolt } from 'react-icons/tb'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { encryptString, patchMihomoConfig, isEncryptionAvailable } from '@renderer/utils/ipc'
+import {
+  platform,
+  encryptString,
+  patchMihomoConfig,
+  isEncryptionAvailable
+} from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import BasePasswordModal from '../base/base-password-modal'
@@ -19,14 +24,17 @@ const TunSwitcher: React.FC = () => {
   const { enable } = tun || {}
 
   const onChange = async (enable: boolean): Promise<void> => {
-    const encryptionAvailable = await isEncryptionAvailable()
-    if (!appConfig?.encryptedPassword && encryptionAvailable) {
-      setOpenPasswordModal(true)
-      return
+    if (enable && (await platform()) !== 'win32') {
+      const encryptionAvailable = await isEncryptionAvailable()
+      if (!appConfig?.encryptedPassword && encryptionAvailable) {
+        setOpenPasswordModal(true)
+        return
+      }
+      if (!encryptionAvailable) {
+        alert('加密不可用，请手动给内核授权')
+      }
     }
-    if (!encryptionAvailable) {
-      alert('加密不可用，请手动给内核授权')
-    }
+
     await patchControledMihomoConfig({ tun: { enable } })
     await patchMihomoConfig({ tun: { enable } })
   }

@@ -22,6 +22,7 @@ import path from 'path'
 import { startPacServer } from './server'
 import { triggerSysProxy } from './sysproxy'
 import { getAppConfig } from '../config'
+import { app } from 'electron'
 
 function initDirs(): void {
   if (!fs.existsSync(dataDir)) {
@@ -71,10 +72,21 @@ function initFiles(): void {
   }
 }
 
+function initDeeplink(): void {
+  if (process.defaultApp) {
+    if (process.argv.length >= 2) {
+      app.setAsDefaultProtocolClient('clash', process.execPath, [path.resolve(process.argv[1])])
+    }
+  } else {
+    app.setAsDefaultProtocolClient('clash')
+  }
+}
+
 export function init(): void {
   initDirs()
   initConfig()
   initFiles()
+  initDeeplink()
   startPacServer().then(() => {
     triggerSysProxy(getAppConfig().sysProxy.enable)
   })

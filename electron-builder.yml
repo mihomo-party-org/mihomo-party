@@ -14,6 +14,11 @@ asarUnpack:
 extraResources:
   - from: './resources/'
     to: ''
+protocols:
+  name: 'Mihomo Party URI Scheme'
+  schemes:
+    - 'clash'
+    - 'mihomo'
 win:
   target:
     - nsis
@@ -41,6 +46,8 @@ mac:
 dmg:
   artifactName: ${name}-macos-${version}-${arch}-installer.${ext}
 linux:
+  desktop:
+    MimeType: 'x-scheme-handler/clash;x-scheme-handler/mihomo'
   target:
     - deb
     - rpm

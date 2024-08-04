@@ -6,6 +6,7 @@ import { window } from '..'
 import axios from 'axios'
 import yaml from 'yaml'
 import fs from 'fs'
+import { dialog } from 'electron'
 
 let profileConfig: IProfileConfig // profile.yaml
 let currentProfile: Partial<IMihomoConfig> // profiles/xxx.yaml
@@ -95,6 +96,10 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
   switch (newItem.type) {
     case 'remote': {
       if (!item.url) {
+        dialog.showErrorBox(
+          'URL is required for remote profile',
+          'URL is required for remote profile'
+        )
         throw new Error('URL is required for remote profile')
       }
       try {
@@ -126,12 +131,17 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
         }
         fs.writeFileSync(profilePath(id), data, 'utf-8')
       } catch (e) {
+        dialog.showErrorBox('Failed to fetch remote profile', `${e}\nurl: ${item.url}`)
         throw new Error(`Failed to fetch remote profile ${e}`)
       }
       break
     }
     case 'local': {
       if (!item.file) {
+        dialog.showErrorBox(
+          'File is required for local profile',
+          'File is required for local profile'
+        )
         throw new Error('File is required for local profile')
       }
       const data = item.file
