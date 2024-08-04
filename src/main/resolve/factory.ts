@@ -10,7 +10,6 @@ export function generateProfile(): void {
   const { tun: controledTun } = controledMihomoConfig
   const tun = Object.assign(profileTun, controledTun)
   const profile = Object.assign(currentProfile, controledMihomoConfig)
-  console.log('profile', profile)
   profile.tun = tun
   fs.writeFileSync(mihomoWorkConfigPath(), yaml.stringify(profile))
 }
