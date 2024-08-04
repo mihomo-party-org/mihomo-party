@@ -17,9 +17,6 @@ export function startCore(): void {
   generateProfile()
   checkProfile()
   stopCore()
-  if (process.platform !== 'win32') {
-    execSync(`chmod +x ${corePath}`)
-  }
   child = spawn(corePath, ['-d', mihomoWorkDir()])
   child.stdout?.on('data', (data) => {
     fs.writeFileSync(
@@ -52,9 +49,5 @@ export function restartCore(): void {
 
 export function checkProfile(): void {
   const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
-  if (process.platform !== 'win32') {
-    execSync(`chmod +x ${corePath}`)
-  }
-
   execFileSync(corePath, ['-t', '-f', mihomoWorkConfigPath(), '-d', mihomoTestDir()])
 }
