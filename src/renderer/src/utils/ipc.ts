@@ -106,6 +106,13 @@ export async function triggerSysProxy(enable: boolean): Promise<void> {
   return await window.electron.ipcRenderer.invoke('triggerSysProxy', enable)
 }
 
+export async function isEncryptionAvailable(): Promise<boolean> {
+  return await window.electron.ipcRenderer.invoke('isEncryptionAvailable')
+}
+
+export async function encryptString(str: string): Promise<Buffer> {
+  return await window.electron.ipcRenderer.invoke('encryptString', str)
+}
 export async function quitApp(): Promise<void> {
   return await window.electron.ipcRenderer.invoke('quitApp')
 }

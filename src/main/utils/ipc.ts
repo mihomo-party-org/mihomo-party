@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron'
+import { app, ipcMain, safeStorage } from 'electron'
 import {
   mihomoChangeProxy,
   mihomoCloseAllConnections,
@@ -25,7 +25,7 @@ import {
   addProfileItem,
   removeProfileItem
 } from '../config'
-import { restartCore } from '../core/manager'
+import { isEncryptionAvailable, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
 import { changeCurrentProfile } from '../config/profile'
 
@@ -57,5 +57,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))
   ipcMain.handle('restartCore', restartCore)
   ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
+  ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
+  ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
   ipcMain.handle('quitApp', () => app.quit())
 }

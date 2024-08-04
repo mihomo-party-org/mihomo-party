@@ -136,6 +136,7 @@ interface IAppConfig {
   userAgent?: string
   delayTestUrl?: string
   delayTestTimeout?: number
+  encryptedPassword?: Buffer
 }
 
 interface IMihomoTunConfig {
