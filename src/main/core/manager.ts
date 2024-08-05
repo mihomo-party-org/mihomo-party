@@ -75,7 +75,7 @@ export function grantCorePermition(corePath: string): void {
     try {
       if (process.platform === 'linux') {
         execSync(
-          `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_dac_override,cap_net_raw=+ep ${corePath}`
+          `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_sys_ptrace,cap_dac_read_search,cap_dac_override,cap_net_raw=+ep ${corePath}`
         )
       }
       if (process.platform === 'darwin') {

@@ -12,12 +12,15 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
   mode: 'rule',
   'mixed-port': 7890,
   'allow-lan': false,
+  'unified-delay': false,
   'log-level': 'info',
+  'find-process-mode': 'strict',
   tun: {
     enable: false,
     device: 'Mihomo',
     stack: 'mixed',
     'auto-route': true,
+    'auto-redirect': false,
     'auto-detect-interface': true,
     'dns-hijack': ['any:53'],
     mtu: 1500

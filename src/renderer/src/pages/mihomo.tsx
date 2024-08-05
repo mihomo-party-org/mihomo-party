@@ -21,7 +21,9 @@ const Mihomo: React.FC = () => {
     'external-controller': externalController,
     secret,
     'log-level': level = 'info',
+    'find-process-mode': mode = 'strict',
     'allow-lan': lan,
+    'unified-delay': delay,
     'mixed-port': mixedPort = 7890
   } = controledMihomoConfig || {}
 
@@ -150,7 +152,16 @@ const Mihomo: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="日志等级">
+        <SettingItem title="使用RTT延迟测试" divider>
+          <Switch
+            size="sm"
+            isSelected={delay}
+            onValueChange={(v) => {
+              onChange({ 'unified-delay': v })
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="日志等级" divider>
           <Select
             className="w-[100px]"
             size="sm"
@@ -164,6 +175,20 @@ const Mihomo: React.FC = () => {
             <SelectItem key="warning">警告</SelectItem>
             <SelectItem key="error">错误</SelectItem>
             <SelectItem key="debug">调试</SelectItem>
+          </Select>
+        </SettingItem>
+        <SettingItem title="查找进程">
+          <Select
+            className="w-[100px]"
+            size="sm"
+            selectedKeys={new Set([mode])}
+            onSelectionChange={(v) => {
+              onChange({ 'find-process-mode': v.currentKey as FindProcessMode })
+            }}
+          >
+            <SelectItem key="strict">自动</SelectItem>
+            <SelectItem key="off">关闭</SelectItem>
+            <SelectItem key="always">开启</SelectItem>
           </Select>
         </SettingItem>
       </SettingCard>
