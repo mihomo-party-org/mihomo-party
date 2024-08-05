@@ -57,7 +57,6 @@ const Sysproxy: React.FC = () => {
             size="sm"
             className="w-[50%]"
             value={values.host}
-            spellCheck={false}
             placeholder="默认127.0.0.1若无特殊需求请勿修改"
             onValueChange={(v) => {
               setValues({ ...values, host: v })

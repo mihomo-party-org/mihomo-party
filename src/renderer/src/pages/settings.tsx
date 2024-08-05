@@ -62,7 +62,6 @@ const Settings: React.FC = () => {
           <Input
             size="sm"
             className="w-[60%]"
-            spellCheck={false}
             value={delayTestUrl}
             placeholder="默认https://www.gstatic.com/generate_204"
             onValueChange={(v) => {
