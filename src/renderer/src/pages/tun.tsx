@@ -75,7 +75,6 @@ const Tun: React.FC = () => {
         <SettingItem title="Tun 网卡名称" divider>
           <Input
             size="sm"
-            spellCheck={false}
             className="w-[100px]"
             value={values.device}
             onValueChange={(v) => {
@@ -113,7 +112,6 @@ const Tun: React.FC = () => {
         <SettingItem title="MTU" divider>
           <Input
             size="sm"
-            spellCheck={false}
             className="w-[100px]"
             value={values.mtu.toString()}
             onValueChange={(v) => {
@@ -124,7 +122,6 @@ const Tun: React.FC = () => {
         <SettingItem title="DNS 劫持">
           <Input
             size="sm"
-            spellCheck={false}
             className="w-[50%]"
             value={values.dnsHijack.join(',')}
             onValueChange={(v) => {
