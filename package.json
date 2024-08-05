@@ -14,9 +14,9 @@
     "prepare": "node scripts/prepare.mjs",
     "dev": "electron-vite dev",
     "postinstall": "electron-builder install-app-deps",
-    "build:win": "electron-vite build && electron-builder --win --publish never",
-    "build:mac": "electron-vite build && electron-builder --mac --publish never",
-    "build:linux": "electron-vite build && electron-builder --linux --publish never"
+    "build:win": "electron-vite build && electron-builder --publish never --win",
+    "build:mac": "electron-vite build && electron-builder --publish never --mac",
+    "build:linux": "electron-vite build && electron-builder --publish never --linux"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
