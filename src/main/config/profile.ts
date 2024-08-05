@@ -51,9 +51,14 @@ export async function addProfileItem(item: Partial<IProfileItem>): Promise<void>
 export function removeProfileItem(id: string): void {
   profileConfig.items = profileConfig.items?.filter((item) => item.id !== id)
   if (profileConfig.current === id) {
-    profileConfig.current = profileConfig.items[0]?.id
+    if (profileConfig.items.length > 0) {
+      profileConfig.current = profileConfig.items[0]?.id
+    } else {
+      profileConfig.current = undefined
+    }
   }
   fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
+  fs.rmSync(profilePath(id))
   window?.webContents.send('profileConfigUpdated')
 }
 
