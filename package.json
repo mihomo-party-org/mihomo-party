@@ -24,6 +24,7 @@
     "@mihomo-party/sysproxy": "^1.0.1",
     "@nextui-org/react": "^2.4.6",
     "axios": "^1.7.2",
+    "dayjs": "^1.11.12",
     "electron-updater": "^6.2.1",
     "framer-motion": "^11.3.19",
     "next-themes": "^0.3.0",
