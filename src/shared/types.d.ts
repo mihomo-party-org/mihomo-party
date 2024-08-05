@@ -4,6 +4,7 @@ type SysProxyMode = 'auto' | 'manual'
 type MihomoGroupType = 'Selector'
 type MihomoProxyType = 'Shadowsocks'
 type TunStack = 'gvisor' | 'mixed' | 'system'
+type FindProcessMode = 'off' | 'strict' | 'always'
 
 interface IMihomoVersion {
   version: string
@@ -177,7 +178,9 @@ interface IMihomoConfig {
   mode: OutboundMode
   'mixed-port': number
   'allow-lan': boolean
+  'unified-delay': boolean
   'log-level': LogLevel
+  'find-process-mode': FindProcessMode
   'socks-port'?: number
   port?: number
   proxies?: []

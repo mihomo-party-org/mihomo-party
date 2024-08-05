@@ -4,6 +4,7 @@ import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { restartCore } from '@renderer/utils/ipc'
+import { platform } from '@renderer/utils/init'
 import React, { Key, useState } from 'react'
 
 const Tun: React.FC = () => {
@@ -13,6 +14,7 @@ const Tun: React.FC = () => {
     device = 'Mihomo',
     stack = 'mixed',
     'auto-route': autoRoute = true,
+    'auto-redirect': autoRedirect = false,
     'auto-detect-interface': autoDetectInterface = true,
     'dns-hijack': dnsHijack = ['any:53'],
     'strict-route': strictRoute = false,
@@ -23,6 +25,7 @@ const Tun: React.FC = () => {
     device,
     stack,
     autoRoute,
+    autoRedirect,
     autoDetectInterface,
     dnsHijack,
     strictRoute,
@@ -47,6 +50,7 @@ const Tun: React.FC = () => {
                 device: values.device,
                 stack: values.stack,
                 'auto-route': values.autoRoute,
+                'auto-redirect': values.autoRedirect,
                 'auto-detect-interface': values.autoDetectInterface,
                 'dns-hijack': values.dnsHijack,
                 'strict-route': values.strictRoute,
@@ -100,6 +104,17 @@ const Tun: React.FC = () => {
             }}
           />
         </SettingItem>
+        {platform === 'linux' && (
+          <SettingItem title="自动设置TCP重定向" divider>
+            <Switch
+              size="sm"
+              isSelected={values.autoRedirect}
+              onValueChange={(v) => {
+                setValues({ ...values, autoRedirect: v })
+              }}
+            />
+          </SettingItem>
+        )}
         <SettingItem title="自动选择流量出口接口" divider>
           <Switch
             size="sm"
