@@ -4,7 +4,7 @@ import React from 'react'
 const RuleItem: React.FC<IMihomoRulesDetail> = (props) => {
   const { type, payload, proxy } = props
   return (
-    <Card className="m-2">
+    <Card className="mb-2 mx-2">
       <CardBody className="flex justify-between">
         <div className="flex justify-between">
           <div className="select-none">{type}</div>

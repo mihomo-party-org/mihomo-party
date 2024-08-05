@@ -1,5 +1,6 @@
 import BasePage from '@renderer/components/base/base-page'
 import RuleItem from '@renderer/components/rules/rule-item'
+import { Virtuoso } from 'react-virtuoso'
 import { useMemo, useState } from 'react'
 import { Input } from '@nextui-org/react'
 import useSWR from 'swr'
@@ -31,17 +32,13 @@ const Rules: React.FC = () => {
           onValueChange={setFilter}
         />
       </div>
-      {filteredRules.map((rule, index) => {
-        return (
-          <RuleItem
-            key={rule.payload + index}
-            type={rule.type}
-            payload={rule.payload}
-            proxy={rule.proxy}
-            size={rule.size}
-          />
-        )
-      })}
+      <Virtuoso
+        style={{ height: 'calc(100vh - 100px)' }}
+        data={filteredRules}
+        itemContent={(_, rule) => (
+          <RuleItem type={rule.type} payload={rule.payload} proxy={rule.proxy} size={rule.size} />
+        )}
+      />
     </BasePage>
   )
 }
