@@ -20,12 +20,11 @@ protocols:
     - 'clash'
     - 'mihomo'
 win:
-  target:
-    - nsis
+  target: nsis
   requestedExecutionLevel: requireAdministrator
   executableName: mihomo-party
-nsis:
   artifactName: ${name}-windows-${version}-${arch}-setup.${ext}
+nsis:
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   deleteAppDataOnUninstall: true
@@ -36,6 +35,7 @@ nsis:
 mac:
   target:
     - dmg
+    - zip
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
@@ -43,8 +43,7 @@ mac:
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
-dmg:
-  artifactName: ${name}-macos-${version}-${arch}-installer.${ext}
+  artifactName: ${name}-macos-${version}-${arch}.${ext}
 linux:
   desktop:
     MimeType: 'x-scheme-handler/clash;x-scheme-handler/mihomo'
@@ -53,11 +52,9 @@ linux:
     - rpm
   maintainer: mihomo-party
   category: Utility
-deb:
-  artifactName: ${name}-linux-${version}-${arch}-installer.${ext}
-rpm:
-  artifactName: ${name}-linux-${version}-${arch}-installer.${ext}
+  artifactName: ${name}-linux-${version}-${arch}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://updater.mihomo.party
+  provider: github
+  owner: pompurin404
+  repo: mihomo-party

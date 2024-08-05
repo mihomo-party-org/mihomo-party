@@ -33,6 +33,8 @@ jobs:
           pnpm install
           pnpm prepare --${{ matrix.arch }}
       - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm build:win --${{ matrix.arch }}
 
       - name: Upload Artifacts
@@ -68,6 +70,8 @@ jobs:
           pnpm install
           pnpm prepare --${{ matrix.arch }}
       - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm build:linux --${{ matrix.arch }}
 
       - name: Upload Artifacts
@@ -105,6 +109,8 @@ jobs:
           pnpm install
           pnpm prepare --${{ matrix.arch }}
       - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm build:mac --${{ matrix.arch }}
 
       - name: Upload Artifacts
