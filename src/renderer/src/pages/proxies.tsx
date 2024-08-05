@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardBody } from '@nextui-org/react'
+import { Avatar, Button, Card, CardBody, Chip } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { mihomoChangeProxy, mihomoProxies, mihomoProxyDelay } from '@renderer/utils/ipc'
@@ -134,7 +134,9 @@ const Proxies: React.FC = () => {
         groupCounts={groupCounts}
         groupContent={(index) => {
           return (
-            <div className={`w-full pt-2 ${index === groupCounts.length - 1 ? 'pb-2' : ''} px-2`}>
+            <div
+              className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}
+            >
               <Card
                 isPressable
                 fullWidth
@@ -171,7 +173,12 @@ const Proxies: React.FC = () => {
                         )}
                       </div>
                     </div>
-                    <div className="flex">
+                    <div className="flex ">
+                      {proxyDisplayMode === 'full' && (
+                        <Chip size="sm" className="my-1 mr-2">
+                          {groups[index].all.length}
+                        </Chip>
+                      )}
                       <Button
                         title="定位到当前节点"
                         variant="light"

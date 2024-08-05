@@ -1,6 +1,7 @@
 import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
 import { mihomoProxies } from '@renderer/utils/ipc'
-import { SiNginxproxymanager } from 'react-icons/si'
+import { useMemo } from 'react'
+import { MdTableChart } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useSWR from 'swr'
 
@@ -9,6 +10,11 @@ const ProxyCard: React.FC = () => {
   const location = useLocation()
   const match = location.pathname.includes('/proxies')
   const { data: proxies = { proxies: {} } } = useSWR('mihomoProxies', mihomoProxies)
+
+  const filtered = useMemo(() => {
+    return Object.keys(proxies.proxies).filter((key) => 'all' in proxies.proxies[key])
+  }, [proxies])
+
   return (
     <Card
       fullWidth
@@ -24,7 +30,7 @@ const ProxyCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <SiNginxproxymanager
+            <MdTableChart
               className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
             />
           </Button>
@@ -44,7 +50,7 @@ const ProxyCard: React.FC = () => {
             variant="bordered"
             className="mr-3 mt-2"
           >
-            {Object.keys(proxies.proxies).length ?? 0}
+            {filtered.length}
           </Chip>
         </div>
       </CardBody>

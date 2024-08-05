@@ -29,7 +29,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
               })
             }}
           >
-            <IoClose className="text-[20px]" />
+            <IoClose className="text-[24px]" />
           </Button>
         </div>
       </CardBody>
