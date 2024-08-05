@@ -1,6 +1,6 @@
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcMainHandlers } from './utils/ipc'
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, Menu } from 'electron'
 import { stopCore, startCore } from './core/manager'
 import { triggerSysProxy } from './resolve/sysproxy'
 import icon from '../../resources/icon.png?asset'
@@ -97,6 +97,7 @@ function handleDeepLink(url: string): void {
 }
 
 function createWindow(): void {
+  Menu.setApplicationMenu(null)
   // Create the browser window.
   window = new BrowserWindow({
     minWidth: 800,
@@ -112,7 +113,6 @@ function createWindow(): void {
       sandbox: false
     }
   })
-
   window.on('ready-to-show', () => {
     if (!getAppConfig().silentStart) {
       window?.show()
