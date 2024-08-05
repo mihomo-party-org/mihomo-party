@@ -24,14 +24,16 @@ const ProxyCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <SiNginxproxymanager color="default" className="text-[20px]" />
+            <SiNginxproxymanager
+              className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+            />
           </Button>
           <Chip
             classNames={
               match
                 ? {
-                    base: 'border-foreground',
-                    content: 'text-foreground'
+                    base: 'border-white',
+                    content: 'text-white'
                   }
                 : {
                     base: 'border-primary',
@@ -47,7 +49,9 @@ const ProxyCard: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className="select-none text-md font-bold">代理组</h3>
+        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          代理组
+        </h3>
       </CardFooter>
     </Card>
   )

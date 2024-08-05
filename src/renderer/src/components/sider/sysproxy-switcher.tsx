@@ -37,7 +37,9 @@ const SysproxySwitcher: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <AiOutlineGlobal color="default" className="text-[24px]" />
+            <AiOutlineGlobal
+              className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+            />
           </Button>
           <BorderSwitch
             isShowBorder={match && enable}
@@ -47,7 +49,9 @@ const SysproxySwitcher: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className="select-none text-md font-bold">系统代理</h3>
+        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          系统代理
+        </h3>
       </CardFooter>
     </Card>
   )

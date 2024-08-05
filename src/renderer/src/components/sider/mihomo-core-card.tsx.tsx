@@ -39,7 +39,9 @@ const MihomoCoreCard: React.FC = () => {
     >
       <CardBody>
         <div className="flex justify-between h-[32px]">
-          <h3 className="select-none text-md font-bold leading-[32px]">
+          <h3
+            className={`select-none text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
+          >
             {version?.version ?? '-'}
           </h3>
 
@@ -52,14 +54,16 @@ const MihomoCoreCard: React.FC = () => {
               restartCore()
             }}
           >
-            <IoMdRefresh color="default" className="text-[24px]" />
+            <IoMdRefresh className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`} />
           </Button>
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <div className="flex justify-between w-full">
-          <h4 className="select-none text-md font-bold">内核设置</h4>
-          <h4 className="select-none text-md">{calcTraffic(mem)}</h4>
+        <div
+          className={`flex justify-between w-full select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}
+        >
+          <h4>内核设置</h4>
+          <h4>{calcTraffic(mem)}</h4>
         </div>
       </CardFooter>
     </Card>

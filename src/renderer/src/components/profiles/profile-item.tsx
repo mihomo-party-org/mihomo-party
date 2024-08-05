@@ -122,7 +122,9 @@ const ProfileItem: React.FC<Props> = (props) => {
       <Card fullWidth isPressable onPress={onClick} className={isCurrent ? 'bg-primary' : ''}>
         <CardBody className="pb-1">
           <div className="flex justify-between h-[32px]">
-            <h3 className="select-none text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px]">
+            <h3
+              className={`select-none text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${isCurrent ? 'text-white' : 'text-foreground'}`}
+            >
               {info?.name}
             </h3>
             <div className="flex">
@@ -141,13 +143,16 @@ const ProfileItem: React.FC<Props> = (props) => {
               >
                 <IoMdRefresh
                   color="default"
-                  className={`text-[24px] ${updating ? 'animate-spin' : ''}`}
+                  className={`${isCurrent ? 'text-white' : 'text-foreground'} text-[24px] ${updating ? 'animate-spin' : ''}`}
                 />
               </Button>
               <Dropdown>
                 <DropdownTrigger>
                   <Button isIconOnly size="sm" variant="light" color="default">
-                    <IoMdMore color="default" className="text-[24px]" />
+                    <IoMdMore
+                      color="default"
+                      className={`text-[24px] ${isCurrent ? 'text-white' : 'text-foreground'}`}
+                    />
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu onAction={onMenuAction}>
@@ -165,7 +170,9 @@ const ProfileItem: React.FC<Props> = (props) => {
               </Dropdown>
             </div>
           </div>
-          <div className="mt-2 flex justify-between">
+          <div
+            className={`mt-2 flex justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
+          >
             <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
             <small>{dayjs(info.updated).fromNow()}</small>
           </div>
@@ -174,7 +181,10 @@ const ProfileItem: React.FC<Props> = (props) => {
           {extra && (
             <Progress
               className="w-full"
-              classNames={{ indicator: 'bg-foreground', label: 'select-none' }}
+              classNames={{
+                indicator: isCurrent ? 'bg-white' : 'bg-foreground',
+                label: 'select-none'
+              }}
               value={calcPercent(extra?.upload, extra?.download, extra?.total)}
             />
           )}

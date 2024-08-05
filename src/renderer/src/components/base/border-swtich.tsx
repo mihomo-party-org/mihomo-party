@@ -13,7 +13,7 @@ const BorderSwitch: React.FC<SiderSwitchProps> = (props) => {
       classNames={{
         wrapper: cn('border-2', {
           'border-transparent': !isShowBorder,
-          'border-foreground': isShowBorder
+          'border-white': isShowBorder
         }),
         thumb: cn('absolute z-4', 'transform -translate-x-[2px]'),
         ...classNames

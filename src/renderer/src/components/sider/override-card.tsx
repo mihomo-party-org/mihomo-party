@@ -24,7 +24,10 @@ const OverrideCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <MdFormatOverline color="default" className="text-[24px]" />
+            <MdFormatOverline
+              color="default"
+              className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+            />
           </Button>
           <BorderSwitch
             isShowBorder={match && enable}
@@ -34,7 +37,9 @@ const OverrideCard: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className="select-none text-md font-bold">覆写</h3>
+        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          覆写
+        </h3>
       </CardFooter>
     </Card>
   )

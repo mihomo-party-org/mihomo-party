@@ -38,9 +38,12 @@ const ConnCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <IoLink color="default" className="text-[20px]" />
+            <IoLink
+              color="default"
+              className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+            />
           </Button>
-          <div className="p-2 w-full select-none">
+          <div className={`p-2 w-full select-none ${match ? 'text-white' : 'text-foreground'} `}>
             <div className="flex justify-between">
               <div className="w-full text-right mr-2">{calcTraffic(upload)}/s</div>
               <FaCircleArrowUp className="h-[24px] leading-[24px]" />
@@ -53,7 +56,9 @@ const ConnCard: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className="select-none text-md font-bold">连接</h3>
+        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          连接
+        </h3>
       </CardFooter>
     </Card>
   )

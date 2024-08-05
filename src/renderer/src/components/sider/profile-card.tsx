@@ -37,7 +37,9 @@ const ProfileCard: React.FC = () => {
     >
       <CardBody className="pb-1">
         <div className="flex justify-between h-[32px]">
-          <h3 className="select-none text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px]">
+          <h3
+            className={`select-none text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
+          >
             {info?.name}
           </h3>
           <Button
@@ -54,12 +56,11 @@ const ProfileCard: React.FC = () => {
             }}
           >
             <IoMdRefresh
-              color="default"
-              className={`text-[24px] ${updating ? 'animate-spin' : ''}`}
+              className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
             />
           </Button>
         </div>
-        <div className="mt-2 flex justify-between">
+        <div className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'} `}>
           <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
           <small>{dayjs(info.updated).fromNow()}</small>
         </div>
@@ -68,7 +69,7 @@ const ProfileCard: React.FC = () => {
         {extra && (
           <Progress
             className="w-full"
-            classNames={{ indicator: 'bg-foreground', label: 'select-none' }}
+            classNames={{ indicator: match ? 'bg-white' : 'bg-foreground', label: 'select-none' }}
             value={calcPercent(extra?.upload, extra?.download, extra?.total)}
           />
         )}

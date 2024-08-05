@@ -26,14 +26,17 @@ const RuleCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <IoGitNetwork color="default" className="text-[20px]" />
+            <IoGitNetwork
+              color="default"
+              className={`${match ? 'text-white' : 'text-foreground'} text-[20px]`}
+            />
           </Button>
           <Chip
             classNames={
               match
                 ? {
-                    base: 'border-foreground',
-                    content: 'text-foreground'
+                    base: 'border-white',
+                    content: 'text-white'
                   }
                 : {
                     base: 'border-primary',
@@ -49,7 +52,9 @@ const RuleCard: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className="select-none text-md font-bold">规则</h3>
+        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          规则
+        </h3>
       </CardFooter>
     </Card>
   )

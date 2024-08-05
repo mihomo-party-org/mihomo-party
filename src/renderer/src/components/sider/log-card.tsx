@@ -20,12 +20,17 @@ const LogCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <IoJournal color="default" className="text-[20px]" />
+            <IoJournal
+              color="default"
+              className={`${match ? 'text-white' : 'text-foreground'} text-[20px] font-bold`}
+            />
           </Button>
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className="select-none text-md font-bold">日志</h3>
+        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          日志
+        </h3>
       </CardFooter>
     </Card>
   )

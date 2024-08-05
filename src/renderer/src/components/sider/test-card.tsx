@@ -22,12 +22,17 @@ const TestCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <TbWorldCheck color="default" className="text-[20px]" />
+            <TbWorldCheck
+              color="default"
+              className={`${match ? 'text-white' : 'text-foreground'} text-[20px] font-bold`}
+            />
           </Button>
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className="select-none text-md font-bold">测试</h3>
+        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          测试
+        </h3>
       </CardFooter>
     </Card>
   )
