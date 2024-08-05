@@ -3,6 +3,7 @@ import {
   getProfileConfig,
   addProfileItem as add,
   removeProfileItem as remove,
+  updateProfileItem as update,
   changeCurrentProfile as change
 } from '@renderer/utils/ipc'
 import { useEffect } from 'react'
@@ -11,6 +12,7 @@ interface RetuenType {
   profileConfig: IProfileConfig | undefined
   mutateProfileConfig: () => void
   addProfileItem: (item: Partial<IProfileItem>) => Promise<void>
+  updateProfileItem: (item: IProfileItem) => Promise<void>
   removeProfileItem: (id: string) => Promise<void>
   changeCurrentProfile: (id: string) => Promise<void>
 }
@@ -27,6 +29,11 @@ export const useProfileConfig = (): RetuenType => {
 
   const removeProfileItem = async (id: string): Promise<void> => {
     await remove(id)
+    mutateProfileConfig()
+  }
+
+  const updateProfileItem = async (item: IProfileItem): Promise<void> => {
+    await update(item)
     mutateProfileConfig()
   }
 
@@ -49,6 +56,7 @@ export const useProfileConfig = (): RetuenType => {
     mutateProfileConfig,
     addProfileItem,
     removeProfileItem,
+    updateProfileItem,
     changeCurrentProfile
   }
 }

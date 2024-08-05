@@ -9,6 +9,7 @@ const Profiles: React.FC = () => {
   const {
     profileConfig,
     addProfileItem,
+    updateProfileItem,
     removeProfileItem,
     changeCurrentProfile,
     mutateProfileConfig
@@ -61,8 +62,10 @@ const Profiles: React.FC = () => {
           <ProfileItem
             key={item.id}
             isCurrent={item.id === current}
+            addProfileItem={addProfileItem}
             removeProfileItem={removeProfileItem}
             mutateProfileConfig={mutateProfileConfig}
+            updateProfileItem={updateProfileItem}
             info={item}
             onClick={async () => {
               await changeCurrentProfile(item.id)

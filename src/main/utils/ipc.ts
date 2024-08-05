@@ -23,11 +23,14 @@ import {
   getCurrentProfileItem,
   getProfileItem,
   addProfileItem,
-  removeProfileItem
+  removeProfileItem,
+  changeCurrentProfile,
+  getProfileStr,
+  setProfileStr,
+  updateProfileItem
 } from '../config'
 import { isEncryptionAvailable, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
-import { changeCurrentProfile } from '../config/profile'
 
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
@@ -52,6 +55,9 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('getProfileConfig', (_e, force) => getProfileConfig(force))
   ipcMain.handle('getCurrentProfileItem', getCurrentProfileItem)
   ipcMain.handle('getProfileItem', (_e, id) => getProfileItem(id))
+  ipcMain.handle('getProfileStr', (_e, id) => getProfileStr(id))
+  ipcMain.handle('setProfileStr', (_e, id, str) => setProfileStr(id, str))
+  ipcMain.handle('updateProfileItem', (_e, item) => updateProfileItem(item))
   ipcMain.handle('changeCurrentProfile', (_e, id) => changeCurrentProfile(id))
   ipcMain.handle('addProfileItem', (_e, item) => addProfileItem(item))
   ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))

@@ -38,9 +38,21 @@ export async function changeCurrentProfile(id: string): Promise<void> {
   }
 }
 
+export async function updateProfileItem(item: IProfileItem): Promise<void> {
+  const index = profileConfig.items.findIndex((i) => i.id === item.id)
+  profileConfig.items[index] = item
+  fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
+  window?.webContents.send('profileConfigUpdated')
+}
+
 export async function addProfileItem(item: Partial<IProfileItem>): Promise<void> {
   const newItem = await createProfile(item)
-  profileConfig.items.push(newItem)
+  if (profileConfig.items.find((i) => i.id === newItem.id)) {
+    updateProfileItem(newItem)
+  } else {
+    profileConfig.items.push(newItem)
+  }
+
   if (!getProfileConfig().current) {
     changeCurrentProfile(newItem.id)
   }
@@ -134,7 +146,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
         if (headers['subscription-userinfo']) {
           newItem.extra = parseSubinfo(headers['subscription-userinfo'])
         }
-        fs.writeFileSync(profilePath(id), data, 'utf-8')
+        setProfileStr(id, data)
       } catch (e) {
         dialog.showErrorBox('Failed to fetch remote profile', `${e}\nurl: ${item.url}`)
         throw new Error(`Failed to fetch remote profile ${e}`)
@@ -150,7 +162,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
         throw new Error('File is required for local profile')
       }
       const data = item.file
-      fs.writeFileSync(profilePath(id), yaml.stringify(data))
+      setProfileStr(id, data)
       break
     }
   }
@@ -158,13 +170,25 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
   return newItem
 }
 
+export function getProfileStr(id: string): string {
+  return fs.readFileSync(profilePath(id), 'utf-8')
+}
+
+export function setProfileStr(id: string, content: string): void {
+  fs.writeFileSync(profilePath(id), content, 'utf-8')
+  if (id === getProfileConfig().current) {
+    getCurrentProfile(true)
+    restartCore()
+  }
+}
+
 export function getCurrentProfile(force = false): Partial<IMihomoConfig> {
   if (force || !currentProfile) {
     const current = getProfileConfig().current
     if (current) {
-      currentProfile = yaml.parse(fs.readFileSync(profilePath(current), 'utf-8'))
+      currentProfile = yaml.parse(getProfileStr(current))
     } else {
-      currentProfile = yaml.parse(fs.readFileSync(profilePath('default'), 'utf-8'))
+      currentProfile = yaml.parse(getProfileStr('default'))
     }
   }
   return currentProfile

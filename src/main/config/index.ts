@@ -7,5 +7,9 @@ export {
   getProfileConfig,
   addProfileItem,
   removeProfileItem,
-  createProfile
+  createProfile,
+  getProfileStr,
+  setProfileStr,
+  changeCurrentProfile,
+  updateProfileItem
 } from './profile'

@@ -99,6 +99,18 @@ export async function removeProfileItem(id: string): Promise<void> {
   return await window.electron.ipcRenderer.invoke('removeProfileItem', id)
 }
 
+export async function updateProfileItem(item: IProfileItem): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('updateProfileItem', item)
+}
+
+export async function getProfileStr(id: string): Promise<string> {
+  return await window.electron.ipcRenderer.invoke('getProfileStr', id)
+}
+
+export async function setProfileStr(id: string, str: string): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('setProfileStr', id, str)
+}
+
 export async function restartCore(): Promise<void> {
   return await window.electron.ipcRenderer.invoke('restartCore')
 }
