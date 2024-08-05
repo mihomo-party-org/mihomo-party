@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { getPlatform } from './ipc'
 const originError = console.error
 const originWarn = console.warn
 console.error = function (...args: any[]): void {
@@ -12,4 +14,10 @@ console.warn = function (...args): void {
     return
   }
   originWarn.call(console, args)
+}
+
+export let platform: NodeJS.Platform
+
+export async function init(): Promise<void> {
+  platform = await getPlatform()
 }
