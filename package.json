@@ -1,6 +1,6 @@
 {
   "name": "mihomo-party",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Mihomo Party",
   "main": "./out/main/index.js",
   "author": "mihomo-party",
@@ -12,7 +12,6 @@
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "prepare": "node scripts/prepare.mjs",
-    "updater": "node scripts/updater.mjs",
     "dev": "electron-vite dev",
     "postinstall": "electron-builder install-app-deps",
     "build:win": "electron-vite build && electron-builder --win --publish never",
@@ -26,7 +25,6 @@
     "@nextui-org/react": "^2.4.6",
     "axios": "^1.7.2",
     "dayjs": "^1.11.12",
-    "electron-updater": "^6.2.1",
     "framer-motion": "^11.3.19",
     "next-themes": "^0.3.0",
     "pubsub-js": "^1.9.4",

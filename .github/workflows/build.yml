@@ -49,16 +49,7 @@ jobs:
         with:
           files: |
             dist/*.exe
-            dist/*.blockmap
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Merge Yaml
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: pnpm updater latest.yml
-      - name: Publish Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/latest.yml
+            dist/latest.yml
           token: ${{ secrets.GITHUB_TOKEN }}
 
   linux:
@@ -103,21 +94,6 @@ jobs:
           files: |
             dist/*.deb
             dist/*.rpm
-            dist/*.blockmap
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Merge Yaml
-        if: startsWith(github.ref, 'refs/tags/v') && matrix.arch == 'x64'
-        run: pnpm updater latest-linux.yml
-      - name: Merge Yaml
-        if: startsWith(github.ref, 'refs/tags/v') && matrix.arch == 'arm64'
-        run: pnpm updater latest-linux-arm64.yml
-      - name: Publish Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/latest-linux.yml
-            dist/latest-linux-arm64.yml
           token: ${{ secrets.GITHUB_TOKEN }}
 
   macos:
@@ -146,10 +122,7 @@ jobs:
           pnpm install
           pnpm prepare --${{ matrix.arch }}
       - name: Build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm build:mac --${{ matrix.arch }}
-
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -160,17 +133,5 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist/*.dmg
-            dist/*.zip
-            dist/*.blockmap
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Merge Yaml
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: pnpm updater latest-mac.yml
-      - name: Publish Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/latest-mac.yml
+          files: dist/*.dmg
           token: ${{ secrets.GITHUB_TOKEN }}
