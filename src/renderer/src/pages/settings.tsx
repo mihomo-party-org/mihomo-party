@@ -3,7 +3,13 @@ import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { checkAutoRun, enableAutoRun, disableAutoRun, quitApp } from '@renderer/utils/ipc'
+import {
+  checkAutoRun,
+  enableAutoRun,
+  disableAutoRun,
+  quitApp,
+  checkUpdate
+} from '@renderer/utils/ipc'
 import { IoLogoGithub } from 'react-icons/io5'
 
 import useSWR from 'swr'
@@ -15,7 +21,7 @@ const Settings: React.FC = () => {
   })
 
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { silentStart = false, delayTestUrl, delayTestTimeout } = appConfig || {}
+  const { silentStart = false, delayTestUrl, delayTestTimeout, autoCheckUpdate } = appConfig || {}
 
   return (
     <BasePage
@@ -44,6 +50,15 @@ const Settings: React.FC = () => {
                 disableAutoRun()
               }
               mutate()
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="自动检查更新" divider>
+          <Switch
+            size="sm"
+            isSelected={autoCheckUpdate}
+            onValueChange={(v) => {
+              patchAppConfig({ autoCheckUpdate: v })
             }}
           />
         </SettingItem>
@@ -83,6 +98,20 @@ const Settings: React.FC = () => {
         </SettingItem>
       </SettingCard>
       <SettingCard>
+        <SettingItem
+          title="检查更新"
+          divider
+          onPress={() => {
+            checkUpdate().then((v) => {
+              if (v) {
+                new window.Notification(`v${v}版本已发布`, { body: '点击前往下载' }).onclick =
+                  (): void => {
+                    open(`https://github.com/pompurin404/mihomo-party/releases/tag/v${v}`)
+                  }
+              }
+            })
+          }}
+        />
         <SettingItem title="退出应用" onPress={quitApp} />
       </SettingCard>
     </BasePage>

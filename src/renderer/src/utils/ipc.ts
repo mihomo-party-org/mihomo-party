@@ -127,6 +127,10 @@ export async function encryptString(str: string): Promise<Buffer> {
   return await window.electron.ipcRenderer.invoke('encryptString', str)
 }
 
+export async function checkUpdate(): Promise<string | undefined> {
+  return await window.electron.ipcRenderer.invoke('checkUpdate')
+}
+
 export async function getPlatform(): Promise<NodeJS.Platform> {
   return await window.electron.ipcRenderer.invoke('platform')
 }

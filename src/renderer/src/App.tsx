@@ -15,6 +15,7 @@ import ConnCard from '@renderer/components/sider/conn-card'
 import LogCard from '@renderer/components/sider/log-card'
 import MihomoCoreCard from './components/sider/mihomo-core-card.tsx'
 import TestCard from './components/sider/test-card.js'
+import UpdaterButton from './components/updater/updater-button.js'
 
 const App: React.FC = () => {
   const { setTheme } = useTheme()
@@ -47,6 +48,7 @@ const App: React.FC = () => {
         <div className="sticky top-0 z-40 backdrop-blur bg-background/40 h-[48px]">
           <div className="flex justify-between p-2">
             <h3 className="select-none text-lg font-bold leading-[32px]">Mihomo Party</h3>
+            <UpdaterButton />
             <Button
               size="sm"
               isIconOnly

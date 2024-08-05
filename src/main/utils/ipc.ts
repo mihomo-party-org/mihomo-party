@@ -31,6 +31,7 @@ import {
 } from '../config'
 import { isEncryptionAvailable, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
+import { checkUpdate } from '../resolve/autoUpdater'
 
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
@@ -65,6 +66,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
+  ipcMain.handle('checkUpdate', () => checkUpdate())
   ipcMain.handle('platform', () => process.platform)
   ipcMain.handle('quitApp', () => app.quit())
 }

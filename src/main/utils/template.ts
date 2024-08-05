@@ -3,6 +3,7 @@ export const defaultConfig: IAppConfig = {
   silentStart: false,
   proxyDisplayMode: 'simple',
   proxyDisplayOrder: 'default',
+  autoCheckUpdate: true,
   sysProxy: { enable: false, mode: 'manual' }
 }
 
