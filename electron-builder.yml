@@ -54,7 +54,4 @@ linux:
   category: Utility
   artifactName: ${name}-linux-${version}-${arch}.${ext}
 npmRebuild: false
-publish:
-  provider: github
-  owner: pompurin404
-  repo: mihomo-party
+publish: []
