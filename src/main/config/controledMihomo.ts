@@ -1,7 +1,7 @@
 import { controledMihomoConfigPath } from '../utils/dirs'
 import yaml from 'yaml'
 import fs from 'fs'
-import { getAxios } from '../core/mihomoApi'
+import { getAxios, startMihomoMemory, startMihomoTraffic } from '../core/mihomoApi'
 
 export let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
 
@@ -21,6 +21,8 @@ export function setControledMihomoConfig(patch: Partial<IMihomoConfig>): void {
   controledMihomoConfig = Object.assign(controledMihomoConfig, patch)
   if (patch['external-controller'] || patch.secret) {
     getAxios(true)
+    startMihomoMemory()
+    startMihomoTraffic()
   }
   fs.writeFileSync(controledMihomoConfigPath(), yaml.stringify(controledMihomoConfig))
 }

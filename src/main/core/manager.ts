@@ -37,10 +37,20 @@ export function startCore(): void {
       }
     )
   })
+  child.on('close', (code, signal) => {
+    fs.writeFileSync(logPath(), `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`, {
+      flag: 'a'
+    })
+    fs.writeFileSync(logPath(), `[Manager]: Restart Core\n`, {
+      flag: 'a'
+    })
+    restartCore()
+  })
 }
 
 export function stopCore(): void {
   if (child) {
+    child.removeAllListeners()
     child.kill('SIGINT')
   }
 }

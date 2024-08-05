@@ -124,7 +124,7 @@ const mihomoTraffic = (): void => {
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoTraffic()
 
-  mihomoTrafficWs = new WebSocket(`ws://${server}/traffic?secret=${secret}`)
+  mihomoTrafficWs = new WebSocket(`ws://${server}/traffic?token=${encodeURIComponent(secret)}`)
 
   mihomoTrafficWs.onmessage = (e): void => {
     const data = e.data as string
@@ -163,7 +163,7 @@ const mihomoMemory = (): void => {
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoMemory()
 
-  mihomoMemoryWs = new WebSocket(`ws://${server}/memory?secret=${secret}`)
+  mihomoMemoryWs = new WebSocket(`ws://${server}/memory?token=${encodeURIComponent(secret)}`)
 
   mihomoMemoryWs.onmessage = (e): void => {
     const data = e.data as string
@@ -202,7 +202,7 @@ const mihomoLogs = (): void => {
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoLogs()
 
-  mihomoLogsWs = new WebSocket(`ws://${server}/logs?secret=${secret}`)
+  mihomoLogsWs = new WebSocket(`ws://${server}/logs?token=${encodeURIComponent(secret)}`)
 
   mihomoLogsWs.onmessage = (e): void => {
     const data = e.data as string
