@@ -3,13 +3,14 @@ import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
-import { restartCore } from '@renderer/utils/ipc'
+import { restartCore, setupFirewall } from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import React, { Key, useState } from 'react'
 
 const Tun: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const { tun } = controledMihomoConfig || {}
+  const [loading, setLoading] = useState(false)
   const {
     device = 'Mihomo',
     stack = 'mixed',
@@ -134,7 +135,7 @@ const Tun: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="DNS 劫持">
+        <SettingItem title="DNS 劫持" divider>
           <Input
             size="sm"
             className="w-[50%]"
@@ -143,6 +144,19 @@ const Tun: React.FC = () => {
               setValues({ ...values, dnsHijack: v.split(',') })
             }}
           />
+        </SettingItem>
+        <SettingItem title="重设防火墙">
+          <Button
+            size="sm"
+            color="primary"
+            isLoading={loading}
+            onPress={() => {
+              setLoading(true)
+              setupFirewall().finally(() => setLoading(false))
+            }}
+          >
+            重设防火墙
+          </Button>
         </SettingItem>
       </SettingCard>
     </BasePage>

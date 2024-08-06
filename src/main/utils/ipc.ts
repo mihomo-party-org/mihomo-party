@@ -1,4 +1,4 @@
-import { app, ipcMain, safeStorage } from 'electron'
+import { app, dialog, ipcMain, safeStorage } from 'electron'
 import {
   mihomoChangeProxy,
   mihomoCloseAllConnections,
@@ -33,6 +33,8 @@ import {
 import { isEncryptionAvailable, startCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
 import { checkUpdate } from '../resolve/autoUpdater'
+import { exePath, mihomoCorePath } from './dirs'
+import { execSync } from 'child_process'
 
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
@@ -71,5 +73,37 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('checkUpdate', () => checkUpdate())
   ipcMain.handle('getVersion', () => app.getVersion())
   ipcMain.handle('platform', () => process.platform)
+  ipcMain.handle('setupFirewall', setupFirewall)
   ipcMain.handle('quitApp', () => app.quit())
+}
+
+async function setupFirewall(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const removeCommand = `
+  Remove-NetFirewallRule -DisplayName "mihomo" -ErrorAction SilentlyContinue
+  Remove-NetFirewallRule -DisplayName "mihomo-alpha" -ErrorAction SilentlyContinue
+  Remove-NetFirewallRule -DisplayName "Mihomo Party" -ErrorAction SilentlyContinue
+  `
+    const createCommand = `
+  New-NetFirewallRule -DisplayName "mihomo" -Direction Inbound -Action Allow -Program "${mihomoCorePath('mihomo')}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
+  New-NetFirewallRule -DisplayName "mihomo-alpha" -Direction Inbound -Action Allow -Program "${mihomoCorePath('mihomo-alpha')}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
+  New-NetFirewallRule -DisplayName "Mihomo Party" -Direction Inbound -Action Allow -Program "${exePath()}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
+  `
+
+    if (process.platform === 'win32') {
+      try {
+        execSync(removeCommand, { shell: 'powershell' })
+      } catch {
+        console.log('Remove-NetFirewallRule Failed')
+      }
+      try {
+        execSync(createCommand, { shell: 'powershell' })
+      } catch (e) {
+        dialog.showErrorBox('防火墙设置失败', `${e}`)
+        reject(e)
+        console.log('New-NetFirewallRule Failed')
+      }
+    }
+    resolve()
+  })
 }

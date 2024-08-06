@@ -2,9 +2,7 @@ import {
   appConfigPath,
   controledMihomoConfigPath,
   dataDir,
-  exePath,
   logDir,
-  mihomoCorePath,
   mihomoTestDir,
   mihomoWorkDir,
   profileConfigPath,
@@ -25,7 +23,6 @@ import { startPacServer } from './server'
 import { triggerSysProxy } from './sysproxy'
 import { getAppConfig } from '../config'
 import { app } from 'electron'
-import { execSync } from 'child_process'
 
 function initDirs(): void {
   if (!fs.existsSync(dataDir)) {
@@ -85,38 +82,11 @@ function initDeeplink(): void {
   }
 }
 
-function initFirewall(): void {
-  const removeCommand = `
-  Remove-NetFirewallRule -DisplayName "mihomo" -ErrorAction SilentlyContinue
-  Remove-NetFirewallRule -DisplayName "mihomo-alpha" -ErrorAction SilentlyContinue
-  Remove-NetFirewallRule -DisplayName "Mihomo Party" -ErrorAction SilentlyContinue
-  `
-  const createCommand = `
-  New-NetFirewallRule -DisplayName "mihomo" -Direction Inbound -Action Allow -Program "${mihomoCorePath('mihomo')}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
-  New-NetFirewallRule -DisplayName "mihomo-alpha" -Direction Inbound -Action Allow -Program "${mihomoCorePath('mihomo-alpha')}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
-  New-NetFirewallRule -DisplayName "Mihomo Party" -Direction Inbound -Action Allow -Program "${exePath()}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
-  `
-
-  if (process.platform === 'win32') {
-    try {
-      execSync(removeCommand, { shell: 'powershell' })
-    } catch {
-      console.log('Remove-NetFirewallRule Failed')
-    }
-    try {
-      execSync(createCommand, { shell: 'powershell' })
-    } catch {
-      console.log('New-NetFirewallRule Failed')
-    }
-  }
-}
-
 export function init(): void {
   initDirs()
   initConfig()
   initFiles()
   initDeeplink()
-  initFirewall()
   startPacServer().then(() => {
     triggerSysProxy(getAppConfig().sysProxy.enable)
   })

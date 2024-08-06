@@ -98,23 +98,30 @@ const Settings: React.FC = () => {
         </SettingItem>
       </SettingCard>
       <SettingCard>
-        <SettingItem
-          title="检查更新"
-          divider
-          onPress={() => {
-            checkUpdate().then((v) => {
-              if (v) {
-                new window.Notification(`v${v}版本已发布`, { body: '点击前往下载' }).onclick =
-                  (): void => {
-                    open(`https://github.com/pompurin404/mihomo-party/releases/tag/v${v}`)
-                  }
-              } else {
-                new window.Notification('当前已是最新版本', { body: '无需更新' })
-              }
-            })
-          }}
-        />
-        <SettingItem title="退出应用" onPress={quitApp} divider />
+        <SettingItem title="检查更新" divider>
+          <Button
+            size="sm"
+            onPress={() => {
+              checkUpdate().then((v) => {
+                if (v) {
+                  new window.Notification(`v${v}版本已发布`, { body: '点击前往下载' }).onclick =
+                    (): void => {
+                      open(`https://github.com/pompurin404/mihomo-party/releases/tag/v${v}`)
+                    }
+                } else {
+                  new window.Notification('当前已是最新版本', { body: '无需更新' })
+                }
+              })
+            }}
+          >
+            检查更新
+          </Button>
+        </SettingItem>
+        <SettingItem title="退出应用" divider>
+          <Button size="sm" onPress={quitApp}>
+            退出应用
+          </Button>
+        </SettingItem>
         <SettingItem title="应用版本">
           <div className="select-none">v{version}</div>
         </SettingItem>

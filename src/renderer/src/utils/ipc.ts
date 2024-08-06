@@ -143,6 +143,10 @@ export async function getPlatform(): Promise<NodeJS.Platform> {
   return await window.electron.ipcRenderer.invoke('platform')
 }
 
+export async function setupFirewall(): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('setupFirewall')
+}
+
 export async function quitApp(): Promise<void> {
   return await window.electron.ipcRenderer.invoke('quitApp')
 }
