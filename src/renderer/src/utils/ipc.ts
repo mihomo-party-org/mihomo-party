@@ -6,10 +6,6 @@ export async function mihomoConfig(): Promise<IMihomoConfig> {
   return await window.electron.ipcRenderer.invoke('mihomoConfig')
 }
 
-export async function mihomoConnections(): Promise<IMihomoConnectionsInfo> {
-  return await window.electron.ipcRenderer.invoke('mihomoConnections')
-}
-
 export async function mihomoCloseConnection(id: string): Promise<void> {
   return await window.electron.ipcRenderer.invoke('mihomoCloseConnection', id)
 }
@@ -41,6 +37,14 @@ export async function startMihomoLogs(): Promise<void> {
 
 export async function stopMihomoLogs(): Promise<void> {
   return await window.electron.ipcRenderer.invoke('stopMihomoLogs')
+}
+
+export async function startMihomoConnections(): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('startMihomoConnections')
+}
+
+export async function stopMihomoConnections(): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('stopMihomoConnections')
 }
 
 export async function patchMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {

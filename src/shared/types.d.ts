@@ -71,6 +71,8 @@ interface IMihomoConnectionDetail {
     dscp: number
     sniffHost: string
   }
+  uploadSpeed?: number
+  downloadSpeed?: number
   upload: number
   download: number
   start: string

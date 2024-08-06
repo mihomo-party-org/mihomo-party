@@ -8,7 +8,11 @@
 
 *::-webkit-scrollbar {
   width: 8px;
-  height: 6px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-corner {
+  background-color: transparent;
 }
 
 /* Light mode */

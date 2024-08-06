@@ -7,6 +7,7 @@ let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
 let mihomoMemoryWs: WebSocket | null = null
 let mihomoLogsWs: WebSocket | null = null
+let mihomoConnectionsWs: WebSocket | null = null
 
 export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
   if (axiosIns && !force) return axiosIns
@@ -44,13 +45,6 @@ export const patchMihomoConfig = async (patch: Partial<IMihomoConfig>): Promise<
   return (await instance.patch('/configs', patch).catch((e) => {
     return e.response.data
   })) as Promise<void>
-}
-
-export const mihomoConnections = async (): Promise<IMihomoConnectionsInfo> => {
-  const instance = await getAxios()
-  return (await instance.get('/connections').catch(() => {
-    return { downloadTotal: 0, uploadTotal: 0, connections: [], memory: 0 }
-  })) as IMihomoConnectionsInfo
 }
 
 export const mihomoCloseConnection = async (id: string): Promise<void> => {
@@ -227,6 +221,47 @@ const mihomoLogs = (): void => {
     if (mihomoLogsWs) {
       mihomoLogsWs.close()
       mihomoLogsWs = null
+    }
+  }
+}
+
+export const startMihomoConnections = (): void => {
+  mihomoConnections()
+}
+
+export const stopMihomoConnections = (): void => {
+  if (mihomoConnectionsWs) {
+    mihomoConnectionsWs.removeAllListeners()
+    if (mihomoConnectionsWs.readyState === WebSocket.OPEN) {
+      mihomoConnectionsWs.close()
+    }
+    mihomoConnectionsWs = null
+  }
+}
+
+const mihomoConnections = (): void => {
+  let server = getControledMihomoConfig()['external-controller']
+  const secret = getControledMihomoConfig().secret ?? ''
+  if (server?.startsWith(':')) server = `127.0.0.1${server}`
+  stopMihomoConnections()
+
+  mihomoConnectionsWs = new WebSocket(
+    `ws://${server}/connections?token=${encodeURIComponent(secret)}`
+  )
+
+  mihomoConnectionsWs.onmessage = (e): void => {
+    const data = e.data as string
+    window?.webContents.send('mihomoConnections', JSON.parse(data) as IMihomoConnectionsInfo)
+  }
+
+  mihomoConnectionsWs.onclose = (): void => {
+    mihomoConnections()
+  }
+
+  mihomoConnectionsWs.onerror = (): void => {
+    if (mihomoConnectionsWs) {
+      mihomoConnectionsWs.close()
+      mihomoConnectionsWs = null
     }
   }
 }

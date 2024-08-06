@@ -4,13 +4,14 @@ import {
   mihomoCloseAllConnections,
   mihomoCloseConnection,
   mihomoConfig,
-  mihomoConnections,
   mihomoProxies,
   mihomoProxyDelay,
   mihomoRules,
   mihomoVersion,
   patchMihomoConfig,
+  startMihomoConnections,
   startMihomoLogs,
+  stopMihomoConnections,
   stopMihomoLogs
 } from '../core/mihomoApi'
 import { checkAutoRun, disableAutoRun, enableAutoRun } from '../resolve/autoRun'
@@ -36,7 +37,6 @@ import { checkUpdate } from '../resolve/autoUpdater'
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
   ipcMain.handle('mihomoConfig', mihomoConfig)
-  ipcMain.handle('mihomoConnections', mihomoConnections)
   ipcMain.handle('mihomoCloseConnection', (_e, id) => mihomoCloseConnection(id))
   ipcMain.handle('mihomoCloseAllConnections', mihomoCloseAllConnections)
   ipcMain.handle('mihomoRules', mihomoRules)
@@ -45,6 +45,8 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoProxyDelay', (_e, proxy, url) => mihomoProxyDelay(proxy, url))
   ipcMain.handle('startMihomoLogs', startMihomoLogs)
   ipcMain.handle('stopMihomoLogs', stopMihomoLogs)
+  ipcMain.handle('startMihomoConnections', () => startMihomoConnections())
+  ipcMain.handle('stopMihomoConnections', () => stopMihomoConnections())
   ipcMain.handle('patchMihomoConfig', (_e, patch) => patchMihomoConfig(patch))
   ipcMain.handle('checkAutoRun', checkAutoRun)
   ipcMain.handle('enableAutoRun', enableAutoRun)
