@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { getPlatform } from './ipc'
+import { getPlatform, getVersion } from './ipc'
 const originError = console.error
 const originWarn = console.warn
 console.error = function (...args: any[]): void {
@@ -17,7 +17,9 @@ console.warn = function (...args): void {
 }
 
 export let platform: NodeJS.Platform
+export let version: string
 
 export async function init(): Promise<void> {
   platform = await getPlatform()
+  version = await getVersion()
 }

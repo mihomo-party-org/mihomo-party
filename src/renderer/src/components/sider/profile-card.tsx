@@ -60,7 +60,9 @@ const ProfileCard: React.FC = () => {
             />
           </Button>
         </div>
-        <div className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'} `}>
+        <div
+          className={`mt-2 flex select-none justify-between ${match ? 'text-white' : 'text-foreground'} `}
+        >
           <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
           <small>{dayjs(info.updated).fromNow()}</small>
         </div>

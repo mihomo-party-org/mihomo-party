@@ -67,6 +67,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
   ipcMain.handle('checkUpdate', () => checkUpdate())
+  ipcMain.handle('getVersion', () => app.getVersion())
   ipcMain.handle('platform', () => process.platform)
   ipcMain.handle('quitApp', () => app.quit())
 }

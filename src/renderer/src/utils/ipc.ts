@@ -131,6 +131,10 @@ export async function checkUpdate(): Promise<string | undefined> {
   return await window.electron.ipcRenderer.invoke('checkUpdate')
 }
 
+export async function getVersion(): Promise<string> {
+  return await window.electron.ipcRenderer.invoke('getVersion')
+}
+
 export async function getPlatform(): Promise<NodeJS.Platform> {
   return await window.electron.ipcRenderer.invoke('platform')
 }

@@ -11,7 +11,7 @@ import {
   checkUpdate
 } from '@renderer/utils/ipc'
 import { IoLogoGithub } from 'react-icons/io5'
-
+import { version } from '@renderer/utils/init'
 import useSWR from 'swr'
 
 const Settings: React.FC = () => {
@@ -108,11 +108,16 @@ const Settings: React.FC = () => {
                   (): void => {
                     open(`https://github.com/pompurin404/mihomo-party/releases/tag/v${v}`)
                   }
+              } else {
+                new window.Notification('当前已是最新版本', { body: '无需更新' })
               }
             })
           }}
         />
-        <SettingItem title="退出应用" onPress={quitApp} />
+        <SettingItem title="退出应用" onPress={quitApp} divider />
+        <SettingItem title="应用版本">
+          <div className="select-none">v{version}</div>
+        </SettingItem>
       </SettingCard>
     </BasePage>
   )

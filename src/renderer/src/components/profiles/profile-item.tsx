@@ -47,6 +47,7 @@ const ProfileItem: React.FC<Props> = (props) => {
   const usage = (extra?.upload ?? 0) + (extra?.download ?? 0)
   const total = extra?.total ?? 0
   const [updating, setUpdating] = useState(false)
+  const [selecting, setSelecting] = useState(false)
   const [openInfo, setOpenInfo] = useState(false)
   const [openFile, setOpenFile] = useState(false)
 
@@ -119,7 +120,17 @@ const ProfileItem: React.FC<Props> = (props) => {
           updateProfileItem={updateProfileItem}
         />
       )}
-      <Card fullWidth isPressable onPress={onClick} className={isCurrent ? 'bg-primary' : ''}>
+      <Card
+        fullWidth
+        isPressable
+        onPress={() => {
+          setSelecting(true)
+          onClick().finally(() => {
+            setSelecting(false)
+          })
+        }}
+        className={`${isCurrent ? 'bg-primary' : ''} ${selecting ? 'blur-sm' : ''}`}
+      >
         <CardBody className="pb-1">
           <div className="flex justify-between h-[32px]">
             <h3
@@ -171,7 +182,7 @@ const ProfileItem: React.FC<Props> = (props) => {
             </div>
           </div>
           <div
-            className={`mt-2 flex justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
+            className={`mt-2 flex select-none justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
           >
             <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
             <small>{dayjs(info.updated).fromNow()}</small>

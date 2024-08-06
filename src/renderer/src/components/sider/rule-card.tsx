@@ -36,11 +36,11 @@ const RuleCard: React.FC = () => {
               match
                 ? {
                     base: 'border-white',
-                    content: 'text-white'
+                    content: 'text-white select-none'
                   }
                 : {
                     base: 'border-primary',
-                    content: 'text-primary'
+                    content: 'text-primary select-none'
                   }
             }
             size="sm"

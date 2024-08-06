@@ -62,7 +62,7 @@ const ProxyItem: React.FC<Props> = (props) => {
       radius="sm"
     >
       <CardBody className="p-2">
-        <div className="flex justify-between items-center">
+        <div className="flex select-none justify-between items-center">
           <div>
             <div className="inline text-ellipsis whitespace-nowrap overflow-hidden">
               {proxy.name}
