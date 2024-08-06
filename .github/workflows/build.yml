@@ -32,10 +32,16 @@ jobs:
         with:
           version: 9
       - name: Install Dependencies
+        env:
+          npm_config_arch: ${{ matrix.arch }}
+          npm_config_target_arch: ${{ matrix.arch }}
         run: |
           pnpm install
           pnpm prepare --${{ matrix.arch }}
       - name: Build
+        env:
+          npm_config_arch: ${{ matrix.arch }}
+          npm_config_target_arch: ${{ matrix.arch }}
         run: pnpm build:win --${{ matrix.arch }}
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -74,10 +80,16 @@ jobs:
         with:
           version: 9
       - name: Install Dependencies
+        env:
+          npm_config_arch: ${{ matrix.arch }}
+          npm_config_target_arch: ${{ matrix.arch }}
         run: |
           pnpm install
           pnpm prepare --${{ matrix.arch }}
       - name: Build
+        env:
+          npm_config_arch: ${{ matrix.arch }}
+          npm_config_target_arch: ${{ matrix.arch }}
         run: pnpm build:linux --${{ matrix.arch }}
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -118,10 +130,16 @@ jobs:
         with:
           version: 9
       - name: Install Dependencies
+        env:
+          npm_config_arch: ${{ matrix.arch }}
+          npm_config_target_arch: ${{ matrix.arch }}
         run: |
           pnpm install
           pnpm prepare --${{ matrix.arch }}
       - name: Build
+        env:
+          npm_config_arch: ${{ matrix.arch }}
+          npm_config_target_arch: ${{ matrix.arch }}
         run: pnpm build:mac --${{ matrix.arch }}
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4

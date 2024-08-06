@@ -53,5 +53,5 @@ linux:
   maintainer: mihomo-party
   category: Utility
   artifactName: ${name}-linux-${version}-${arch}.${ext}
-npmRebuild: false
+npmRebuild: true
 publish: []
