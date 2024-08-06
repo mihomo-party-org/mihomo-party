@@ -4,6 +4,10 @@ import path from 'path'
 
 export const dataDir = app.getPath('userData')
 
+export function exePath(): string {
+  return app.getPath('exe')
+}
+
 export function resourcesDir(): string {
   if (is.dev) {
     return path.join(__dirname, '../../resources')

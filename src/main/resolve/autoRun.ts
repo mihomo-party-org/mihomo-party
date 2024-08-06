@@ -1,9 +1,7 @@
 import { exec } from 'child_process'
+import { exePath } from '../utils/dirs'
 import { app } from 'electron'
 import fs from 'fs'
-
-// 获取应用的可执行文件路径
-const exePath = app.getPath('exe')
 
 const appName = 'mihomo-party'
 
@@ -45,7 +43,7 @@ const taskXml = `
      </Settings>
      <Actions Context="Author">
        <Exec>
-         <Command>${exePath}</Command>
+         <Command>${exePath()}</Command>
        </Exec>
      </Actions>
    </Task>
@@ -80,14 +78,14 @@ export function enableAutoRun(): void {
   if (process.platform === 'darwin') {
     app.setLoginItemSettings({
       openAtLogin: true,
-      path: exePath
+      path: exePath()
     })
   }
   if (process.platform === 'linux') {
     let desktop = `
 [Desktop Entry]
 Name=mihomo-party
-Exec=${exePath} %U
+Exec=${exePath()} %U
 Terminal=false
 Type=Application
 Icon=mihomo-party
