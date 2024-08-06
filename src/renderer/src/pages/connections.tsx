@@ -80,7 +80,7 @@ const Connections: React.FC = () => {
       title="连接"
       header={
         <div className="flex">
-          <div className="flex items-center">
+          <div className="flex items-center select-none">
             <span className="mx-1 text-gray-400">
               下载: {calcTraffic(connectionsInfo?.downloadTotal ?? 0)}{' '}
             </span>
@@ -126,7 +126,7 @@ const Connections: React.FC = () => {
         }}
         isHeaderSticky
         isStriped
-        className="h-[calc(100vh-100px)] p-2"
+        className="h-[calc(100vh-100px)] p-2 select-none"
       >
         <TableHeader>
           <TableColumn key="type" allowsSorting>
@@ -181,7 +181,7 @@ const Connections: React.FC = () => {
                 {item.metadata.sniffHost ?? '-'}
               </TableCell>
               <TableCell className="max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
-                {item.rule}:{item.rulePayload}
+                {`${item.rule} ${item.rulePayload}`}
               </TableCell>
               <TableCell className="max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
                 {item.chains.reverse().join('::')}
