@@ -21,9 +21,7 @@ const Profiles: React.FC = () => {
   const handleImport = async (): Promise<void> => {
     setImporting(true)
     try {
-      await addProfileItem({ name: 'Remote File', type: 'remote', url })
-    } catch (e) {
-      console.error(e)
+      await addProfileItem({ name: '', type: 'remote', url })
     } finally {
       setImporting(false)
     }

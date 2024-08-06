@@ -104,7 +104,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
   const id = item.id || new Date().getTime().toString(16)
   const newItem = {
     id,
-    name: item.name || 'Local File',
+    name: item.name || item.type === 'remote' ? 'Remote File' : 'Local File',
     type: item.type || 'local',
     url: item.url,
     interval: item.interval || 0,
@@ -134,7 +134,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
         })
         const data = res.data
         const headers = res.headers
-        if (headers['content-disposition']) {
+        if (headers['content-disposition'] && newItem.name === 'Remote File') {
           newItem.name = parseFilename(headers['content-disposition'])
         }
         if (headers['profile-web-page-url']) {
