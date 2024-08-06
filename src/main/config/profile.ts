@@ -1,6 +1,6 @@
 import { getControledMihomoConfig } from './controledMihomo'
 import { profileConfigPath, profilePath } from '../utils/dirs'
-import { restartCore } from '../core/manager'
+import { startCore } from '../core/manager'
 import { getAppConfig } from './app'
 import { window } from '..'
 import axios from 'axios'
@@ -28,7 +28,7 @@ export async function changeCurrentProfile(id: string): Promise<void> {
   profileConfig.current = id
   getCurrentProfile(true)
   try {
-    restartCore()
+    await startCore()
   } catch (e) {
     profileConfig.current = oldId
     getCurrentProfile(true)
@@ -38,7 +38,7 @@ export async function changeCurrentProfile(id: string): Promise<void> {
   }
 }
 
-export async function updateProfileItem(item: IProfileItem): Promise<void> {
+export function updateProfileItem(item: IProfileItem): void {
   const index = profileConfig.items.findIndex((i) => i.id === item.id)
   profileConfig.items[index] = item
   fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
@@ -174,11 +174,11 @@ export function getProfileStr(id: string): string {
   return fs.readFileSync(profilePath(id), 'utf-8')
 }
 
-export function setProfileStr(id: string, content: string): void {
+export async function setProfileStr(id: string, content: string): Promise<void> {
   fs.writeFileSync(profilePath(id), content, 'utf-8')
   if (id === getProfileConfig().current) {
     getCurrentProfile(true)
-    restartCore()
+    await startCore()
   }
 }
 

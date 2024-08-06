@@ -18,10 +18,9 @@ const Proxies: React.FC = () => {
   const { data: proxies, mutate } = useSWR('mihomoProxies', mihomoProxies)
   const { appConfig, patchAppConfig } = useAppConfig()
   const { proxyDisplayMode = 'simple', proxyDisplayOrder = 'default' } = appConfig || {}
-
   const groups = useMemo(() => {
     const groups: IMihomoGroup[] = []
-    if (proxies) {
+    if (proxies && proxies.proxies && proxies.proxies['GLOBAL']) {
       const globalGroup = proxies.proxies['GLOBAL'] as IMihomoGroup
       for (const global of globalGroup.all) {
         if (isGroup(proxies.proxies[global])) {

@@ -29,7 +29,7 @@ import {
   setProfileStr,
   updateProfileItem
 } from '../config'
-import { isEncryptionAvailable, restartCore } from '../core/manager'
+import { isEncryptionAvailable, startCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
 import { checkUpdate } from '../resolve/autoUpdater'
 
@@ -62,7 +62,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('changeCurrentProfile', (_e, id) => changeCurrentProfile(id))
   ipcMain.handle('addProfileItem', (_e, item) => addProfileItem(item))
   ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))
-  ipcMain.handle('restartCore', restartCore)
+  ipcMain.handle('restartCore', startCore)
   ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))

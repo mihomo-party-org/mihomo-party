@@ -1,4 +1,4 @@
-import { ChildProcess, execFileSync, execSync, spawn } from 'child_process'
+import { ChildProcess, execFile, execSync, spawn } from 'child_process'
 import {
   logPath,
   mihomoCorePath,
@@ -12,61 +12,97 @@ import { dialog, safeStorage } from 'electron'
 import fs from 'fs'
 
 let child: ChildProcess
+let retry = 10
 
-export function startCore(): void {
+export async function startCore(): Promise<void> {
   const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
   grantCorePermition(corePath)
   generateProfile()
-  checkProfile()
+  await checkProfile()
   stopCore()
-  child = spawn(corePath, ['-d', mihomoWorkDir()])
-  child.stdout?.on('data', (data) => {
-    fs.writeFileSync(
-      logPath(),
-      data
-        .toString()
-        .split('\n')
-        .map((line: string) => {
-          if (line) return `[Mihomo]: ${line}`
-          return ''
-        })
-        .filter(Boolean)
-        .join('\n'),
-      {
-        flag: 'a'
+  return new Promise((resolve, reject) => {
+    child = spawn(corePath, ['-d', mihomoWorkDir()])
+    child.stdout?.on('data', (data) => {
+      if (data.toString().includes('External controller listen error')) {
+        if (retry) {
+          retry--
+          resolve(startCore())
+        } else {
+          dialog.showErrorBox('External controller listen error', data.toString())
+          reject('External controller listen error')
+        }
       }
-    )
-  })
-  child.on('close', (code, signal) => {
-    fs.writeFileSync(logPath(), `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`, {
-      flag: 'a'
+      if (data.toString().includes('RESTful API listening at')) {
+        retry = 10
+        resolve()
+      }
+      fs.writeFileSync(
+        logPath(),
+        data
+          .toString()
+          .split('\n')
+          .map((line: string) => {
+            if (line) return `[Mihomo]: ${line}`
+            return ''
+          })
+          .filter(Boolean)
+          .join('\n'),
+        {
+          flag: 'a'
+        }
+      )
     })
-    fs.writeFileSync(logPath(), `[Manager]: Restart Core\n`, {
-      flag: 'a'
+    child.on('error', (err) => {
+      if (retry) {
+        retry--
+        startCore()
+      } else {
+        dialog.showErrorBox('External controller listen error', err.toString())
+        reject(err)
+      }
     })
-    restartCore()
+    child.on('close', async (code, signal) => {
+      fs.writeFileSync(logPath(), `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`, {
+        flag: 'a'
+      })
+      fs.writeFileSync(logPath(), `[Manager]: Restart Core\n`, {
+        flag: 'a'
+      })
+      await startCore()
+    })
   })
 }
 
 export function stopCore(): void {
   if (child) {
     child.removeAllListeners()
-    child.kill('SIGINT')
+    if (!child.kill('SIGINT')) {
+      stopCore()
+    }
   }
 }
 
-export function restartCore(): void {
-  startCore()
-}
-
-export function checkProfile(): void {
+export function checkProfile(): Promise<void> {
   const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
-  try {
-    execFileSync(corePath, ['-t', '-f', mihomoWorkConfigPath(), '-d', mihomoTestDir()])
-  } catch (e) {
-    dialog.showErrorBox('Profile check failed', `${e}`)
-    throw new Error('Profile check failed')
-  }
+  return new Promise((resolve, reject) => {
+    const child = execFile(corePath, ['-t', '-f', mihomoWorkConfigPath(), '-d', mihomoTestDir()])
+    child.stdout?.on('data', (data) => {
+      data
+        .toString()
+        .split('\n')
+        .forEach((line: string) => {
+          if (line.includes('level=error')) {
+            dialog.showErrorBox('Profile Check Failed', line.split('level=error')[1])
+            reject(line)
+          }
+        })
+    })
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve()
+      }
+    })
+  })
 }
 
 export function grantCorePermition(corePath: string): void {

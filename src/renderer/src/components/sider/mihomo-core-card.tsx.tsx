@@ -50,8 +50,12 @@ const MihomoCoreCard: React.FC = () => {
             size="sm"
             variant="light"
             color="default"
-            onPress={() => {
-              restartCore()
+            onPress={async () => {
+              await restartCore()
+              mutate()
+              setTimeout(() => {
+                mutate()
+              }, 2000)
             }}
           >
             <IoMdRefresh className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`} />
