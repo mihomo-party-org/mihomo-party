@@ -10,7 +10,6 @@ import { Button, Input } from '@nextui-org/react'
 import { IoCloseCircle } from 'react-icons/io5'
 import { calcTraffic } from '@renderer/utils/calc'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react'
-import dayjs from 'dayjs'
 import ConnectionDetailModal from '@renderer/components/connections/connection-detail-modal'
 
 let preData: IMihomoConnectionDetail[] = []
@@ -21,8 +20,6 @@ const Connections: React.FC = () => {
   const [connections, setConnections] = useState<IMihomoConnectionDetail[]>([])
   const [selectedConnection, setSelectedConnection] = useState<IMihomoConnectionDetail>()
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
-  const [sortKey, setSortKey] = useState('')
-  const [descend, setDescend] = useState(false)
 
   const filteredConnections = useMemo(() => {
     if (filter === '') return connections
@@ -31,25 +28,6 @@ const Connections: React.FC = () => {
       return raw.includes(filter)
     })
   }, [connections, filter])
-
-  const sortedConnections = useMemo(() => {
-    if (sortKey === '') return filteredConnections
-    return filteredConnections.sort((a, b) => {
-      const localA = a[sortKey] ? a[sortKey] : a.metadata[sortKey]
-      const localB = b[sortKey] ? b[sortKey] : b.metadata[sortKey]
-      if (descend) {
-        if (typeof localA === 'string') {
-          return localB.localeCompare(localA)
-        }
-        return localB - localA
-      } else {
-        if (typeof localA === 'string') {
-          return localA.localeCompare(localB)
-        }
-        return localA - localB
-      }
-    })
-  }, [filteredConnections, sortKey, descend])
 
   useEffect(() => {
     startMihomoConnections()
@@ -119,85 +97,36 @@ const Connections: React.FC = () => {
           setSelectedConnection(connections.find((c) => c.id === (id as string)))
           setIsDetailModalOpen(true)
         }}
-        sortDescriptor={{ column: sortKey, direction: descend ? 'descending' : 'ascending' }}
-        onSortChange={(desc) => {
-          setSortKey(desc.column as string)
-          setDescend(desc.direction !== 'ascending')
-        }}
         isHeaderSticky
         isStriped
         className="h-[calc(100vh-100px)] p-2 select-none"
       >
         <TableHeader>
-          <TableColumn key="type" allowsSorting>
-            类型
-          </TableColumn>
-          <TableColumn key="process" allowsSorting>
-            进程
-          </TableColumn>
-          <TableColumn key="host" allowsSorting>
-            主机
-          </TableColumn>
-          <TableColumn key="sniffer" allowsSorting>
-            嗅探域名
-          </TableColumn>
-          <TableColumn key="rule" allowsSorting>
-            规则
-          </TableColumn>
-          <TableColumn key="chains" width={500}>
-            链路
-          </TableColumn>
-          <TableColumn key="download" allowsSorting>
-            下载量
-          </TableColumn>
-          <TableColumn key="upload" allowsSorting>
-            上传量
-          </TableColumn>
-          <TableColumn key="downloadSpeed" allowsSorting>
-            下载速度
-          </TableColumn>
-          <TableColumn key="uploadSpeed" allowsSorting>
-            上传速度
-          </TableColumn>
-          <TableColumn key="start" allowsSorting>
-            连接时间
-          </TableColumn>
-          <TableColumn key="sourceIp">源地址</TableColumn>
-          <TableColumn key="sourcePort">源端口</TableColumn>
-          <TableColumn key="inboundUser">入站用户</TableColumn>
-          <TableColumn key="close">关闭连接</TableColumn>
+          <TableColumn key="type">类型</TableColumn>
+          <TableColumn key="origin">来源</TableColumn>
+          <TableColumn key="target">目标</TableColumn>
+          <TableColumn key="rule">规则</TableColumn>
+          <TableColumn key="chains">链路</TableColumn>
+          <TableColumn key="close">关闭</TableColumn>
         </TableHeader>
-        <TableBody items={sortedConnections ?? []}>
+        <TableBody items={filteredConnections ?? []}>
           {(item) => (
             <TableRow key={item.id}>
-              <TableCell className="max-w-[10px]">
+              <TableCell>
                 {item.metadata.type}({item.metadata.network})
               </TableCell>
-              <TableCell>{item.metadata.process}</TableCell>
-              <TableCell className="max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
-                {item.metadata.host}
+              <TableCell>{item.metadata.process || item.metadata.sourceIP}</TableCell>
+              <TableCell className="max-w-[100px] text-ellipsis whitespace-nowrap overflow-hidden">
+                {item.metadata.host ||
+                  item.metadata.remoteDestination ||
+                  item.metadata.destinationIP}
               </TableCell>
-              <TableCell className="max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
-                {item.metadata.sniffHost ?? '-'}
-              </TableCell>
-              <TableCell className="max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
-                {`${item.rule} ${item.rulePayload}`}
+              <TableCell className="max-w-[100px] text-ellipsis whitespace-nowrap overflow-hidden">
+                {item.rule} {item.rulePayload}
               </TableCell>
               <TableCell className="max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
                 {item.chains.reverse().join('::')}
               </TableCell>
-              <TableCell className="whitespace-nowrap">{calcTraffic(item.download)}</TableCell>
-              <TableCell className="whitespace-nowrap">{calcTraffic(item.upload)}</TableCell>
-              <TableCell className="whitespace-nowrap">
-                {calcTraffic(item.downloadSpeed ?? 0)}/s
-              </TableCell>
-              <TableCell className="whitespace-nowrap">
-                {calcTraffic(item.uploadSpeed ?? 0)}/s
-              </TableCell>
-              <TableCell className="whitespace-nowrap">{dayjs(item.start).fromNow()}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.metadata.sourceIP}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.metadata.sourcePort}</TableCell>
-              <TableCell className="whitespace-nowrap">{item.metadata.inboundUser}</TableCell>
               <TableCell>
                 <Button
                   isIconOnly
