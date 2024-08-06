@@ -1,6 +1,6 @@
 {
   "name": "mihomo-party",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Mihomo Party",
   "main": "./out/main/index.js",
   "author": "mihomo-party",
