@@ -12,6 +12,7 @@ const Sniffer: React.FC = () => {
   const { sniffer } = controledMihomoConfig || {}
   const {
     'parse-pure-ip': parsePureIP = true,
+    'force-dns-mapping': forceDNSMapping = true,
     'override-destination': overrideDestination = false,
     sniff = {
       HTTP: { ports: [80, 443], 'override-destination': false },
@@ -24,6 +25,7 @@ const Sniffer: React.FC = () => {
 
   const [values, setValues] = useState({
     parsePureIP,
+    forceDNSMapping,
     overrideDestination,
     sniff,
     skipDomain,
@@ -74,6 +76,7 @@ const Sniffer: React.FC = () => {
             onSave({
               sniffer: {
                 'parse-pure-ip': values.parsePureIP,
+                'force-dns-mapping': values.forceDNSMapping,
                 'override-destination': values.overrideDestination,
                 sniff: values.sniff,
                 'skip-domain': values.skipDomain,
@@ -107,7 +110,16 @@ const Sniffer: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="强制嗅探IP地址" divider>
+        <SettingItem title="对真实IP映射嗅探" divider>
+          <Switch
+            size="sm"
+            isSelected={values.forceDNSMapping}
+            onValueChange={(v) => {
+              setValues({ ...values, forceDNSMapping: v })
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="对未映射IP地址嗅探" divider>
           <Switch
             size="sm"
             isSelected={values.parsePureIP}
@@ -116,7 +128,7 @@ const Sniffer: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="嗅探 HTTP 端口" divider>
+        <SettingItem title="HTTP 端口嗅探" divider>
           <Input
             size="sm"
             className="w-[50%]"
@@ -124,7 +136,7 @@ const Sniffer: React.FC = () => {
             onValueChange={(v) => handleSniffPortChange('HTTP', v)}
           />
         </SettingItem>
-        <SettingItem title="嗅探 TLS 端口" divider>
+        <SettingItem title="TLS 端口嗅探" divider>
           <Input
             size="sm"
             className="w-[50%]"
@@ -132,7 +144,7 @@ const Sniffer: React.FC = () => {
             onValueChange={(v) => handleSniffPortChange('TLS', v)}
           />
         </SettingItem>
-        <SettingItem title="嗅探 QUIC 端口" divider>
+        <SettingItem title="QUIC 端口嗅探" divider>
           <Input
             size="sm"
             className="w-[50%]"
@@ -141,7 +153,7 @@ const Sniffer: React.FC = () => {
           />
         </SettingItem>
         <div className="flex flex-col items-stretch">
-          <h3 className="select-none">跳过嗅探</h3>
+          <h3 className="select-none">跳过嗅探域名</h3>
           {[...values.skipDomain, ''].map((d, index) => (
             <div key={index} className="flex mt-2">
               <Input
@@ -167,7 +179,7 @@ const Sniffer: React.FC = () => {
         </div>
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
-          <h3 className="select-none mb-2">强制嗅探</h3>
+          <h3 className="select-none mb-2">强制嗅探域名</h3>
           {[...values.forceDomain, ''].map((d, index) => (
             <div key={index} className="flex mb-2">
               <Input
