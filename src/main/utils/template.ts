@@ -35,17 +35,19 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     ipv6: false,
     'enhanced-mode': 'fake-ip',
     'fake-ip-range': '198.18.0.1/16',
+    'fake-ip-filter': ['*', '+.lan', '+.local', 'time.*.com', 'ntp.*.com', '+.market.xiaomi.com'],
     'use-hosts': false,
     'use-system-hosts': false,
     nameserver: ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query']
   },
   sniffer: {
     enable: true,
-    'parse-pure-ip': true,
+    'parse-pure-ip': false,
     'override-destination': false,
     sniff: {
       HTTP: {
-        ports: [80, 443]
+        ports: [80, 443],
+        'override-destination': false
       },
       TLS: {
         ports: [443]

@@ -12,6 +12,15 @@ const DNS: React.FC = () => {
   const { dns, hosts } = controledMihomoConfig || {}
   const {
     ipv6 = false,
+    'fake-ip-range': fakeIPRange = '198.18.0.1/16',
+    'fake-ip-filter': fakeIPFilter = [
+      '*',
+      '+.lan',
+      '+.local',
+      'time.*.com',
+      'ntp.*.com',
+      '+.market.xiaomi.com'
+    ],
     'enhanced-mode': enhancedMode = 'fake-ip',
     'use-hosts': useHosts = false,
     'use-system-hosts': useSystemHosts = false,
@@ -22,25 +31,27 @@ const DNS: React.FC = () => {
     ipv6,
     useHosts,
     enhancedMode,
+    fakeIPRange,
+    fakeIPFilter,
     useSystemHosts,
     nameserver,
     hosts: Object.entries(hosts || {}).map(([domain, value]) => ({ domain, value }))
   })
 
-  const handleNameserverChange = (value: string, index: number): void => {
-    const newNameservers = [...values.nameserver]
-    if (index === newNameservers.length) {
+  const handleListChange = (type: string, value: string, index: number): void => {
+    const newValues = [...values[type]]
+    if (index === newValues.length) {
       if (value.trim() !== '') {
-        newNameservers.push(value)
+        newValues.push(value)
       }
     } else {
       if (value.trim() === '') {
-        newNameservers.splice(index, 1)
+        newValues.splice(index, 1)
       } else {
-        newNameservers[index] = value
+        newValues[index] = value
       }
     }
-    setValues({ ...values, nameserver: newNameservers })
+    setValues({ ...values, [type]: newValues })
   }
   const handleHostsChange = (domain: string, value: string, index: number): void => {
     const newHosts = [...values.hosts]
@@ -81,6 +92,8 @@ const DNS: React.FC = () => {
             onSave({
               dns: {
                 ipv6: values.ipv6,
+                'fake-ip-range': values.fakeIPRange,
+                'fake-ip-filter': values.fakeIPFilter,
                 'enhanced-mode': values.enhancedMode,
                 'use-hosts': values.useHosts,
                 'use-system-hosts': values.useSystemHosts,
@@ -107,6 +120,46 @@ const DNS: React.FC = () => {
             <Tab key="normal" title="取消映射" className="select-none" />
           </Tabs>
         </SettingItem>
+        {values.enhancedMode === 'fake-ip' ? (
+          <>
+            <SettingItem title="回应范围" divider>
+              <Input
+                size="sm"
+                className="w-[50%]"
+                value={values.fakeIPRange}
+                onValueChange={(v) => {
+                  setValues({ ...values, fakeIPRange: v })
+                }}
+              />
+            </SettingItem>
+            <div className="flex flex-col items-stretch">
+              <h3 className="select-none mb-2">真实IP回应</h3>
+              {[...values.fakeIPFilter, ''].map((ns, index) => (
+                <div key={index} className="mb-2 flex">
+                  <Input
+                    fullWidth
+                    size="sm"
+                    placeholder="例: +.lan"
+                    value={ns}
+                    onValueChange={(v) => handleListChange('fakeIPFilter', v, index)}
+                  />
+                  {index < values.fakeIPFilter.length && (
+                    <Button
+                      className="ml-2"
+                      size="sm"
+                      variant="flat"
+                      color="warning"
+                      onClick={() => handleListChange('fakeIPFilter', '', index)}
+                    >
+                      <MdDeleteForever className="text-lg" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <Divider style={{ marginTop: '2px', marginBottom: '6px' }} />
+          </>
+        ) : null}
         <SettingItem title="IPv6" divider>
           <Switch
             size="sm"
@@ -125,7 +178,7 @@ const DNS: React.FC = () => {
                 size="sm"
                 placeholder="例: tls://223.5.5.5"
                 value={ns}
-                onValueChange={(v) => handleNameserverChange(v, index)}
+                onValueChange={(v) => handleListChange('nameserver', v, index)}
               />
               {index < values.nameserver.length && (
                 <Button
@@ -133,7 +186,7 @@ const DNS: React.FC = () => {
                   size="sm"
                   variant="flat"
                   color="warning"
-                  onClick={() => handleNameserverChange('', index)}
+                  onClick={() => handleListChange('nameserver', '', index)}
                 >
                   <MdDeleteForever className="text-lg" />
                 </Button>
@@ -141,7 +194,7 @@ const DNS: React.FC = () => {
             </div>
           ))}
         </div>
-        <Divider />
+        <Divider style={{ marginTop: '2px', marginBottom: '6px' }} />
         <SettingItem title="使用系统hosts" divider>
           <Switch
             size="sm"
