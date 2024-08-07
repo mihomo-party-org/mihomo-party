@@ -51,7 +51,13 @@ const Profiles: React.FC = () => {
             </Button>
           }
         />
-        <Button size="sm" color="primary" isLoading={importing} onPress={handleImport}>
+        <Button
+          size="sm"
+          color="primary"
+          isDisabled={url === ''}
+          isLoading={importing}
+          onPress={handleImport}
+        >
           导入
         </Button>
       </div>
