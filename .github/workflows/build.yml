@@ -44,7 +44,7 @@ jobs:
           npm_config_target_arch: ${{ matrix.arch }}
         run: pnpm build:win --${{ matrix.arch }}
       - name: Upload Artifacts
-        if: startsWith(github.ref, 'refs/head/')
+        if: startsWith(github.ref, 'refs/heads/')
         uses: actions/upload-artifact@v4
         with:
           name: Windows ${{ matrix.arch }}
@@ -93,7 +93,7 @@ jobs:
           npm_config_target_arch: ${{ matrix.arch }}
         run: pnpm build:linux --${{ matrix.arch }}
       - name: Upload Artifacts
-        if: startsWith(github.ref, 'refs/head/')
+        if: startsWith(github.ref, 'refs/heads/')
         uses: actions/upload-artifact@v4
         with:
           name: Linux ${{ matrix.arch }}
@@ -144,7 +144,7 @@ jobs:
           npm_config_target_arch: ${{ matrix.arch }}
         run: pnpm build:mac --${{ matrix.arch }}
       - name: Upload Artifacts
-        if: startsWith(github.ref, 'refs/head/')
+        if: startsWith(github.ref, 'refs/heads/')
         uses: actions/upload-artifact@v4
         with:
           name: MacOS ${{ matrix.arch }}
@@ -199,7 +199,7 @@ jobs:
           allow_empty_commits: false
 
   aur-git-updater:
-    if: startsWith(github.ref, 'refs/head/')
+    if: startsWith(github.ref, 'refs/heads/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
