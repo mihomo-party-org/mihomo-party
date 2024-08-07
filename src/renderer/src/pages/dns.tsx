@@ -17,6 +17,8 @@ const DNS: React.FC = () => {
       '*',
       '+.lan',
       '+.local',
+      'time.*.com',
+      'ntp.*.com',
       '+.market.xiaomi.com',
     ],
     'enhanced-mode': enhancedMode = 'fake-ip',
