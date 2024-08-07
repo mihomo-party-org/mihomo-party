@@ -1,0 +1,27 @@
+name: aur-updater
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: update version
+        run: |
+          sed -i "s/pkgver=.*/pkgver=$(git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' | tr -d 'v')/" aur/mihomo-party-git/PKGBUILD
+      - name: Publish AUR package
+        uses: KSXGitHub/github-actions-deploy-aur@v2.7.2
+        with:
+          pkgname: mihomo-party-git
+          pkgbuild: aur/mihomo-party-git/PKGBUILD
+          commit_username: pompurin404
+          commit_email: pompurin404@mihomo.party
+          ssh_private_key: ${{ secrets.PRIVATE_KEY }}
+          commit_message: Update AUR package
+          ssh_keyscan_types: rsa,ed25519
+          allow_empty_commits: false

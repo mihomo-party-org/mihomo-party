@@ -153,3 +153,42 @@ jobs:
         with:
           files: dist/*.dmg
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  aur-updater:
+    strategy:
+      fail-fast: false
+      matrix:
+        pkgname:
+          - mihomo-party-bin
+          - mihomo-party
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Version
+        run: |
+          sed -i "s/pkgver=.*/pkgver=$(echo ${{ github.ref }} | tr -d 'refs/tags/v')/" aur/mihomo-party-bin/PKGBUILD
+          sed -i "s/pkgver=.*/pkgver=$(echo ${{ github.ref }} | tr -d 'refs/tags/v')/" aur/mihomo-party/PKGBUILD
+      - name: Update Checksums
+        if: ${{ matrix.pkgname == 'mihomo-party' }}
+        run: |
+          wget https://github.com/pompurin404/mihomo-party/archive/refs/tags/$(echo ${{ github.ref }} | tr -d 'refs/tags/').tar.gz -O release.tar.gz
+          sed -i "s/sha256sums=.*/sha256sums=(\"$(sha256sum ./release.tar.gz | awk '{print $1}')\")/" aur/mihomo-party/PKGBUILD
+      - name: Update Checksums
+        if: ${{ matrix.pkgname == 'mihomo-party-bin' }}
+        run: |
+          wget https://github.com/pompurin404/mihomo-party/releases/download/$(echo ${{ github.ref }} | tr -d 'refs/tags/')/mihomo-party-linux$(echo ${{ github.ref }} | tr -d 'refs/tags/v')-amd64.deb -O amd64.deb
+          wget https://github.com/pompurin404/mihomo-party/releases/download/$(echo ${{ github.ref }} | tr -d 'refs/tags/')/mihomo-party-linux$(echo ${{ github.ref }} | tr -d 'refs/tags/v')-arm64.deb -O arm64.deb
+          sed -i "s/sha256sums_x86_64=.*/sha256sums_x86_64=(\"$(sha256sum ./amd64.deb | awk '{print $1}')\")/" aur/mihomo-party-bin/PKGBUILD
+          sed -i "s/sha256sums_aarch64=.*/sha256sums_aarch64=(\"$(sha256sum ./arm64.deb | awk '{print $1}')\")/" aur/mihomo-party-bin/PKGBUILD
+      - name: Publish AUR package
+        uses: KSXGitHub/github-actions-deploy-aur@v2.7.2
+        with:
+          pkgname: ${{ matrix.pkgname }}
+          pkgbuild: aur/${{ matrix.pkgname }}/PKGBUILD
+          commit_username: pompurin404
+          commit_email: pompurin404@mihomo.party
+          ssh_private_key: ${{ secrets.PRIVATE_KEY }}
+          commit_message: Update AUR package
+          ssh_keyscan_types: rsa,ed25519
+          allow_empty_commits: false
