@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, Progress } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, Chip, Progress } from '@nextui-org/react'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic, calcPercent } from '@renderer/utils/calc'
@@ -42,30 +42,47 @@ const ProfileCard: React.FC = () => {
           >
             {info?.name}
           </h3>
-          <Button
-            isIconOnly
-            size="sm"
-            disabled={updating}
-            variant="light"
-            color="default"
-            onPress={() => {
-              setUpdating(true)
-              addProfileItem(info).finally(() => {
-                setUpdating(false)
-              })
-            }}
+          {info.type === 'remote' && (
+            <Button
+              isIconOnly
+              size="sm"
+              disabled={updating}
+              variant="light"
+              color="default"
+              onPress={() => {
+                setUpdating(true)
+                addProfileItem(info).finally(() => {
+                  setUpdating(false)
+                })
+              }}
+            >
+              <IoMdRefresh
+                className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
+              />
+            </Button>
+          )}
+        </div>
+        {info.type === 'remote' && (
+          <div
+            className={`mt-2 flex select-none justify-between ${match ? 'text-white' : 'text-foreground'} `}
           >
-            <IoMdRefresh
-              className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
-            />
-          </Button>
-        </div>
-        <div
-          className={`mt-2 flex select-none justify-between ${match ? 'text-white' : 'text-foreground'} `}
-        >
-          <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
-          <small>{dayjs(info.updated).fromNow()}</small>
-        </div>
+            <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
+            <small>{dayjs(info.updated).fromNow()}</small>
+          </div>
+        )}
+        {info.type === 'local' && (
+          <div
+            className={`mt-2 flex select-none justify-between ${match ? 'text-white' : 'text-foreground'}`}
+          >
+            <Chip
+              size="sm"
+              variant="bordered"
+              className={`${match ? 'text-white border-white' : 'border-primary text-primary'}`}
+            >
+              本地
+            </Chip>
+          </div>
+        )}
       </CardBody>
       <CardFooter className="pt-0">
         {extra && (

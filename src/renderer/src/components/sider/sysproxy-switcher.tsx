@@ -19,7 +19,7 @@ const SysproxySwitcher: React.FC = () => {
       await triggerSysProxy(enable)
       await patchAppConfig({ sysProxy: { enable } })
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
 

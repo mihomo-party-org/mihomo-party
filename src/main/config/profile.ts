@@ -105,7 +105,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
   const newItem = {
     id,
     name: item.name || (item.type === 'remote' ? 'Remote File' : 'Local File'),
-    type: item.type || 'local',
+    type: item.type,
     url: item.url,
     interval: item.interval || 0,
     updated: new Date().getTime()

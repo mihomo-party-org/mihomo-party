@@ -50,18 +50,19 @@ const EditInfoModal: React.FC<Props> = (props) => {
               />
             </SettingItem>
           )}
-
-          <SettingItem title="更新间隔（分钟）">
-            <Input
-              size="sm"
-              type="number"
-              className="w-[200px]"
-              value={values.interval?.toString() ?? ''}
-              onValueChange={(v) => {
-                setValues({ ...values, interval: parseInt(v) })
-              }}
-            />
-          </SettingItem>
+          {values.type === 'remote' && (
+            <SettingItem title="更新间隔（分钟）">
+              <Input
+                size="sm"
+                type="number"
+                className="w-[200px]"
+                value={values.interval?.toString() ?? ''}
+                onValueChange={(v) => {
+                  setValues({ ...values, interval: parseInt(v) })
+                }}
+              />
+            </SettingItem>
+          )}
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onClose}>

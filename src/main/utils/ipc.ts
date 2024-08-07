@@ -94,14 +94,14 @@ async function setupFirewall(): Promise<void> {
       try {
         execSync(removeCommand, { shell: 'powershell' })
       } catch {
-        console.log('Remove-NetFirewallRule Failed')
+        console.error('Remove-NetFirewallRule Failed')
       }
       try {
         execSync(createCommand, { shell: 'powershell' })
       } catch (e) {
         dialog.showErrorBox('防火墙设置失败', `${e}`)
         reject(e)
-        console.log('New-NetFirewallRule Failed')
+        console.error('New-NetFirewallRule Failed')
       }
     }
     resolve()

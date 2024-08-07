@@ -3,6 +3,7 @@ import {
   Card,
   CardBody,
   CardFooter,
+  Chip,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -139,24 +140,27 @@ const ProfileItem: React.FC<Props> = (props) => {
               {info?.name}
             </h3>
             <div className="flex">
-              <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                color="default"
-                disabled={updating}
-                onPress={() => {
-                  setUpdating(true)
-                  addProfileItem(info).finally(() => {
-                    setUpdating(false)
-                  })
-                }}
-              >
-                <IoMdRefresh
+              {info.type === 'remote' && (
+                <Button
+                  isIconOnly
+                  size="sm"
+                  variant="light"
                   color="default"
-                  className={`${isCurrent ? 'text-white' : 'text-foreground'} text-[24px] ${updating ? 'animate-spin' : ''}`}
-                />
-              </Button>
+                  disabled={updating}
+                  onPress={() => {
+                    setUpdating(true)
+                    addProfileItem(info).finally(() => {
+                      setUpdating(false)
+                    })
+                  }}
+                >
+                  <IoMdRefresh
+                    color="default"
+                    className={`${isCurrent ? 'text-white' : 'text-foreground'} text-[24px] ${updating ? 'animate-spin' : ''}`}
+                  />
+                </Button>
+              )}
+
               <Dropdown>
                 <DropdownTrigger>
                   <Button isIconOnly size="sm" variant="light" color="default">
@@ -181,12 +185,27 @@ const ProfileItem: React.FC<Props> = (props) => {
               </Dropdown>
             </div>
           </div>
-          <div
-            className={`mt-2 flex select-none justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
-          >
-            <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
-            <small>{dayjs(info.updated).fromNow()}</small>
-          </div>
+          {info.type === 'remote' && (
+            <div
+              className={`mt-2 flex select-none justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
+            >
+              <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
+              <small>{dayjs(info.updated).fromNow()}</small>
+            </div>
+          )}
+          {info.type === 'local' && (
+            <div
+              className={`mt-2 flex select-none justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
+            >
+              <Chip
+                size="sm"
+                variant="bordered"
+                className={`${isCurrent ? 'text-white border-white' : 'border-primary text-primary'}`}
+              >
+                本地
+              </Chip>
+            </div>
+          )}
         </CardBody>
         <CardFooter className="pt-0">
           {extra && (
