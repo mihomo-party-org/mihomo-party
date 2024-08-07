@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
 import { mihomoRules } from '@renderer/utils/ipc'
-import { IoGitNetwork } from 'react-icons/io5'
+import { MdOutlineAltRoute } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useSWR from 'swr'
 
@@ -26,7 +26,7 @@ const RuleCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <IoGitNetwork
+            <MdOutlineAltRoute
               color="default"
               className={`${match ? 'text-white' : 'text-foreground'} text-[20px]`}
             />

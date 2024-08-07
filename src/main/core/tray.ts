@@ -94,6 +94,31 @@ const buildContextMenu = (): Menu => {
     },
     { type: 'separator' },
     {
+      type: 'checkbox',
+      label: 'DNS',
+      checked: getControledMihomoConfig().dns?.enable ?? false,
+      click: (item): void => {
+        const enable = item.checked
+        setControledMihomoConfig({ dns: { enable } })
+        patchMihomoConfig({ dns: { enable } })
+        window?.webContents.send('controledMihomoConfigUpdated')
+        updateTrayMenu()
+      }
+    },
+    {
+      type: 'checkbox',
+      label: '域名嗅探',
+      checked: getControledMihomoConfig().sniffer?.enable ?? false,
+      click: (item): void => {
+        const enable = item.checked
+        setControledMihomoConfig({ sniffer: { enable } })
+        patchMihomoConfig({ sniffer: { enable } })
+        window?.webContents.send('controledMihomoConfigUpdated')
+        updateTrayMenu()
+      }
+    },
+    { type: 'separator' },
+    {
       type: 'submenu',
       label: '打开目录',
       submenu: [

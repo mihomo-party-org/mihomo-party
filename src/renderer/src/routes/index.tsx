@@ -10,6 +10,8 @@ import Mihomo from '@renderer/pages/mihomo'
 import Sysproxy from '@renderer/pages/syspeoxy'
 import Tun from '@renderer/pages/tun'
 import Tests from '@renderer/pages/tests'
+import DNS from '@renderer/pages/dns'
+import Sniffer from '@renderer/pages/sniffer'
 
 const routes = [
   {
@@ -35,6 +37,14 @@ const routes = [
   {
     path: '/tests',
     element: <Tests />
+  },
+  {
+    path: '/dns',
+    element: <DNS />
+  },
+  {
+    path: '/sniffer',
+    element: <Sniffer />
   },
   {
     path: '/logs',

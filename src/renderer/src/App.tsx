@@ -10,6 +10,8 @@ import routes from '@renderer/routes'
 import ProfileCard from '@renderer/components/sider/profile-card'
 import ProxyCard from '@renderer/components/sider/proxy-card'
 import RuleCard from '@renderer/components/sider/rule-card'
+import DNSCard from '@renderer/components/sider/dns-card'
+import SniffCard from '@renderer/components/sider/sniff-card'
 import OverrideCard from '@renderer/components/sider/override-card'
 import ConnCard from '@renderer/components/sider/conn-card'
 import LogCard from '@renderer/components/sider/log-card'
@@ -75,6 +77,10 @@ const App: React.FC = () => {
           <ConnCard />
         </div>
 
+        <div className="flex justify-between mx-2">
+          <DNSCard />
+          <SniffCard />
+        </div>
         <div className="flex justify-between mx-2">
           <LogCard />
           <RuleCard />

@@ -29,6 +29,38 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'auto-detect-interface': true,
     'dns-hijack': ['any:53'],
     mtu: 1500
+  },
+  dns: {
+    enable: false,
+    ipv6: false,
+    'enhanced-mode': 'fake-ip',
+    'fake-ip-range': '198.18.0.1/16',
+    'use-hosts': false,
+    'use-system-hosts': false,
+    // 'respect-rules': false,
+    nameserver:[
+      'https://doh.pub/dns-query',
+      'https://dns.alidns.com/dns-query'
+    ]
+  },
+  sniffer: {
+    enable: true,
+    'parse-pure-ip': true,
+    'override-destination': false,
+    sniff: {
+      HTTP: {
+        ports: [80, 443]
+      },
+      TLS: {
+        ports: [443]
+      },
+      QUIC: {
+        ports: [443]
+      }
+    },
+    "skip-domain": [
+      '+.push.apple.com'
+    ]
   }
 }
 
