@@ -28,7 +28,7 @@ const RuleCard: React.FC = () => {
           >
             <MdOutlineAltRoute
               color="default"
-              className={`${match ? 'text-white' : 'text-foreground'} text-[20px]`}
+              className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
             />
           </Button>
           <Chip

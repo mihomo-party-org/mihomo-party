@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import BorderSwitch from '@renderer/components/base/border-swtich'
-import { GrDomain } from 'react-icons/gr'
+import { RiScan2Fill } from 'react-icons/ri'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { patchMihomoConfig } from '@renderer/utils/ipc'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
@@ -32,7 +32,7 @@ const SniffCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <GrDomain
+            <RiScan2Fill
               color="default"
               className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
             />

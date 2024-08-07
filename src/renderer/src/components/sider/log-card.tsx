@@ -22,7 +22,7 @@ const LogCard: React.FC = () => {
           >
             <IoJournal
               color="default"
-              className={`${match ? 'text-white' : 'text-foreground'} text-[20px] font-bold`}
+              className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
             />
           </Button>
         </div>

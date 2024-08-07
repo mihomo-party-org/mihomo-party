@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import BorderSwitch from '@renderer/components/base/border-swtich'
-import { MdOutlineDns } from 'react-icons/md'
+import { LuServer } from 'react-icons/lu'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { patchMihomoConfig } from '@renderer/utils/ipc'
 
@@ -32,7 +32,7 @@ const DNSCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <MdOutlineDns
+            <LuServer
               className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
             />
           </Button>
