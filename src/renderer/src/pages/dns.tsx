@@ -133,9 +133,9 @@ const DNS: React.FC = () => {
               />
             </SettingItem>
             <div className="flex flex-col items-stretch">
-              <h3 className="select-none mb-2">真实IP回应</h3>
+              <h3 className="select-none">真实IP回应</h3>
               {[...values.fakeIPFilter, ''].map((ns, index) => (
-                <div key={index} className="mb-2 flex">
+                <div key={index} className="mt-2 flex">
                   <Input
                     fullWidth
                     size="sm"
@@ -157,7 +157,7 @@ const DNS: React.FC = () => {
                 </div>
               ))}
             </div>
-            <Divider style={{ marginTop: '2px', marginBottom: '6px' }} />
+            <Divider className="my-2" />
           </>
         ) : null}
         <SettingItem title="IPv6" divider>
@@ -170,9 +170,9 @@ const DNS: React.FC = () => {
           />
         </SettingItem>
         <div className="flex flex-col items-stretch">
-          <h3 className="select-none mb-2">DNS服务器</h3>
+          <h3 className="select-none">DNS服务器</h3>
           {[...values.nameserver, ''].map((ns, index) => (
-            <div key={index} className="mb-2 flex">
+            <div key={index} className="mt-2 flex">
               <Input
                 fullWidth
                 size="sm"
@@ -194,7 +194,7 @@ const DNS: React.FC = () => {
             </div>
           ))}
         </div>
-        <Divider style={{ marginTop: '2px', marginBottom: '6px' }} />
+        <Divider className="my-2" />
         <SettingItem title="使用系统hosts" divider>
           <Switch
             size="sm"

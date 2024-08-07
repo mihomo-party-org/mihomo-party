@@ -141,9 +141,9 @@ const Sniffer: React.FC = () => {
           />
         </SettingItem>
         <div className="flex flex-col items-stretch">
-          <h3 className="select-none mb-2">跳过嗅探</h3>
+          <h3 className="select-none">跳过嗅探</h3>
           {[...values.skipDomain, ''].map((d, index) => (
-            <div key={index} className="flex mb-2">
+            <div key={index} className="flex mt-2">
               <Input
                 size="sm"
                 fullWidth
@@ -165,7 +165,7 @@ const Sniffer: React.FC = () => {
             </div>
           ))}
         </div>
-        <Divider style={{ marginTop: '2px', marginBottom: '6px' }} />
+        <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
           <h3 className="select-none mb-2">强制嗅探</h3>
           {[...values.forceDomain, ''].map((d, index) => (
