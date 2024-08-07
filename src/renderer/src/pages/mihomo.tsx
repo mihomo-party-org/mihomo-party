@@ -4,6 +4,7 @@ import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
+import { platform } from '@renderer/utils/init'
 import { patchMihomoConfig, restartCore } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 
@@ -24,10 +25,18 @@ const Mihomo: React.FC = () => {
     'find-process-mode': mode = 'strict',
     'allow-lan': lan,
     'unified-delay': delay,
-    'mixed-port': mixedPort = 7890
+    'mixed-port': mixedPort = 7890,
+    'socks-port': socksPort = 7891,
+    port: httpPort = 7892,
+    'redir-port': redirPort = 0,
+    'tproxy-port': tproxyPort = 0
   } = controledMihomoConfig || {}
 
   const [mixedPortInput, setMixedPortInput] = useState(mixedPort)
+  const [socksPortInput, setSocksPortInput] = useState(socksPort)
+  const [httpPortInput, setHttpPortInput] = useState(httpPort)
+  const [redirPortInput, setRedirPortInput] = useState(redirPort)
+  const [tproxyPortInput, setTproxyPortInput] = useState(tproxyPort)
   const [externalControllerInput, setExternalControllerInput] = useState(externalController)
   const [secretInput, setSecretInput] = useState(secret)
 
@@ -86,6 +95,122 @@ const Mihomo: React.FC = () => {
             />
           </div>
         </SettingItem>
+        <SettingItem title="Socks端口" divider>
+          <div className="flex">
+            {socksPortInput !== socksPort && (
+              <Button
+                size="sm"
+                color="primary"
+                className="mr-2"
+                onPress={() => {
+                  onChangeNeedRestart({ 'socks-port': socksPortInput })
+                }}
+              >
+                确认
+              </Button>
+            )}
+
+            <Input
+              size="sm"
+              type="number"
+              className="w-[100px]"
+              value={socksPortInput.toString()}
+              max={65535}
+              min={0}
+              onValueChange={(v) => {
+                setSocksPortInput(parseInt(v))
+              }}
+            />
+          </div>
+        </SettingItem>
+        <SettingItem title="Http端口" divider>
+          <div className="flex">
+            {httpPortInput !== httpPort && (
+              <Button
+                size="sm"
+                color="primary"
+                className="mr-2"
+                onPress={() => {
+                  onChangeNeedRestart({ port: httpPortInput })
+                }}
+              >
+                确认
+              </Button>
+            )}
+
+            <Input
+              size="sm"
+              type="number"
+              className="w-[100px]"
+              value={httpPortInput.toString()}
+              max={65535}
+              min={0}
+              onValueChange={(v) => {
+                setHttpPortInput(parseInt(v))
+              }}
+            />
+          </div>
+        </SettingItem>
+        {platform !== 'win32' && (
+          <SettingItem title="Redir端口" divider>
+            <div className="flex">
+              {redirPortInput !== redirPort && (
+                <Button
+                  size="sm"
+                  color="primary"
+                  className="mr-2"
+                  onPress={() => {
+                    onChangeNeedRestart({ 'redir-port': redirPortInput })
+                  }}
+                >
+                  确认
+                </Button>
+              )}
+
+              <Input
+                size="sm"
+                type="number"
+                className="w-[100px]"
+                value={redirPortInput.toString()}
+                max={65535}
+                min={0}
+                onValueChange={(v) => {
+                  setRedirPortInput(parseInt(v))
+                }}
+              />
+            </div>
+          </SettingItem>
+        )}
+        {platform === 'linux' && (
+          <SettingItem title="TProxy端口" divider>
+            <div className="flex">
+              {tproxyPortInput !== tproxyPort && (
+                <Button
+                  size="sm"
+                  color="primary"
+                  className="mr-2"
+                  onPress={() => {
+                    onChangeNeedRestart({ 'tproxy-port': tproxyPortInput })
+                  }}
+                >
+                  确认
+                </Button>
+              )}
+
+              <Input
+                size="sm"
+                type="number"
+                className="w-[100px]"
+                value={tproxyPortInput.toString()}
+                max={65535}
+                min={0}
+                onValueChange={(v) => {
+                  setTproxyPortInput(parseInt(v))
+                }}
+              />
+            </div>
+          </SettingItem>
+        )}
         <SettingItem title="外部控制" divider>
           <div className="flex">
             {externalControllerInput !== externalController && (
@@ -127,6 +252,7 @@ const Mihomo: React.FC = () => {
 
             <Input
               size="sm"
+              type="password"
               value={secretInput}
               onValueChange={(v) => {
                 setSecretInput(v)

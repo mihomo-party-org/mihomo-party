@@ -185,6 +185,8 @@ interface IMihomoConfig {
   'log-level': LogLevel
   'find-process-mode': FindProcessMode
   'socks-port'?: number
+  'redir-port'?: number
+  'tproxy-port'?: number
   port?: number
   proxies?: []
   'proxy-groups'?: []
