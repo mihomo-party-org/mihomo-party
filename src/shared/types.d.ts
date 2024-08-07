@@ -2,7 +2,26 @@ type OutboundMode = 'rule' | 'global' | 'direct'
 type LogLevel = 'info' | 'debug' | 'warning' | 'error' | 'silent'
 type SysProxyMode = 'auto' | 'manual'
 type MihomoGroupType = 'Selector' | 'URLTest' | 'LoadBalance' | 'Relay'
-type MihomoProxyType = 'Direct' | 'Reject' | 'RejectDrop' | 'Pass' | 'Dns' | 'Compatible' | 'Socks5' | 'Http' | 'Ssh' | 'Shadowsocks' | 'ShadowsocksR' | 'Snell' | 'Vmess' | 'Vless' | 'Trojan' | 'Hysteria' | 'Hysteria2' | 'Tuic' | 'WireGuard'
+type MihomoProxyType =
+  | 'Direct'
+  | 'Reject'
+  | 'RejectDrop'
+  | 'Pass'
+  | 'Dns'
+  | 'Compatible'
+  | 'Socks5'
+  | 'Http'
+  | 'Ssh'
+  | 'Shadowsocks'
+  | 'ShadowsocksR'
+  | 'Snell'
+  | 'Vmess'
+  | 'Vless'
+  | 'Trojan'
+  | 'Hysteria'
+  | 'Hysteria2'
+  | 'Tuic'
+  | 'WireGuard'
 type TunStack = 'gvisor' | 'mixed' | 'system'
 type FindProcessMode = 'off' | 'strict' | 'always'
 type DnsMode = 'normal' | 'fake-ip' | 'redir-host'
@@ -187,25 +206,26 @@ interface IMihomoDNSConfig {
   'proxy-server-nameserver'?: string[]
   'nameserver-policy'?: { [key: string]: string | string[] }
 }
+
 interface IMihomoSnifferConfig {
-  enable?: boolean;
-  'parse-pure-ip'?: boolean;
-  'override-destination'?: boolean;
-  'force-dns-mapping'?: boolean;
-  'force-domain'?: string[];
-  'skip-domain'?: string[];
+  enable?: boolean
+  'parse-pure-ip'?: boolean
+  'override-destination'?: boolean
+  'force-dns-mapping'?: boolean
+  'force-domain'?: string[]
+  'skip-domain'?: string[]
   sniff?: {
     HTTP?: {
-      ports: (number | string)[];
-      'override-destination'?: boolean;
-    };
+      ports: (number | string)[]
+      'override-destination'?: boolean
+    }
     TLS?: {
-      ports: (number | string)[];
-    };
+      ports: (number | string)[]
+    }
     QUIC?: {
-      ports: (number | string)[];
-    };
-  };
+      ports: (number | string)[]
+    }
+  }
 }
 interface IMihomoConfig {
   'external-controller': string

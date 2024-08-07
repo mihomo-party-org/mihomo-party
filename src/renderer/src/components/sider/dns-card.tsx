@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import BorderSwitch from '@renderer/components/base/border-swtich'
-import { MdOutlineDns } from "react-icons/md"
+import { MdOutlineDns } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { patchMihomoConfig } from '@renderer/utils/ipc'
 
@@ -20,7 +20,7 @@ const DNSCard: React.FC = () => {
 
   return (
     <Card
-      className={`w-[50%] ml-1 mb-2 ${match ? 'bg-primary' : ''}`}
+      className={`w-[50%] mr-1 mb-2 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/dns')}
     >
@@ -45,9 +45,7 @@ const DNSCard: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3
-          className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}
-        >
+        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
           DNS
         </h3>
       </CardFooter>

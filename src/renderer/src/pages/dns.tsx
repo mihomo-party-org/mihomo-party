@@ -1,5 +1,6 @@
-import { Button, Tab, Input, Switch, Tabs } from '@nextui-org/react'
+import { Button, Tab, Input, Switch, Tabs, Divider } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
+import { MdDeleteForever } from 'react-icons/md'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
@@ -14,11 +15,7 @@ const DNS: React.FC = () => {
     'enhanced-mode': enhancedMode = 'fake-ip',
     'use-hosts': useHosts = false,
     'use-system-hosts': useSystemHosts = false,
-    // 'respect-rules': respectRules = false,
-    nameserver =[
-      'https://doh.pub/dns-query',
-      'https://dns.alidns.com/dns-query'
-    ],
+    nameserver = ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query']
   } = dns || {}
 
   const [values, setValues] = useState({
@@ -26,41 +23,40 @@ const DNS: React.FC = () => {
     useHosts,
     enhancedMode,
     useSystemHosts,
-    // respectRules,
     nameserver,
     hosts: Object.entries(hosts || {}).map(([domain, value]) => ({ domain, value }))
   })
 
-  const handleNameserverChange = (value: string, index: number) => {
-    const newNameservers = [...values.nameserver];
+  const handleNameserverChange = (value: string, index: number): void => {
+    const newNameservers = [...values.nameserver]
     if (index === newNameservers.length) {
       if (value.trim() !== '') {
-        newNameservers.push(value);
+        newNameservers.push(value)
       }
     } else {
       if (value.trim() === '') {
-        newNameservers.splice(index, 1);
+        newNameservers.splice(index, 1)
       } else {
-        newNameservers[index] = value;
+        newNameservers[index] = value
       }
     }
-    setValues({ ...values, nameserver: newNameservers });
+    setValues({ ...values, nameserver: newNameservers })
   }
-  const handleHostsChange = (domain: string, value: string, index: number) => {
-    const newHosts = [...values.hosts];
+  const handleHostsChange = (domain: string, value: string, index: number): void => {
+    const newHosts = [...values.hosts]
 
     if (index === newHosts.length) {
       if (domain.trim() !== '' || value.trim() !== '') {
-        newHosts.push({ domain: domain.trim(), value: value.trim() });
+        newHosts.push({ domain: domain.trim(), value: value.trim() })
       }
     } else {
       if (domain.trim() === '' && value.trim() === '') {
-        newHosts.splice(index, 1);
+        newHosts.splice(index, 1)
       } else {
-        newHosts[index] = { domain: domain.trim(), value: value.trim() };
+        newHosts[index] = { domain: domain.trim(), value: value.trim() }
       }
     }
-    setValues({ ...values, hosts: newHosts });
+    setValues({ ...values, hosts: newHosts })
   }
 
   const onSave = async (patch: Partial<IMihomoConfig>): Promise<void> => {
@@ -78,18 +74,17 @@ const DNS: React.FC = () => {
           onPress={() => {
             const hostsObject = values.hosts.reduce((acc, { domain, value }) => {
               if (domain) {
-                acc[domain] = value;
+                acc[domain] = value
               }
-              return acc;
-            }, {});
+              return acc
+            }, {})
             onSave({
               dns: {
                 ipv6: values.ipv6,
                 'enhanced-mode': values.enhancedMode,
                 'use-hosts': values.useHosts,
                 'use-system-hosts': values.useSystemHosts,
-                // 'respect-rules': values.respectRules,
-                nameserver: values.nameserver,
+                nameserver: values.nameserver
               },
               hosts: hostsObject
             })
@@ -97,7 +92,6 @@ const DNS: React.FC = () => {
         >
           保存
         </Button>
-
       }
     >
       <SettingCard>
@@ -113,7 +107,7 @@ const DNS: React.FC = () => {
             <Tab key="normal" title="取消映射" className="select-none" />
           </Tabs>
         </SettingItem>
-        <SettingItem title="IPV6" divider>
+        <SettingItem title="IPv6" divider>
           <Switch
             size="sm"
             isSelected={values.ipv6}
@@ -122,33 +116,32 @@ const DNS: React.FC = () => {
             }}
           />
         </SettingItem>
-        {/* <SettingItem title="遵守路由规则连接" divider>
-          <Switch
-            size="sm"
-            isSelected={values.respectRules}
-            onValueChange={(v) => {
-              setValues({ ...values, respectRules: v })
-            }}
-          />
-        </SettingItem> */}
         <div className="flex flex-col items-stretch">
-          <h3 className="mb-2">DNS服务器</h3>
+          <h3 className="select-none mb-2">DNS服务器</h3>
           {[...values.nameserver, ''].map((ns, index) => (
-            <div key={index} className="flex flex-row mb-2">
+            <div key={index} className="mb-2 flex">
               <Input
+                fullWidth
                 size="sm"
                 placeholder="例: tls://223.5.5.5"
                 value={ns}
-                onChange={(e) => handleNameserverChange(e.target.value, index)}
-                className="flex-grow"
+                onValueChange={(v) => handleNameserverChange(v, index)}
               />
               {index < values.nameserver.length && (
-                <Button size="sm" color="warning" onClick={() => handleNameserverChange('', index)}>-</Button>
+                <Button
+                  className="ml-2"
+                  size="sm"
+                  variant="flat"
+                  color="warning"
+                  onClick={() => handleNameserverChange('', index)}
+                >
+                  <MdDeleteForever className="text-lg" />
+                </Button>
               )}
             </div>
           ))}
         </div>
-        <div style={{ borderBottom: '1px solid #dcdcdc', margin: '16px 0' }} />
+        <Divider />
         <SettingItem title="使用系统hosts" divider>
           <Switch
             size="sm"
@@ -171,33 +164,36 @@ const DNS: React.FC = () => {
           <div className="flex flex-col items-stretch">
             <h3 className="mb-2"></h3>
             {[...values.hosts, { domain: '', value: '' }].map(({ domain, value }, index) => (
-              <div key={index} className="flex w-full flex-wrap md:flex-nowrap gap-4">
-                <div className="flex-[4] mr-2">
+              <div key={index} className="flex mb-2">
+                <div className="flex-[4]">
                   <Input
                     size="sm"
+                    fullWidth
                     placeholder="域名"
                     value={domain}
-                    onChange={(e) => handleHostsChange(e.target.value, Array.isArray(value) ? value.join(', ') : value, index)}
-                    className="w-full"
+                    onValueChange={(v) =>
+                      handleHostsChange(v, Array.isArray(value) ? value.join(', ') : value, index)
+                    }
                   />
                 </div>
-                <span className="mx-2">:</span>
-                <div className="flex-[6] flex items-center">
+                <span className="select-none mx-2">:</span>
+                <div className="flex-[6] flex">
                   <Input
                     size="sm"
+                    fullWidth
                     placeholder="IP 或域名"
                     value={Array.isArray(value) ? value.join(', ') : value}
-                    onChange={(e) => handleHostsChange(domain, e.target.value, index)}
-                    className="flex-grow"
+                    onValueChange={(v) => handleHostsChange(domain, v, index)}
                   />
                   {index < values.hosts.length && (
                     <Button
                       size="sm"
                       color="warning"
-                      className="ml-2 w-8 h-8 flex items-center justify-center"
+                      variant="flat"
+                      className="ml-2"
                       onClick={() => handleHostsChange('', '', index)}
                     >
-                      -
+                      <MdDeleteForever className="text-lg" />
                     </Button>
                   )}
                 </div>

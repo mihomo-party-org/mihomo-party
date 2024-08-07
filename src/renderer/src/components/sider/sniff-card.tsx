@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import BorderSwitch from '@renderer/components/base/border-swtich'
-import { GrDomain } from "react-icons/gr"
+import { GrDomain } from 'react-icons/gr'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { patchMihomoConfig } from '@renderer/utils/ipc'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'

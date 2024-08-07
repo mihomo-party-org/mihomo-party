@@ -1,10 +1,11 @@
-import { Button, Input, Switch } from '@nextui-org/react'
+import { Button, Divider, Input, Switch } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { restartCore } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
+import { MdDeleteForever } from 'react-icons/md'
 
 const Sniffer: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
@@ -15,12 +16,10 @@ const Sniffer: React.FC = () => {
     sniff = {
       HTTP: { ports: [80, 443] },
       TLS: { ports: [443] },
-      QUIC: { ports: [443] },
+      QUIC: { ports: [443] }
     },
-    'skip-domain': skipDomain = [
-      '+.push.apple.com'
-    ],
-    'force-domain': forceDomain = [],
+    'skip-domain': skipDomain = ['+.push.apple.com'],
+    'force-domain': forceDomain = []
   } = sniffer || {}
 
   const [values, setValues] = useState({
@@ -28,7 +27,7 @@ const Sniffer: React.FC = () => {
     overrideDestination,
     sniff,
     skipDomain,
-    forceDomain,
+    forceDomain
   })
 
   const onSave = async (patch: Partial<IMihomoConfig>): Promise<void> => {
@@ -36,34 +35,33 @@ const Sniffer: React.FC = () => {
     await restartCore()
   }
 
-  const handleSniffPortChange = (protocol: keyof typeof sniff, value: string) => {
+  const handleSniffPortChange = (protocol: keyof typeof sniff, value: string): void => {
     setValues({
       ...values,
       sniff: {
         ...values.sniff,
         [protocol]: {
           ...values.sniff[protocol],
-          ports: value.split(',').map(port => port.trim()),
-        },
-      },
-    });
-  };
-  const handleDomainChange = (type: string, value: string, index: number) => {
-    const newDomains = [...values[type]];
+          ports: value.split(',').map((port) => port.trim())
+        }
+      }
+    })
+  }
+  const handleDomainChange = (type: string, value: string, index: number): void => {
+    const newDomains = [...values[type]]
     if (index === newDomains.length) {
       if (value.trim() !== '') {
-        newDomains.push(value);
+        newDomains.push(value)
       }
     } else {
       if (value.trim() === '') {
-        newDomains.splice(index, 1);
+        newDomains.splice(index, 1)
       } else {
-        newDomains[index] = value;
+        newDomains[index] = value
       }
     }
-    setValues({ ...values, [type]: newDomains });
+    setValues({ ...values, [type]: newDomains })
   }
-
 
   return (
     <BasePage
@@ -79,7 +77,7 @@ const Sniffer: React.FC = () => {
                 'override-destination': values.overrideDestination,
                 sniff: values.sniff,
                 'skip-domain': values.skipDomain,
-                'force-domain': values.forceDomain,
+                'force-domain': values.forceDomain
               }
             })
           }
@@ -132,36 +130,52 @@ const Sniffer: React.FC = () => {
           />
         </SettingItem>
         <div className="flex flex-col items-stretch">
-          <h3 className="mb-2">跳过嗅探</h3>
+          <h3 className="select-none mb-2">跳过嗅探</h3>
           {[...values.skipDomain, ''].map((d, index) => (
-            <div key={index} className="flex flex-row mb-2">
+            <div key={index} className="flex mb-2">
               <Input
                 size="sm"
+                fullWidth
                 placeholder="例: push.apple.com"
                 value={d}
-                onChange={(e) => handleDomainChange('skipDomain', e.target.value, index)}
-                className="flex-grow"
+                onValueChange={(v) => handleDomainChange('skipDomain', v, index)}
               />
               {index < values.skipDomain.length && (
-                <Button size="sm" color="warning" onClick={() => handleDomainChange('skipDomain', '', index)}>-</Button>
+                <Button
+                  size="sm"
+                  color="warning"
+                  variant="flat"
+                  className="ml-2"
+                  onClick={() => handleDomainChange('skipDomain', '', index)}
+                >
+                  <MdDeleteForever className="text-lg" />
+                </Button>
               )}
             </div>
           ))}
         </div>
-        <div style={{ borderBottom: '1px solid #dcdcdc', margin: '8px 0' }} />
+        <Divider />
         <div className="flex flex-col items-stretch">
-          <h3 className="mb-2">强制嗅探</h3>
+          <h3 className="select-none mb-2">强制嗅探</h3>
           {[...values.forceDomain, ''].map((d, index) => (
-            <div key={index} className="flex flex-row mb-2">
+            <div key={index} className="flex mb-2">
               <Input
                 size="sm"
+                fullWidth
                 placeholder="例: v2ex.com"
                 value={d}
-                onChange={(e) => handleDomainChange('forceDomain', e.target.value, index)}
-                className="flex-grow"
+                onValueChange={(v) => handleDomainChange('forceDomain', v, index)}
               />
               {index < values.forceDomain.length && (
-                <Button size="sm" color="warning" onClick={() => handleDomainChange('forceDomain', '', index)}>-</Button>
+                <Button
+                  size="sm"
+                  color="warning"
+                  variant="flat"
+                  className="ml-2"
+                  onClick={() => handleDomainChange('forceDomain', '', index)}
+                >
+                  <MdDeleteForever className="text-lg" />
+                </Button>
               )}
             </div>
           ))}

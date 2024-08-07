@@ -37,11 +37,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'fake-ip-range': '198.18.0.1/16',
     'use-hosts': false,
     'use-system-hosts': false,
-    // 'respect-rules': false,
-    nameserver:[
-      'https://doh.pub/dns-query',
-      'https://dns.alidns.com/dns-query'
-    ]
+    nameserver: ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query']
   },
   sniffer: {
     enable: true,
@@ -58,9 +54,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
         ports: [443]
       }
     },
-    "skip-domain": [
-      '+.push.apple.com'
-    ]
+    'skip-domain': ['+.push.apple.com']
   }
 }
 
