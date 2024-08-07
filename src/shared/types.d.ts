@@ -199,6 +199,7 @@ interface IMihomoDNSConfig {
   ipv6?: boolean
   'enhanced-mode'?: DnsMode
   'fake-ip-range'?: string
+  'fake-ip-filter'?: string[]
   'use-hosts'?: boolean
   'use-system-hosts'?: boolean
   'respect-rules'?: boolean

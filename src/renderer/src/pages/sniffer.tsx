@@ -14,7 +14,7 @@ const Sniffer: React.FC = () => {
     'parse-pure-ip': parsePureIP = true,
     'override-destination': overrideDestination = false,
     sniff = {
-      HTTP: { ports: [80, 443] },
+      HTTP: { ports: [80, 443], 'override-destination': false },
       TLS: { ports: [443] },
       QUIC: { ports: [443] }
     },
@@ -92,7 +92,18 @@ const Sniffer: React.FC = () => {
             size="sm"
             isSelected={values.overrideDestination}
             onValueChange={(v) => {
-              setValues({ ...values, overrideDestination: v })
+              setValues({
+                ...values,
+                overrideDestination: v,
+                sniff: {
+                  ...values.sniff,
+                  HTTP: {
+                    ...values.sniff.HTTP,
+                    'override-destination': v,
+                    ports: values.sniff.HTTP?.ports || [80, 443]
+                  }
+                }
+              });
             }}
           />
         </SettingItem>
@@ -154,7 +165,7 @@ const Sniffer: React.FC = () => {
             </div>
           ))}
         </div>
-        <Divider />
+        <Divider style={{ marginTop: '2px', marginBottom: '6px' }}  />
         <div className="flex flex-col items-stretch">
           <h3 className="select-none mb-2">强制嗅探</h3>
           {[...values.forceDomain, ''].map((d, index) => (
@@ -182,7 +193,7 @@ const Sniffer: React.FC = () => {
         </div>
       </SettingCard>
     </BasePage>
-  )
-}
+  );
+};
 
-export default Sniffer
+export default Sniffer;
