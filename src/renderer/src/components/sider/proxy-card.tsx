@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
 import { mihomoProxies } from '@renderer/utils/ipc'
 import { useMemo } from 'react'
-import { MdTableChart } from 'react-icons/md'
+import { LuGroup } from 'react-icons/lu'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useSWR from 'swr'
 
@@ -30,7 +30,7 @@ const ProxyCard: React.FC = () => {
             variant="flat"
             color="default"
           >
-            <MdTableChart
+            <LuGroup
               className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
             />
           </Button>

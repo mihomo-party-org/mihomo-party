@@ -18,6 +18,16 @@ export function setControledMihomoConfig(patch: Partial<IMihomoConfig>): void {
     const newTun = Object.assign(oldTun, patch.tun)
     patch.tun = newTun
   }
+  if (patch.dns) {
+    const oldDns = controledMihomoConfig.dns || {}
+    const newDns = Object.assign(oldDns, patch.dns)
+    patch.dns = newDns
+  }
+  if (patch.sniffer) {
+    const oldSniffer = controledMihomoConfig.sniffer || {}
+    const newSniffer = Object.assign(oldSniffer, patch.sniffer)
+    patch.sniffer = newSniffer
+  }
   controledMihomoConfig = Object.assign(controledMihomoConfig, patch)
   if (patch['external-controller'] || patch.secret) {
     getAxios(true)

@@ -1,10 +1,30 @@
 type OutboundMode = 'rule' | 'global' | 'direct'
 type LogLevel = 'info' | 'debug' | 'warning' | 'error' | 'silent'
 type SysProxyMode = 'auto' | 'manual'
-type MihomoGroupType = 'Selector'
-type MihomoProxyType = 'Shadowsocks'
+type MihomoGroupType = 'Selector' | 'URLTest' | 'LoadBalance' | 'Relay'
+type MihomoProxyType =
+  | 'Direct'
+  | 'Reject'
+  | 'RejectDrop'
+  | 'Pass'
+  | 'Dns'
+  | 'Compatible'
+  | 'Socks5'
+  | 'Http'
+  | 'Ssh'
+  | 'Shadowsocks'
+  | 'ShadowsocksR'
+  | 'Snell'
+  | 'Vmess'
+  | 'Vless'
+  | 'Trojan'
+  | 'Hysteria'
+  | 'Hysteria2'
+  | 'Tuic'
+  | 'WireGuard'
 type TunStack = 'gvisor' | 'mixed' | 'system'
 type FindProcessMode = 'off' | 'strict' | 'always'
+type DnsMode = 'normal' | 'fake-ip' | 'redir-host'
 
 interface IMihomoVersion {
   version: string
@@ -174,6 +194,39 @@ interface IMihomoTunConfig {
   'include-package'?: string[]
   'exclude-package'?: string[]
 }
+interface IMihomoDNSConfig {
+  enable?: boolean
+  ipv6?: boolean
+  'enhanced-mode'?: DnsMode
+  'fake-ip-range'?: string
+  'use-hosts'?: boolean
+  'use-system-hosts'?: boolean
+  'respect-rules'?: boolean
+  nameserver?: string[]
+  'proxy-server-nameserver'?: string[]
+  'nameserver-policy'?: { [key: string]: string | string[] }
+}
+
+interface IMihomoSnifferConfig {
+  enable?: boolean
+  'parse-pure-ip'?: boolean
+  'override-destination'?: boolean
+  'force-dns-mapping'?: boolean
+  'force-domain'?: string[]
+  'skip-domain'?: string[]
+  sniff?: {
+    HTTP?: {
+      ports: (number | string)[]
+      'override-destination'?: boolean
+    }
+    TLS?: {
+      ports: (number | string)[]
+    }
+    QUIC?: {
+      ports: (number | string)[]
+    }
+  }
+}
 interface IMihomoConfig {
   'external-controller': string
   secret?: string
@@ -191,7 +244,10 @@ interface IMihomoConfig {
   proxies?: []
   'proxy-groups'?: []
   rules?: []
+  hosts?: { [key: string]: string | string[] }
   tun: IMihomoTunConfig
+  dns: IMihomoDNSConfig
+  sniffer: IMihomoSnifferConfig
 }
 
 interface IProfileConfig {
