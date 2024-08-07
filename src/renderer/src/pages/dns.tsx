@@ -19,7 +19,7 @@ const DNS: React.FC = () => {
       '+.local',
       'time.*.com',
       'ntp.*.com',
-      '+.market.xiaomi.com',
+      '+.market.xiaomi.com'
     ],
     'enhanced-mode': enhancedMode = 'fake-ip',
     'use-hosts': useHosts = false,
@@ -121,15 +121,18 @@ const DNS: React.FC = () => {
           </Tabs>
         </SettingItem>
         {values.enhancedMode === 'fake-ip' ? (
-          <><SettingItem title="回应范围" divider>
-            <Input
-              size="sm"
-              className="w-[50%]"
-              value={values.fakeIPRange}
-              onValueChange={(v) => {
-                setValues({ ...values, fakeIPRange: v })
-              }} />
-          </SettingItem><div className="flex flex-col items-stretch">
+          <>
+            <SettingItem title="回应范围" divider>
+              <Input
+                size="sm"
+                className="w-[50%]"
+                value={values.fakeIPRange}
+                onValueChange={(v) => {
+                  setValues({ ...values, fakeIPRange: v })
+                }}
+              />
+            </SettingItem>
+            <div className="flex flex-col items-stretch">
               <h3 className="select-none mb-2">真实IP回应</h3>
               {[...values.fakeIPFilter, ''].map((ns, index) => (
                 <div key={index} className="mb-2 flex">
@@ -138,7 +141,8 @@ const DNS: React.FC = () => {
                     size="sm"
                     placeholder="例: +.lan"
                     value={ns}
-                    onValueChange={(v) => handleListChange('fakeIPFilter', v, index)} />
+                    onValueChange={(v) => handleListChange('fakeIPFilter', v, index)}
+                  />
                   {index < values.fakeIPFilter.length && (
                     <Button
                       className="ml-2"
@@ -152,7 +156,9 @@ const DNS: React.FC = () => {
                   )}
                 </div>
               ))}
-            </div><Divider style={{ marginTop: '2px', marginBottom: '6px' }} /></>
+            </div>
+            <Divider style={{ marginTop: '2px', marginBottom: '6px' }} />
+          </>
         ) : null}
         <SettingItem title="IPv6" divider>
           <Switch
@@ -188,7 +194,7 @@ const DNS: React.FC = () => {
             </div>
           ))}
         </div>
-        <Divider style={{ marginTop: '2px', marginBottom: '6px' }}  />
+        <Divider style={{ marginTop: '2px', marginBottom: '6px' }} />
         <SettingItem title="使用系统hosts" divider>
           <Switch
             size="sm"
