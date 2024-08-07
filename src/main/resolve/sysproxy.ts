@@ -3,6 +3,7 @@ import { getAppConfig, getControledMihomoConfig } from '../config'
 import { pacPort } from './server'
 
 let defaultBypass: string[]
+
 if (process.platform === 'linux')
   defaultBypass = ['localhost', '127.0.0.1', '192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '::1']
 if (process.platform === 'darwin')
