@@ -35,6 +35,7 @@ import { triggerSysProxy } from '../resolve/sysproxy'
 import { checkUpdate } from '../resolve/autoUpdater'
 import { exePath, mihomoCorePath } from './dirs'
 import { execSync } from 'child_process'
+import fs from 'fs'
 
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
@@ -70,11 +71,25 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
+  ipcMain.handle('getFilePath', getFilePath)
+  ipcMain.handle('readTextFile', (_e, filePath) => readTextFile(filePath))
   ipcMain.handle('checkUpdate', () => checkUpdate())
   ipcMain.handle('getVersion', () => app.getVersion())
   ipcMain.handle('platform', () => process.platform)
   ipcMain.handle('setupFirewall', setupFirewall)
   ipcMain.handle('quitApp', () => app.quit())
+}
+
+function getFilePath(): string[] | undefined {
+  return dialog.showOpenDialogSync({
+    title: '选择订阅文件',
+    filters: [{ name: 'Yaml Files', extensions: ['yml', 'yaml'] }],
+    properties: ['openFile']
+  })
+}
+
+function readTextFile(filePath: string): string {
+  return fs.readFileSync(filePath, 'utf8')
 }
 
 async function setupFirewall(): Promise<void> {

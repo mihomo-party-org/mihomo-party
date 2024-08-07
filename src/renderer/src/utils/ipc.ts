@@ -131,6 +131,14 @@ export async function encryptString(str: string): Promise<Buffer> {
   return await window.electron.ipcRenderer.invoke('encryptString', str)
 }
 
+export async function getFilePath(): Promise<string[] | undefined> {
+  return await window.electron.ipcRenderer.invoke('getFilePath')
+}
+
+export async function readTextFile(filePath: string): Promise<string> {
+  return await window.electron.ipcRenderer.invoke('readTextFile', filePath)
+}
+
 export async function checkUpdate(): Promise<string | undefined> {
   return await window.electron.ipcRenderer.invoke('checkUpdate')
 }
