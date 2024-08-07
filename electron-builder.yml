@@ -5,6 +5,11 @@ directories:
 files:
   - '!**/.vscode/*'
   - '!src/*'
+  - '!aur/*'
+  - '!images/*'
+  - '!scripts/*'
+  - '!tailwind.config.js'
+  - '!postcss.config.js'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
