@@ -65,6 +65,25 @@ const Tun: React.FC = () => {
       }
     >
       <SettingCard>
+        {platform === 'win32' && (
+          <SettingItem title="重设防火墙" divider>
+            <Button
+              size="sm"
+              color="primary"
+              isLoading={loading}
+              onPress={() => {
+                setLoading(true)
+                setupFirewall()
+                  .then(() => {
+                    new Notification('防火墙重设成功')
+                  })
+                  .finally(() => setLoading(false))
+              }}
+            >
+              重设防火墙
+            </Button>
+          </SettingItem>
+        )}
         <SettingItem title="Tun 模式堆栈" divider>
           <Tabs
             size="sm"
@@ -135,7 +154,7 @@ const Tun: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="DNS 劫持" divider>
+        <SettingItem title="DNS 劫持">
           <Input
             size="sm"
             className="w-[50%]"
@@ -144,23 +163,6 @@ const Tun: React.FC = () => {
               setValues({ ...values, dnsHijack: v.split(',') })
             }}
           />
-        </SettingItem>
-        <SettingItem title="重设防火墙">
-          <Button
-            size="sm"
-            color="primary"
-            isLoading={loading}
-            onPress={() => {
-              setLoading(true)
-              setupFirewall()
-                .then(() => {
-                  new Notification('防火墙重设成功')
-                })
-                .finally(() => setLoading(false))
-            }}
-          >
-            重设防火墙
-          </Button>
         </SettingItem>
       </SettingCard>
     </BasePage>
