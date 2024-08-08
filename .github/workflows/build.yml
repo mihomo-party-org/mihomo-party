@@ -102,8 +102,11 @@ jobs:
             dist/*.rpm
           if-no-files-found: error
       - name: Rename
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') && matrix.arch == 'x64'
         run: mv dist/linux-unpacked/resources/app.asar dist/mihomo-party-linux-$(echo ${{ github.ref }} | tr -d 'refs/tags/v')-${{ matrix.arch }}.asar
+      - name: Rename
+        if: startsWith(github.ref, 'refs/tags/v') && matrix.arch == 'arm64'
+        run: mv dist/linux-arm64-unpacked/resources/app.asar dist/mihomo-party-linux-$(echo ${{ github.ref }} | tr -d 'refs/tags/v')-${{ matrix.arch }}.asar
       - name: Publish Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
