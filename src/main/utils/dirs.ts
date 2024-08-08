@@ -12,7 +12,11 @@ export function resourcesDir(): string {
   if (is.dev) {
     return path.join(__dirname, '../../resources')
   } else {
-    return path.join(app.getAppPath(), 'resources')
+    if (app.getAppPath().endsWith('asar')) {
+      return process.resourcesPath
+    } else {
+      return path.join(app.getAppPath(), 'resources')
+    }
   }
 }
 

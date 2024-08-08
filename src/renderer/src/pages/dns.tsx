@@ -54,10 +54,10 @@ const DNS: React.FC = () => {
     setValues({ ...values, [type]: newValues })
   }
   const handleHostsChange = (domain: string, value: string, index: number): void => {
-    const processValue = (val: string): string | string[] => 
-      val.includes(',') ? val.split(',').map(s => s.trim()) : val.trim()
-    const isEmpty = (d: string, v: string | string[]): boolean => 
-      d === '' && (Array.isArray(v) ? v.every(item => item === '') : v === '')
+    const processValue = (val: string): string | string[] =>
+      val.includes(',') ? val.split(',').map((s) => s.trim()) : val.trim()
+    const isEmpty = (d: string, v: string | string[]): boolean =>
+      d === '' && (Array.isArray(v) ? v.every((item) => item === '') : v === '')
 
     const newHosts = [...values.hosts]
     if (!isEmpty(domain.trim(), processValue(value))) {
