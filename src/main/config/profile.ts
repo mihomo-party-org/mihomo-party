@@ -7,6 +7,7 @@ import axios from 'axios'
 import yaml from 'yaml'
 import fs from 'fs'
 import { dialog } from 'electron'
+import { addProfileUpdater } from '../core/profileUpdater'
 
 let profileConfig: IProfileConfig // profile.yaml
 let currentProfile: Partial<IMihomoConfig> // profiles/xxx.yaml
@@ -41,6 +42,7 @@ export async function changeCurrentProfile(id: string): Promise<void> {
 export function updateProfileItem(item: IProfileItem): void {
   const index = profileConfig.items.findIndex((i) => i.id === item.id)
   profileConfig.items[index] = item
+  addProfileUpdater(item.id)
   fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
   window?.webContents.send('profileConfigUpdated')
 }
@@ -56,6 +58,7 @@ export async function addProfileItem(item: Partial<IProfileItem>): Promise<void>
   if (!getProfileConfig().current) {
     changeCurrentProfile(newItem.id)
   }
+  addProfileUpdater(newItem.id)
   fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
   window?.webContents.send('profileConfigUpdated')
 }

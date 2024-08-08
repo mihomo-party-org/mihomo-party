@@ -14,6 +14,7 @@ import {
   stopMihomoMemory,
   stopMihomoTraffic
 } from './core/mihomoApi'
+import { initProfileUpdater } from './core/profileUpdater'
 
 export let window: BrowserWindow | null = null
 
@@ -57,7 +58,11 @@ if (!gotTheLock) {
   app.whenReady().then(() => {
     // Set app user model id for windows
     electronApp.setAppUserModelId('party.mihomo.app')
-    startCore()
+    startCore().then(() => {
+      setTimeout(() => {
+        initProfileUpdater()
+      }, 10000)
+    })
     // Default open or close DevTools by F12 in development
     // and ignore CommandOrControl + R in production.
     // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
