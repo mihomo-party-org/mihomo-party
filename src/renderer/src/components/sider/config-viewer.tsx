@@ -2,7 +2,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from
 import React, { useEffect, useState } from 'react'
 import MonacoEditor, { monaco } from 'react-monaco-editor'
 import { useTheme } from 'next-themes'
-import { getRuntimeConfig } from '@renderer/utils/ipc'
+import { getRuntimeConfigStr } from '@renderer/utils/ipc'
 interface Props {
   onClose: () => void
 }
@@ -23,7 +23,7 @@ const ConfigViewer: React.FC<Props> = (props) => {
   }
 
   const getContent = async (): Promise<void> => {
-    setCurrData(await getRuntimeConfig())
+    setCurrData(await getRuntimeConfigStr())
   }
 
   useEffect(() => {

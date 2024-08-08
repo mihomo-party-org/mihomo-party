@@ -85,6 +85,13 @@ export const mihomoChangeProxy = async (group: string, proxy: string): Promise<I
   })) as IMihomoProxy
 }
 
+export const mihomoUpgradeGeo = async (): Promise<void> => {
+  const instance = await getAxios()
+  return instance.post('/configs/geo').catch((e) => {
+    return e.response.data
+  })
+}
+
 export const mihomoProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
   const appConfig = getAppConfig()
   const { delayTestUrl, delayTestTimeout } = appConfig

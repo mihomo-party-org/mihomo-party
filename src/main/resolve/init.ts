@@ -58,7 +58,7 @@ function initConfig(): void {
 }
 
 function initFiles(): void {
-  const fileList = ['Country.mmdb', 'geoip.dat', 'geosite.dat']
+  const fileList = ['country.mmdb', 'geoip.dat', 'geosite.dat', 'ASN.mmdb']
   for (const file of fileList) {
     const targetPath = path.join(mihomoWorkDir(), file)
     const testTargrtPath = path.join(mihomoTestDir(), file)

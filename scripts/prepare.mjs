@@ -238,8 +238,8 @@ async function downloadFile(url, path) {
 
 const resolveMmdb = () =>
   resolveResource({
-    file: 'Country.mmdb',
-    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb`
+    file: 'country.mmdb',
+    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb`
   })
 const resolveGeosite = () =>
   resolveResource({
@@ -249,7 +249,12 @@ const resolveGeosite = () =>
 const resolveGeoIP = () =>
   resolveResource({
     file: 'geoip.dat',
-    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat`
+    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat`
+  })
+const resolveASN = () =>
+  resolveResource({
+    file: 'ASN.mmdb',
+    downloadURL: `https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb`
   })
 const resolveEnableLoopback = () =>
   resolveResource({
@@ -285,6 +290,7 @@ const tasks = [
   { name: 'mmdb', func: resolveMmdb, retry: 5 },
   { name: 'geosite', func: resolveGeosite, retry: 5 },
   { name: 'geoip', func: resolveGeoIP, retry: 5 },
+  { name: 'asn', func: resolveASN, retry: 5 },
   {
     name: 'font',
     func: resolveFont,

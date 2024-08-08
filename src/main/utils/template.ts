@@ -58,6 +58,15 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
       }
     },
     'skip-domain': ['+.push.apple.com']
+  },
+  'geo-auto-update': false,
+  'geo-update-interval': 24,
+  'geodata-mode': false,
+  'geox-url': {
+    geoip: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat',
+    geosite: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
+    mmdb: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb',
+    asn: 'https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb'
   }
 }
 

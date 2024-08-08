@@ -46,7 +46,7 @@ const ProfileCard: React.FC = () => {
           >
             {info?.name}
           </h3>
-          <div>
+          <div className="flex">
             <Button
               isIconOnly
               size="sm"

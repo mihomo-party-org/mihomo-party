@@ -246,6 +246,15 @@ interface IMihomoConfig {
   'proxy-groups'?: []
   rules?: []
   hosts?: { [key: string]: string | string[] }
+  'geodata-mode'?: boolean
+  'geo-auto-update'?: boolean
+  'geo-update-interval'?: number
+  'geox-url'?: {
+    geoip?: string
+    geosite?: string
+    mmdb?: string
+    asn?: string
+  }
   tun: IMihomoTunConfig
   dns: IMihomoDNSConfig
   sniffer: IMihomoSnifferConfig

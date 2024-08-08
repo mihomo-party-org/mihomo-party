@@ -22,6 +22,10 @@ export async function mihomoChangeProxy(group: string, proxy: string): Promise<I
   return await window.electron.ipcRenderer.invoke('mihomoChangeProxy', group, proxy)
 }
 
+export async function mihomoUpgradeGeo(): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('mihomoUpgradeGeo')
+}
+
 export async function mihomoProxyDelay(proxy: string, url?: string): Promise<IMihomoDelay> {
   const res = await window.electron.ipcRenderer.invoke('mihomoProxyDelay', proxy, url)
   return res
@@ -135,7 +139,11 @@ export async function readTextFile(filePath: string): Promise<string> {
   return await window.electron.ipcRenderer.invoke('readTextFile', filePath)
 }
 
-export async function getRuntimeConfig(): Promise<string> {
+export async function getRuntimeConfigStr(): Promise<string> {
+  return await window.electron.ipcRenderer.invoke('getRuntimeConfigStr')
+}
+
+export async function getRuntimeConfig(): Promise<IMihomoConfig> {
   return await window.electron.ipcRenderer.invoke('getRuntimeConfig')
 }
 

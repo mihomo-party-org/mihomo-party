@@ -6,6 +6,7 @@ import {
   mihomoProxies,
   mihomoProxyDelay,
   mihomoRules,
+  mihomoUpgradeGeo,
   mihomoVersion,
   patchMihomoConfig,
   startMihomoConnections,
@@ -34,6 +35,7 @@ import { triggerSysProxy } from '../resolve/sysproxy'
 import { checkUpdate } from '../resolve/autoUpdater'
 import { exePath, mihomoCorePath, mihomoWorkConfigPath } from './dirs'
 import { execSync } from 'child_process'
+import yaml from 'yaml'
 import fs from 'fs'
 
 export function registerIpcMainHandlers(): void {
@@ -43,6 +45,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoRules', mihomoRules)
   ipcMain.handle('mihomoProxies', mihomoProxies)
   ipcMain.handle('mihomoChangeProxy', (_e, group, proxy) => mihomoChangeProxy(group, proxy))
+  ipcMain.handle('mihomoUpgradeGeo', mihomoUpgradeGeo)
   ipcMain.handle('mihomoProxyDelay', (_e, proxy, url) => mihomoProxyDelay(proxy, url))
   ipcMain.handle('startMihomoLogs', startMihomoLogs)
   ipcMain.handle('stopMihomoLogs', stopMihomoLogs)
@@ -71,6 +74,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
   ipcMain.handle('getFilePath', getFilePath)
   ipcMain.handle('readTextFile', (_e, filePath) => readTextFile(filePath))
+  ipcMain.handle('getRuntimeConfigStr', getRuntimeConfigStr)
   ipcMain.handle('getRuntimeConfig', getRuntimeConfig)
   ipcMain.handle('checkUpdate', () => checkUpdate())
   ipcMain.handle('getVersion', () => app.getVersion())
@@ -91,8 +95,12 @@ function readTextFile(filePath: string): string {
   return fs.readFileSync(filePath, 'utf8')
 }
 
-function getRuntimeConfig(): string {
+function getRuntimeConfigStr(): string {
   return fs.readFileSync(mihomoWorkConfigPath(), 'utf8')
+}
+
+function getRuntimeConfig(): Record<string, unknown> {
+  return yaml.parse(getRuntimeConfigStr())
 }
 
 async function setupFirewall(): Promise<void> {

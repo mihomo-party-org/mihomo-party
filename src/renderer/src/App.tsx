@@ -15,9 +15,9 @@ import SniffCard from '@renderer/components/sider/sniff-card'
 import OverrideCard from '@renderer/components/sider/override-card'
 import ConnCard from '@renderer/components/sider/conn-card'
 import LogCard from '@renderer/components/sider/log-card'
-import MihomoCoreCard from './components/sider/mihomo-core-card.tsx'
-import TestCard from './components/sider/test-card.js'
-import UpdaterButton from './components/updater/updater-button.js'
+import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
+import ResourceCard from '@renderer/components/sider/resource-card'
+import UpdaterButton from '@renderer/components/updater/updater-button'
 
 const App: React.FC = () => {
   const { setTheme } = useTheme()
@@ -63,9 +63,24 @@ const App: React.FC = () => {
             />
           </div>
         </div>
+
         <div className="m-2">
           <OutboundModeSwitcher />
         </div>
+        {/* <div className="grid">
+          <SysproxySwitcher />
+          <TunSwitcher />
+          <ProfileCard />
+          <ProxyCard />
+          <MihomoCoreCard />
+          <ConnCard />
+          <DNSCard />
+          <SniffCard />
+          <LogCard />
+          <RuleCard />
+          <TestCard />
+          <OverrideCard />
+        </div> */}
         <div className="flex justify-between mx-2 mb-2">
           <SysproxySwitcher />
           <TunSwitcher />
@@ -86,7 +101,7 @@ const App: React.FC = () => {
           <RuleCard />
         </div>
         <div className="flex justify-between mx-2">
-          <TestCard />
+          <ResourceCard />
           <OverrideCard />
         </div>
       </div>
