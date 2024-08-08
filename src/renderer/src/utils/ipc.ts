@@ -2,10 +2,6 @@ export async function mihomoVersion(): Promise<IMihomoVersion> {
   return await window.electron.ipcRenderer.invoke('mihomoVersion')
 }
 
-export async function mihomoConfig(): Promise<IMihomoConfig> {
-  return await window.electron.ipcRenderer.invoke('mihomoConfig')
-}
-
 export async function mihomoCloseConnection(id: string): Promise<void> {
   return await window.electron.ipcRenderer.invoke('mihomoCloseConnection', id)
 }
@@ -137,6 +133,10 @@ export async function getFilePath(): Promise<string[] | undefined> {
 
 export async function readTextFile(filePath: string): Promise<string> {
   return await window.electron.ipcRenderer.invoke('readTextFile', filePath)
+}
+
+export async function getRuntimeConfig(): Promise<string> {
+  return await window.electron.ipcRenderer.invoke('getRuntimeConfig')
 }
 
 export async function checkUpdate(): Promise<string | undefined> {

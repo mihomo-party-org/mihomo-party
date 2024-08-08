@@ -3,7 +3,6 @@ import {
   mihomoChangeProxy,
   mihomoCloseAllConnections,
   mihomoCloseConnection,
-  mihomoConfig,
   mihomoProxies,
   mihomoProxyDelay,
   mihomoRules,
@@ -33,13 +32,12 @@ import {
 import { isEncryptionAvailable, startCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
 import { checkUpdate } from '../resolve/autoUpdater'
-import { exePath, mihomoCorePath } from './dirs'
+import { exePath, mihomoCorePath, mihomoWorkConfigPath } from './dirs'
 import { execSync } from 'child_process'
 import fs from 'fs'
 
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
-  ipcMain.handle('mihomoConfig', mihomoConfig)
   ipcMain.handle('mihomoCloseConnection', (_e, id) => mihomoCloseConnection(id))
   ipcMain.handle('mihomoCloseAllConnections', mihomoCloseAllConnections)
   ipcMain.handle('mihomoRules', mihomoRules)
@@ -73,6 +71,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
   ipcMain.handle('getFilePath', getFilePath)
   ipcMain.handle('readTextFile', (_e, filePath) => readTextFile(filePath))
+  ipcMain.handle('getRuntimeConfig', getRuntimeConfig)
   ipcMain.handle('checkUpdate', () => checkUpdate())
   ipcMain.handle('getVersion', () => app.getVersion())
   ipcMain.handle('platform', () => process.platform)
@@ -90,6 +89,10 @@ function getFilePath(): string[] | undefined {
 
 function readTextFile(filePath: string): string {
   return fs.readFileSync(filePath, 'utf8')
+}
+
+function getRuntimeConfig(): string {
+  return fs.readFileSync(mihomoWorkConfigPath(), 'utf8')
 }
 
 async function setupFirewall(): Promise<void> {

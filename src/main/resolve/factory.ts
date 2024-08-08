@@ -1,10 +1,12 @@
-import { getControledMihomoConfig, getCurrentProfile } from '../config'
+import { getControledMihomoConfig, getProfileConfig, getProfile } from '../config'
 import { mihomoWorkConfigPath } from '../utils/dirs'
 import yaml from 'yaml'
 import fs from 'fs'
 
 export function generateProfile(): void {
-  const currentProfile = getCurrentProfile()
+  const current = getProfileConfig().current
+  if (!current) return
+  const currentProfile = getProfile(current)
   const controledMihomoConfig = getControledMihomoConfig()
   const { tun: profileTun = {} } = currentProfile
   const { tun: controledTun } = controledMihomoConfig

@@ -2,11 +2,13 @@ import { Button, Card, CardBody, CardFooter, Chip, Progress } from '@nextui-org/
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic, calcPercent } from '@renderer/utils/calc'
+import { LiaGripfire } from 'react-icons/lia'
 import { IoMdRefresh } from 'react-icons/io'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
 import { useState } from 'react'
+import ConfigViewer from './config-viewer'
 
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
@@ -16,6 +18,7 @@ const ProfileCard: React.FC = () => {
   const location = useLocation()
   const match = location.pathname.includes('/profiles')
   const [updating, setUpdating] = useState(false)
+  const [showRuntimeConfig, setShowRuntimeConfig] = useState(false)
   const { profileConfig, addProfileItem } = useProfileConfig()
   const { current, items } = profileConfig ?? {}
   const info = items?.find((item) => item.id === current) ?? {
@@ -35,6 +38,7 @@ const ProfileCard: React.FC = () => {
       isPressable
       onPress={() => navigate('/profiles')}
     >
+      {showRuntimeConfig && <ConfigViewer onClose={() => setShowRuntimeConfig(false)} />}
       <CardBody className="pb-1">
         <div className="flex justify-between h-[32px]">
           <h3
@@ -42,25 +46,39 @@ const ProfileCard: React.FC = () => {
           >
             {info?.name}
           </h3>
-          {info.type === 'remote' && (
+          <div>
             <Button
               isIconOnly
               size="sm"
-              disabled={updating}
+              title="查看当前运行时配置"
               variant="light"
               color="default"
               onPress={() => {
-                setUpdating(true)
-                addProfileItem(info).finally(() => {
-                  setUpdating(false)
-                })
+                setShowRuntimeConfig(true)
               }}
             >
-              <IoMdRefresh
-                className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
-              />
+              <LiaGripfire className={`text-[24px] ${match ? 'text-white' : 'text-foreground'}`} />
             </Button>
-          )}
+            {info.type === 'remote' && (
+              <Button
+                isIconOnly
+                size="sm"
+                disabled={updating}
+                variant="light"
+                color="default"
+                onPress={() => {
+                  setUpdating(true)
+                  addProfileItem(info).finally(() => {
+                    setUpdating(false)
+                  })
+                }}
+              >
+                <IoMdRefresh
+                  className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
+                />
+              </Button>
+            )}
+          </div>
         </div>
         {info.type === 'remote' && (
           <div

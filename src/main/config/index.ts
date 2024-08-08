@@ -1,7 +1,7 @@
 export { getAppConfig, setAppConfig } from './app'
 export { getControledMihomoConfig, setControledMihomoConfig } from './controledMihomo'
 export {
-  getCurrentProfile,
+  getProfile,
   getCurrentProfileItem,
   getProfileItem,
   getProfileConfig,

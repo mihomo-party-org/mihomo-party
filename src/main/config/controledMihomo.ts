@@ -2,6 +2,7 @@ import { controledMihomoConfigPath } from '../utils/dirs'
 import yaml from 'yaml'
 import fs from 'fs'
 import { getAxios, startMihomoMemory, startMihomoTraffic } from '../core/mihomoApi'
+import { generateProfile } from '../resolve/factory'
 
 export let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
 
@@ -34,5 +35,6 @@ export function setControledMihomoConfig(patch: Partial<IMihomoConfig>): void {
     startMihomoMemory()
     startMihomoTraffic()
   }
+  generateProfile()
   fs.writeFileSync(controledMihomoConfigPath(), yaml.stringify(controledMihomoConfig))
 }

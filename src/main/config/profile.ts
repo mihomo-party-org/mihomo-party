@@ -10,7 +10,6 @@ import { dialog } from 'electron'
 import { addProfileUpdater } from '../core/profileUpdater'
 
 let profileConfig: IProfileConfig // profile.yaml
-let currentProfile: Partial<IMihomoConfig> // profiles/xxx.yaml
 
 export function getProfileConfig(force = false): IProfileConfig {
   if (force || !profileConfig) {
@@ -27,12 +26,10 @@ export function getProfileItem(id: string | undefined): IProfileItem {
 export async function changeCurrentProfile(id: string): Promise<void> {
   const oldId = getProfileConfig().current
   profileConfig.current = id
-  getCurrentProfile(true)
   try {
     await startCore()
   } catch (e) {
     profileConfig.current = oldId
-    getCurrentProfile(true)
   } finally {
     window?.webContents.send('profileConfigUpdated')
     fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
@@ -180,19 +177,10 @@ export function getProfileStr(id: string): string {
 export async function setProfileStr(id: string, content: string): Promise<void> {
   fs.writeFileSync(profilePath(id), content, 'utf-8')
   if (id === getProfileConfig().current) {
-    getCurrentProfile(true)
     await startCore()
   }
 }
 
-export function getCurrentProfile(force = false): Partial<IMihomoConfig> {
-  if (force || !currentProfile) {
-    const current = getProfileConfig().current
-    if (current) {
-      currentProfile = yaml.parse(getProfileStr(current))
-    } else {
-      currentProfile = yaml.parse(getProfileStr('default'))
-    }
-  }
-  return currentProfile
+export function getProfile(id: string): IMihomoConfig {
+  return yaml.parse(getProfileStr(id))
 }
