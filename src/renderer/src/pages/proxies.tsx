@@ -24,12 +24,14 @@ const Proxies: React.FC = () => {
       const globalGroup = proxies.proxies['GLOBAL'] as IMihomoGroup
       for (const global of globalGroup.all) {
         if (isGroup(proxies.proxies[global])) {
+          if (proxies.proxies[global].hidden) continue
           groups.push(proxies.proxies[global] as IMihomoGroup)
         }
       }
       Object.keys(proxies.proxies).forEach((key) => {
         if (isGroup(proxies.proxies[key])) {
           if (!groups.find((group) => group.name === key)) {
+            if (proxies.proxies[key].hidden) return
             groups.push(proxies.proxies[key] as IMihomoGroup)
           }
         }
