@@ -1,30 +1,31 @@
-pkgname=mihomo-party-bin
+pkgname=mihomo-party-electron-bin
 _pkgname=mihomo-party
-pkgver=0.1.3
+pkgver=0.2.2
 pkgrel=1
 pkgdesc="Another Mihomo GUI."
 arch=('x86_64' 'aarch64')
 url="https://github.com/pompurin404/mihomo-party"
 license=('GPL3')
-conflicts=("$_pkgname" "$_pkgname-git" "$_pkgname-electron" "$_pkgname-electron-bin")
-conflicts=("mihomo-party-git" 'mihomo-party')
-depends=('gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'at-spi2-core' 'util-linux-libs' 'libsecret')
+conflicts=("$_pkgname" "$_pkgname-git" "$_pkgname-bin" "$_pkgname-electron")
+depends=('electron' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'at-spi2-core' 'util-linux-libs' 'libsecret')
 optdepends=('libappindicator-gtk3: Allow mihomo-party to extend a menu via Ayatana indicators in Unity, KDE or Systray (GTK+ 3 library).')
-makedepends=('nodejs' 'pnpm' 'jq' 'libxcrypt-compat')
+makedepends=('asar')
 install=$_pkgname.install
 source_x86_64=("${_pkgname}-${pkgver}-x86_64.deb::${url}/releases/download/v${pkgver}/mihomo-party-linux-${pkgver}-amd64.deb")
 source_aarch64=("${_pkgname}-${pkgver}-aarch64.deb::${url}/releases/download/v${pkgver}/mihomo-party-linux-${pkgver}-arm64.deb")
-sha256sums_x86_64=('b8d166f1134573336aaae1866d25262284b0cbabbf393684226aca0fd8d1bd83')
-sha256sums_aarch64=('8cd7398b8fc1cd70d41e386af9995cbddc1043d9018391c29f056f1435712a10')
+sha256sums_x86_64=("43f8b9a5818a722cdb8e5044d2a90993274860b0da96961e1a2652169539ce39")
+sha256sums_aarch64=("18574fdeb01877a629aa52ac0175335ce27c83103db4fcb2f1ad69e3e42ee10f")
+options=('!lto')
 
 package() {
-    bsdtar -xf data.tar.xz -C "${pkgdir}/"
-    chmod +x ${pkgdir}/opt/mihomo-party/mihomo-party
+    bsdtar -xf data.tar.xz -C $srcdir
+    asar extract $srcdir/opt/mihomo-party/resources/app.asar ${pkgdir}/opt/mihomo-party
     chmod +x ${pkgdir}/opt/mihomo-party/resources/sidecar/mihomo
     chmod +x ${pkgdir}/opt/mihomo-party/resources/sidecar/mihomo-alpha
     cd ${pkgdir}/../..
 	install -Dm755 "${_pkgname}.sh" "${pkgdir}/usr/bin/${_pkgname}"
-	sed -i '3s!/opt/mihomo-party/mihomo-party!mihomo-party!' "${pkgdir}/usr/share/applications/${_pkgname}.desktop"
+    install -Dm644 "${_pkgname}.desktop" "${pkgdir}/usr/share/applications/${_pkgname}.desktop"
+    install -Dm644 "$srcdir/opt/mihomo-party/resources/icon.png" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/${_pkgname}.png"
 
     chown -R root:root ${pkgdir}
 }

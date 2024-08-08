@@ -1,0 +1,14 @@
+# Colored makepkg-like functions
+note() {
+    printf "${_blue}==>${_yellow} NOTE:${_bold} %s${_all_off}\n" "$1"
+}
+
+_all_off="$(tput sgr0)"
+_bold="${_all_off}$(tput bold)"
+_blue="${_bold}$(tput setaf 4)"
+_yellow="${_bold}$(tput setaf 3)"
+
+post_install() {
+    note "Custom flags should be put directly in: ~/.config/mihomo-party-flags.conf"
+    note "The launcher is called: 'mihomo-party'"
+}
