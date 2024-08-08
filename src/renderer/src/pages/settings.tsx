@@ -13,6 +13,8 @@ import {
 import { IoLogoGithub } from 'react-icons/io5'
 import { version } from '@renderer/utils/init'
 import useSWR from 'swr'
+import { useState } from 'react'
+import debounce from '@renderer/utils/debounce'
 
 const Settings: React.FC = () => {
   const { data: enable, mutate } = useSWR('checkAutoRun', checkAutoRun, {
@@ -22,6 +24,7 @@ const Settings: React.FC = () => {
 
   const { appConfig, patchAppConfig } = useAppConfig()
   const { silentStart = false, delayTestUrl, delayTestTimeout, autoCheckUpdate } = appConfig || {}
+  const [url, setUrl] = useState(delayTestUrl)
 
   return (
     <BasePage
@@ -77,10 +80,13 @@ const Settings: React.FC = () => {
           <Input
             size="sm"
             className="w-[60%]"
-            value={delayTestUrl}
+            value={url}
             placeholder="默认https://www.gstatic.com/generate_204"
             onValueChange={(v) => {
-              patchAppConfig({ delayTestUrl: v })
+              setUrl(v)
+              debounce(() => {
+                patchAppConfig({ delayTestUrl: v })
+              }, 2000)
             }}
           ></Input>
         </SettingItem>
