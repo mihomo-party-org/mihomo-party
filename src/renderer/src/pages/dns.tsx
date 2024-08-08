@@ -54,18 +54,20 @@ const DNS: React.FC = () => {
     setValues({ ...values, [type]: newValues })
   }
   const handleHostsChange = (domain: string, value: string, index: number): void => {
-    const newHosts = [...values.hosts]
+    const processValue = (val: string): string | string[] => 
+      val.includes(',') ? val.split(',').map(s => s.trim()) : val.trim()
+    const isEmpty = (d: string, v: string | string[]): boolean => 
+      d === '' && (Array.isArray(v) ? v.every(item => item === '') : v === '')
 
-    if (index === newHosts.length) {
-      if (domain.trim() !== '' || value.trim() !== '') {
-        newHosts.push({ domain: domain.trim(), value: value.trim() })
-      }
-    } else {
-      if (domain.trim() === '' && value.trim() === '') {
-        newHosts.splice(index, 1)
+    const newHosts = [...values.hosts]
+    if (!isEmpty(domain.trim(), processValue(value))) {
+      if (index === newHosts.length) {
+        newHosts.push({ domain: domain.trim(), value: processValue(value) })
       } else {
-        newHosts[index] = { domain: domain.trim(), value: value.trim() }
+        newHosts[index] = { domain: domain.trim(), value: processValue(value) }
       }
+    } else if (index < newHosts.length) {
+      newHosts.splice(index, 1)
     }
     setValues({ ...values, hosts: newHosts })
   }
@@ -225,7 +227,7 @@ const DNS: React.FC = () => {
                     placeholder="域名"
                     value={domain}
                     onValueChange={(v) =>
-                      handleHostsChange(v, Array.isArray(value) ? value.join(', ') : value, index)
+                      handleHostsChange(v, Array.isArray(value) ? value.join(',') : value, index)
                     }
                   />
                 </div>
@@ -234,8 +236,8 @@ const DNS: React.FC = () => {
                   <Input
                     size="sm"
                     fullWidth
-                    placeholder="IP 或域名"
-                    value={Array.isArray(value) ? value.join(', ') : value}
+                    placeholder="域名或IP"
+                    value={Array.isArray(value) ? value.join(',') : value}
                     onValueChange={(v) => handleHostsChange(domain, v, index)}
                   />
                   {index < values.hosts.length && (

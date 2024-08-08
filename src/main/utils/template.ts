@@ -42,7 +42,8 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
   },
   sniffer: {
     enable: true,
-    'parse-pure-ip': false,
+    'parse-pure-ip': true,
+    'force-dns-mapping': true,
     'override-destination': false,
     sniff: {
       HTTP: {
