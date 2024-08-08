@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=mihomo-party
+Exec=mihomo-party %U
+Terminal=false
+Type=Application
+Icon=mihomo-party
+StartupWMClass=mihomo-party
+MimeType=x-scheme-handler/clash;x-scheme-handler/mihomo;
+Comment=Mihomo Party
+Categories=Utility;

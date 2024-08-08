@@ -1,0 +1,38 @@
+pkgname=mihomo-party-electron
+_pkgname=mihomo-party
+pkgver=0.1.3
+pkgrel=1
+pkgdesc="Another Mihomo GUI."
+arch=('x86_64' 'aarch64')
+url="https://github.com/pompurin404/mihomo-party"
+license=('GPL3')
+conflicts=("mihomo-party-git" 'mihomo-party-bin' 'mihomo-party')
+depends=('electron' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'at-spi2-core' 'util-linux-libs' 'libsecret')
+optdepends=('libappindicator-gtk3: Allow mihomo-party to extend a menu via Ayatana indicators in Unity, KDE or Systray (GTK+ 3 library).')
+makedepends=('nodejs' 'pnpm' 'libxcrypt-compat' 'asar')
+install=$_pkgname.install
+source=("${_pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=("52d761e9432e17477acb8adb5744676df946476e0eb5210fee2b6d45f497f218")
+options=('!lto')
+
+prepare(){
+    cd $srcdir/${_pkgname}-${pkgver}
+    pnpm install
+}
+
+build(){
+    cd $srcdir/${_pkgname}-${pkgver}
+    pnpm build:linux deb
+}
+
+package() {
+    asar extract $srcdir/${_pkgname}-${pkgver}/dist/linux-unpacked/resources/app.asar ${pkgdir}/opt/mihomo-party
+    chmod +x ${pkgdir}/opt/mihomo-party/resources/sidecar/mihomo
+    chmod +x ${pkgdir}/opt/mihomo-party/resources/sidecar/mihomo-alpha
+    cd ${pkgdir}/../..
+	install -Dm755 "${_pkgname}.sh" "${pkgdir}/usr/bin/${_pkgname}"
+    install -Dm644 "${_pkgname}.desktop" "${pkgdir}/usr/share/applications/${_pkgname}.desktop"
+    install -Dm644 "$srcdir/${_pkgname}-${pkgver}/dist/linux-unpacked/resources/icon.png" "${pkgdir}/usr/share/icons/hicolor/512x512/apps/${_pkgname}.png"
+
+    chown -R root:root ${pkgdir}
+}

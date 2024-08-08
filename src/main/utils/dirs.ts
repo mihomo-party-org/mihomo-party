@@ -12,7 +12,7 @@ export function resourcesDir(): string {
   if (is.dev) {
     return path.join(__dirname, '../../resources')
   } else {
-    return path.join(process.resourcesPath)
+    return path.join(app.getAppPath(), 'resources')
   }
 }
 
