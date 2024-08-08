@@ -257,6 +257,20 @@ const resolveEnableLoopback = () =>
     downloadURL: `https://github.com/Kuingsmile/uwp-tool/releases/download/latest/enableLoopback.exe`
   })
 
+const resolveFont = async () => {
+  const targetPath = path.join(cwd, 'src', 'renderer', 'src', 'assets', 'NotoColorEmoji.ttf')
+
+  if (fs.existsSync(targetPath)) {
+    return
+  }
+  await downloadFile(
+    'https://github.com/googlefonts/noto-emoji/raw/main/fonts/NotoColorEmoji.ttf',
+    targetPath
+  )
+
+  console.log(`[INFO]: NotoColorEmoji.ttf finished`)
+}
+
 const tasks = [
   {
     name: 'verge-mihomo-alpha',
@@ -271,6 +285,11 @@ const tasks = [
   { name: 'mmdb', func: resolveMmdb, retry: 5 },
   { name: 'geosite', func: resolveGeosite, retry: 5 },
   { name: 'geoip', func: resolveGeoIP, retry: 5 },
+  {
+    name: 'font',
+    func: resolveFont,
+    retry: 5
+  },
   {
     name: 'enableLoopback',
     func: resolveEnableLoopback,

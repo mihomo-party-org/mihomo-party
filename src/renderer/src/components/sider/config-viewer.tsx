@@ -46,7 +46,7 @@ const ConfigViewer: React.FC<Props> = (props) => {
                 enabled: false
               },
               mouseWheelZoom: true,
-              fontFamily: `Fira Code, JetBrains Mono, Roboto Mono, "Source Code Pro", Consolas, Menlo, Monaco, monospace, "Courier New", "Apple Color Emoji"`,
+              fontFamily: `Fira Code, JetBrains Mono, Roboto Mono, "Source Code Pro", Consolas, Menlo, Monaco, monospace, "Courier New", "Apple Color Emoji", "Noto Color Empji"`,
               fontLigatures: true, // 连字符
               smoothScrolling: true // 平滑滚动
             }}

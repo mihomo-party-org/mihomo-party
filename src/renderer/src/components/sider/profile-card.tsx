@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardFooter, Chip, Progress } from '@nextui-org/
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic, calcPercent } from '@renderer/utils/calc'
-import { LiaGripfire } from 'react-icons/lia'
+import { CgLoadbarDoc } from 'react-icons/cg'
 import { IoMdRefresh } from 'react-icons/io'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
@@ -57,7 +57,7 @@ const ProfileCard: React.FC = () => {
                 setShowRuntimeConfig(true)
               }}
             >
-              <LiaGripfire className={`text-[24px] ${match ? 'text-white' : 'text-foreground'}`} />
+              <CgLoadbarDoc className={`text-[24px] ${match ? 'text-white' : 'text-foreground'}`} />
             </Button>
             {info.type === 'remote' && (
               <Button

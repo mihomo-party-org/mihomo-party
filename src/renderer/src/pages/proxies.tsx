@@ -158,14 +158,14 @@ const Proxies: React.FC = () => {
                           src={groups[index].icon}
                         />
                       ) : null}
-                      <div className="h-[32px] select-none text-ellipsis whitespace-nowrap overflow-hidden text-md leading-[32px]">
+                      <div className="flag-emoji h-[32px] select-none text-ellipsis whitespace-nowrap overflow-hidden text-md leading-[32px]">
                         {groups[index].name}
                         {proxyDisplayMode === 'full' && (
                           <>
                             <div className="inline ml-2 text-sm text-default-500">
                               {groups[index].type}
                             </div>
-                            <div className="inline ml-2 text-sm text-default-500">
+                            <div className="flag-empji inline ml-2 text-sm text-default-500">
                               {groups[index].now}
                             </div>
                           </>

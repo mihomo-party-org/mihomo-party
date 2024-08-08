@@ -64,7 +64,7 @@ const ProxyItem: React.FC<Props> = (props) => {
       <CardBody className="p-2">
         <div className="flex select-none justify-between items-center">
           <div>
-            <div className="inline text-ellipsis whitespace-nowrap overflow-hidden">
+            <div className="flag-empji inline text-ellipsis whitespace-nowrap overflow-hidden">
               {proxy.name}
             </div>
             {proxyDisplayMode === 'full' && (
