@@ -149,9 +149,9 @@ const Proxies: React.FC = () => {
                   })
                 }}
               >
-                <CardBody>
+                <CardBody className="w-full">
                   <div className="flex justify-between">
-                    <div className="flex">
+                    <div className="flex text-ellipsis overflow-hidden whitespace-nowrap">
                       {groups[index].icon.length > 0 ? (
                         <Avatar
                           className="bg-transparent mr-2"
@@ -160,7 +160,7 @@ const Proxies: React.FC = () => {
                           src={groups[index].icon}
                         />
                       ) : null}
-                      <div className="flag-emoji h-[32px] select-none text-ellipsis whitespace-nowrap overflow-hidden text-md leading-[32px]">
+                      <div className="flag-emoji h-[32px] select-none text-md leading-[32px]">
                         {groups[index].name}
                         {proxyDisplayMode === 'full' && (
                           <>
@@ -174,7 +174,7 @@ const Proxies: React.FC = () => {
                         )}
                       </div>
                     </div>
-                    <div className="flex ">
+                    <div className="flex">
                       {proxyDisplayMode === 'full' && (
                         <Chip size="sm" className="my-1 mr-2 select-none">
                           {groups[index].all.length}
