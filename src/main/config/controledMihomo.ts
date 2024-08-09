@@ -21,7 +21,8 @@ export function setControledMihomoConfig(patch: Partial<IMihomoConfig>): void {
   }
   if (patch.dns) {
     const oldDns = controledMihomoConfig.dns || {}
-    const newDns = Object.assign(oldDns, patch.dns)
+    const newDns = { ...patch.dns }
+    newDns.enable = oldDns.enable
     patch.dns = newDns
   }
   if (patch.sniffer) {

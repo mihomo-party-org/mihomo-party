@@ -198,6 +198,8 @@ interface IAppConfig {
   delayTestUrl?: string
   delayTestTimeout?: number
   encryptedPassword?: Buffer
+  useNameserverPolicy: boolean
+  nameserverPolicy: { [key: string]: string | string[] }
 }
 
 interface IMihomoTunConfig {
@@ -240,6 +242,8 @@ interface IMihomoDNSConfig {
   'use-system-hosts'?: boolean
   'respect-rules'?: boolean
   nameserver?: string[]
+  fallback?: string[]
+  'fallback-filter'?: { [key: string]: boolean | string | string[] }
   'proxy-server-nameserver'?: string[]
   'nameserver-policy'?: { [key: string]: string | string[] }
 }
