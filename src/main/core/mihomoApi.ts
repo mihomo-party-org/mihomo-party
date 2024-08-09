@@ -68,6 +68,20 @@ export const mihomoProxies = async (): Promise<IMihomoProxies> => {
   })) as IMihomoProxies
 }
 
+export const mihomoProxyProviders = async (): Promise<IMihomoProxyProviders> => {
+  const instance = await getAxios()
+  return (await instance.get('/providers/proxies').catch(() => {
+    return { providers: {} }
+  })) as IMihomoProxyProviders
+}
+
+export const mihomoUpdateProxyProviders = async (name: string): Promise<void> => {
+  const instance = await getAxios()
+  return instance.put(`/providers/proxies/${encodeURIComponent(name)}`).catch((e) => {
+    return e.response.data
+  })
+}
+
 export const mihomoChangeProxy = async (group: string, proxy: string): Promise<IMihomoProxy> => {
   const instance = await getAxios()
   return (await instance.put(`/proxies/${encodeURIComponent(group)}`, { name: proxy }).catch(() => {

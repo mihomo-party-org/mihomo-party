@@ -143,6 +143,28 @@ interface IMihomoProxies {
   proxies: Record<string, IMihomoProxy | IMihomoGroup>
 }
 
+interface IMihomoProxyProviders {
+  providers: Record<string, IMihomoProxyProvider>
+}
+
+interface ISubscriptionUserInfoUpper {
+  Upload: number
+  Download: number
+  Total: number
+  Expire: number
+}
+
+interface IMihomoProxyProvider {
+  name: string
+  type: string
+  proxies?: IMihomoProxy[]
+  subscriptionInfo?: ISubscriptionUserInfoUpper
+  expectedStatus: string
+  testUrl?: string
+  updateAt?: string
+  vehicleType: string
+}
+
 interface ISysProxyConfig {
   enable: boolean
   host?: string

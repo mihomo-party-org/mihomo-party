@@ -18,6 +18,14 @@ export async function mihomoProxies(): Promise<IMihomoProxies> {
   return await window.electron.ipcRenderer.invoke('mihomoProxies')
 }
 
+export async function mihomoProxyProviders(): Promise<IMihomoProxyProviders> {
+  return await window.electron.ipcRenderer.invoke('mihomoProxyProviders')
+}
+
+export async function mihomoUpdateProxyProviders(name: string): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('mihomoUpdateProxyProviders', name)
+}
+
 export async function mihomoChangeProxy(group: string, proxy: string): Promise<IMihomoProxy> {
   return await window.electron.ipcRenderer.invoke('mihomoChangeProxy', group, proxy)
 }
