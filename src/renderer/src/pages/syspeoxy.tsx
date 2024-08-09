@@ -138,6 +138,18 @@ const Sysproxy: React.FC = () => {
             <Tab className="select-none" key="auto" title="PAC" />
           </Tabs>
         </SettingItem>
+        {platform === 'win32' && (
+          <SettingItem title="UWP 工具" divider>
+            <Button
+              size="sm"
+              onPress={() => {
+                window.electron.ipcRenderer.invoke('openUWPTool')
+              }}
+            >
+              打开 UWP 工具
+            </Button>
+          </SettingItem>
+        )}
 
         {values.mode === 'auto' && (
           <SettingItem title="代理模式">

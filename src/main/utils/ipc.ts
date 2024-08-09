@@ -37,10 +37,11 @@ import {
 import { isEncryptionAvailable, startCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
 import { checkUpdate } from '../resolve/autoUpdater'
-import { exePath, mihomoCorePath, mihomoWorkConfigPath } from './dirs'
-import { execSync } from 'child_process'
+import { exePath, mihomoCorePath, mihomoWorkConfigPath, resourcesDir } from './dirs'
+import { execFile, execSync } from 'child_process'
 import yaml from 'yaml'
 import fs from 'fs'
+import path from 'path'
 
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', mihomoVersion)
@@ -87,6 +88,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('checkUpdate', () => checkUpdate())
   ipcMain.handle('getVersion', () => app.getVersion())
   ipcMain.handle('platform', () => process.platform)
+  ipcMain.handle('openUWPTool', openUWPTool)
   ipcMain.handle('setupFirewall', setupFirewall)
   ipcMain.handle('quitApp', () => app.quit())
 }
@@ -109,6 +111,12 @@ function getRuntimeConfigStr(): string {
 
 function getRuntimeConfig(): Record<string, unknown> {
   return yaml.parse(getRuntimeConfigStr())
+}
+
+function openUWPTool(): void {
+  const uwpToolPath = path.join(resourcesDir(), 'files', 'enableLoopback.exe')
+  const child = execFile(uwpToolPath)
+  child.unref()
 }
 
 async function setupFirewall(): Promise<void> {
