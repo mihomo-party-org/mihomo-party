@@ -29,6 +29,10 @@ const RuleProvider: React.FC = () => {
     })
   }
 
+  if (!providers.length) {
+    return null
+  }
+
   return (
     <SettingCard>
       <SettingItem title="规则集合" divider>

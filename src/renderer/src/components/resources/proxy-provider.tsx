@@ -34,6 +34,10 @@ const ProxyProvider: React.FC = () => {
     })
   }
 
+  if (!providers.length) {
+    return null
+  }
+
   return (
     <SettingCard>
       <SettingItem title="代理集合" divider>
