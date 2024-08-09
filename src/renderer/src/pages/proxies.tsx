@@ -167,7 +167,7 @@ const Proxies: React.FC = () => {
                             <div className="inline ml-2 text-sm text-default-500">
                               {groups[index].type}
                             </div>
-                            <div className="flag-empji inline ml-2 text-sm text-default-500">
+                            <div className="flag-emoji inline ml-2 text-sm text-default-500">
                               {groups[index].now}
                             </div>
                           </>
