@@ -9,6 +9,7 @@ import {
 } from '@nextui-org/react'
 import React, { useState } from 'react'
 import SettingItem from '../base/base-setting-item'
+import dayjs from 'dayjs'
 interface Props {
   item: IProfileItem
   updateProfileItem: (item: IProfileItem) => Promise<void>
@@ -28,6 +29,13 @@ const EditInfoModal: React.FC<Props> = (props) => {
       <ModalContent>
         <ModalHeader className="flex">编辑信息</ModalHeader>
         <ModalBody>
+          {values.type === 'remote' && item.extra?.expire && (
+            <SettingItem title="订阅到期时间">
+              <div className="select-none h-[32px] leading-[32px]">
+                {dayjs.unix(item.extra.expire).format('YYYY-MM-DD')}
+              </div>
+            </SettingItem>
+          )}
           <SettingItem title="名称">
             <Input
               size="sm"
