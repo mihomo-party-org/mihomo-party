@@ -1,6 +1,7 @@
 type OutboundMode = 'rule' | 'global' | 'direct'
 type LogLevel = 'info' | 'debug' | 'warning' | 'error' | 'silent'
 type SysProxyMode = 'auto' | 'manual'
+type AppTheme = 'system' | 'light' | 'dark' | 'gray'
 type MihomoGroupType = 'Selector' | 'URLTest' | 'LoadBalance' | 'Relay'
 type MihomoProxyType =
   | 'Direct'
@@ -191,6 +192,7 @@ interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha'
   proxyDisplayMode: 'simple' | 'full'
   proxyDisplayOrder: 'default' | 'delay' | 'name'
+  appTheme: AppTheme
   autoCheckUpdate: boolean
   silentStart: boolean
   sysProxy: ISysProxyConfig

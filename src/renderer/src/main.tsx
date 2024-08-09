@@ -11,7 +11,12 @@ init().then(() => {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <NextUIProvider>
-        <NextThemesProvider attribute="class" defaultTheme="dark">
+        <NextThemesProvider
+          attribute="class"
+          themes={['light', 'dark', 'gray']}
+          enableSystem
+          defaultTheme="dark"
+        >
           <HashRouter>
             <App />
           </HashRouter>

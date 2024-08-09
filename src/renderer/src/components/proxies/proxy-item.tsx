@@ -58,7 +58,7 @@ const ProxyItem: React.FC<Props> = (props) => {
       onPress={() => onSelect(group.name, proxy.name)}
       isPressable
       fullWidth
-      className={`${selected ? 'bg-primary/30' : ''}`}
+      className={`${selected ? 'bg-primary/30' : 'bg-content2'}`}
       radius="sm"
     >
       <CardBody className="p-2">

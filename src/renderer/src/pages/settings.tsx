@@ -1,4 +1,4 @@
-import { Button, Input, Switch } from '@nextui-org/react'
+import { Button, Input, Switch, Tab, Tabs } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
@@ -15,20 +15,22 @@ import { version } from '@renderer/utils/init'
 import useSWR from 'swr'
 import { useState } from 'react'
 import debounce from '@renderer/utils/debounce'
+import { useTheme } from 'next-themes'
 
 const Settings: React.FC = () => {
+  const { setTheme } = useTheme()
   const { data: enable, mutate } = useSWR('checkAutoRun', checkAutoRun, {
     errorRetryCount: 5,
     errorRetryInterval: 200
   })
-
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     silentStart = false,
     delayTestUrl,
     delayTestTimeout,
     autoCheckUpdate,
-    userAgent
+    userAgent,
+    appTheme = 'system'
   } = appConfig || {}
   const [url, setUrl] = useState(delayTestUrl)
   const [ua, setUa] = useState(userAgent)
@@ -72,7 +74,7 @@ const Settings: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="静默启动">
+        <SettingItem title="静默启动" divider>
           <Switch
             size="sm"
             isSelected={silentStart}
@@ -80,6 +82,24 @@ const Settings: React.FC = () => {
               patchAppConfig({ silentStart: v })
             }}
           />
+        </SettingItem>
+        <SettingItem title="应用主题">
+          <Tabs
+            size="sm"
+            color="primary"
+            selectedKey={appTheme}
+            onSelectionChange={(key) => {
+              console.log(key)
+              setTheme(key as AppTheme)
+
+              patchAppConfig({ appTheme: key as AppTheme })
+            }}
+          >
+            <Tab key="system" title="自动" />
+            <Tab key="dark" title="深色" />
+            <Tab key="gray" title="灰色" />
+            <Tab key="light" title="浅色" />
+          </Tabs>
         </SettingItem>
       </SettingCard>
       <SettingCard>

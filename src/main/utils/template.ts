@@ -1,6 +1,7 @@
 export const defaultConfig: IAppConfig = {
   core: 'mihomo',
   silentStart: false,
+  appTheme: 'system',
   proxyDisplayMode: 'simple',
   proxyDisplayOrder: 'default',
   autoCheckUpdate: true,

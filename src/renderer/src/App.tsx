@@ -18,30 +18,18 @@ import LogCard from '@renderer/components/sider/log-card'
 import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
 import ResourceCard from '@renderer/components/sider/resource-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
+import { useAppConfig } from './hooks/use-app-config'
 
 const App: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { appTheme = 'system' } = appConfig || {}
   const { setTheme } = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
   const page = useRoutes(routes)
 
   useEffect(() => {
-    try {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        setTheme('dark')
-      } else {
-        setTheme('light')
-      }
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (e.matches) {
-          setTheme('dark')
-        } else {
-          setTheme('light')
-        }
-      })
-    } catch {
-      throw new Error('Failed to set theme')
-    }
+    setTheme(appTheme)
   }, [])
 
   return (

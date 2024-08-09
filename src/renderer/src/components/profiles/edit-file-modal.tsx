@@ -40,7 +40,7 @@ const EditFileModal: React.FC<Props> = (props) => {
             height="100%"
             language="yaml"
             value={currData}
-            theme={theme === 'dark' ? 'vs-dark' : 'vs'}
+            theme={theme === 'light' ? 'vs' : 'vs-dark'}
             options={{
               minimap: {
                 enabled: false
