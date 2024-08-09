@@ -143,6 +143,20 @@ interface IMihomoProxies {
   proxies: Record<string, IMihomoProxy | IMihomoGroup>
 }
 
+interface IMihomoRuleProviders {
+  providers: Record<string, IMihomoRuleProvider>
+}
+
+interface IMihomoRuleProvider {
+  behavior: string
+  format: string
+  name: string
+  ruleCount: number
+  type: string
+  updatedAt: string
+  vehicleType: string
+}
+
 interface IMihomoProxyProviders {
   providers: Record<string, IMihomoProxyProvider>
 }
@@ -161,7 +175,7 @@ interface IMihomoProxyProvider {
   subscriptionInfo?: ISubscriptionUserInfoUpper
   expectedStatus: string
   testUrl?: string
-  updateAt?: string
+  updatedAt?: string
   vehicleType: string
 }
 

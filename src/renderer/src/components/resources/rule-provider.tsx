@@ -1,5 +1,89 @@
+import { mihomoRuleProviders, mihomoUpdateRuleProviders } from '@renderer/utils/ipc'
+import { Fragment, useMemo, useState } from 'react'
+import useSWR from 'swr'
+import SettingCard from '../base/base-setting-card'
+import SettingItem from '../base/base-setting-item'
+import { Button, Chip } from '@nextui-org/react'
+import { IoMdRefresh } from 'react-icons/io'
+import dayjs from 'dayjs'
+
 const RuleProvider: React.FC = () => {
-  return <></>
+  const { data, mutate } = useSWR('mihomoRuleProviders', mihomoRuleProviders)
+  const providers = useMemo(() => {
+    if (!data) return []
+    return Object.keys(data.providers).map((key) => data.providers[key])
+  }, [data])
+  const [updating, setUpdating] = useState(Array(providers.length).fill(false))
+
+  const onUpdate = (name: string, index: number): void => {
+    setUpdating((prev) => {
+      prev[index] = true
+      return [...prev]
+    })
+    mihomoUpdateRuleProviders(name).finally(() => {
+      setUpdating((prev) => {
+        prev[index] = false
+        return [...prev]
+      })
+      mutate()
+    })
+  }
+
+  return (
+    <SettingCard>
+      <SettingItem title="规则集合" divider>
+        <Button
+          size="sm"
+          color="primary"
+          onPress={() => {
+            providers.forEach((provider, index) => {
+              onUpdate(provider.name, index)
+            })
+          }}
+        >
+          更新全部
+        </Button>
+      </SettingItem>
+      {providers.map((provider, index) => {
+        return (
+          <Fragment key={provider.name}>
+            <SettingItem
+              title={provider.name}
+              actions={
+                <Chip className="ml-2" size="sm">
+                  {provider.ruleCount}
+                </Chip>
+              }
+            >
+              {
+                <div className="flex select-none h-[32px] leading-[32px] text-default-500">
+                  <div>{dayjs(provider.updatedAt).fromNow()}</div>
+                  <Button
+                    isIconOnly
+                    className="ml-2"
+                    size="sm"
+                    onPress={() => {
+                      onUpdate(provider.name, index)
+                    }}
+                  >
+                    <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
+                  </Button>
+                </div>
+              }
+            </SettingItem>
+            <SettingItem
+              title={<div className="text-default-500">{provider.format}</div>}
+              divider={index !== providers.length - 1}
+            >
+              <div className="select-none h-[32px] leading-[32px] text-default-500">
+                {provider.vehicleType}::{provider.behavior}
+              </div>
+            </SettingItem>
+          </Fragment>
+        )
+      })}
+    </SettingCard>
+  )
 }
 
 export default RuleProvider

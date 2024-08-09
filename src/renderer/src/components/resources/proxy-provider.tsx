@@ -1,9 +1,9 @@
 import { mihomoProxyProviders, mihomoUpdateProxyProviders } from '@renderer/utils/ipc'
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { Button } from '@nextui-org/react'
+import { Button, Chip } from '@nextui-org/react'
 import { IoMdRefresh } from 'react-icons/io'
 import dayjs from 'dayjs'
 import { calcTraffic } from '@renderer/utils/calc'
@@ -15,40 +15,61 @@ const ProxyProvider: React.FC = () => {
     return Object.keys(data.providers)
       .map((key) => data.providers[key])
       .filter((provider) => {
-        console.log(provider)
         return 'subscriptionInfo' in provider
       })
   }, [data])
   const [updating, setUpdating] = useState(Array(providers.length).fill(false))
+
+  const onUpdate = (name: string, index: number): void => {
+    setUpdating((prev) => {
+      prev[index] = true
+      return [...prev]
+    })
+    mihomoUpdateProxyProviders(name).finally(() => {
+      setUpdating((prev) => {
+        prev[index] = false
+        return [...prev]
+      })
+      mutate()
+    })
+  }
+
   return (
     <SettingCard>
+      <SettingItem title="代理集合" divider>
+        <Button
+          size="sm"
+          color="primary"
+          onPress={() => {
+            providers.forEach((provider, index) => {
+              onUpdate(provider.name, index)
+            })
+          }}
+        >
+          更新全部
+        </Button>
+      </SettingItem>
       {providers.map((provider, index) => {
         return (
-          <>
+          <Fragment key={provider.name}>
             <SettingItem
               title={provider.name}
-              key={provider.name}
+              actions={
+                <Chip className="ml-2" size="sm">
+                  {provider.proxies?.length || 0}
+                </Chip>
+              }
               divider={!provider.subscriptionInfo && index !== providers.length - 1}
             >
               {
-                <div className="flex h-[32px] leading-[32px]">
-                  <div>{dayjs(provider.updateAt).fromNow()}</div>
+                <div className="flex select-none h-[32px] leading-[32px] text-default-500">
+                  <div>{dayjs(provider.updatedAt).fromNow()}</div>
                   <Button
                     isIconOnly
                     className="ml-2"
                     size="sm"
                     onPress={() => {
-                      setUpdating((prev) => {
-                        prev[index] = true
-                        return [...prev]
-                      })
-                      mihomoUpdateProxyProviders(provider.name).finally(() => {
-                        setUpdating((prev) => {
-                          prev[index] = false
-                          return [...prev]
-                        })
-                        mutate()
-                      })
+                      onUpdate(provider.name, index)
                     }}
                   >
                     <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
@@ -59,22 +80,21 @@ const ProxyProvider: React.FC = () => {
             {provider.subscriptionInfo && (
               <SettingItem
                 divider={index !== providers.length - 1}
-                title={`${calcTraffic(
-                  provider.subscriptionInfo.Upload + provider.subscriptionInfo.Download
-                )}
-                    /${calcTraffic(provider.subscriptionInfo.Total)}`}
-                key={provider.name}
+                title={
+                  <div className="text-default-500">{`${calcTraffic(
+                    provider.subscriptionInfo.Upload + provider.subscriptionInfo.Download
+                  )}
+                    /${calcTraffic(provider.subscriptionInfo.Total)}`}</div>
+                }
               >
                 {provider.subscriptionInfo && (
-                  <div className="flex h-[32px] leading-[32px]">
-                    <div className="ml-2">
-                      {dayjs(provider.subscriptionInfo.Expire).format('YYYY-MM-DD')}
-                    </div>
+                  <div className="select-none h-[32px] leading-[32px] text-default-500">
+                    {dayjs(provider.subscriptionInfo.Expire).format('YYYY-MM-DD')}
                   </div>
                 )}
               </SettingItem>
             )}
-          </>
+          </Fragment>
         )
       })}
     </SettingCard>

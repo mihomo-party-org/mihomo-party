@@ -6,7 +6,6 @@ export function initProfileUpdater(): void {
   const { items } = getProfileConfig()
 
   for (const item of items) {
-    console.log(item.type, item.interval)
     if (item.type === 'remote' && item.interval) {
       addProfileItem(getProfileItem(item.id))
       intervalPool[item.id] = setInterval(
