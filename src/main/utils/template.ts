@@ -4,6 +4,8 @@ export const defaultConfig: IAppConfig = {
   proxyDisplayMode: 'simple',
   proxyDisplayOrder: 'default',
   autoCheckUpdate: true,
+  useNameserverPolicy: false,
+  nameserverPolicy: {},
   sysProxy: { enable: false, mode: 'manual' }
 }
 

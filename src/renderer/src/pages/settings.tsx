@@ -23,8 +23,15 @@ const Settings: React.FC = () => {
   })
 
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { silentStart = false, delayTestUrl, delayTestTimeout, autoCheckUpdate } = appConfig || {}
+  const {
+    silentStart = false,
+    delayTestUrl,
+    delayTestTimeout,
+    autoCheckUpdate,
+    userAgent
+  } = appConfig || {}
   const [url, setUrl] = useState(delayTestUrl)
+  const [ua, setUa] = useState(userAgent)
 
   return (
     <BasePage
@@ -76,6 +83,20 @@ const Settings: React.FC = () => {
         </SettingItem>
       </SettingCard>
       <SettingCard>
+        <SettingItem title="订阅拉取 UA" divider>
+          <Input
+            size="sm"
+            className="w-[60%]"
+            value={ua}
+            placeholder="默认 clash-meta"
+            onValueChange={(v) => {
+              setUa(v)
+              debounce(() => {
+                patchAppConfig({ userAgent: v })
+              }, 2000)
+            }}
+          ></Input>
+        </SettingItem>
         <SettingItem title="延迟测试地址" divider>
           <Input
             size="sm"

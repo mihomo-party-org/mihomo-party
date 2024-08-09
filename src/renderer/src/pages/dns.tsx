@@ -55,20 +55,20 @@ const DNS: React.FC = () => {
     if (value.trim()) {
       if (index < list.length) {
         list[index] = value
-      } else if (list.length < 4) {
+      } else {
         list.push(value)
       }
     } else {
       list.splice(index, 1)
     }
-    setValues({ ...values, [type]: list.slice(0, 4) })
+    setValues({ ...values, [type]: list })
   }
 
   const renderListInputs = (type: string, placeholder: string): ReactNode => {
-    const currentItems = values[type].slice(0, 4)
-    const showNewLine = currentItems.length < 4 && currentItems.every((item) => item.trim() !== '')
+    const currentItems = values[type]
+    const showNewLine = currentItems.every((item: string) => item.trim() !== '')
 
-    return [...currentItems, ...(showNewLine ? [''] : [])].slice(0, 4).map((item, index) => (
+    return [...currentItems, ...(showNewLine ? [''] : [])].map((item, index) => (
       <div key={index} className="mt-2 flex">
         <Input
           fullWidth
