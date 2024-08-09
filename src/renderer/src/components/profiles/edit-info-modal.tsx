@@ -25,7 +25,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
   }
 
   return (
-    <Modal hideCloseButton isOpen={true} scrollBehavior="inside">
+    <Modal hideCloseButton isOpen={true} onOpenChange={onClose} scrollBehavior="inside">
       <ModalContent>
         <ModalHeader className="flex">编辑信息</ModalHeader>
         <ModalBody>
