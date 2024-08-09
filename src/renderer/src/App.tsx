@@ -30,7 +30,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     setTheme(appTheme)
-  }, [])
+  }, [appTheme])
 
   return (
     <div className="w-full h-[100vh] flex">

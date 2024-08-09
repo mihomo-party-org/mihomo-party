@@ -98,6 +98,7 @@ const Settings: React.FC = () => {
             <Tab key="system" title="自动" />
             <Tab key="dark" title="深色" />
             <Tab key="gray" title="灰色" />
+            <Tab key="pink" title="粉色" />
             <Tab key="light" title="浅色" />
           </Tabs>
         </SettingItem>

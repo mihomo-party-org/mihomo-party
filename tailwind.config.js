@@ -29,6 +29,13 @@ module.exports = {
               400: '#a1a1aa'
             }
           }
+        },
+        pink: {
+          extend: 'light',
+          colors: {
+            primary: '#ED9CC2',
+            secondary: '#71CCAA'
+          }
         }
       }
     })
