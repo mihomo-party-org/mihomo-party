@@ -37,6 +37,7 @@ jobs:
           npm_config_target_arch: ${{ matrix.arch }}
         run: |
           pnpm install
+          pnpm add @mihomo-party/sysproxy-win32-${{ matrix.arch }}-msvc
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:
@@ -86,6 +87,7 @@ jobs:
           npm_config_target_arch: ${{ matrix.arch }}
         run: |
           pnpm install
+          pnpm add @mihomo-party/sysproxy-linux-${{ matrix.arch }}-gnu
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:
@@ -137,6 +139,7 @@ jobs:
           npm_config_target_arch: ${{ matrix.arch }}
         run: |
           pnpm install
+          pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:
