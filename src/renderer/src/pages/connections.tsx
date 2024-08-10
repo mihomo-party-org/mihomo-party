@@ -124,7 +124,7 @@ const Connections: React.FC = () => {
               <TableCell className="max-w-[100px] text-ellipsis whitespace-nowrap overflow-hidden">
                 {item.rule} {item.rulePayload}
               </TableCell>
-              <TableCell className="max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
+              <TableCell className="flag-emoji max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
                 {item.chains.reverse().join('::')}
               </TableCell>
               <TableCell>

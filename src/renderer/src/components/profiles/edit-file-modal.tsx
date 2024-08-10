@@ -30,12 +30,7 @@ const EditFileModal: React.FC<Props> = (props) => {
       <ModalContent className="h-full w-[calc(100%-100px)]">
         <ModalHeader className="flex">编辑订阅</ModalHeader>
         <ModalBody className="h-full">
-          <BaseEditor
-            language="yaml"
-            schema="clash"
-            value={currData}
-            onChange={(value) => setCurrData(value)}
-          />
+          <BaseEditor language="yaml" value={currData} onChange={(value) => setCurrData(value)} />
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onClose}>
