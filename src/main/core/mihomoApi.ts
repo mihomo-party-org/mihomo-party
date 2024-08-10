@@ -2,12 +2,17 @@ import axios, { AxiosInstance } from 'axios'
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import WebSocket from 'ws'
 import { window } from '..'
+import { dialog } from 'electron'
 
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
+let trafficRetry = 10
 let mihomoMemoryWs: WebSocket | null = null
+let memoryRetry = 10
 let mihomoLogsWs: WebSocket | null = null
+let logsRetry = 10
 let mihomoConnectionsWs: WebSocket | null = null
+let connectionsRetry = 10
 
 export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
   if (axiosIns && !force) return axiosIns
@@ -176,11 +181,17 @@ const mihomoTraffic = (): void => {
 
   mihomoTrafficWs.onmessage = (e): void => {
     const data = e.data as string
+    trafficRetry = 10
     window?.webContents.send('mihomoTraffic', JSON.parse(data) as IMihomoTrafficInfo)
   }
 
   mihomoTrafficWs.onclose = (): void => {
-    mihomoTraffic()
+    if (trafficRetry) {
+      trafficRetry--
+      mihomoTraffic()
+    } else {
+      dialog.showErrorBox('External controller traffic error', 'Retry limit reached')
+    }
   }
 
   mihomoTrafficWs.onerror = (): void => {
@@ -215,11 +226,17 @@ const mihomoMemory = (): void => {
 
   mihomoMemoryWs.onmessage = (e): void => {
     const data = e.data as string
+    memoryRetry = 10
     window?.webContents.send('mihomoMemory', JSON.parse(data) as IMihomoMemoryInfo)
   }
 
   mihomoMemoryWs.onclose = (): void => {
-    mihomoMemory()
+    if (memoryRetry) {
+      memoryRetry--
+      mihomoMemory()
+    } else {
+      dialog.showErrorBox('External controller memory error', 'Retry limit reached')
+    }
   }
 
   mihomoMemoryWs.onerror = (): void => {
@@ -256,11 +273,17 @@ const mihomoLogs = (): void => {
 
   mihomoLogsWs.onmessage = (e): void => {
     const data = e.data as string
+    logsRetry = 10
     window?.webContents.send('mihomoLogs', JSON.parse(data) as IMihomoLogInfo)
   }
 
   mihomoLogsWs.onclose = (): void => {
-    mihomoLogs()
+    if (logsRetry) {
+      logsRetry--
+      mihomoLogs()
+    } else {
+      dialog.showErrorBox('External controller logs error', 'Retry limit reached')
+    }
   }
 
   mihomoLogsWs.onerror = (): void => {
@@ -297,11 +320,17 @@ const mihomoConnections = (): void => {
 
   mihomoConnectionsWs.onmessage = (e): void => {
     const data = e.data as string
+    connectionsRetry = 10
     window?.webContents.send('mihomoConnections', JSON.parse(data) as IMihomoConnectionsInfo)
   }
 
   mihomoConnectionsWs.onclose = (): void => {
-    mihomoConnections()
+    if (connectionsRetry) {
+      connectionsRetry--
+      mihomoConnections()
+    } else {
+      dialog.showErrorBox('External controller connections error', 'Retry limit reached')
+    }
   }
 
   mihomoConnectionsWs.onerror = (): void => {
