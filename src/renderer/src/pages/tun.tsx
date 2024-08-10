@@ -147,6 +147,7 @@ const Tun: React.FC = () => {
         <SettingItem title="MTU" divider>
           <Input
             size="sm"
+            type="number"
             className="w-[100px]"
             value={values.mtu.toString()}
             onValueChange={(v) => {
@@ -160,7 +161,8 @@ const Tun: React.FC = () => {
             className="w-[50%]"
             value={values.dnsHijack.join(',')}
             onValueChange={(v) => {
-              setValues({ ...values, dnsHijack: v.split(',') })
+              const arr = v !== '' ? v.split(',') : []
+              setValues({ ...values, dnsHijack: arr })
             }}
           />
         </SettingItem>
