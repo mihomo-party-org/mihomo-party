@@ -52,7 +52,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
               }}
             />
           </SettingItem>
-          {values.url && (
+          {values.type === 'remote' && (
             <SettingItem title="订阅地址">
               <Input
                 size="sm"
