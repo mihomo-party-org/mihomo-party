@@ -1,7 +1,6 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react'
+import { BaseEditor } from '@renderer/components/base/base-editor'
 import React, { useState } from 'react'
-import MonacoEditor, { monaco } from 'react-monaco-editor'
-import { useTheme } from 'next-themes'
 interface Props {
   script: string
   onCancel: () => void
@@ -10,18 +9,6 @@ interface Props {
 const PacEditorViewer: React.FC<Props> = (props) => {
   const { script, onCancel, onConfirm } = props
   const [currData, setCurrData] = useState(script)
-  const { theme } = useTheme()
-
-  const editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor): void => {
-    window.electron.ipcRenderer.on('resize', () => {
-      editor.layout()
-    })
-  }
-
-  const editorWillUnmount = (editor: monaco.editor.IStandaloneCodeEditor): void => {
-    window.electron.ipcRenderer.removeAllListeners('resize')
-    editor.dispose()
-  }
 
   return (
     <Modal
@@ -35,23 +22,10 @@ const PacEditorViewer: React.FC<Props> = (props) => {
       <ModalContent className="h-full w-[calc(100%-100px)]">
         <ModalHeader className="flex">编辑PAC脚本</ModalHeader>
         <ModalBody className="h-full">
-          <MonacoEditor
-            height="100%"
+          <BaseEditor
             language="javascript"
             value={currData}
-            theme={theme === 'light' ? 'vs' : 'vs-dark'}
-            options={{
-              minimap: {
-                enabled: false
-              },
-              mouseWheelZoom: true,
-              fontFamily: `Fira Code, JetBrains Mono, Roboto Mono, "Source Code Pro", Consolas, Menlo, Monaco, monospace, "Courier New", "Apple Color Emoji", "Noto Color Empji"`,
-              fontLigatures: true, // 连字符
-              smoothScrolling: true // 平滑滚动
-            }}
-            editorDidMount={editorDidMount}
-            editorWillUnmount={editorWillUnmount}
-            onChange={(value) => setCurrData(value)}
+            onChange={(value) => setCurrData(value || '')}
           />
         </ModalBody>
         <ModalFooter>

@@ -1,6 +1,18 @@
 import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
+// https://github.com/vdesjs/vite-plugin-monaco-editor/issues/21#issuecomment-1827562674
+import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
+const isObjectWithDefaultFunction = (
+  module: unknown
+): module is { default: typeof monacoEditorPluginModule } =>
+  module != null &&
+  typeof module === 'object' &&
+  'default' in module &&
+  typeof module.default === 'function'
+const monacoEditorPlugin = isObjectWithDefaultFunction(monacoEditorPluginModule)
+  ? monacoEditorPluginModule.default
+  : monacoEditorPluginModule
 
 export default defineConfig({
   main: {
@@ -15,6 +27,18 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src')
       }
     },
-    plugins: [react()]
+    plugins: [
+      react(),
+      monacoEditorPlugin({
+        languageWorkers: ['editorWorkerService', 'typescript', 'json'],
+        customDistPath: () => 'out/renderer',
+        customWorkers: [
+          {
+            label: 'yaml',
+            entry: 'monaco-yaml/yaml.worker'
+          }
+        ]
+      })
+    ]
   }
 })

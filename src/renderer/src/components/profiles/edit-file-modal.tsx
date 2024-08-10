@@ -1,7 +1,6 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
-import MonacoEditor, { monaco } from 'react-monaco-editor'
-import { useTheme } from 'next-themes'
+import { BaseEditor } from '../base/base-editor'
 import { getProfileStr, setProfileStr } from '@renderer/utils/ipc'
 interface Props {
   id: string
@@ -10,18 +9,6 @@ interface Props {
 const EditFileModal: React.FC<Props> = (props) => {
   const { id, onClose } = props
   const [currData, setCurrData] = useState('')
-  const { theme } = useTheme()
-
-  const editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor): void => {
-    window.electron.ipcRenderer.on('resize', () => {
-      editor.layout()
-    })
-  }
-
-  const editorWillUnmount = (editor: monaco.editor.IStandaloneCodeEditor): void => {
-    window.electron.ipcRenderer.removeAllListeners('resize')
-    editor.dispose()
-  }
 
   const getContent = async (): Promise<void> => {
     setCurrData(await getProfileStr(id))
@@ -43,22 +30,10 @@ const EditFileModal: React.FC<Props> = (props) => {
       <ModalContent className="h-full w-[calc(100%-100px)]">
         <ModalHeader className="flex">编辑订阅</ModalHeader>
         <ModalBody className="h-full">
-          <MonacoEditor
-            height="100%"
+          <BaseEditor
             language="yaml"
+            schema="clash"
             value={currData}
-            theme={theme === 'light' ? 'vs' : 'vs-dark'}
-            options={{
-              minimap: {
-                enabled: false
-              },
-              mouseWheelZoom: true,
-              fontFamily: `Fira Code, JetBrains Mono, Roboto Mono, "Source Code Pro", Consolas, Menlo, Monaco, monospace, "Courier New", "Apple Color Emoji", "Noto Color Emoji"`,
-              fontLigatures: true, // 连字符
-              smoothScrolling: true // 平滑滚动
-            }}
-            editorDidMount={editorDidMount}
-            editorWillUnmount={editorWillUnmount}
             onChange={(value) => setCurrData(value)}
           />
         </ModalBody>
