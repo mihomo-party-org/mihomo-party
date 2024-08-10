@@ -3,6 +3,7 @@ import yaml from 'yaml'
 import fs from 'fs'
 import { getAxios, startMihomoMemory, startMihomoTraffic } from '../core/mihomoApi'
 import { generateProfile } from '../resolve/factory'
+import { getAppConfig } from './app'
 
 export let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
 
@@ -14,6 +15,7 @@ export function getControledMihomoConfig(force = false): Partial<IMihomoConfig> 
 }
 
 export function setControledMihomoConfig(patch: Partial<IMihomoConfig>): void {
+  const { useNameserverPolicy } = getAppConfig()
   if (patch.tun) {
     const oldTun = controledMihomoConfig.tun || {}
     const newTun = Object.assign(oldTun, patch.tun)
@@ -21,8 +23,10 @@ export function setControledMihomoConfig(patch: Partial<IMihomoConfig>): void {
   }
   if (patch.dns) {
     const oldDns = controledMihomoConfig.dns || {}
-    const newDns = { ...patch.dns }
-    newDns.enable = oldDns.enable
+    const newDns = Object.assign(oldDns, patch.dns)
+    if (!useNameserverPolicy) {
+      delete newDns['nameserver-policy']
+    }
     patch.dns = newDns
   }
   if (patch.sniffer) {
