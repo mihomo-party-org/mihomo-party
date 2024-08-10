@@ -17,39 +17,9 @@ importers:
       '@mihomo-party/sysproxy':
         specifier: ^2.0.0
         version: 2.0.0
-      '@nextui-org/react':
-        specifier: ^2.4.6
-        version: 2.4.6(@types/react@18.3.3)(framer-motion@11.3.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7)
       axios:
         specifier: ^1.7.3
         version: 1.7.3
-      dayjs:
-        specifier: ^1.11.12
-        version: 1.11.12
-      framer-motion:
-        specifier: ^11.3.21
-        version: 11.3.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      next-themes:
-        specifier: ^0.3.0
-        version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      pubsub-js:
-        specifier: ^1.9.4
-        version: 1.9.4
-      react-icons:
-        specifier: ^5.2.1
-        version: 5.2.1(react@18.3.1)
-      react-monaco-editor:
-        specifier: ^0.56.0
-        version: 0.56.0(@types/react@18.3.3)(monaco-editor@0.44.0)(react@18.3.1)
-      react-router-dom:
-        specifier: ^6.26.0
-        version: 6.26.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-virtuoso:
-        specifier: ^4.9.0
-        version: 4.9.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      swr:
-        specifier: ^2.2.5
-        version: 2.2.5(react@18.3.1)
       ws:
         specifier: ^8.18.0
         version: 8.18.0
@@ -66,6 +36,9 @@ importers:
       '@electron-toolkit/tsconfig':
         specifier: ^1.0.1
         version: 1.0.1(@types/node@22.1.0)
+      '@nextui-org/react':
+        specifier: ^2.4.6
+        version: 2.4.6(@types/react@18.3.3)(framer-motion@11.3.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.7)
       '@types/node':
         specifier: ^22.1.0
         version: 22.1.0
@@ -90,6 +63,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.41)
+      dayjs:
+        specifier: ^1.11.12
+        version: 1.11.12
       electron:
         specifier: ^31.3.1
         version: 31.3.1
@@ -105,18 +81,42 @@ importers:
       eslint-plugin-react:
         specifier: ^7.35.0
         version: 7.35.0(eslint@8.57.0)
+      framer-motion:
+        specifier: ^11.3.21
+        version: 11.3.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next-themes:
+        specifier: ^0.3.0
+        version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       postcss:
         specifier: ^8.4.41
         version: 8.4.41
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
+      pubsub-js:
+        specifier: ^1.9.4
+        version: 1.9.4
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-icons:
+        specifier: ^5.2.1
+        version: 5.2.1(react@18.3.1)
+      react-monaco-editor:
+        specifier: ^0.56.0
+        version: 0.56.0(@types/react@18.3.3)(monaco-editor@0.44.0)(react@18.3.1)
+      react-router-dom:
+        specifier: ^6.26.0
+        version: 6.26.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-virtuoso:
+        specifier: ^4.9.0
+        version: 4.9.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      swr:
+        specifier: ^2.2.5
+        version: 2.2.5(react@18.3.1)
       tailwindcss:
         specifier: ^3.4.7
         version: 3.4.7

@@ -22,8 +22,15 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
     "@mihomo-party/sysproxy": "^2.0.0",
-    "@nextui-org/react": "^2.4.6",
     "axios": "^1.7.3",
+    "ws": "^8.18.0",
+    "yaml": "^2.5.0"
+  },
+  "devDependencies": {
+    "@electron-toolkit/eslint-config-prettier": "^2.0.0",
+    "@electron-toolkit/eslint-config-ts": "^2.0.0",
+    "@electron-toolkit/tsconfig": "^1.0.1",
+    "@nextui-org/react": "^2.4.6",
     "dayjs": "^1.11.12",
     "framer-motion": "^11.3.21",
     "next-themes": "^0.3.0",
@@ -33,13 +40,6 @@
     "react-router-dom": "^6.26.0",
     "react-virtuoso": "^4.9.0",
     "swr": "^2.2.5",
-    "ws": "^8.18.0",
-    "yaml": "^2.5.0"
-  },
-  "devDependencies": {
-    "@electron-toolkit/eslint-config-prettier": "^2.0.0",
-    "@electron-toolkit/eslint-config-ts": "^2.0.0",
-    "@electron-toolkit/tsconfig": "^1.0.1",
     "@types/node": "^22.1.0",
     "@types/pubsub-js": "^1.8.6",
     "@types/react": "^18.3.3",
