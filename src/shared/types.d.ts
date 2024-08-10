@@ -107,6 +107,8 @@ interface IMihomoHistory {
   delay: number
 }
 
+type IMihomoGroupDelay = Record<string, number>
+
 interface IMihomoDelay {
   delay?: number
   message?: string

@@ -43,8 +43,11 @@ export async function mihomoUpgradeGeo(): Promise<void> {
 }
 
 export async function mihomoProxyDelay(proxy: string, url?: string): Promise<IMihomoDelay> {
-  const res = await window.electron.ipcRenderer.invoke('mihomoProxyDelay', proxy, url)
-  return res
+  return await window.electron.ipcRenderer.invoke('mihomoProxyDelay', proxy, url)
+}
+
+export async function mihomoGroupDelay(group: string, url?: string): Promise<IMihomoGroupDelay> {
+  return await window.electron.ipcRenderer.invoke('mihomoGroupDelay', group, url)
 }
 
 export async function startMihomoLogs(): Promise<void> {

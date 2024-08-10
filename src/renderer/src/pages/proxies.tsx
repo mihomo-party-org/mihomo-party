@@ -1,7 +1,12 @@
 import { Avatar, Button, Card, CardBody, Chip } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { mihomoChangeProxy, mihomoProxies, mihomoProxyDelay } from '@renderer/utils/ipc'
+import {
+  mihomoChangeProxy,
+  mihomoGroupDelay,
+  mihomoProxies,
+  mihomoProxyDelay
+} from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
 import { FaBoltLightning } from 'react-icons/fa6'
 import { TbCircleLetterD } from 'react-icons/tb'
@@ -79,8 +84,9 @@ const Proxies: React.FC = () => {
     return await mihomoProxyDelay(proxy, url)
   }
 
-  const onGroupDelay = async (group: string): Promise<void> => {
+  const onGroupDelay = async (group: string, url?: string): Promise<void> => {
     PubSub.publish(`${group}-delay`)
+    await mihomoGroupDelay(group, url)
   }
 
   return (
@@ -211,7 +217,7 @@ const Proxies: React.FC = () => {
                         size="sm"
                         isIconOnly
                         onPress={() => {
-                          onGroupDelay(groups[index].name)
+                          onGroupDelay(groups[index].name, groups[index].testUrl)
                         }}
                       >
                         <MdOutlineSpeed className="text-lg text-default-500" />

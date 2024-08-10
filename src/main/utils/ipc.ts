@@ -3,6 +3,7 @@ import {
   mihomoChangeProxy,
   mihomoCloseAllConnections,
   mihomoCloseConnection,
+  mihomoGroupDelay,
   mihomoProxies,
   mihomoProxyDelay,
   mihomoProxyProviders,
@@ -56,6 +57,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoChangeProxy', (_e, group, proxy) => mihomoChangeProxy(group, proxy))
   ipcMain.handle('mihomoUpgradeGeo', mihomoUpgradeGeo)
   ipcMain.handle('mihomoProxyDelay', (_e, proxy, url) => mihomoProxyDelay(proxy, url))
+  ipcMain.handle('mihomoGroupDelay', (_e, group, url) => mihomoGroupDelay(group, url))
   ipcMain.handle('startMihomoLogs', startMihomoLogs)
   ipcMain.handle('stopMihomoLogs', stopMihomoLogs)
   ipcMain.handle('startMihomoConnections', () => startMihomoConnections())
