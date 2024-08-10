@@ -2,6 +2,7 @@ import { Avatar, Button, Card, CardBody, Chip } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import {
+  getRuntimeConfig,
   mihomoChangeProxy,
   mihomoGroupDelay,
   mihomoProxies,
@@ -21,29 +22,31 @@ import { MdOutlineSpeed } from 'react-icons/md'
 
 const Proxies: React.FC = () => {
   const { data: proxies, mutate } = useSWR('mihomoProxies', mihomoProxies)
+  const { data: runtime } = useSWR('getRuntimeConfig', getRuntimeConfig)
   const { appConfig, patchAppConfig } = useAppConfig()
   const { proxyDisplayMode = 'simple', proxyDisplayOrder = 'default' } = appConfig || {}
+
   const groups = useMemo(() => {
     const groups: IMihomoGroup[] = []
-    if (proxies && proxies.proxies && proxies.proxies['GLOBAL']) {
-      const globalGroup = proxies.proxies['GLOBAL'] as IMihomoGroup
-      for (const global of globalGroup.all) {
-        if (isGroup(proxies.proxies[global])) {
-          if (proxies.proxies[global].hidden) continue
-          groups.push(proxies.proxies[global] as IMihomoGroup)
-        }
-      }
-      Object.keys(proxies.proxies).forEach((key) => {
-        if (isGroup(proxies.proxies[key])) {
-          if (!groups.find((group) => group.name === key)) {
-            if (proxies.proxies[key].hidden) return
-            groups.push(proxies.proxies[key] as IMihomoGroup)
-          }
+    if (proxies && proxies.proxies) {
+      runtime?.['proxy-groups']?.forEach((group: { name: string; url?: string }) => {
+        const { name, url } = group
+        if (
+          proxies.proxies[name] &&
+          isGroup(proxies.proxies[name]) &&
+          !proxies.proxies[name].hidden
+        ) {
+          const newGroup = proxies.proxies[name]
+          newGroup.testUrl = url
+          groups.push(newGroup as IMihomoGroup)
         }
       })
+      if (!groups.find((group) => group.name === 'GLOBAL')) {
+        groups.push(proxies.proxies['GLOBAL'] as IMihomoGroup)
+      }
     }
     return groups
-  }, [proxies])
+  }, [proxies, runtime])
 
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
