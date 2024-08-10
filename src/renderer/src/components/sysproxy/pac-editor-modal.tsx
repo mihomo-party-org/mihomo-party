@@ -24,7 +24,14 @@ const PacEditorViewer: React.FC<Props> = (props) => {
   }
 
   return (
-    <Modal size="5xl" hideCloseButton isOpen={true} onOpenChange={onCancel} scrollBehavior="inside">
+    <Modal
+      backdrop="blur"
+      size="5xl"
+      hideCloseButton
+      isOpen={true}
+      onOpenChange={onCancel}
+      scrollBehavior="inside"
+    >
       <ModalContent className="h-full w-[calc(100%-100px)]">
         <ModalHeader className="flex">编辑PAC脚本</ModalHeader>
         <ModalBody className="h-full">

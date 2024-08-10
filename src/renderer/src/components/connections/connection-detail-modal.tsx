@@ -8,7 +8,14 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
   const { connection, onClose } = props
 
   return (
-    <Modal size="xl" hideCloseButton isOpen={true} onOpenChange={onClose} scrollBehavior="inside">
+    <Modal
+      backdrop="blur"
+      size="xl"
+      hideCloseButton
+      isOpen={true}
+      onOpenChange={onClose}
+      scrollBehavior="inside"
+    >
       <ModalContent>
         <ModalHeader className="flex">连接详情</ModalHeader>
         <ModalBody>

@@ -1,6 +1,6 @@
 import { getControledMihomoConfig } from './controledMihomo'
 import { profileConfigPath, profilePath } from '../utils/dirs'
-import { startCore } from '../core/manager'
+import { restartCore } from '../core/manager'
 import { getAppConfig } from './app'
 import { window } from '..'
 import axios from 'axios'
@@ -8,7 +8,6 @@ import yaml from 'yaml'
 import fs from 'fs'
 import { dialog } from 'electron'
 import { addProfileUpdater } from '../core/profileUpdater'
-import { pauseWebsockets } from '../core/mihomoApi'
 
 let profileConfig: IProfileConfig // profile.yaml
 
@@ -28,9 +27,7 @@ export async function changeCurrentProfile(id: string): Promise<void> {
   const oldId = getProfileConfig().current
   profileConfig.current = id
   try {
-    const recover = pauseWebsockets()
-    await startCore()
-    recover()
+    await restartCore()
   } catch (e) {
     profileConfig.current = oldId
   } finally {
@@ -180,9 +177,7 @@ export function getProfileStr(id: string): string {
 export async function setProfileStr(id: string, content: string): Promise<void> {
   fs.writeFileSync(profilePath(id), content, 'utf-8')
   if (id === getProfileConfig().current) {
-    const recover = pauseWebsockets()
-    await startCore()
-    recover()
+    await restartCore()
   }
 }
 

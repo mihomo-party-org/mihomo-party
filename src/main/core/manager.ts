@@ -10,6 +10,7 @@ import { generateProfile } from '../resolve/factory'
 import { getAppConfig, setAppConfig } from '../config'
 import { dialog, safeStorage } from 'electron'
 import fs from 'fs'
+import { pauseWebsockets } from './mihomoApi'
 
 let child: ChildProcess
 let retry = 10
@@ -80,6 +81,12 @@ export function stopCore(): void {
       stopCore()
     }
   }
+}
+
+export async function restartCore(): Promise<void> {
+  const recover = pauseWebsockets()
+  await startCore()
+  recover()
 }
 
 export function checkProfile(): Promise<void> {

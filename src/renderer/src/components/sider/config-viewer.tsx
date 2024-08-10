@@ -31,7 +31,14 @@ const ConfigViewer: React.FC<Props> = (props) => {
   }, [])
 
   return (
-    <Modal size="5xl" hideCloseButton isOpen={true} onOpenChange={onClose} scrollBehavior="inside">
+    <Modal
+      backdrop="blur"
+      size="5xl"
+      hideCloseButton
+      isOpen={true}
+      onOpenChange={onClose}
+      scrollBehavior="inside"
+    >
       <ModalContent className="h-full w-[calc(100%-100px)]">
         <ModalHeader className="flex">当前运行时配置</ModalHeader>
         <ModalBody className="h-full">

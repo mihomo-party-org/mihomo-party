@@ -19,7 +19,7 @@ const BasePasswordModal: React.FC<Props> = (props) => {
   const [password, setPassword] = useState('')
 
   return (
-    <Modal hideCloseButton isOpen={true}>
+    <Modal backdrop="blur" hideCloseButton isOpen={true}>
       <ModalContent>
         <ModalHeader className="flex">请输入root密码</ModalHeader>
         <ModalBody>
