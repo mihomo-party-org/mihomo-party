@@ -61,7 +61,7 @@ if (!gotTheLock) {
     startCore().then(() => {
       setTimeout(() => {
         initProfileUpdater()
-      }, 10000)
+      }, 30000)
     })
     // Default open or close DevTools by F12 in development
     // and ignore CommandOrControl + R in production.

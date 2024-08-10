@@ -113,7 +113,7 @@ const Settings: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="应用主题(亮度)" divider={appTheme !== 'system'}>
+        <SettingItem title="背景色" divider={appTheme !== 'system'}>
           <Tabs
             size="sm"
             color="primary"
@@ -129,7 +129,7 @@ const Settings: React.FC = () => {
           </Tabs>
         </SettingItem>
         {appTheme !== 'system' && (
-          <SettingItem title="应用主题(颜色)">
+          <SettingItem title="主题色">
             <Tabs
               size="sm"
               color="primary"
