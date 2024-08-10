@@ -13,7 +13,7 @@ init().then(() => {
       <NextUIProvider>
         <NextThemesProvider
           attribute="class"
-          themes={['light', 'dark', 'gray', 'pink']}
+          themes={['light', 'dark', 'gray', 'light-pink', 'dark-pink', 'gray-pink']}
           enableSystem
           defaultTheme="dark"
         >

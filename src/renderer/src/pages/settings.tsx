@@ -13,7 +13,7 @@ import {
 import { IoLogoGithub } from 'react-icons/io5'
 import { version } from '@renderer/utils/init'
 import useSWR from 'swr'
-import { useState } from 'react'
+import { Key, useState } from 'react'
 import debounce from '@renderer/utils/debounce'
 import { useTheme } from 'next-themes'
 
@@ -40,6 +40,30 @@ const Settings: React.FC = () => {
   const setUaDebounce = debounce((v: string) => {
     patchAppConfig({ userAgent: v })
   }, 500)
+
+  const onThemeChange = (key: Key, type: 'theme' | 'color'): void => {
+    const [theme, color] = appTheme.split('-')
+
+    if (type === 'theme') {
+      let themeStr = key.toString()
+      if (key !== 'system') {
+        if (color) {
+          themeStr += `-${color}`
+        }
+      }
+      setTheme(themeStr)
+      patchAppConfig({ appTheme: themeStr as AppTheme })
+    } else {
+      let themeStr = theme
+      if (theme !== 'system') {
+        if (key !== 'blue') {
+          themeStr += `-${key}`
+        }
+        setTheme(themeStr)
+        patchAppConfig({ appTheme: themeStr as AppTheme })
+      }
+    }
+  }
 
   return (
     <BasePage
@@ -89,25 +113,36 @@ const Settings: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="应用主题">
+        <SettingItem title="应用主题(亮度)" divider={appTheme !== 'system'}>
           <Tabs
             size="sm"
             color="primary"
-            selectedKey={appTheme}
+            selectedKey={appTheme.split('-')[0]}
             onSelectionChange={(key) => {
-              console.log(key)
-              setTheme(key as AppTheme)
-
-              patchAppConfig({ appTheme: key as AppTheme })
+              onThemeChange(key, 'theme')
             }}
           >
             <Tab key="system" title="自动" />
             <Tab key="dark" title="深色" />
             <Tab key="gray" title="灰色" />
-            <Tab key="pink" title="粉色" />
             <Tab key="light" title="浅色" />
           </Tabs>
         </SettingItem>
+        {appTheme !== 'system' && (
+          <SettingItem title="应用主题(颜色)">
+            <Tabs
+              size="sm"
+              color="primary"
+              selectedKey={appTheme.split('-')[1] || 'blue'}
+              onSelectionChange={(key) => {
+                onThemeChange(key, 'color')
+              }}
+            >
+              <Tab key="blue" title="蓝色" />
+              <Tab key="pink" title="粉色" />
+            </Tabs>
+          </SettingItem>
+        )}
       </SettingCard>
       <SettingCard>
         <SettingItem title="订阅拉取 UA" divider>
