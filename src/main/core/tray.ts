@@ -86,7 +86,11 @@ const buildContextMenu = (): Menu => {
       checked: getControledMihomoConfig().tun?.enable ?? false,
       click: (item): void => {
         const enable = item.checked
-        setControledMihomoConfig({ tun: { enable } })
+        if (enable) {
+          setControledMihomoConfig({ tun: { enable }, dns: { enable: true } })
+        } else {
+          setControledMihomoConfig({ tun: { enable } })
+        }
         patchMihomoConfig({ tun: { enable } })
         window?.webContents.send('controledMihomoConfigUpdated')
         updateTrayMenu()

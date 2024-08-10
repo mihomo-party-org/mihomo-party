@@ -34,9 +34,9 @@ const TunSwitcher: React.FC = () => {
     if (enable) {
       await patchControledMihomoConfig({ tun: { enable }, dns: { enable: true } })
     } else {
-      await patchControledMihomoConfig({ tun: { enable }, dns: { enable: true } })
-      await patchMihomoConfig({ tun: { enable } })
+      await patchControledMihomoConfig({ tun: { enable } })
     }
+    await patchMihomoConfig({ tun: { enable } })
   }
 
   return (
