@@ -33,7 +33,13 @@ const Settings: React.FC = () => {
     appTheme = 'system'
   } = appConfig || {}
   const [url, setUrl] = useState(delayTestUrl)
+  const setUrlDebounce = debounce((v: string) => {
+    patchAppConfig({ delayTestUrl: v })
+  }, 500)
   const [ua, setUa] = useState(userAgent)
+  const setUaDebounce = debounce((v: string) => {
+    patchAppConfig({ userAgent: v })
+  }, 500)
 
   return (
     <BasePage
@@ -112,9 +118,7 @@ const Settings: React.FC = () => {
             placeholder="默认 clash-meta"
             onValueChange={(v) => {
               setUa(v)
-              debounce(() => {
-                patchAppConfig({ userAgent: v })
-              }, 2000)
+              setUaDebounce(v)
             }}
           ></Input>
         </SettingItem>
@@ -126,9 +130,7 @@ const Settings: React.FC = () => {
             placeholder="默认https://www.gstatic.com/generate_204"
             onValueChange={(v) => {
               setUrl(v)
-              debounce(() => {
-                patchAppConfig({ delayTestUrl: v })
-              }, 2000)
+              setUrlDebounce(v)
             }}
           ></Input>
         </SettingItem>
