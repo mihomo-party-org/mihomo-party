@@ -111,7 +111,7 @@ function getRuntimeConfigStr(): string {
   return fs.readFileSync(mihomoWorkConfigPath(), 'utf8')
 }
 
-function getRuntimeConfig(): Record<string, unknown> {
+function getRuntimeConfig(): IMihomoConfig {
   return yaml.parse(getRuntimeConfigStr())
 }
 

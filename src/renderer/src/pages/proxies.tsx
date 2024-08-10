@@ -30,6 +30,7 @@ const Proxies: React.FC = () => {
     const groups: IMihomoGroup[] = []
     if (proxies && proxies.proxies) {
       runtime?.['proxy-groups']?.forEach((group: { name: string; url?: string }) => {
+        group = Object.assign(group, group['<<'])
         const { name, url } = group
         if (
           proxies.proxies[name] &&
