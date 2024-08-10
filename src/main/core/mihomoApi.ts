@@ -340,3 +340,26 @@ const mihomoConnections = (): void => {
     }
   }
 }
+
+export const pauseWebsockets = () => {
+  const recoverList: (() => void)[] = []
+  if (mihomoTrafficWs) {
+    stopMihomoTraffic()
+    recoverList.push(startMihomoTraffic)
+  }
+  if (mihomoMemoryWs) {
+    stopMihomoMemory()
+    recoverList.push(startMihomoMemory)
+  }
+  if (mihomoLogsWs) {
+    stopMihomoLogs()
+    recoverList.push(startMihomoLogs)
+  }
+  if (mihomoConnectionsWs) {
+    stopMihomoConnections()
+    recoverList.push(startMihomoConnections)
+  }
+  return (): void => {
+    recoverList.forEach((recover) => recover())
+  }
+}

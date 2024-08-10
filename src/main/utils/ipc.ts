@@ -14,6 +14,7 @@ import {
   mihomoUpgradeGeo,
   mihomoVersion,
   patchMihomoConfig,
+  pauseWebsockets,
   startMihomoConnections,
   startMihomoLogs,
   stopMihomoConnections,
@@ -79,7 +80,11 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('changeCurrentProfile', (_e, id) => changeCurrentProfile(id))
   ipcMain.handle('addProfileItem', (_e, item) => addProfileItem(item))
   ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))
-  ipcMain.handle('restartCore', startCore)
+  ipcMain.handle('restartCore', async () => {
+    const recover = pauseWebsockets()
+    await startCore()
+    recover()
+  })
   ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
