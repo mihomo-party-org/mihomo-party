@@ -245,12 +245,14 @@ export const stopMihomoLogs = (): void => {
 }
 
 const mihomoLogs = (): void => {
-  let server = getControledMihomoConfig()['external-controller']
-  const secret = getControledMihomoConfig().secret ?? ''
+  const { secret = '', 'log-level': level = 'info' } = getControledMihomoConfig()
+  let { 'external-controller': server } = getControledMihomoConfig()
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoLogs()
 
-  mihomoLogsWs = new WebSocket(`ws://${server}/logs?token=${encodeURIComponent(secret)}`)
+  mihomoLogsWs = new WebSocket(
+    `ws://${server}/logs?token=${encodeURIComponent(secret)}&level=${level}`
+  )
 
   mihomoLogsWs.onmessage = (e): void => {
     const data = e.data as string

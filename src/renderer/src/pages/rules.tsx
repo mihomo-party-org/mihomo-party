@@ -23,7 +23,7 @@ const Rules: React.FC = () => {
 
   return (
     <BasePage title="分流规则">
-      <div className="sticky top-[48px] z-40 backdrop-blur bg-background/40 flex p-2">
+      <div className="sticky top-[49px] z-40 backdrop-blur bg-background/40 flex p-2">
         <Input
           variant="bordered"
           size="sm"

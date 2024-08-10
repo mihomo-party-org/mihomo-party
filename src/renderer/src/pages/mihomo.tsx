@@ -297,9 +297,9 @@ const Mihomo: React.FC = () => {
             }}
           >
             <SelectItem key="silent">静默</SelectItem>
-            <SelectItem key="info">信息</SelectItem>
-            <SelectItem key="warning">警告</SelectItem>
             <SelectItem key="error">错误</SelectItem>
+            <SelectItem key="warning">警告</SelectItem>
+            <SelectItem key="info">信息</SelectItem>
             <SelectItem key="debug">调试</SelectItem>
           </Select>
         </SettingItem>
