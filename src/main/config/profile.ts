@@ -181,6 +181,6 @@ export async function setProfileStr(id: string, content: string): Promise<void> 
   }
 }
 
-export function getProfile(id: string): IMihomoConfig {
-  return yaml.parse(getProfileStr(id))
+export function getProfile(id: string | undefined): IMihomoConfig {
+  return yaml.parse(getProfileStr(id || 'default'))
 }

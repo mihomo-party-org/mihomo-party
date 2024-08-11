@@ -5,7 +5,6 @@ import fs from 'fs'
 
 export function generateProfile(): void {
   const current = getProfileConfig().current
-  if (!current) return
   const currentProfile = getProfile(current)
   const controledMihomoConfig = getControledMihomoConfig()
   const { tun: profileTun = {} } = currentProfile
