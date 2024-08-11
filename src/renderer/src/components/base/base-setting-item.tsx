@@ -16,7 +16,7 @@ const SettingItem: React.FC<Props> = (props) => {
     <>
       <div className="h-[32px] w-full flex justify-between">
         <div className="h-full flex items-center">
-          <h4 className="h-full select-none text-md leading-[32px]">{title}</h4>
+          <h4 className="h-full text-md leading-[32px]">{title}</h4>
           <div>{actions}</div>
         </div>
         {children}

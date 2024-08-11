@@ -58,7 +58,7 @@ const Connections: React.FC = () => {
       title="连接"
       header={
         <div className="flex">
-          <div className="flex items-center select-none">
+          <div className="flex items-center">
             <span className="mx-1 text-gray-400">
               下载: {calcTraffic(connectionsInfo?.downloadTotal ?? 0)}{' '}
             </span>
@@ -99,7 +99,7 @@ const Connections: React.FC = () => {
         }}
         isHeaderSticky
         isStriped
-        className="h-[calc(100vh-100px)] p-2 select-none"
+        className="h-[calc(100vh-100px)] p-2"
       >
         <TableHeader>
           <TableColumn key="type">类型</TableColumn>

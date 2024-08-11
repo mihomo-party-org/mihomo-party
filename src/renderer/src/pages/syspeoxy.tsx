@@ -134,8 +134,8 @@ const Sysproxy: React.FC = () => {
             selectedKey={values.mode}
             onSelectionChange={(key: Key) => setValues({ ...values, mode: key as SysProxyMode })}
           >
-            <Tab className="select-none" key="manual" title="手动" />
-            <Tab className="select-none" key="auto" title="PAC" />
+            <Tab key="manual" title="手动" />
+            <Tab key="auto" title="PAC" />
           </Tabs>
         </SettingItem>
         {platform === 'win32' && (
@@ -171,7 +171,7 @@ const Sysproxy: React.FC = () => {
               </Button>
             </SettingItem>
             <div className="flex flex-col items-stretch">
-              <h3 className="select-none mb-2">代理绕过</h3>
+              <h3 className="mb-2">代理绕过</h3>
               {[...values.bypass, ''].map((domain, index) => (
                 <div key={index} className="mb-2 flex">
                   <Input

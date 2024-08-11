@@ -160,9 +160,9 @@ const DNS: React.FC = () => {
             selectedKey={values.enhancedMode}
             onSelectionChange={(key: Key) => setValues({ ...values, enhancedMode: key as DnsMode })}
           >
-            <Tab key="fake-ip" title="虚假IP" className="select-none" />
-            <Tab key="redir-host" title="真实IP" className="select-none" />
-            <Tab key="normal" title="取消映射" className="select-none" />
+            <Tab key="fake-ip" title="虚假IP" />
+            <Tab key="redir-host" title="真实IP" />
+            <Tab key="normal" title="取消映射" />
           </Tabs>
         </SettingItem>
         {values.enhancedMode === 'fake-ip' ? (
@@ -178,7 +178,7 @@ const DNS: React.FC = () => {
               />
             </SettingItem>
             <div className="flex flex-col items-stretch">
-              <h3 className="select-none">真实IP回应</h3>
+              <h3>真实IP回应</h3>
               {renderListInputs('fakeIPFilter', '例: +.lan')}
             </div>
             <Divider className="my-2" />
@@ -204,12 +204,12 @@ const DNS: React.FC = () => {
         </SettingItem>
 
         <div className="flex flex-col items-stretch">
-          <h3 className="select-none">代理节点域名解析</h3>
+          <h3>代理节点域名解析</h3>
           {renderListInputs('proxyServerNameserver', '例: tls://223.5.5.5')}
         </div>
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
-          <h3 className="select-none">DNS服务器</h3>
+          <h3>DNS服务器</h3>
           {renderListInputs('nameserver', '例: tls://223.5.5.5')}
         </div>
         <Divider className="my-2" />
@@ -245,7 +245,7 @@ const DNS: React.FC = () => {
                         }
                       />
                     </div>
-                    <span className="select-none mx-2">:</span>
+                    <span className="mx-2">:</span>
                     <div className="flex-[6] flex">
                       <Input
                         size="sm"
@@ -313,7 +313,7 @@ const DNS: React.FC = () => {
                     }
                   />
                 </div>
-                <span className="select-none mx-2">:</span>
+                <span className="mx-2">:</span>
                 <div className="flex-[6] flex">
                   <Input
                     size="sm"

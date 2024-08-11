@@ -135,7 +135,7 @@ const ProfileItem: React.FC<Props> = (props) => {
         <CardBody className="pb-1">
           <div className="flex justify-between h-[32px]">
             <h3
-              className={`select-none text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${isCurrent ? 'text-white' : 'text-foreground'}`}
+              className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${isCurrent ? 'text-white' : 'text-foreground'}`}
             >
               {info?.name}
             </h3>
@@ -187,7 +187,7 @@ const ProfileItem: React.FC<Props> = (props) => {
           </div>
           {info.type === 'remote' && (
             <div
-              className={`mt-2 flex select-none justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
+              className={`mt-2 flex justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
             >
               <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
               <small>{dayjs(info.updated).fromNow()}</small>
@@ -195,7 +195,7 @@ const ProfileItem: React.FC<Props> = (props) => {
           )}
           {info.type === 'local' && (
             <div
-              className={`mt-2 flex select-none justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
+              className={`mt-2 flex justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
             >
               <Chip
                 size="sm"
@@ -212,8 +212,7 @@ const ProfileItem: React.FC<Props> = (props) => {
             <Progress
               className="w-full"
               classNames={{
-                indicator: isCurrent ? 'bg-white' : 'bg-foreground',
-                label: 'select-none'
+                indicator: isCurrent ? 'bg-white' : 'bg-foreground'
               }}
               value={calcPercent(extra?.upload, extra?.download, extra?.total)}
             />

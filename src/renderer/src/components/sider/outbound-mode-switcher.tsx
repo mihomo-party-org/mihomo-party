@@ -19,21 +19,9 @@ const OutboundModeSwitcher: React.FC = () => {
       selectedKey={mode}
       onSelectionChange={(key: Key) => onChangeMode(key as OutboundMode)}
     >
-      <Tab
-        className={`select-none ${mode === 'rule' ? 'font-bold' : ''}`}
-        key="rule"
-        title="规则"
-      />
-      <Tab
-        className={`select-none ${mode === 'global' ? 'font-bold' : ''}`}
-        key="global"
-        title="全局"
-      />
-      <Tab
-        className={`select-none ${mode === 'direct' ? 'font-bold' : ''}`}
-        key="direct"
-        title="直连"
-      />
+      <Tab className={`${mode === 'rule' ? 'font-bold' : ''}`} key="rule" title="规则" />
+      <Tab className={`${mode === 'global' ? 'font-bold' : ''}`} key="global" title="全局" />
+      <Tab className={`${mode === 'direct' ? 'font-bold' : ''}`} key="direct" title="直连" />
     </Tabs>
   )
 }

@@ -43,7 +43,7 @@ const ProfileCard: React.FC = () => {
         <CardBody className="pb-1">
           <div className="flex justify-between h-[32px]">
             <h3
-              className={`select-none text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
+              className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
             >
               {info?.name}
             </h3>
@@ -85,7 +85,7 @@ const ProfileCard: React.FC = () => {
           </div>
           {info.type === 'remote' && (
             <div
-              className={`mt-2 flex select-none justify-between ${match ? 'text-white' : 'text-foreground'} `}
+              className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'} `}
             >
               <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
               <small>{dayjs(info.updated).fromNow()}</small>
@@ -93,7 +93,7 @@ const ProfileCard: React.FC = () => {
           )}
           {info.type === 'local' && (
             <div
-              className={`mt-2 flex select-none justify-between ${match ? 'text-white' : 'text-foreground'}`}
+              className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'}`}
             >
               <Chip
                 size="sm"
@@ -109,7 +109,7 @@ const ProfileCard: React.FC = () => {
           {extra && (
             <Progress
               className="w-full"
-              classNames={{ indicator: match ? 'bg-white' : 'bg-foreground', label: 'select-none' }}
+              classNames={{ indicator: match ? 'bg-white' : 'bg-foreground' }}
               value={calcPercent(extra?.upload, extra?.download, extra?.total)}
             />
           )}

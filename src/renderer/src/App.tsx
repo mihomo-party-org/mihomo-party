@@ -37,7 +37,7 @@ const App: React.FC = () => {
       <div className="side w-[250px] h-full overflow-y-auto no-scrollbar">
         <div className="sticky top-0 z-40 backdrop-blur bg-background/40 h-[48px]">
           <div className="flex justify-between p-2">
-            <h3 className="select-none text-lg font-bold leading-[32px]">Mihomo Party</h3>
+            <h3 className="text-lg font-bold leading-[32px]">Mihomo Party</h3>
             <UpdaterButton />
             <Button
               size="sm"

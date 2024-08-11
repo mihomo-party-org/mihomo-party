@@ -36,11 +36,11 @@ const RuleCard: React.FC = () => {
               match
                 ? {
                     base: 'border-white',
-                    content: 'text-white select-none'
+                    content: 'text-white'
                   }
                 : {
                     base: 'border-primary',
-                    content: 'text-primary select-none'
+                    content: 'text-primary'
                   }
             }
             size="sm"
@@ -52,9 +52,7 @@ const RuleCard: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
-          规则
-        </h3>
+        <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>规则</h3>
       </CardFooter>
     </Card>
   )

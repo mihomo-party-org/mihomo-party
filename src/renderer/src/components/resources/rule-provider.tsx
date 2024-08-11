@@ -60,7 +60,7 @@ const RuleProvider: React.FC = () => {
               }
             >
               {
-                <div className="flex select-none h-[32px] leading-[32px] text-default-500">
+                <div className="flex h-[32px] leading-[32px] text-default-500">
                   <div>{dayjs(provider.updatedAt).fromNow()}</div>
                   <Button
                     isIconOnly
@@ -79,7 +79,7 @@ const RuleProvider: React.FC = () => {
               title={<div className="text-default-500">{provider.format}</div>}
               divider={index !== providers.length - 1}
             >
-              <div className="select-none h-[32px] leading-[32px] text-default-500">
+              <div className="h-[32px] leading-[32px] text-default-500">
                 {provider.vehicleType}::{provider.behavior}
               </div>
             </SettingItem>

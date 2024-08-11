@@ -76,9 +76,7 @@ const TunSwitcher: React.FC = () => {
           </div>
         </CardBody>
         <CardFooter className="pt-1">
-          <h3
-            className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}
-          >
+          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
             虚拟网卡
           </h3>
         </CardFooter>

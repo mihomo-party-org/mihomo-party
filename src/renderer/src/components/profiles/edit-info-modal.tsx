@@ -37,7 +37,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
         <ModalBody>
           {values.type === 'remote' && item.extra?.expire && (
             <SettingItem title="订阅到期时间">
-              <div className="select-none h-[32px] leading-[32px]">
+              <div className="h-[32px] leading-[32px]">
                 {dayjs.unix(item.extra.expire).format('YYYY-MM-DD')}
               </div>
             </SettingItem>

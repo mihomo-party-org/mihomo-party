@@ -171,7 +171,7 @@ const Proxies: React.FC = () => {
                         />
                       ) : null}
                       <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-                        <div className="inline flag-emoji h-[32px] select-none text-md leading-[32px]">
+                        <div className="inline flag-emoji h-[32px] text-md leading-[32px]">
                           {groups[index].name}
                         </div>
 
@@ -189,7 +189,7 @@ const Proxies: React.FC = () => {
                     </div>
                     <div className="flex">
                       {proxyDisplayMode === 'full' && (
-                        <Chip size="sm" className="my-1 mr-2 select-none">
+                        <Chip size="sm" className="my-1 mr-2">
                           {groups[index].all.length}
                         </Chip>
                       )}

@@ -66,7 +66,7 @@ const ProxyProvider: React.FC = () => {
               divider={!provider.subscriptionInfo && index !== providers.length - 1}
             >
               {
-                <div className="flex select-none h-[32px] leading-[32px] text-default-500">
+                <div className="flex h-[32px] leading-[32px] text-default-500">
                   <div>{dayjs(provider.updatedAt).fromNow()}</div>
                   <Button
                     isIconOnly
@@ -92,7 +92,7 @@ const ProxyProvider: React.FC = () => {
                 }
               >
                 {provider.subscriptionInfo && (
-                  <div className="select-none h-[32px] leading-[32px] text-default-500">
+                  <div className="h-[32px] leading-[32px] text-default-500">
                     {dayjs.unix(provider.subscriptionInfo.Expire).format('YYYY-MM-DD')}
                   </div>
                 )}

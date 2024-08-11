@@ -45,9 +45,7 @@ const DNSCard: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
-          DNS
-        </h3>
+        <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>DNS</h3>
       </CardFooter>
     </Card>
   )

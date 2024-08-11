@@ -7,6 +7,10 @@
   src: url('./NotoColorEmoji.ttf');
 }
 
+* {
+  user-select: none;
+}
+
 *:focus {
   outline: none;
 }

@@ -91,9 +91,9 @@ const Tun: React.FC = () => {
             selectedKey={values.stack}
             onSelectionChange={(key: Key) => setValues({ ...values, stack: key as TunStack })}
           >
-            <Tab key="gvisor" title="用户" className="select-none" />
-            <Tab key="mixed" title="混合" className="select-none" />
-            <Tab key="system" title="系统" className="select-none" />
+            <Tab key="gvisor" title="用户" />
+            <Tab key="mixed" title="混合" />
+            <Tab key="system" title="系统" />
           </Tabs>
         </SettingItem>
         <SettingItem title="Tun 网卡名称" divider>

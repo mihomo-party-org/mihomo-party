@@ -28,9 +28,7 @@ const LogCard: React.FC = () => {
         </div>
       </CardBody>
       <CardFooter className="pt-1">
-        <h3 className={`select-none text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
-          日志
-        </h3>
+        <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>日志</h3>
       </CardFooter>
     </Card>
   )

@@ -208,7 +208,7 @@ const Settings: React.FC = () => {
           </Button>
         </SettingItem>
         <SettingItem title="应用版本">
-          <div className="select-none">v{version}</div>
+          <div>v{version}</div>
         </SettingItem>
       </SettingCard>
     </BasePage>
