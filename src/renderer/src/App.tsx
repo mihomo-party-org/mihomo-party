@@ -49,12 +49,7 @@ const App: React.FC = () => {
     ]
   } = appConfig || {}
   const [order, setOrder] = useState(siderOrder)
-  const sensors = useSensors(
-    useSensor(PointerSensor)
-    // useSensor(KeyboardSensor, {
-    //   coordinateGetter: sortableKeyboardCoordinates
-    // })
-  )
+  const sensors = useSensors(useSensor(PointerSensor))
   const { setTheme } = useTheme()
   const navigate = useNavigate()
   const location = useLocation()

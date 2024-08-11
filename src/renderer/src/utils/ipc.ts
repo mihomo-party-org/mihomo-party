@@ -102,6 +102,10 @@ export async function getProfileConfig(force = false): Promise<IProfileConfig> {
   return await window.electron.ipcRenderer.invoke('getProfileConfig', force)
 }
 
+export async function setProfileConfig(config: IProfileConfig): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('setProfileConfig', config)
+}
+
 export async function getCurrentProfileItem(): Promise<IProfileItem> {
   return await window.electron.ipcRenderer.invoke('getCurrentProfileItem')
 }

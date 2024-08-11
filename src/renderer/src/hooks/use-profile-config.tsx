@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import {
   getProfileConfig,
+  setProfileConfig as set,
   addProfileItem as add,
   removeProfileItem as remove,
   updateProfileItem as update,
@@ -10,6 +11,7 @@ import { useEffect } from 'react'
 
 interface RetuenType {
   profileConfig: IProfileConfig | undefined
+  setProfileConfig: (config: IProfileConfig) => Promise<void>
   mutateProfileConfig: () => void
   addProfileItem: (item: Partial<IProfileItem>) => Promise<void>
   updateProfileItem: (item: IProfileItem) => Promise<void>
@@ -21,6 +23,11 @@ export const useProfileConfig = (): RetuenType => {
   const { data: profileConfig, mutate: mutateProfileConfig } = useSWR('getProfileConfig', () =>
     getProfileConfig()
   )
+
+  const setProfileConfig = async (config: IProfileConfig): Promise<void> => {
+    await set(config)
+    mutateProfileConfig()
+  }
 
   const addProfileItem = async (item: Partial<IProfileItem>): Promise<void> => {
     await add(item)
@@ -53,6 +60,7 @@ export const useProfileConfig = (): RetuenType => {
 
   return {
     profileConfig,
+    setProfileConfig,
     mutateProfileConfig,
     addProfileItem,
     removeProfileItem,

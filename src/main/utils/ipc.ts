@@ -33,7 +33,8 @@ import {
   changeCurrentProfile,
   getProfileStr,
   setProfileStr,
-  updateProfileItem
+  updateProfileItem,
+  setProfileConfig
 } from '../config'
 import { isEncryptionAvailable, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
@@ -71,6 +72,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('getControledMihomoConfig', (_e, force) => getControledMihomoConfig(force))
   ipcMain.handle('setControledMihomoConfig', (_e, config) => setControledMihomoConfig(config))
   ipcMain.handle('getProfileConfig', (_e, force) => getProfileConfig(force))
+  ipcMain.handle('setProfileConfig', (_e, config) => setProfileConfig(config))
   ipcMain.handle('getCurrentProfileItem', getCurrentProfileItem)
   ipcMain.handle('getProfileItem', (_e, id) => getProfileItem(id))
   ipcMain.handle('getProfileStr', (_e, id) => getProfileStr(id))

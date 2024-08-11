@@ -13,9 +13,11 @@ import {
 import { calcPercent, calcTraffic } from '@renderer/utils/calc'
 import { IoMdMore, IoMdRefresh } from 'react-icons/io'
 import dayjs from 'dayjs'
-import React, { Key, useMemo, useState } from 'react'
+import React, { Key, useEffect, useMemo, useState } from 'react'
 import EditFileModal from './edit-file-modal'
 import EditInfoModal from './edit-info-modal'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 interface Props {
   info: IProfileItem
@@ -51,6 +53,10 @@ const ProfileItem: React.FC<Props> = (props) => {
   const [selecting, setSelecting] = useState(false)
   const [openInfo, setOpenInfo] = useState(false)
   const [openFile, setOpenFile] = useState(false)
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: info.id
+  })
+  const [disableSelect, setDisableSelect] = useState(false)
 
   const menuItems: MenuItem[] = useMemo(() => {
     const list = [
@@ -111,8 +117,28 @@ const ProfileItem: React.FC<Props> = (props) => {
     }
   }
 
+  useEffect(() => {
+    if (isDragging) {
+      setTimeout(() => {
+        setDisableSelect(true)
+      }, 200)
+    } else {
+      setTimeout(() => {
+        setDisableSelect(false)
+      }, 200)
+    }
+  }, [isDragging])
+
   return (
-    <>
+    <div
+      className="grid col-span-1"
+      style={{
+        position: 'relative',
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 'calc(infinity)' : undefined
+      }}
+    >
       {openFile && <EditFileModal id={info.id} onClose={() => setOpenFile(false)} />}
       {openInfo && (
         <EditInfoModal
@@ -125,6 +151,7 @@ const ProfileItem: React.FC<Props> = (props) => {
         fullWidth
         isPressable
         onPress={() => {
+          if (disableSelect) return
           setSelecting(true)
           onClick().finally(() => {
             setSelecting(false)
@@ -135,6 +162,9 @@ const ProfileItem: React.FC<Props> = (props) => {
         <CardBody className="pb-1">
           <div className="flex justify-between h-[32px]">
             <h3
+              ref={setNodeRef}
+              {...attributes}
+              {...listeners}
               className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${isCurrent ? 'text-white' : 'text-foreground'}`}
             >
               {info?.name}
@@ -219,7 +249,7 @@ const ProfileItem: React.FC<Props> = (props) => {
           )}
         </CardFooter>
       </Card>
-    </>
+    </div>
   )
 }
 

@@ -5,21 +5,32 @@ import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { getFilePath, readTextFile } from '@renderer/utils/ipc'
 import { useEffect, useRef, useState } from 'react'
 import { MdContentPaste } from 'react-icons/md'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent
+} from '@dnd-kit/core'
+import { SortableContext } from '@dnd-kit/sortable'
 
 const Profiles: React.FC = () => {
   const {
     profileConfig,
+    setProfileConfig,
     addProfileItem,
     updateProfileItem,
     removeProfileItem,
     changeCurrentProfile,
     mutateProfileConfig
   } = useProfileConfig()
-  const { current, items } = profileConfig || {}
+  const { current, items = [] } = profileConfig || {}
+  const [sortedItems, setSortedItems] = useState(items)
   const [importing, setImporting] = useState(false)
   const [fileOver, setFileOver] = useState(false)
   const [url, setUrl] = useState('')
-
+  const sensors = useSensors(useSensor(PointerSensor))
   const handleImport = async (): Promise<void> => {
     setImporting(true)
     try {
@@ -29,6 +40,21 @@ const Profiles: React.FC = () => {
     }
   }
   const pageRef = useRef<HTMLDivElement>(null)
+
+  const onDragEnd = async (event: DragEndEvent): Promise<void> => {
+    const { active, over } = event
+    if (over) {
+      if (active.id !== over.id) {
+        const newOrder = sortedItems.slice()
+        const activeIndex = newOrder.findIndex((item) => item.id === active.id)
+        const overIndex = newOrder.findIndex((item) => item.id === over.id)
+        newOrder.splice(activeIndex, 1)
+        newOrder.splice(overIndex, 0, items[activeIndex])
+        setSortedItems(newOrder)
+        await setProfileConfig({ current, items: newOrder })
+      }
+    }
+  }
 
   useEffect(() => {
     pageRef.current?.addEventListener('dragover', (e) => {
@@ -116,24 +142,32 @@ const Profiles: React.FC = () => {
           打开
         </Button>
       </div>
-      <div
-        className={`${fileOver ? 'blur-sm' : ''} grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mx-2`}
-      >
-        {items?.map((item) => (
-          <ProfileItem
-            key={item.id}
-            isCurrent={item.id === current}
-            addProfileItem={addProfileItem}
-            removeProfileItem={removeProfileItem}
-            mutateProfileConfig={mutateProfileConfig}
-            updateProfileItem={updateProfileItem}
-            info={item}
-            onClick={async () => {
-              await changeCurrentProfile(item.id)
-            }}
-          />
-        ))}
-      </div>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        <div
+          className={`${fileOver ? 'blur-sm' : ''} grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mx-2`}
+        >
+          <SortableContext
+            items={sortedItems.map((item) => {
+              return item.id
+            })}
+          >
+            {sortedItems.map((item) => (
+              <ProfileItem
+                key={item.id}
+                isCurrent={item.id === current}
+                addProfileItem={addProfileItem}
+                removeProfileItem={removeProfileItem}
+                mutateProfileConfig={mutateProfileConfig}
+                updateProfileItem={updateProfileItem}
+                info={item}
+                onClick={async () => {
+                  await changeCurrentProfile(item.id)
+                }}
+              />
+            ))}
+          </SortableContext>
+        </div>
+      </DndContext>
     </BasePage>
   )
 }

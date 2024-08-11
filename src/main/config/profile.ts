@@ -18,6 +18,12 @@ export function getProfileConfig(force = false): IProfileConfig {
   return profileConfig
 }
 
+export function setProfileConfig(config: IProfileConfig): void {
+  profileConfig = config
+  window?.webContents.send('profileConfigUpdated')
+  fs.writeFileSync(profileConfigPath(), yaml.stringify(profileConfig))
+}
+
 export function getProfileItem(id: string | undefined): IProfileItem {
   const items = getProfileConfig().items
   return items?.find((item) => item.id === id) || { id: 'default', type: 'local', name: '空白订阅' }

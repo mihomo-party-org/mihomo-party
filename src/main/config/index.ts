@@ -5,6 +5,7 @@ export {
   getCurrentProfileItem,
   getProfileItem,
   getProfileConfig,
+  setProfileConfig,
   addProfileItem,
   removeProfileItem,
   createProfile,
