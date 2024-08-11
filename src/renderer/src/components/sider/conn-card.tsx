@@ -3,6 +3,8 @@ import { FaCircleArrowDown, FaCircleArrowUp } from 'react-icons/fa6'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic } from '@renderer/utils/calc'
 import { useEffect, useState } from 'react'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { IoLink } from 'react-icons/io5'
 
 const ConnCard: React.FC = () => {
@@ -12,6 +14,9 @@ const ConnCard: React.FC = () => {
 
   const [upload, setUpload] = useState(0)
   const [download, setDownload] = useState(0)
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: 'connection'
+  })
 
   useEffect(() => {
     window.electron.ipcRenderer.on('mihomoTraffic', (_e, info: IMihomoTrafficInfo) => {
@@ -24,41 +29,51 @@ const ConnCard: React.FC = () => {
   }, [])
 
   return (
-    <Card
-      fullWidth
-      className={`col-span-2 ${match ? 'bg-primary' : ''}`}
-      isPressable
-      onPress={() => navigate('/connections')}
+    <div
+      style={{
+        position: 'relative',
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 'calc(infinity)' : undefined
+      }}
+      className="col-span-2"
     >
-      <CardBody className="pb-1 pt-0 px-0">
-        <div className="flex justify-between">
-          <Button
-            isIconOnly
-            className="bg-transparent pointer-events-none"
-            variant="flat"
-            color="default"
-          >
-            <IoLink
+      <Card
+        fullWidth
+        className={`${match ? 'bg-primary' : ''}`}
+        isPressable
+        onPress={() => navigate('/connections')}
+      >
+        <CardBody className="pb-0 pt-0 px-0">
+          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+            <Button
+              isIconOnly
+              className="bg-transparent pointer-events-none"
+              variant="flat"
               color="default"
-              className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
-            />
-          </Button>
-          <div className={`p-2 w-full ${match ? 'text-white' : 'text-foreground'} `}>
-            <div className="flex justify-between">
-              <div className="w-full text-right mr-2">{calcTraffic(upload)}/s</div>
-              <FaCircleArrowUp className="h-[24px] leading-[24px]" />
-            </div>
-            <div className="flex justify-between">
-              <div className="w-full text-right mr-2">{calcTraffic(download)}/s</div>
-              <FaCircleArrowDown className="h-[24px] leading-[24px]" />
+            >
+              <IoLink
+                color="default"
+                className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+              />
+            </Button>
+            <div className={`p-2 w-full ${match ? 'text-white' : 'text-foreground'} `}>
+              <div className="flex justify-between">
+                <div className="w-full text-right mr-2">{calcTraffic(upload)}/s</div>
+                <FaCircleArrowUp className="h-[24px] leading-[24px]" />
+              </div>
+              <div className="flex justify-between">
+                <div className="w-full text-right mr-2">{calcTraffic(download)}/s</div>
+                <FaCircleArrowDown className="h-[24px] leading-[24px]" />
+              </div>
             </div>
           </div>
-        </div>
-      </CardBody>
-      <CardFooter className="pt-1">
-        <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>连接</h3>
-      </CardFooter>
-    </Card>
+        </CardBody>
+        <CardFooter className="pt-1">
+          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>连接</h3>
+        </CardFooter>
+      </Card>
+    </div>
   )
 }
 

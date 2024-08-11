@@ -3,6 +3,8 @@ import { calcTraffic } from '@renderer/utils/calc'
 import { mihomoVersion, restartCore } from '@renderer/utils/ipc'
 import { useEffect, useState } from 'react'
 import { IoMdRefresh } from 'react-icons/io'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useSWR from 'swr'
 
@@ -11,6 +13,9 @@ const MihomoCoreCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/mihomo')
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: 'mihomo'
+  })
 
   const [mem, setMem] = useState(0)
 
@@ -31,46 +36,61 @@ const MihomoCoreCard: React.FC = () => {
   }, [])
 
   return (
-    <Card
-      fullWidth
-      isPressable
-      onPress={() => navigate('/mihomo')}
-      className={`col-span-2 ${match ? 'bg-primary' : ''}`}
+    <div
+      style={{
+        position: 'relative',
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 'calc(infinity)' : undefined
+      }}
+      className="col-span-2"
     >
-      <CardBody>
-        <div className="flex justify-between h-[32px]">
-          <h3
-            className={`text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
+      <Card
+        fullWidth
+        isPressable
+        onPress={() => navigate('/mihomo')}
+        className={`${match ? 'bg-primary' : ''}`}
+      >
+        <CardBody>
+          <div
+            ref={setNodeRef}
+            {...attributes}
+            {...listeners}
+            className="flex justify-between h-[32px]"
           >
-            {version?.version ?? '-'}
-          </h3>
+            <h3
+              className={`text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
+            >
+              {version?.version ?? '-'}
+            </h3>
 
-          <Button
-            isIconOnly
-            size="sm"
-            variant="light"
-            color="default"
-            onPress={async () => {
-              await restartCore()
-              mutate()
-              setTimeout(() => {
+            <Button
+              isIconOnly
+              size="sm"
+              variant="light"
+              color="default"
+              onPress={async () => {
+                await restartCore()
                 mutate()
-              }, 2000)
-            }}
+                setTimeout(() => {
+                  mutate()
+                }, 2000)
+              }}
+            >
+              <IoMdRefresh className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`} />
+            </Button>
+          </div>
+        </CardBody>
+        <CardFooter className="pt-1">
+          <div
+            className={`flex justify-between w-full text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}
           >
-            <IoMdRefresh className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`} />
-          </Button>
-        </div>
-      </CardBody>
-      <CardFooter className="pt-1">
-        <div
-          className={`flex justify-between w-full text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}
-        >
-          <h4>内核设置</h4>
-          <h4>{calcTraffic(mem)}</h4>
-        </div>
-      </CardFooter>
-    </Card>
+            <h4>内核设置</h4>
+            <h4>{calcTraffic(mem)}</h4>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
   )
 }
 

@@ -1,5 +1,5 @@
 import { useTheme } from 'next-themes'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import OutboundModeSwitcher from '@renderer/components/sider/outbound-mode-switcher'
 import SysproxySwitcher from '@renderer/components/sider/sysproxy-switcher'
@@ -7,6 +7,15 @@ import TunSwitcher from '@renderer/components/sider/tun-switcher'
 import { Button, Divider } from '@nextui-org/react'
 import { IoSettings } from 'react-icons/io5'
 import routes from '@renderer/routes'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent
+} from '@dnd-kit/core'
+import { SortableContext } from '@dnd-kit/sortable'
 import ProfileCard from '@renderer/components/sider/profile-card'
 import ProxyCard from '@renderer/components/sider/proxy-card'
 import RuleCard from '@renderer/components/sider/rule-card'
@@ -21,8 +30,31 @@ import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from './hooks/use-app-config'
 
 const App: React.FC = () => {
-  const { appConfig } = useAppConfig()
-  const { appTheme = 'system' } = appConfig || {}
+  const { appConfig, patchAppConfig } = useAppConfig()
+  const {
+    appTheme = 'system',
+    siderOrder = [
+      'sysproxy',
+      'tun',
+      'profile',
+      'proxy',
+      'mihomo',
+      'connection',
+      'dns',
+      'sniff',
+      'log',
+      'rule',
+      'resource',
+      'override'
+    ]
+  } = appConfig || {}
+  const [order, setOrder] = useState(siderOrder)
+  const sensors = useSensors(
+    useSensor(PointerSensor)
+    // useSensor(KeyboardSensor, {
+    //   coordinateGetter: sortableKeyboardCoordinates
+    // })
+  )
   const { setTheme } = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
@@ -31,6 +63,36 @@ const App: React.FC = () => {
   useEffect(() => {
     setTheme(appTheme)
   }, [appTheme])
+
+  const onDragEnd = async (event: DragEndEvent): Promise<void> => {
+    const { active, over } = event
+    if (over) {
+      if (active.id !== over.id) {
+        const newOrder = order.slice()
+        const activeIndex = newOrder.indexOf(active.id as string)
+        const overIndex = newOrder.indexOf(over.id as string)
+        newOrder.splice(activeIndex, 1)
+        newOrder.splice(overIndex, 0, active.id as string)
+        setOrder(newOrder)
+        await patchAppConfig({ siderOrder: newOrder })
+      }
+    }
+  }
+
+  const componentMap = {
+    sysproxy: <SysproxySwitcher />,
+    tun: <TunSwitcher />,
+    profile: <ProfileCard />,
+    proxy: <ProxyCard />,
+    mihomo: <MihomoCoreCard />,
+    connection: <ConnCard />,
+    dns: <DNSCard />,
+    sniff: <SniffCard />,
+    log: <LogCard />,
+    rule: <RuleCard />,
+    resource: <ResourceCard />,
+    override: <OverrideCard />
+  }
 
   return (
     <div className="w-full h-[100vh] flex">
@@ -51,44 +113,22 @@ const App: React.FC = () => {
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2 mx-2">
+        <div className="mt-2 mx-2">
           <OutboundModeSwitcher />
-          <SysproxySwitcher />
-          <TunSwitcher />
-          <ProfileCard />
-          <ProxyCard />
-          <MihomoCoreCard />
-          <ConnCard />
-          <DNSCard />
-          <SniffCard />
-          <LogCard />
-          <RuleCard />
-          <ResourceCard />
-          <OverrideCard />
         </div>
-        {/* <div className="flex justify-between mx-2 mb-2">
-          <SysproxySwitcher />
-          <TunSwitcher />
-        </div>
-        <div className="mx-2">
-          <ProfileCard />
-          <ProxyCard />
-          <MihomoCoreCard />
-          <ConnCard />
-        </div>
-
-        <div className="flex justify-between mx-2">
-          <DNSCard />
-          <SniffCard />
-        </div>
-        <div className="flex justify-between mx-2">
-          <LogCard />
-          <RuleCard />
-        </div>
-        <div className="flex justify-between mx-2">
-          <ResourceCard />
-          <OverrideCard />
-        </div> */}
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+          <div className="grid grid-cols-2 gap-2 m-2">
+            <SortableContext
+              items={order.map((x) => {
+                return x
+              })}
+            >
+              {order.map((key: string) => {
+                return componentMap[key]
+              })}
+            </SortableContext>
+          </div>
+        </DndContext>
       </div>
       <Divider orientation="vertical" />
       <div className="main w-[calc(100%-251px)] h-full overflow-y-auto">{page}</div>

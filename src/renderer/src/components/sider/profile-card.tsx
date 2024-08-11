@@ -5,6 +5,8 @@ import { calcTraffic, calcPercent } from '@renderer/utils/calc'
 import { CgLoadbarDoc } from 'react-icons/cg'
 import { IoMdRefresh } from 'react-icons/io'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
 import { useState } from 'react'
@@ -21,6 +23,9 @@ const ProfileCard: React.FC = () => {
   const [showRuntimeConfig, setShowRuntimeConfig] = useState(false)
   const { profileConfig, addProfileItem } = useProfileConfig()
   const { current, items } = profileConfig ?? {}
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: 'profile'
+  })
   const info = items?.find((item) => item.id === current) ?? {
     id: 'default',
     type: 'local',
@@ -32,16 +37,29 @@ const ProfileCard: React.FC = () => {
   const total = extra?.total ?? 0
 
   return (
-    <>
+    <div
+      style={{
+        position: 'relative',
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 'calc(infinity)' : undefined
+      }}
+      className="col-span-2"
+    >
       {showRuntimeConfig && <ConfigViewer onClose={() => setShowRuntimeConfig(false)} />}
       <Card
         fullWidth
-        className={`col-span-2 ${match ? 'bg-primary' : ''}`}
+        className={`${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/profiles')}
       >
         <CardBody className="pb-1">
-          <div className="flex justify-between h-[32px]">
+          <div
+            ref={setNodeRef}
+            {...attributes}
+            {...listeners}
+            className="flex justify-between h-[32px]"
+          >
             <h3
               className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
             >
@@ -115,7 +133,7 @@ const ProfileCard: React.FC = () => {
           )}
         </CardFooter>
       </Card>
-    </>
+    </div>
   )
 }
 

@@ -8,6 +8,21 @@ export const defaultConfig: IAppConfig = {
   autoCloseConnection: true,
   useNameserverPolicy: false,
   nameserverPolicy: {},
+  siderOrder: [
+    'mode',
+    'sysproxy',
+    'tun',
+    'profile',
+    'proxy',
+    'mihomo',
+    'connection',
+    'dns',
+    'sniff',
+    'log',
+    'rule',
+    'resource',
+    'override'
+  ],
   sysProxy: { enable: false, mode: 'manual' }
 }
 

@@ -2,39 +2,53 @@ import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import React from 'react'
 import { FaLayerGroup } from 'react-icons/fa6'
 import { useLocation, useNavigate } from 'react-router-dom'
-
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 const ResourceCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/resources')
-
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: 'resource'
+  })
   return (
-    <Card
-      className={`col-span-1 ${match ? 'bg-primary' : ''}`}
-      isPressable
-      onPress={() => navigate('/resources')}
+    <div
+      style={{
+        position: 'relative',
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 'calc(infinity)' : undefined
+      }}
+      className="col-span-1"
     >
-      <CardBody className="pb-1 pt-0 px-0">
-        <div className="flex justify-between">
-          <Button
-            isIconOnly
-            className="bg-transparent pointer-events-none"
-            variant="flat"
-            color="default"
-          >
-            <FaLayerGroup
+      <Card
+        fullWidth
+        className={`col-span-1 ${match ? 'bg-primary' : ''}`}
+        isPressable
+        onPress={() => navigate('/resources')}
+      >
+        <CardBody className="pb-1 pt-0 px-0">
+          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+            <Button
+              isIconOnly
+              className="bg-transparent pointer-events-none"
+              variant="flat"
               color="default"
-              className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
-            />
-          </Button>
-        </div>
-      </CardBody>
-      <CardFooter className="pt-1">
-        <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
-          外部资源
-        </h3>
-      </CardFooter>
-    </Card>
+            >
+              <FaLayerGroup
+                color="default"
+                className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+              />
+            </Button>
+          </div>
+        </CardBody>
+        <CardFooter className="pt-1">
+          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+            外部资源
+          </h3>
+        </CardFooter>
+      </Card>
+    </div>
   )
 }
 

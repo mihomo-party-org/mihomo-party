@@ -4,6 +4,8 @@ import BorderSwitch from '@renderer/components/base/border-swtich'
 import { TbDeviceIpadHorizontalBolt } from 'react-icons/tb'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { encryptString, patchMihomoConfig, isEncryptionAvailable } from '@renderer/utils/ipc'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { platform } from '@renderer/utils/init'
 import React, { useState } from 'react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
@@ -12,12 +14,15 @@ import BasePasswordModal from '../base/base-password-modal'
 const TunSwitcher: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const match = location.pathname.includes('/tun')
+  const match = location.pathname.includes('/tun') || false
   const [openPasswordModal, setOpenPasswordModal] = useState(false)
   const { appConfig, patchAppConfig } = useAppConfig()
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
   const { tun } = controledMihomoConfig || {}
   const { enable } = tun || {}
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: 'tun'
+  })
 
   const onChange = async (enable: boolean): Promise<void> => {
     if (enable && platform !== 'win32') {
@@ -40,7 +45,15 @@ const TunSwitcher: React.FC = () => {
   }
 
   return (
-    <>
+    <div
+      style={{
+        position: 'relative',
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 'calc(infinity)' : undefined
+      }}
+      className="col-span-1"
+    >
       {openPasswordModal && (
         <BasePasswordModal
           onCancel={() => setOpenPasswordModal(false)}
@@ -51,13 +64,15 @@ const TunSwitcher: React.FC = () => {
           }}
         />
       )}
+
       <Card
-        className={`col-span-1 ${match ? 'bg-primary' : ''}`}
+        fullWidth
+        className={`${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/tun')}
       >
         <CardBody className="pb-1 pt-0 px-0">
-          <div className="flex justify-between">
+          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
             <Button
               isIconOnly
               className="bg-transparent pointer-events-none"
@@ -81,7 +96,7 @@ const TunSwitcher: React.FC = () => {
           </h3>
         </CardFooter>
       </Card>
-    </>
+    </div>
   )
 }
 

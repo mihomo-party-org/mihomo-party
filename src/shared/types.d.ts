@@ -194,6 +194,7 @@ interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha'
   proxyDisplayMode: 'simple' | 'full'
   proxyDisplayOrder: 'default' | 'delay' | 'name'
+  siderOrder: string[]
   appTheme: AppTheme
   autoCheckUpdate: boolean
   silentStart: boolean
