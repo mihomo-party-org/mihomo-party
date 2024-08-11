@@ -1,6 +1,5 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
-import BorderSwitch from '@renderer/components/base/border-swtich'
-import React, { useState } from 'react'
+import React from 'react'
 import { MdFormatOverline } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
@@ -10,7 +9,6 @@ const OverrideCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/override')
-  const [enable, setEnable] = useState(false)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: 'override'
   })
@@ -43,11 +41,6 @@ const OverrideCard: React.FC = () => {
                 className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
               />
             </Button>
-            <BorderSwitch
-              isShowBorder={match && enable}
-              isSelected={enable}
-              onValueChange={setEnable}
-            />
           </div>
         </CardBody>
         <CardFooter className="pt-1">

@@ -92,6 +92,10 @@ const Profiles: React.FC = () => {
     }
   }, [])
 
+  useEffect(() => {
+    setSortedItems(items)
+  }, [items])
+
   return (
     <BasePage ref={pageRef} title="订阅管理">
       <div className="sticky top-[48px] z-40 backdrop-blur bg-background/40 flex p-2">
@@ -130,7 +134,7 @@ const Profiles: React.FC = () => {
           color="primary"
           className="ml-2"
           onPress={() => {
-            getFilePath().then(async (files) => {
+            getFilePath(['yml', 'yaml']).then(async (files) => {
               if (files?.length) {
                 const content = await readTextFile(files[0])
                 const fileName = files[0].split('/').pop()?.split('\\').pop()

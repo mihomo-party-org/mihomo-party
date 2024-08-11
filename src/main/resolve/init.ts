@@ -5,6 +5,8 @@ import {
   logDir,
   mihomoTestDir,
   mihomoWorkDir,
+  overrideConfigPath,
+  overrideDir,
   profileConfigPath,
   profilePath,
   profilesDir,
@@ -13,6 +15,7 @@ import {
 import {
   defaultConfig,
   defaultControledMihomoConfig,
+  defaultOverrideConfig,
   defaultProfile,
   defaultProfileConfig
 } from '../utils/template'
@@ -31,6 +34,9 @@ function initDirs(): void {
   if (!fs.existsSync(profilesDir())) {
     fs.mkdirSync(profilesDir())
   }
+  if (!fs.existsSync(overrideDir())) {
+    fs.mkdirSync(overrideDir())
+  }
   if (!fs.existsSync(mihomoWorkDir())) {
     fs.mkdirSync(mihomoWorkDir())
   }
@@ -48,6 +54,9 @@ function initConfig(): void {
   }
   if (!fs.existsSync(profileConfigPath())) {
     fs.writeFileSync(profileConfigPath(), yaml.stringify(defaultProfileConfig))
+  }
+  if (!fs.existsSync(overrideConfigPath())) {
+    fs.writeFileSync(overrideConfigPath(), yaml.stringify(defaultOverrideConfig))
   }
   if (!fs.existsSync(profilePath('default'))) {
     fs.writeFileSync(profilePath('default'), yaml.stringify(defaultProfile))

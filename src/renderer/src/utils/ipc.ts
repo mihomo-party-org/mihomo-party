@@ -138,6 +138,38 @@ export async function setProfileStr(id: string, str: string): Promise<void> {
   return await window.electron.ipcRenderer.invoke('setProfileStr', id, str)
 }
 
+export async function getOverrideConfig(force = false): Promise<IOverrideConfig> {
+  return await window.electron.ipcRenderer.invoke('getOverrideConfig', force)
+}
+
+export async function setOverrideConfig(config: IOverrideConfig): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('setOverrideConfig', config)
+}
+
+export async function getOverrideItem(id: string): Promise<IOverrideItem | undefined> {
+  return await window.electron.ipcRenderer.invoke('getOverrideItem', id)
+}
+
+export async function addOverrideItem(item: Partial<IOverrideItem>): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('addOverrideItem', item)
+}
+
+export async function removeOverrideItem(id: string): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('removeOverrideItem', id)
+}
+
+export async function updateOverrideItem(item: IOverrideItem): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('updateOverrideItem', item)
+}
+
+export async function getOverride(id: string): Promise<string> {
+  return await window.electron.ipcRenderer.invoke('getOverride', id)
+}
+
+export async function setOverride(id: string, str: string): Promise<void> {
+  return await window.electron.ipcRenderer.invoke('setOverride', id, str)
+}
+
 export async function restartCore(): Promise<void> {
   return await window.electron.ipcRenderer.invoke('restartCore')
 }
@@ -154,8 +186,8 @@ export async function encryptString(str: string): Promise<Buffer> {
   return await window.electron.ipcRenderer.invoke('encryptString', str)
 }
 
-export async function getFilePath(): Promise<string[] | undefined> {
-  return await window.electron.ipcRenderer.invoke('getFilePath')
+export async function getFilePath(ext: string[]): Promise<string[] | undefined> {
+  return await window.electron.ipcRenderer.invoke('getFilePath', ext)
 }
 
 export async function readTextFile(filePath: string): Promise<string> {

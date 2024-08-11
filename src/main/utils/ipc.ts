@@ -34,7 +34,15 @@ import {
   getProfileStr,
   setProfileStr,
   updateProfileItem,
-  setProfileConfig
+  setProfileConfig,
+  getOverrideConfig,
+  setOverrideConfig,
+  getOverrideItem,
+  addOverrideItem,
+  removeOverrideItem,
+  getOverride,
+  setOverride,
+  updateOverrideItem
 } from '../config'
 import { isEncryptionAvailable, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
@@ -81,11 +89,19 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('changeCurrentProfile', (_e, id) => changeCurrentProfile(id))
   ipcMain.handle('addProfileItem', (_e, item) => addProfileItem(item))
   ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))
+  ipcMain.handle('getOverrideConfig', (_e, force) => getOverrideConfig(force))
+  ipcMain.handle('setOverrideConfig', (_e, config) => setOverrideConfig(config))
+  ipcMain.handle('getOverrideItem', (_e, id) => getOverrideItem(id))
+  ipcMain.handle('addOverrideItem', (_e, item) => addOverrideItem(item))
+  ipcMain.handle('removeOverrideItem', (_e, id) => removeOverrideItem(id))
+  ipcMain.handle('updateOverrideItem', (_e, item) => updateOverrideItem(item))
+  ipcMain.handle('getOverride', (_e, id) => getOverride(id))
+  ipcMain.handle('setOverride', (_e, id, str) => setOverride(id, str))
   ipcMain.handle('restartCore', restartCore)
   ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
-  ipcMain.handle('getFilePath', getFilePath)
+  ipcMain.handle('getFilePath', (_e, ext) => getFilePath(ext))
   ipcMain.handle('readTextFile', (_e, filePath) => readTextFile(filePath))
   ipcMain.handle('getRuntimeConfigStr', getRuntimeConfigStr)
   ipcMain.handle('getRuntimeConfig', getRuntimeConfig)
@@ -97,10 +113,10 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('quitApp', () => app.quit())
 }
 
-function getFilePath(): string[] | undefined {
+function getFilePath(ext: string[]): string[] | undefined {
   return dialog.showOpenDialogSync({
     title: '选择订阅文件',
-    filters: [{ name: 'Yaml Files', extensions: ['yml', 'yaml'] }],
+    filters: [{ name: 'Yaml Files', extensions: ext }],
     properties: ['openFile']
   })
 }

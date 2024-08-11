@@ -1,11 +1,17 @@
-import { getControledMihomoConfig, getProfileConfig, getProfile } from '../config'
+import {
+  getControledMihomoConfig,
+  getProfileConfig,
+  getProfile,
+  getProfileItem,
+  getOverride
+} from '../config'
 import { mihomoWorkConfigPath } from '../utils/dirs'
 import yaml from 'yaml'
 import fs from 'fs'
 
 export function generateProfile(): void {
   const current = getProfileConfig().current
-  const currentProfile = getProfile(current)
+  const currentProfile = overrideProfile(current, getProfile(current))
   const controledMihomoConfig = getControledMihomoConfig()
   const { tun: profileTun = {} } = currentProfile
   const { tun: controledTun } = controledMihomoConfig
@@ -21,4 +27,26 @@ export function generateProfile(): void {
   profile.dns = dns
   profile.sniffer = sniffer
   fs.writeFileSync(mihomoWorkConfigPath(), yaml.stringify(profile))
+}
+
+function overrideProfile(current: string | undefined, profile: IMihomoConfig): IMihomoConfig {
+  const overrideScriptList = getProfileItem(current).override || []
+  for (const override of overrideScriptList) {
+    const script = getOverride(override)
+    profile = runOverrideScript(profile, script)
+  }
+  return profile
+}
+
+function runOverrideScript(profile: IMihomoConfig, script: string): IMihomoConfig {
+  try {
+    const func = eval(`${script} main`)
+    const newProfile = func(profile)
+    if (typeof newProfile !== 'object') {
+      throw new Error('Override script must return an object')
+    }
+    return newProfile
+  } catch (e) {
+    return profile
+  }
 }

@@ -311,6 +311,19 @@ interface IProfileConfig {
   items: IProfileItem[]
 }
 
+interface IOverrideItem {
+  id: string
+  type: 'remote' | 'local'
+  name: string
+  updated: number
+  url?: string
+  file?: string
+}
+
+interface IOverrideConfig {
+  items: IOverrideItem[]
+}
+
 interface ISubscriptionUserInfo {
   upload: number
   download: number
@@ -327,5 +340,6 @@ interface IProfileItem {
   interval?: number
   home?: string
   updated?: number
+  override?: string[]
   extra?: ISubscriptionUserInfo
 }

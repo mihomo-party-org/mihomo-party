@@ -94,6 +94,10 @@ export const defaultProfileConfig: IProfileConfig = {
   items: []
 }
 
+export const defaultOverrideConfig: IOverrideConfig = {
+  items: []
+}
+
 export const defaultProfile: Partial<IMihomoConfig> = {
   proxies: [],
   'proxy-groups': [],

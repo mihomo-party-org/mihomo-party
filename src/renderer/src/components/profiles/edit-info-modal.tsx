@@ -5,11 +5,14 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Input
+  Input,
+  Select,
+  SelectItem
 } from '@nextui-org/react'
 import React, { useState } from 'react'
 import SettingItem from '../base/base-setting-item'
 import dayjs from 'dayjs'
+import { useOverrideConfig } from '@renderer/hooks/use-override-config'
 interface Props {
   item: IProfileItem
   updateProfileItem: (item: IProfileItem) => Promise<void>
@@ -17,6 +20,8 @@ interface Props {
 }
 const EditInfoModal: React.FC<Props> = (props) => {
   const { item, updateProfileItem, onClose } = props
+  const { overrideConfig } = useOverrideConfig()
+  const { items: overrideItems = [] } = overrideConfig || {}
   const [values, setValues] = useState(item)
 
   const onSave = async (): Promise<void> => {
@@ -77,6 +82,21 @@ const EditInfoModal: React.FC<Props> = (props) => {
               />
             </SettingItem>
           )}
+          <SettingItem title="覆写脚本">
+            <Select
+              className="w-[200px]"
+              size="sm"
+              selectionMode="multiple"
+              selectedKeys={new Set(values.override || [])}
+              onSelectionChange={(v) => {
+                setValues({ ...values, override: Array.from(v).map((i) => i.toString()) })
+              }}
+            >
+              {overrideItems.map((i) => (
+                <SelectItem key={i.id}>{i.name}</SelectItem>
+              ))}
+            </Select>
+          </SettingItem>
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onClose}>
