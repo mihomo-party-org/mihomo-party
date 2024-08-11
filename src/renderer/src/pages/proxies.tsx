@@ -4,6 +4,7 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 import {
   getRuntimeConfig,
   mihomoChangeProxy,
+  mihomoCloseAllConnections,
   mihomoGroupDelay,
   mihomoProxies,
   mihomoProxyDelay
@@ -24,7 +25,11 @@ const Proxies: React.FC = () => {
   const { data: proxies, mutate } = useSWR('mihomoProxies', mihomoProxies)
   const { data: runtime } = useSWR('getRuntimeConfig', getRuntimeConfig)
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { proxyDisplayMode = 'simple', proxyDisplayOrder = 'default' } = appConfig || {}
+  const {
+    proxyDisplayMode = 'simple',
+    proxyDisplayOrder = 'default',
+    autoCloseConnection = true
+  } = appConfig || {}
 
   const groups = useMemo(() => {
     const groups: IMihomoGroup[] = []
@@ -80,6 +85,9 @@ const Proxies: React.FC = () => {
 
   const onChangeProxy = (group: string, proxy: string): void => {
     mihomoChangeProxy(group, proxy).then(() => {
+      if (autoCloseConnection) {
+        mihomoCloseAllConnections()
+      }
       mutate()
     })
   }

@@ -30,6 +30,7 @@ const Settings: React.FC = () => {
     delayTestTimeout,
     autoCheckUpdate,
     userAgent,
+    autoCloseConnection = true,
     appTheme = 'system'
   } = appConfig || {}
   const [url, setUrl] = useState(delayTestUrl)
@@ -169,7 +170,7 @@ const Settings: React.FC = () => {
             }}
           ></Input>
         </SettingItem>
-        <SettingItem title="延迟测试超时时间">
+        <SettingItem title="延迟测试超时时间" divider>
           <Input
             type="number"
             size="sm"
@@ -179,7 +180,16 @@ const Settings: React.FC = () => {
             onValueChange={(v) => {
               patchAppConfig({ delayTestTimeout: parseInt(v) })
             }}
-          ></Input>
+          />
+        </SettingItem>
+        <SettingItem title="自动断开连接">
+          <Switch
+            size="sm"
+            isSelected={autoCloseConnection}
+            onValueChange={(v) => {
+              patchAppConfig({ autoCloseConnection: v })
+            }}
+          />
         </SettingItem>
       </SettingCard>
       <SettingCard>

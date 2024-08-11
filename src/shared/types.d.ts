@@ -197,6 +197,7 @@ interface IAppConfig {
   appTheme: AppTheme
   autoCheckUpdate: boolean
   silentStart: boolean
+  autoCloseConnection: boolean
   sysProxy: ISysProxyConfig
   userAgent?: string
   delayTestUrl?: string

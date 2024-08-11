@@ -1,15 +1,21 @@
 import { Tabs, Tab } from '@nextui-org/react'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
-import { patchMihomoConfig } from '@renderer/utils/ipc'
+import { mihomoCloseAllConnections, patchMihomoConfig } from '@renderer/utils/ipc'
 import { Key } from 'react'
 
 const OutboundModeSwitcher: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
+  const { appConfig } = useAppConfig()
+  const { autoCloseConnection = true } = appConfig || {}
   const { mode } = controledMihomoConfig || {}
 
   const onChangeMode = async (mode: OutboundMode): Promise<void> => {
     await patchControledMihomoConfig({ mode })
     await patchMihomoConfig({ mode })
+    if (autoCloseConnection) {
+      await mihomoCloseAllConnections()
+    }
   }
 
   return (
