@@ -36,7 +36,7 @@ const ProfileCard: React.FC = () => {
       {showRuntimeConfig && <ConfigViewer onClose={() => setShowRuntimeConfig(false)} />}
       <Card
         fullWidth
-        className={`mb-2 ${match ? 'bg-primary' : ''}`}
+        className={`col-span-2 ${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/profiles')}
       >

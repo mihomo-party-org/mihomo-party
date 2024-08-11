@@ -51,11 +51,8 @@ const App: React.FC = () => {
             />
           </div>
         </div>
-
-        <div className="m-2">
+        <div className="grid grid-cols-2 gap-2 mx-2">
           <OutboundModeSwitcher />
-        </div>
-        {/* <div className="grid">
           <SysproxySwitcher />
           <TunSwitcher />
           <ProfileCard />
@@ -66,10 +63,10 @@ const App: React.FC = () => {
           <SniffCard />
           <LogCard />
           <RuleCard />
-          <TestCard />
+          <ResourceCard />
           <OverrideCard />
-        </div> */}
-        <div className="flex justify-between mx-2 mb-2">
+        </div>
+        {/* <div className="flex justify-between mx-2 mb-2">
           <SysproxySwitcher />
           <TunSwitcher />
         </div>
@@ -91,7 +88,7 @@ const App: React.FC = () => {
         <div className="flex justify-between mx-2">
           <ResourceCard />
           <OverrideCard />
-        </div>
+        </div> */}
       </div>
       <Divider orientation="vertical" />
       <div className="main w-[calc(100%-251px)] h-full overflow-y-auto">{page}</div>

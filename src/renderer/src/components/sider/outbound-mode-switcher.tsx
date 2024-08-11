@@ -22,6 +22,7 @@ const OutboundModeSwitcher: React.FC = () => {
     <Tabs
       fullWidth
       color="primary"
+      className="col-span-2"
       selectedKey={mode}
       onSelectionChange={(key: Key) => onChangeMode(key as OutboundMode)}
     >

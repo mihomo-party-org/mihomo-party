@@ -12,7 +12,7 @@ const OverrideCard: React.FC = () => {
 
   return (
     <Card
-      className={`w-[50%] ml-1 mb-2 ${match ? 'bg-primary' : ''}`}
+      className={`col-span-1 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/override')}
     >

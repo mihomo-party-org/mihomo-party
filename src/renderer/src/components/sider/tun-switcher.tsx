@@ -52,7 +52,7 @@ const TunSwitcher: React.FC = () => {
         />
       )}
       <Card
-        className={`w-[50%] ml-1 ${match ? 'bg-primary' : ''}`}
+        className={`col-span-1 ${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/tun')}
       >

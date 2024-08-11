@@ -35,7 +35,7 @@ const MihomoCoreCard: React.FC = () => {
       fullWidth
       isPressable
       onPress={() => navigate('/mihomo')}
-      className={`mb-2 ${match ? 'bg-primary' : ''}`}
+      className={`col-span-2 ${match ? 'bg-primary' : ''}`}
     >
       <CardBody>
         <div className="flex justify-between h-[32px]">

@@ -10,7 +10,7 @@ const ResourceCard: React.FC = () => {
 
   return (
     <Card
-      className={`w-[50%] mr-1 mb-2 ${match ? 'bg-primary' : ''}`}
+      className={`col-span-1 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/resources')}
     >

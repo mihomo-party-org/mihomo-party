@@ -25,7 +25,7 @@ const SysproxySwitcher: React.FC = () => {
 
   return (
     <Card
-      className={`w-[50%] mr-1 ${match ? 'bg-primary' : ''}`}
+      className={`col-span-1 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/sysproxy')}
     >

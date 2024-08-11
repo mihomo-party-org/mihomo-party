@@ -18,7 +18,7 @@ const ProxyCard: React.FC = () => {
   return (
     <Card
       fullWidth
-      className={`mb-2 ${match ? 'bg-primary' : ''}`}
+      className={`col-span-2 ${match ? 'bg-primary' : ''}`}
       isPressable
       onPress={() => navigate('/proxies')}
     >
