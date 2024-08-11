@@ -14,6 +14,7 @@
   </a>
 </p>
 
-<div align="center">
-  <img src="images/preview.png" alt="Mihomo Party" width="80%">
-</div>
+|      | 深色                        | 灰色                        | 浅色                         |
+| ---- | --------------------------- | --------------------------- | ---------------------------- |
+| 蓝色 | ![](./images/dark-blue.png) | ![](./images/gray-blue.png) | ![](./images/light-blue.png) |
+| 粉色 | ![](./images/dark-pink.png) | ![](./images/gray-pink.png) | ![](./images/light-pink.png) |
