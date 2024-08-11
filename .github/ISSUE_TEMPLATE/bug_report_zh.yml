@@ -1,6 +1,6 @@
 name: 错误反馈
-description: "提交 mihomo-party 漏洞"
-title: "[Bug] "
+description: '提交 mihomo-party 漏洞'
+title: '[Bug] '
 body:
   - type: checkboxes
     id: ensure
@@ -8,7 +8,7 @@ body:
       label: Verify steps
       description: 在提交之前，请勾选以下所有选项以证明您已经阅读并理解了以下要求，否则该 issue 将被关闭。
       options:
-        - label: 我未在[Issue Tracker](……/)中寻找过我要提出的问题
+        - label: 我未在[Issue Tracker](./?q=is%3Aissue)中寻找过我要提出的问题
         - label: 我已在标题简短的描述了我所遇到的问题
         - label: 这是GUI程序的问题,而不是内核程序的问题
         - label: 我已经使用最新的测试版本测试过，问题依旧存在
@@ -22,13 +22,15 @@ body:
         - MacOS
         - Windows
         - Linux
+    validations:
+      required: true
   - type: input
     attributes:
       label: 系统版本
       description: 请提供出现问题的操作系统版本
     validations:
       required: true
-  - type: textarea
+  - type: input
     attributes:
       label: 发生问题 mihomo-party 版本
     validations:
