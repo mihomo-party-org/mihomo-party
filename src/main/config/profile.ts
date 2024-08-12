@@ -119,10 +119,6 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
   switch (newItem.type) {
     case 'remote': {
       if (!item.url) {
-        dialog.showErrorBox(
-          'URL is required for remote profile',
-          'URL is required for remote profile'
-        )
         throw new Error('URL is required for remote profile')
       }
       try {
@@ -152,7 +148,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
         if (headers['subscription-userinfo']) {
           newItem.extra = parseSubinfo(headers['subscription-userinfo'])
         }
-        setProfileStr(id, data)
+        await setProfileStr(id, data)
       } catch (e) {
         dialog.showErrorBox('Failed to fetch remote profile', `${e}\nurl: ${item.url}`)
         throw new Error(`Failed to fetch remote profile ${e}`)
@@ -161,14 +157,10 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
     }
     case 'local': {
       if (!item.file) {
-        dialog.showErrorBox(
-          'File is required for local profile',
-          'File is required for local profile'
-        )
         throw new Error('File is required for local profile')
       }
       const data = item.file
-      setProfileStr(id, data)
+      await setProfileStr(id, data)
       break
     }
   }

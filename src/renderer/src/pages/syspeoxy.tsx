@@ -90,9 +90,8 @@ const Sysproxy: React.FC = () => {
     try {
       await triggerSysProxy(true)
       await patchAppConfig({ sysProxy: { enable: true } })
-    } catch (e) {
+    } catch {
       await patchAppConfig({ sysProxy: { enable: false } })
-      console.error(e)
     }
   }
 

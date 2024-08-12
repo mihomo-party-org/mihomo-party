@@ -59,9 +59,9 @@ if (!gotTheLock) {
     // Set app user model id for windows
     electronApp.setAppUserModelId('party.mihomo.app')
     startCore().then(() => {
-      setTimeout(() => {
-        initProfileUpdater()
-      }, 30000)
+      setTimeout(async () => {
+        await initProfileUpdater()
+      }, 60000)
     })
     // Default open or close DevTools by F12 in development
     // and ignore CommandOrControl + R in production.

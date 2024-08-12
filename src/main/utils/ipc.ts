@@ -116,7 +116,7 @@ export function registerIpcMainHandlers(): void {
 function getFilePath(ext: string[]): string[] | undefined {
   return dialog.showOpenDialogSync({
     title: '选择订阅文件',
-    filters: [{ name: 'Yaml Files', extensions: ext }],
+    filters: [{ name: `${ext} file`, extensions: ext }],
     properties: ['openFile']
   })
 }

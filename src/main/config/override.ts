@@ -56,10 +56,6 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
   switch (newItem.type) {
     case 'remote': {
       if (!item.url) {
-        dialog.showErrorBox(
-          'URL is required for remote script',
-          'URL is required for remote script'
-        )
         throw new Error('URL is required for remote script')
       }
       try {
@@ -81,10 +77,6 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
     }
     case 'local': {
       if (!item.file) {
-        dialog.showErrorBox(
-          'File is required for local script',
-          'File is required for local script'
-        )
         throw new Error('File is required for local script')
       }
       const data = item.file

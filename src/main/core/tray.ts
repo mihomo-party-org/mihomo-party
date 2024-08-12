@@ -74,7 +74,6 @@ const buildContextMenu = (): Menu => {
           window?.webContents.send('appConfigUpdated')
         } catch (e) {
           setAppConfig({ sysProxy: { enable: !enable } })
-          console.error(e)
         } finally {
           updateTrayMenu()
         }

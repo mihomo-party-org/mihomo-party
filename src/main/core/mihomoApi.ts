@@ -2,7 +2,6 @@ import axios, { AxiosInstance } from 'axios'
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import WebSocket from 'ws'
 import { window } from '..'
-import { dialog } from 'electron'
 
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
@@ -189,8 +188,6 @@ const mihomoTraffic = (): void => {
     if (trafficRetry) {
       trafficRetry--
       mihomoTraffic()
-    } else {
-      dialog.showErrorBox('External controller traffic error', 'Retry limit reached')
     }
   }
 
@@ -234,8 +231,6 @@ const mihomoMemory = (): void => {
     if (memoryRetry) {
       memoryRetry--
       mihomoMemory()
-    } else {
-      dialog.showErrorBox('External controller memory error', 'Retry limit reached')
     }
   }
 
@@ -281,8 +276,6 @@ const mihomoLogs = (): void => {
     if (logsRetry) {
       logsRetry--
       mihomoLogs()
-    } else {
-      dialog.showErrorBox('External controller logs error', 'Retry limit reached')
     }
   }
 
@@ -328,8 +321,6 @@ const mihomoConnections = (): void => {
     if (connectionsRetry) {
       connectionsRetry--
       mihomoConnections()
-    } else {
-      dialog.showErrorBox('External controller connections error', 'Retry limit reached')
     }
   }
 
