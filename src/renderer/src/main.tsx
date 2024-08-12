@@ -6,6 +6,7 @@ import { NextUIProvider } from '@nextui-org/react'
 import { init } from '@renderer/utils/init'
 import '@renderer/assets/main.css'
 import App from '@renderer/App'
+import BaseErrorBoundary from './components/base/base-error-boundary'
 
 init().then(() => {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -17,9 +18,11 @@ init().then(() => {
           enableSystem
           defaultTheme="dark"
         >
-          <HashRouter>
-            <App />
-          </HashRouter>
+          <BaseErrorBoundary>
+            <HashRouter>
+              <App />
+            </HashRouter>
+          </BaseErrorBoundary>
         </NextThemesProvider>
       </NextUIProvider>
     </React.StrictMode>
