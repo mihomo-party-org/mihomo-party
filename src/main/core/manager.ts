@@ -53,15 +53,6 @@ export async function startCore(): Promise<void> {
         }
       )
     })
-    child.on('error', (err) => {
-      if (retry) {
-        retry--
-        startCore()
-      } else {
-        dialog.showErrorBox('External controller listen error', err.toString())
-        reject(err)
-      }
-    })
     child.on('close', async (code, signal) => {
       fs.writeFileSync(logPath(), `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`, {
         flag: 'a'
@@ -69,7 +60,13 @@ export async function startCore(): Promise<void> {
       fs.writeFileSync(logPath(), `[Manager]: Restart Core\n`, {
         flag: 'a'
       })
-      await startCore()
+      if (retry) {
+        retry--
+        await restartCore()
+      } else {
+        dialog.showErrorBox('Mihomo Core Closed', `Core closed, code: ${code}, signal: ${signal}`)
+        stopCore()
+      }
     })
   })
 }
@@ -77,9 +74,7 @@ export async function startCore(): Promise<void> {
 export function stopCore(): void {
   if (child) {
     child.removeAllListeners()
-    if (!child.kill('SIGINT')) {
-      stopCore()
-    }
+    child.kill('SIGINT')
   }
 }
 

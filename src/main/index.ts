@@ -139,6 +139,7 @@ function createWindow(): void {
     stopMihomoMemory()
     event.preventDefault()
     window?.hide()
+    window?.webContents.reload()
   })
 
   window.webContents.setWindowOpenHandler((details) => {
