@@ -59,6 +59,6 @@ linux:
   category: Utility
   artifactName: ${name}-linux-${version}-${arch}.${ext}
 deb:
-  afterInstall: "./resources/linux/deb/postinst"
+  afterInstall: "build/linux/deb/postinst"
 npmRebuild: true
 publish: []
