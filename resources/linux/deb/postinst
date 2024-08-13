@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Link the binary into global /usr/bin
+ln -sf '/opt/${productFilename}/${maintainer}' '/usr/bin/${maintainer}'
+
+# SUID chrome-sandbox for Electron 5+
+chmod 4755 '/opt/${productFilename}/chrome-sandbox' || true
+
+update-mime-database /usr/share/mime || true
+update-desktop-database /usr/share/applications || true
