@@ -1,7 +1,17 @@
 type OutboundMode = 'rule' | 'global' | 'direct'
 type LogLevel = 'info' | 'debug' | 'warning' | 'error' | 'silent'
 type SysProxyMode = 'auto' | 'manual'
-type AppTheme = 'system' | 'light' | 'dark' | 'gray' | 'light-pink' | 'dark-pink' | 'gray-pink'
+type AppTheme =
+  | 'system'
+  | 'light'
+  | 'dark'
+  | 'gray'
+  | 'light-pink'
+  | 'dark-pink'
+  | 'gray-pink'
+  | 'light-green'
+  | 'dark-green'
+  | 'gray-green'
 type MihomoGroupType = 'Selector' | 'URLTest' | 'LoadBalance' | 'Relay'
 type MihomoProxyType =
   | 'Direct'

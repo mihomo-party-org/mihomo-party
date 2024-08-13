@@ -146,6 +146,7 @@ const Settings: React.FC = () => {
             >
               <Tab key="blue" title="蓝色" />
               <Tab key="pink" title="粉色" />
+              <Tab key="green" title="绿色" />
             </Tabs>
           </SettingItem>
         )}

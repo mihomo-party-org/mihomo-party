@@ -14,7 +14,8 @@
   </a>
 </p>
 
-|      | 深色                        | 灰色                        | 浅色                         |
-| ---- | --------------------------- | --------------------------- | ---------------------------- |
-| 蓝色 | ![](./images/dark-blue.png) | ![](./images/gray-blue.png) | ![](./images/light-blue.png) |
-| 粉色 | ![](./images/dark-pink.png) | ![](./images/gray-pink.png) | ![](./images/light-pink.png) |
+|      | 深色                         | 灰色                         | 浅色                          |
+| ---- | ---------------------------- | ---------------------------- | ----------------------------- |
+| 蓝色 | ![](./images/dark-blue.png)  | ![](./images/gray-blue.png)  | ![](./images/light-blue.png)  |
+| 粉色 | ![](./images/dark-pink.png)  | ![](./images/gray-pink.png)  | ![](./images/light-pink.png)  |
+| 绿色 | ![](./images/dark-green.png) | ![](./images/gray-green.png) | ![](./images/light-green.png) |
