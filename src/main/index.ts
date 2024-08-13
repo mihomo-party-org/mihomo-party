@@ -1,6 +1,6 @@
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcMainHandlers } from './utils/ipc'
-import { app, shell, BrowserWindow, Menu, dialog } from 'electron'
+import { app, shell, BrowserWindow, Menu, dialog, Notification } from 'electron'
 import { stopCore } from './core/manager'
 import { triggerSysProxy } from './resolve/sysproxy'
 import icon from '../../resources/icon.png?asset'
@@ -83,23 +83,26 @@ app.whenReady().then(async () => {
 })
 
 async function handleDeepLink(url: string): Promise<void> {
-  if (url.startsWith('clash://install-config')) {
-    url = url.replace('clash://install-config/?url=', '').replace('clash://install-config?url=', '')
+  try {
+    if (url.startsWith('clash://install-config')) {
+      url = url
+        .replace('clash://install-config/?url=', '')
+        .replace('clash://install-config?url=', '')
+    }
+    if (url.startsWith('mihomo://install-config')) {
+      url = url
+        .replace('mihomo://install-config/?url=', '')
+        .replace('mihomo://install-config?url=', '')
+    }
+    url = url.split('&')[0]
     await addProfileItem({
       type: 'remote',
       name: 'Remote File',
-      url
+      url: decodeURIComponent(url)
     })
-  }
-  if (url.startsWith('mihomo://install-config')) {
-    url = url
-      .replace('mihomo://install-config/?url=', '')
-      .replace('mihomo://install-config?url=', '')
-    await addProfileItem({
-      type: 'remote',
-      name: 'Remote File',
-      url
-    })
+    new Notification({ title: '订阅导入成功' }).show()
+  } catch (e) {
+    dialog.showErrorBox('订阅导入失败', `${url}\n${e}`)
   }
 }
 
