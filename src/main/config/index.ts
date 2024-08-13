@@ -1,5 +1,5 @@
-export { getAppConfig, setAppConfig } from './app'
-export { getControledMihomoConfig, setControledMihomoConfig } from './controledMihomo'
+export { getAppConfig, patchAppConfig } from './app'
+export { getControledMihomoConfig, patchControledMihomoConfig } from './controledMihomo'
 export {
   getProfile,
   getCurrentProfileItem,

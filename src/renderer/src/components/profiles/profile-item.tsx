@@ -179,9 +179,13 @@ const ProfileItem: React.FC<Props> = (props) => {
                   disabled={updating}
                   onPress={() => {
                     setUpdating(true)
-                    addProfileItem(info).finally(() => {
-                      setUpdating(false)
-                    })
+                    addProfileItem(info)
+                      .catch((e) => {
+                        alert(e)
+                      })
+                      .finally(() => {
+                        setUpdating(false)
+                      })
                   }}
                 >
                   <IoMdRefresh

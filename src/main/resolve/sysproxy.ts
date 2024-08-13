@@ -42,19 +42,19 @@ if (process.platform === 'win32')
     '<local>'
   ]
 
-export function triggerSysProxy(enable: boolean): void {
+export async function triggerSysProxy(enable: boolean): Promise<void> {
   if (enable) {
     disableSysProxy()
-    enableSysProxy()
+    await enableSysProxy()
   } else {
     disableSysProxy()
   }
 }
 
-export function enableSysProxy(): void {
-  const { sysProxy } = getAppConfig()
+export async function enableSysProxy(): Promise<void> {
+  const { sysProxy } = await getAppConfig()
   const { mode, host, bypass = defaultBypass } = sysProxy
-  const { 'mixed-port': port = 7890 } = getControledMihomoConfig()
+  const { 'mixed-port': port = 7890 } = await getControledMihomoConfig()
 
   switch (mode || 'manual') {
     case 'auto': {

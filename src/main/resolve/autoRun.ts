@@ -1,7 +1,10 @@
 import { exec } from 'child_process'
-import { exePath } from '../utils/dirs'
+import { dataDir, exePath, homeDir } from '../utils/dirs'
+import { mkdir, readFile, rm, writeFile } from 'fs/promises'
+import { existsSync } from 'fs'
 import { app } from 'electron'
-import fs from 'fs'
+import { promisify } from 'util'
+import path from 'path'
 
 const appName = 'mihomo-party'
 
@@ -51,12 +54,13 @@ const taskXml = `
 
 export async function checkAutoRun(): Promise<boolean> {
   if (process.platform === 'win32') {
-    const { stdout } = (await new Promise((resolve) => {
-      exec(`schtasks /query /tn "${appName}"`, (_err, stdout, stderr) => {
-        resolve({ stdout, stderr })
-      })
-    })) as { stdout: string; stderr: string }
-    return stdout.includes(appName)
+    const execPromise = promisify(exec)
+    try {
+      const { stdout } = await execPromise(`schtasks /query /tn "${appName}"`)
+      return stdout.includes(appName)
+    } catch (e) {
+      return false
+    }
   }
 
   if (process.platform === 'darwin') {
@@ -64,16 +68,17 @@ export async function checkAutoRun(): Promise<boolean> {
   }
 
   if (process.platform === 'linux') {
-    return fs.existsSync(`${app.getPath('home')}/.config/autostart/${appName}.desktop`)
+    return existsSync(path.join(homeDir, '.config', 'autostart', `${appName}.desktop`))
   }
   return false
 }
 
-export function enableAutoRun(): void {
+export async function enableAutoRun(): Promise<void> {
   if (process.platform === 'win32') {
-    const taskFilePath = `${app.getPath('userData')}\\${appName}.xml`
-    fs.writeFileSync(taskFilePath, taskXml)
-    exec(`schtasks /create /tn "${appName}" /xml "${taskFilePath}" /f`)
+    const execPromise = promisify(exec)
+    const taskFilePath = path.join(dataDir, `${appName}.xml`)
+    await writeFile(taskFilePath, taskXml)
+    await execPromise(`schtasks /create /tn "${appName}" /xml "${taskFilePath}" /f`)
   }
   if (process.platform === 'darwin') {
     app.setLoginItemSettings({
@@ -93,22 +98,23 @@ StartupWMClass=mihomo-party
 Comment=Mihomo Party
 Categories=Utility;
 `
-    try {
-      if (fs.existsSync(`/usr/share/applications/${appName}.desktop`)) {
-        desktop = fs.readFileSync(`/usr/share/applications/${appName}.desktop`, 'utf8')
-      }
-    } catch (e) {
-      console.error(e)
+
+    if (existsSync(`/usr/share/applications/${appName}.desktop`)) {
+      desktop = await readFile(`/usr/share/applications/${appName}.desktop`, 'utf8')
     }
-    fs.mkdirSync(`${app.getPath('home')}/.config/autostart`, { recursive: true })
-    const desktopFilePath = `${app.getPath('home')}/.config/autostart/${appName}.desktop`
-    fs.writeFileSync(desktopFilePath, desktop)
+    const autostartDir = path.join(homeDir, '.config', 'autostart')
+    if (!existsSync(autostartDir)) {
+      await mkdir(autostartDir, { recursive: true })
+    }
+    const desktopFilePath = path.join(autostartDir, `${appName}.desktop`)
+    await writeFile(desktopFilePath, desktop)
   }
 }
 
-export function disableAutoRun(): void {
+export async function disableAutoRun(): Promise<void> {
   if (process.platform === 'win32') {
-    exec(`schtasks /delete /tn "${appName}" /f`)
+    const execPromise = promisify(exec)
+    await execPromise(`schtasks /delete /tn "${appName}" /f`)
   }
   if (process.platform === 'darwin') {
     app.setLoginItemSettings({
@@ -116,11 +122,7 @@ export function disableAutoRun(): void {
     })
   }
   if (process.platform === 'linux') {
-    const desktopFilePath = `${app.getPath('home')}/.config/autostart/${appName}.desktop`
-    try {
-      fs.rmSync(desktopFilePath)
-    } catch (e) {
-      console.error(e)
-    }
+    const desktopFilePath = path.join(homeDir, '.config', 'autostart', `${appName}.desktop`)
+    await rm(desktopFilePath)
   }
 }

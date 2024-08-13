@@ -34,11 +34,11 @@ function findAvailablePort(startPort: number): Promise<number> {
 export async function startPacServer(): Promise<void> {
   pacPort = await findAvailablePort(10000)
   const server = http
-    .createServer((_req, res) => {
+    .createServer(async (_req, res) => {
       const {
         sysProxy: { pacScript }
-      } = getAppConfig()
-      const { 'mixed-port': port = 7890 } = getControledMihomoConfig()
+      } = await getAppConfig()
+      const { 'mixed-port': port = 7890 } = await getControledMihomoConfig()
       let script = pacScript || defaultPacScript
       script = script.replaceAll('%mixed-port%', port.toString())
       res.writeHead(200, { 'Content-Type': 'application/x-ns-proxy-autoconfig' })

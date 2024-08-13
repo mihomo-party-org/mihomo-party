@@ -1,21 +1,22 @@
 import { controledMihomoConfigPath } from '../utils/dirs'
+import { readFile, writeFile } from 'fs/promises'
 import yaml from 'yaml'
-import fs from 'fs'
 import { getAxios, startMihomoMemory, startMihomoTraffic } from '../core/mihomoApi'
 import { generateProfile } from '../resolve/factory'
 import { getAppConfig } from './app'
 
-export let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
+let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
 
-export function getControledMihomoConfig(force = false): Partial<IMihomoConfig> {
+export async function getControledMihomoConfig(force = false): Promise<Partial<IMihomoConfig>> {
   if (force || !controledMihomoConfig) {
-    controledMihomoConfig = yaml.parse(fs.readFileSync(controledMihomoConfigPath(), 'utf-8'))
+    const data = await readFile(controledMihomoConfigPath(), 'utf-8')
+    controledMihomoConfig = yaml.parse(data)
   }
   return controledMihomoConfig
 }
 
-export function setControledMihomoConfig(patch: Partial<IMihomoConfig>): void {
-  const { useNameserverPolicy } = getAppConfig()
+export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
+  const { useNameserverPolicy } = await getAppConfig()
   if (patch.tun) {
     const oldTun = controledMihomoConfig.tun || {}
     const newTun = Object.assign(oldTun, patch.tun)
@@ -35,11 +36,12 @@ export function setControledMihomoConfig(patch: Partial<IMihomoConfig>): void {
     patch.sniffer = newSniffer
   }
   controledMihomoConfig = Object.assign(controledMihomoConfig, patch)
+
   if (patch['external-controller'] || patch.secret) {
-    getAxios(true)
-    startMihomoMemory()
-    startMihomoTraffic()
+    await getAxios(true)
+    await startMihomoMemory()
+    await startMihomoTraffic()
   }
-  generateProfile()
-  fs.writeFileSync(controledMihomoConfigPath(), yaml.stringify(controledMihomoConfig))
+  await generateProfile()
+  await writeFile(controledMihomoConfigPath(), yaml.stringify(controledMihomoConfig), 'utf-8')
 }

@@ -22,9 +22,9 @@ import {
 import { checkAutoRun, disableAutoRun, enableAutoRun } from '../resolve/autoRun'
 import {
   getAppConfig,
-  setAppConfig,
+  patchAppConfig,
   getControledMihomoConfig,
-  setControledMihomoConfig,
+  patchControledMihomoConfig,
   getProfileConfig,
   getCurrentProfileItem,
   getProfileItem,
@@ -48,68 +48,95 @@ import { isEncryptionAvailable, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
 import { checkUpdate } from '../resolve/autoUpdater'
 import { exePath, mihomoCorePath, mihomoWorkConfigPath, resourcesDir } from './dirs'
-import { execFile, execSync } from 'child_process'
+import { exec, execFile } from 'child_process'
 import yaml from 'yaml'
-import fs from 'fs'
 import path from 'path'
+import { promisify } from 'util'
+import { readFile } from 'fs/promises'
 
+function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): (...args: any[]) => Promise<T | { invokeError: unknown }> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return async (...args: any[]) => {
+    try {
+      return await fn(...args)
+    } catch (e) {
+      return { invokeError: `${e}` }
+    }
+  }
+}
 export function registerIpcMainHandlers(): void {
-  ipcMain.handle('mihomoVersion', mihomoVersion)
-  ipcMain.handle('mihomoCloseConnection', (_e, id) => mihomoCloseConnection(id))
-  ipcMain.handle('mihomoCloseAllConnections', mihomoCloseAllConnections)
-  ipcMain.handle('mihomoRules', mihomoRules)
-  ipcMain.handle('mihomoProxies', mihomoProxies)
-  ipcMain.handle('mihomoProxyProviders', () => mihomoProxyProviders())
-  ipcMain.handle('mihomoUpdateProxyProviders', (_e, name) => mihomoUpdateProxyProviders(name))
-  ipcMain.handle('mihomoRuleProviders', () => mihomoRuleProviders())
-  ipcMain.handle('mihomoUpdateRuleProviders', (_e, name) => mihomoUpdateRuleProviders(name))
-  ipcMain.handle('mihomoChangeProxy', (_e, group, proxy) => mihomoChangeProxy(group, proxy))
-  ipcMain.handle('mihomoUpgradeGeo', mihomoUpgradeGeo)
-  ipcMain.handle('mihomoProxyDelay', (_e, proxy, url) => mihomoProxyDelay(proxy, url))
-  ipcMain.handle('mihomoGroupDelay', (_e, group, url) => mihomoGroupDelay(group, url))
-  ipcMain.handle('startMihomoLogs', startMihomoLogs)
+  ipcMain.handle('mihomoVersion', ipcErrorWrapper(mihomoVersion))
+  ipcMain.handle('mihomoCloseConnection', (_e, id) => ipcErrorWrapper(mihomoCloseConnection)(id))
+  ipcMain.handle('mihomoCloseAllConnections', ipcErrorWrapper(mihomoCloseAllConnections))
+  ipcMain.handle('mihomoRules', ipcErrorWrapper(mihomoRules))
+  ipcMain.handle('mihomoProxies', ipcErrorWrapper(mihomoProxies))
+  ipcMain.handle('mihomoProxyProviders', ipcErrorWrapper(mihomoProxyProviders))
+  ipcMain.handle('mihomoUpdateProxyProviders', (_e, name) =>
+    ipcErrorWrapper(mihomoUpdateProxyProviders)(name)
+  )
+  ipcMain.handle('mihomoRuleProviders', ipcErrorWrapper(mihomoRuleProviders))
+  ipcMain.handle('mihomoUpdateRuleProviders', (_e, name) =>
+    ipcErrorWrapper(mihomoUpdateRuleProviders)(name)
+  )
+  ipcMain.handle('mihomoChangeProxy', (_e, group, proxy) =>
+    ipcErrorWrapper(mihomoChangeProxy)(group, proxy)
+  )
+  ipcMain.handle('mihomoUpgradeGeo', ipcErrorWrapper(mihomoUpgradeGeo))
+  ipcMain.handle('mihomoProxyDelay', (_e, proxy, url) =>
+    ipcErrorWrapper(mihomoProxyDelay)(proxy, url)
+  )
+  ipcMain.handle('mihomoGroupDelay', (_e, group, url) =>
+    ipcErrorWrapper(mihomoGroupDelay)(group, url)
+  )
+  ipcMain.handle('startMihomoLogs', ipcErrorWrapper(startMihomoLogs))
   ipcMain.handle('stopMihomoLogs', stopMihomoLogs)
-  ipcMain.handle('startMihomoConnections', () => startMihomoConnections())
-  ipcMain.handle('stopMihomoConnections', () => stopMihomoConnections())
-  ipcMain.handle('patchMihomoConfig', (_e, patch) => patchMihomoConfig(patch))
-  ipcMain.handle('checkAutoRun', checkAutoRun)
-  ipcMain.handle('enableAutoRun', enableAutoRun)
-  ipcMain.handle('disableAutoRun', disableAutoRun)
-  ipcMain.handle('getAppConfig', (_e, force) => getAppConfig(force))
-  ipcMain.handle('setAppConfig', (_e, config) => setAppConfig(config))
-  ipcMain.handle('getControledMihomoConfig', (_e, force) => getControledMihomoConfig(force))
-  ipcMain.handle('setControledMihomoConfig', (_e, config) => setControledMihomoConfig(config))
-  ipcMain.handle('getProfileConfig', (_e, force) => getProfileConfig(force))
-  ipcMain.handle('setProfileConfig', (_e, config) => setProfileConfig(config))
-  ipcMain.handle('getCurrentProfileItem', getCurrentProfileItem)
-  ipcMain.handle('getProfileItem', (_e, id) => getProfileItem(id))
-  ipcMain.handle('getProfileStr', (_e, id) => getProfileStr(id))
-  ipcMain.handle('setProfileStr', (_e, id, str) => setProfileStr(id, str))
-  ipcMain.handle('updateProfileItem', (_e, item) => updateProfileItem(item))
-  ipcMain.handle('changeCurrentProfile', (_e, id) => changeCurrentProfile(id))
-  ipcMain.handle('addProfileItem', (_e, item) => addProfileItem(item))
-  ipcMain.handle('removeProfileItem', (_e, id) => removeProfileItem(id))
-  ipcMain.handle('getOverrideConfig', (_e, force) => getOverrideConfig(force))
-  ipcMain.handle('setOverrideConfig', (_e, config) => setOverrideConfig(config))
-  ipcMain.handle('getOverrideItem', (_e, id) => getOverrideItem(id))
-  ipcMain.handle('addOverrideItem', (_e, item) => addOverrideItem(item))
-  ipcMain.handle('removeOverrideItem', (_e, id) => removeOverrideItem(id))
-  ipcMain.handle('updateOverrideItem', (_e, item) => updateOverrideItem(item))
-  ipcMain.handle('getOverride', (_e, id) => getOverride(id))
-  ipcMain.handle('setOverride', (_e, id, str) => setOverride(id, str))
-  ipcMain.handle('restartCore', restartCore)
-  ipcMain.handle('triggerSysProxy', (_e, enable) => triggerSysProxy(enable))
+  ipcMain.handle('startMihomoConnections', ipcErrorWrapper(startMihomoConnections))
+  ipcMain.handle('stopMihomoConnections', stopMihomoConnections)
+  ipcMain.handle('patchMihomoConfig', (_e, patch) => ipcErrorWrapper(patchMihomoConfig)(patch))
+  ipcMain.handle('checkAutoRun', ipcErrorWrapper(checkAutoRun))
+  ipcMain.handle('enableAutoRun', ipcErrorWrapper(enableAutoRun))
+  ipcMain.handle('disableAutoRun', ipcErrorWrapper(disableAutoRun))
+  ipcMain.handle('getAppConfig', (_e, force) => ipcErrorWrapper(getAppConfig)(force))
+  ipcMain.handle('patchAppConfig', (_e, config) => ipcErrorWrapper(patchAppConfig)(config))
+  ipcMain.handle('getControledMihomoConfig', (_e, force) =>
+    ipcErrorWrapper(getControledMihomoConfig)(force)
+  )
+  ipcMain.handle('patchControledMihomoConfig', (_e, config) =>
+    ipcErrorWrapper(patchControledMihomoConfig)(config)
+  )
+  ipcMain.handle('getProfileConfig', (_e, force) => ipcErrorWrapper(getProfileConfig)(force))
+  ipcMain.handle('setProfileConfig', (_e, config) => ipcErrorWrapper(setProfileConfig)(config))
+  ipcMain.handle('getCurrentProfileItem', ipcErrorWrapper(getCurrentProfileItem))
+  ipcMain.handle('getProfileItem', (_e, id) => ipcErrorWrapper(getProfileItem)(id))
+  ipcMain.handle('getProfileStr', (_e, id) => ipcErrorWrapper(getProfileStr)(id))
+  ipcMain.handle('setProfileStr', (_e, id, str) => ipcErrorWrapper(setProfileStr)(id, str))
+  ipcMain.handle('updateProfileItem', (_e, item) => ipcErrorWrapper(updateProfileItem)(item))
+  ipcMain.handle('changeCurrentProfile', (_e, id) => ipcErrorWrapper(changeCurrentProfile)(id))
+  ipcMain.handle('addProfileItem', (_e, item) => ipcErrorWrapper(addProfileItem)(item))
+  ipcMain.handle('removeProfileItem', (_e, id) => ipcErrorWrapper(removeProfileItem)(id))
+  ipcMain.handle('getOverrideConfig', (_e, force) => ipcErrorWrapper(getOverrideConfig)(force))
+  ipcMain.handle('setOverrideConfig', (_e, config) => ipcErrorWrapper(setOverrideConfig)(config))
+  ipcMain.handle('getOverrideItem', (_e, id) => ipcErrorWrapper(getOverrideItem)(id))
+  ipcMain.handle('addOverrideItem', (_e, item) => ipcErrorWrapper(addOverrideItem)(item))
+  ipcMain.handle('removeOverrideItem', (_e, id) => ipcErrorWrapper(removeOverrideItem)(id))
+  ipcMain.handle('updateOverrideItem', (_e, item) => ipcErrorWrapper(updateOverrideItem)(item))
+  ipcMain.handle('getOverride', (_e, id) => ipcErrorWrapper(getOverride)(id))
+  ipcMain.handle('setOverride', (_e, id, str) => ipcErrorWrapper(setOverride)(id, str))
+  ipcMain.handle('restartCore', ipcErrorWrapper(restartCore))
+  ipcMain.handle('triggerSysProxy', (_e, enable) => ipcErrorWrapper(triggerSysProxy)(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
   ipcMain.handle('getFilePath', (_e, ext) => getFilePath(ext))
-  ipcMain.handle('readTextFile', (_e, filePath) => readTextFile(filePath))
-  ipcMain.handle('getRuntimeConfigStr', getRuntimeConfigStr)
-  ipcMain.handle('getRuntimeConfig', getRuntimeConfig)
-  ipcMain.handle('checkUpdate', () => checkUpdate())
+  ipcMain.handle('readTextFile', (_e, filePath) => ipcErrorWrapper(readTextFile)(filePath))
+  ipcMain.handle('getRuntimeConfigStr', ipcErrorWrapper(getRuntimeConfigStr))
+  ipcMain.handle('getRuntimeConfig', ipcErrorWrapper(getRuntimeConfig))
+  ipcMain.handle('checkUpdate', ipcErrorWrapper(checkUpdate))
   ipcMain.handle('getVersion', () => app.getVersion())
   ipcMain.handle('platform', () => process.platform)
-  ipcMain.handle('openUWPTool', openUWPTool)
-  ipcMain.handle('setupFirewall', setupFirewall)
+  ipcMain.handle('openUWPTool', ipcErrorWrapper(openUWPTool))
+  ipcMain.handle('setupFirewall', ipcErrorWrapper(setupFirewall))
   ipcMain.handle('quitApp', () => app.quit())
 }
 
@@ -121,51 +148,39 @@ function getFilePath(ext: string[]): string[] | undefined {
   })
 }
 
-function readTextFile(filePath: string): string {
-  return fs.readFileSync(filePath, 'utf8')
+async function readTextFile(filePath: string): Promise<string> {
+  return await readFile(filePath, 'utf8')
 }
 
-function getRuntimeConfigStr(): string {
-  return fs.readFileSync(mihomoWorkConfigPath(), 'utf8')
+async function getRuntimeConfigStr(): Promise<string> {
+  return readFile(mihomoWorkConfigPath(), 'utf8')
 }
 
-function getRuntimeConfig(): IMihomoConfig {
-  return yaml.parse(getRuntimeConfigStr())
+async function getRuntimeConfig(): Promise<IMihomoConfig> {
+  return yaml.parse(await getRuntimeConfigStr())
 }
 
-function openUWPTool(): void {
+async function openUWPTool(): Promise<void> {
+  const execFilePromise = promisify(execFile)
   const uwpToolPath = path.join(resourcesDir(), 'files', 'enableLoopback.exe')
-  const child = execFile(uwpToolPath)
-  child.unref()
+  await execFilePromise(uwpToolPath)
 }
 
 async function setupFirewall(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const removeCommand = `
+  const execPromise = promisify(exec)
+  const removeCommand = `
   Remove-NetFirewallRule -DisplayName "mihomo" -ErrorAction SilentlyContinue
   Remove-NetFirewallRule -DisplayName "mihomo-alpha" -ErrorAction SilentlyContinue
   Remove-NetFirewallRule -DisplayName "Mihomo Party" -ErrorAction SilentlyContinue
   `
-    const createCommand = `
+  const createCommand = `
   New-NetFirewallRule -DisplayName "mihomo" -Direction Inbound -Action Allow -Program "${mihomoCorePath('mihomo')}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
   New-NetFirewallRule -DisplayName "mihomo-alpha" -Direction Inbound -Action Allow -Program "${mihomoCorePath('mihomo-alpha')}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
   New-NetFirewallRule -DisplayName "Mihomo Party" -Direction Inbound -Action Allow -Program "${exePath()}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
   `
 
-    if (process.platform === 'win32') {
-      try {
-        execSync(removeCommand, { shell: 'powershell' })
-      } catch {
-        console.error('Remove-NetFirewallRule Failed')
-      }
-      try {
-        execSync(createCommand, { shell: 'powershell' })
-      } catch (e) {
-        dialog.showErrorBox('防火墙设置失败', `${e}`)
-        reject(e)
-        console.error('New-NetFirewallRule Failed')
-      }
-    }
-    resolve()
-  })
+  if (process.platform === 'win32') {
+    await execPromise(removeCommand, { shell: 'powershell' })
+    await execPromise(createCommand, { shell: 'powershell' })
+  }
 }

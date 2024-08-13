@@ -9,10 +9,10 @@ import { mihomoWorkConfigPath } from '../utils/dirs'
 import yaml from 'yaml'
 import fs from 'fs'
 
-export function generateProfile(): void {
-  const current = getProfileConfig().current
-  const currentProfile = overrideProfile(current, getProfile(current))
-  const controledMihomoConfig = getControledMihomoConfig()
+export async function generateProfile(): Promise<void> {
+  const { current } = await getProfileConfig()
+  const currentProfile = await overrideProfile(current, await getProfile(current))
+  const controledMihomoConfig = await getControledMihomoConfig()
   const { tun: profileTun = {} } = currentProfile
   const { tun: controledTun } = controledMihomoConfig
   const tun = Object.assign(profileTun, controledTun)
@@ -26,13 +26,24 @@ export function generateProfile(): void {
   profile.tun = tun
   profile.dns = dns
   profile.sniffer = sniffer
-  fs.writeFileSync(mihomoWorkConfigPath(), yaml.stringify(profile))
+  return new Promise((resolve, reject) => {
+    fs.writeFile(mihomoWorkConfigPath(), yaml.stringify(profile), (err) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
 }
 
-function overrideProfile(current: string | undefined, profile: IMihomoConfig): IMihomoConfig {
-  const overrideScriptList = getProfileItem(current).override || []
-  for (const override of overrideScriptList) {
-    const script = getOverride(override)
+async function overrideProfile(
+  current: string | undefined,
+  profile: IMihomoConfig
+): Promise<IMihomoConfig> {
+  const { override = [] } = (await getProfileItem(current)) || {}
+  for (const ov of override) {
+    const script = await getOverride(ov)
     profile = runOverrideScript(profile, script)
   }
   return profile
@@ -42,9 +53,7 @@ function runOverrideScript(profile: IMihomoConfig, script: string): IMihomoConfi
   try {
     const func = eval(`${script} main`)
     const newProfile = func(profile)
-    if (typeof newProfile !== 'object') {
-      throw new Error('Override script must return an object')
-    }
+    if (typeof newProfile !== 'object') return profile
     return newProfile
   } catch (e) {
     return profile

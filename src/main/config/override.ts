@@ -1,47 +1,56 @@
 import { overrideConfigPath, overridePath } from '../utils/dirs'
-import yaml from 'yaml'
-import fs from 'fs'
-import { dialog } from 'electron'
-import axios from 'axios'
 import { getControledMihomoConfig } from './controledMihomo'
+import { readFile, writeFile, rm } from 'fs/promises'
+import { existsSync } from 'fs'
+import axios from 'axios'
+import yaml from 'yaml'
 
 let overrideConfig: IOverrideConfig // override.yaml
 
-export function getOverrideConfig(force = false): IOverrideConfig {
+export async function getOverrideConfig(force = false): Promise<IOverrideConfig> {
   if (force || !overrideConfig) {
-    overrideConfig = yaml.parse(fs.readFileSync(overrideConfigPath(), 'utf-8'))
+    const data = await readFile(overrideConfigPath(), 'utf-8')
+    overrideConfig = yaml.parse(data)
   }
   return overrideConfig
 }
 
-export function setOverrideConfig(config: IOverrideConfig): void {
+export async function setOverrideConfig(config: IOverrideConfig): Promise<void> {
   overrideConfig = config
-  fs.writeFileSync(overrideConfigPath(), yaml.stringify(overrideConfig))
+  await writeFile(overrideConfigPath(), yaml.stringify(overrideConfig), 'utf-8')
 }
 
-export function getOverrideItem(id: string): IOverrideItem | undefined {
-  return overrideConfig.items.find((item) => item.id === id)
+export async function getOverrideItem(id: string | undefined): Promise<IOverrideItem | undefined> {
+  const { items } = await getOverrideConfig()
+  return items.find((item) => item.id === id)
 }
-export function updateOverrideItem(item: IOverrideItem): void {
-  const index = overrideConfig.items.findIndex((i) => i.id === item.id)
-  overrideConfig.items[index] = item
-  fs.writeFileSync(overrideConfigPath(), yaml.stringify(overrideConfig))
+
+export async function updateOverrideItem(item: IOverrideItem): Promise<void> {
+  const config = await getOverrideConfig()
+  const index = config.items.findIndex((i) => i.id === item.id)
+  if (index === -1) {
+    throw new Error('Override not found')
+  }
+  config.items[index] = item
+  await setOverrideConfig(config)
 }
 
 export async function addOverrideItem(item: Partial<IOverrideItem>): Promise<void> {
+  const config = await getOverrideConfig()
   const newItem = await createOverride(item)
-  if (overrideConfig.items.find((i) => i.id === newItem.id)) {
+  if (await getOverrideItem(item.id)) {
     updateOverrideItem(newItem)
   } else {
-    overrideConfig.items.push(newItem)
+    config.items.push(newItem)
   }
-  fs.writeFileSync(overrideConfigPath(), yaml.stringify(overrideConfig))
+  await setOverrideConfig(config)
 }
 
-export function removeOverrideItem(id: string): void {
-  overrideConfig.items = overrideConfig.items?.filter((item) => item.id !== id)
-  fs.writeFileSync(overrideConfigPath(), yaml.stringify(overrideConfig))
-  fs.rmSync(overridePath(id))
+export async function removeOverrideItem(id: string): Promise<void> {
+  const config = await getOverrideConfig()
+  config.items = config.items?.filter((item) => item.id !== id)
+  await setOverrideConfig(config)
+  await rm(overridePath(id))
 }
 
 export async function createOverride(item: Partial<IOverrideItem>): Promise<IOverrideItem> {
@@ -55,31 +64,21 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
   } as IOverrideItem
   switch (newItem.type) {
     case 'remote': {
-      if (!item.url) {
-        throw new Error('URL is required for remote script')
-      }
-      try {
-        const res = await axios.get(item.url, {
-          proxy: {
-            protocol: 'http',
-            host: '127.0.0.1',
-            port: getControledMihomoConfig()['mixed-port'] || 7890
-          },
-          responseType: 'text'
-        })
-        const data = res.data
-        setOverride(id, data)
-      } catch (e) {
-        dialog.showErrorBox('Failed to fetch remote script', `${e}\nurl: ${item.url}`)
-        throw new Error(`Failed to fetch remote script ${e}`)
-      }
+      const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
+      if (!item.url) throw new Error('Empty URL')
+      const res = await axios.get(item.url, {
+        proxy: {
+          protocol: 'http',
+          host: '127.0.0.1',
+          port: mixedPort
+        }
+      })
+      const data = res.data
+      await setOverride(id, data)
       break
     }
     case 'local': {
-      if (!item.file) {
-        throw new Error('File is required for local script')
-      }
-      const data = item.file
+      const data = item.file || ''
       setOverride(id, data)
       break
     }
@@ -88,13 +87,13 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
   return newItem
 }
 
-export function getOverride(id: string): string {
-  if (!fs.existsSync(overridePath(id))) {
+export async function getOverride(id: string): Promise<string> {
+  if (!existsSync(overridePath(id))) {
     return `function main(config){ return config }`
   }
-  return fs.readFileSync(overridePath(id), 'utf-8')
+  return await readFile(overridePath(id), 'utf-8')
 }
 
-export function setOverride(id: string, content: string): void {
-  fs.writeFileSync(overridePath(id), content, 'utf-8')
+export async function setOverride(id: string, content: string): Promise<void> {
+  await writeFile(overridePath(id), content, 'utf-8')
 }

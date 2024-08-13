@@ -165,7 +165,11 @@ const Profiles: React.FC = () => {
                 updateProfileItem={updateProfileItem}
                 info={item}
                 onClick={async () => {
-                  await changeCurrentProfile(item.id)
+                  try {
+                    await changeCurrentProfile(item.id)
+                  } catch (e) {
+                    alert(e)
+                  }
                 }}
               />
             ))}

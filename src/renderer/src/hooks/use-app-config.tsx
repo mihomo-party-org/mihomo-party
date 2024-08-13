@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { getAppConfig, setAppConfig } from '@renderer/utils/ipc'
+import { getAppConfig, patchAppConfig as patch } from '@renderer/utils/ipc'
 import { useEffect } from 'react'
 
 interface RetuenType {
@@ -12,7 +12,7 @@ export const useAppConfig = (listenUpdate = false): RetuenType => {
   const { data: appConfig, mutate: mutateAppConfig } = useSWR('getConfig', () => getAppConfig())
 
   const patchAppConfig = async (value: Partial<IAppConfig>): Promise<void> => {
-    await setAppConfig(value)
+    await patch(value)
     mutateAppConfig()
     window.electron.ipcRenderer.send('appConfigUpdated')
   }

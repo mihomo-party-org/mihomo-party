@@ -1,98 +1,100 @@
 import {
   getAppConfig,
   getControledMihomoConfig,
-  setAppConfig,
-  setControledMihomoConfig
+  patchAppConfig,
+  patchControledMihomoConfig
 } from '../config'
 import icoIcon from '../../../resources/icon.ico?asset'
 import pngIcon from '../../../resources/icon.png?asset'
 import { patchMihomoConfig } from './mihomoApi'
-import { window } from '..'
+import { mainWindow } from '..'
 import { app, ipcMain, Menu, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../resolve/sysproxy'
 
 let tray: Tray | null = null
 
-const buildContextMenu = (): Menu => {
+const buildContextMenu = async (): Promise<Menu> => {
+  const { mode, tun } = await getControledMihomoConfig()
+  const { sysProxy } = await getAppConfig()
   const contextMenu = [
     {
       id: 'show',
       label: '显示窗口',
       type: 'normal',
       click: (): void => {
-        window?.show()
-        window?.focusOnWebView()
+        mainWindow?.show()
+        mainWindow?.focusOnWebView()
       }
     },
     {
       id: 'rule',
       label: '规则模式',
       type: 'radio',
-      checked: getControledMihomoConfig().mode === 'rule',
-      click: (): void => {
-        setControledMihomoConfig({ mode: 'rule' })
-        patchMihomoConfig({ mode: 'rule' })
-        window?.webContents.send('controledMihomoConfigUpdated')
-        updateTrayMenu()
+      checked: mode === 'rule',
+      click: async (): Promise<void> => {
+        await patchControledMihomoConfig({ mode: 'rule' })
+        await patchMihomoConfig({ mode: 'rule' })
+        mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        await updateTrayMenu()
       }
     },
     {
       id: 'global',
       label: '全局模式',
       type: 'radio',
-      checked: getControledMihomoConfig().mode === 'global',
-      click: (): void => {
-        setControledMihomoConfig({ mode: 'global' })
-        patchMihomoConfig({ mode: 'global' })
-        window?.webContents.send('controledMihomoConfigUpdated')
-        updateTrayMenu()
+      checked: mode === 'global',
+      click: async (): Promise<void> => {
+        await patchControledMihomoConfig({ mode: 'global' })
+        await patchMihomoConfig({ mode: 'global' })
+        mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        await updateTrayMenu()
       }
     },
     {
       id: 'direct',
       label: '直连模式',
       type: 'radio',
-      checked: getControledMihomoConfig().mode === 'direct',
-      click: (): void => {
-        setControledMihomoConfig({ mode: 'direct' })
-        patchMihomoConfig({ mode: 'direct' })
-        window?.webContents.send('controledMihomoConfigUpdated')
-        updateTrayMenu()
+      checked: mode === 'direct',
+      click: async (): Promise<void> => {
+        await patchControledMihomoConfig({ mode: 'direct' })
+        await patchMihomoConfig({ mode: 'direct' })
+        mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        await updateTrayMenu()
       }
     },
     { type: 'separator' },
     {
       type: 'checkbox',
       label: '系统代理',
-      checked: getAppConfig().sysProxy?.enable ?? false,
-      click: (item): void => {
+      checked: sysProxy.enable,
+      click: async (item): Promise<void> => {
         const enable = item.checked
         try {
+          await patchAppConfig({ sysProxy: { enable } })
           triggerSysProxy(enable)
-          setAppConfig({ sysProxy: { enable } })
-          window?.webContents.send('appConfigUpdated')
         } catch (e) {
-          setAppConfig({ sysProxy: { enable: !enable } })
+          await patchAppConfig({ sysProxy: { enable: !enable } })
         } finally {
-          updateTrayMenu()
+          mainWindow?.webContents.send('appConfigUpdated')
+          await updateTrayMenu()
         }
       }
     },
     {
       type: 'checkbox',
       label: '虚拟网卡',
-      checked: getControledMihomoConfig().tun?.enable ?? false,
-      click: (item): void => {
+      checked: tun?.enable ?? false,
+      click: async (item): Promise<void> => {
         const enable = item.checked
         if (enable) {
-          setControledMihomoConfig({ tun: { enable }, dns: { enable: true } })
+          await patchControledMihomoConfig({ tun: { enable }, dns: { enable: true } })
         } else {
-          setControledMihomoConfig({ tun: { enable } })
+          await patchControledMihomoConfig({ tun: { enable } })
         }
-        patchMihomoConfig({ tun: { enable } })
-        window?.webContents.send('controledMihomoConfigUpdated')
-        updateTrayMenu()
+        await patchMihomoConfig({ tun: { enable } })
+        mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        await updateTrayMenu()
       }
     },
     { type: 'separator' },
@@ -137,19 +139,19 @@ const buildContextMenu = (): Menu => {
   return Menu.buildFromTemplate(contextMenu)
 }
 
-export function createTray(): void {
+export async function createTray(): Promise<void> {
   if (process.platform === 'linux') {
     tray = new Tray(pngIcon)
   } else {
     tray = new Tray(icoIcon)
   }
-  const menu = buildContextMenu()
+  const menu = await buildContextMenu()
 
-  ipcMain.on('controledMihomoConfigUpdated', () => {
-    updateTrayMenu()
+  ipcMain.on('controledMihomoConfigUpdated', async () => {
+    await updateTrayMenu()
   })
-  ipcMain.on('appConfigUpdated', () => {
-    updateTrayMenu()
+  ipcMain.on('appConfigUpdated', async () => {
+    await updateTrayMenu()
   })
 
   tray.setContextMenu(menu)
@@ -157,11 +159,11 @@ export function createTray(): void {
   tray.setToolTip('Another Mihomo GUI.')
   tray.setTitle('Mihomo Party')
   tray.addListener('click', () => {
-    window?.isVisible() ? window?.hide() : window?.show()
+    mainWindow?.isVisible() ? mainWindow?.hide() : mainWindow?.show()
   })
 }
 
-function updateTrayMenu(): void {
-  const menu = buildContextMenu()
+async function updateTrayMenu(): Promise<void> {
+  const menu = await buildContextMenu()
   tray?.setContextMenu(menu) // 更新菜单
 }

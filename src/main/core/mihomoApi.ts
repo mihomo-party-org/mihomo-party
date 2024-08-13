@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { getAppConfig, getControledMihomoConfig } from '../config'
+import { mainWindow } from '..'
 import WebSocket from 'ws'
-import { window } from '..'
 
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
@@ -15,9 +15,9 @@ let connectionsRetry = 10
 
 export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
   if (axiosIns && !force) return axiosIns
-
-  let server = getControledMihomoConfig()['external-controller']
-  const secret = getControledMihomoConfig().secret ?? ''
+  const controledMihomoConfig = await getControledMihomoConfig()
+  let server = controledMihomoConfig['external-controller']
+  const secret = controledMihomoConfig.secret ?? ''
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
 
   axiosIns = axios.create({
@@ -26,138 +26,127 @@ export const getAxios = async (force: boolean = false): Promise<AxiosInstance> =
     headers: secret ? { Authorization: `Bearer ${secret}` } : {},
     timeout: 15000
   })
-  axiosIns.interceptors.response.use((r) => r.data)
+
+  axiosIns.interceptors.response.use(
+    (response) => {
+      return response.data
+    },
+    (error) => {
+      if (error.response && error.response.data) {
+        return Promise.reject(error.response.data)
+      }
+      return Promise.reject(error)
+    }
+  )
   return axiosIns
 }
 
 export async function mihomoVersion(): Promise<IMihomoVersion> {
   const instance = await getAxios()
-  return (await instance.get('/version').catch(() => {
-    return { version: '-' }
-  })) as IMihomoVersion
+  try {
+    return await instance.get('/version')
+  } catch (error) {
+    return { version: '-', meta: true }
+  }
 }
 
 export const patchMihomoConfig = async (patch: Partial<IMihomoConfig>): Promise<void> => {
   const instance = await getAxios()
-  return (await instance.patch('/configs', patch).catch((e) => {
-    return e.response.data
-  })) as Promise<void>
+  return await instance.patch('/configs', patch)
 }
 
 export const mihomoCloseConnection = async (id: string): Promise<void> => {
   const instance = await getAxios()
-  return (await instance.delete(`/connections/${encodeURIComponent(id)}`).catch((e) => {
-    return e.response.data
-  })) as Promise<void>
+  return await instance.delete(`/connections/${encodeURIComponent(id)}`)
 }
 
 export const mihomoCloseAllConnections = async (): Promise<void> => {
   const instance = await getAxios()
-  return (await instance.delete('/connections').catch((e) => {
-    return e.response.data
-  })) as Promise<void>
+  return await instance.delete('/connections')
 }
 
 export const mihomoRules = async (): Promise<IMihomoRulesInfo> => {
   const instance = await getAxios()
-  return (await instance.get('/rules').catch(() => {
+  try {
+    return await instance.get('/rules')
+  } catch (e) {
     return { rules: [] }
-  })) as IMihomoRulesInfo
+  }
 }
 
 export const mihomoProxies = async (): Promise<IMihomoProxies> => {
   const instance = await getAxios()
-  return (await instance.get('/proxies').catch(() => {
+  try {
+    return await instance.get('/proxies')
+  } catch (e) {
     return { proxies: {} }
-  })) as IMihomoProxies
+  }
 }
 
 export const mihomoProxyProviders = async (): Promise<IMihomoProxyProviders> => {
   const instance = await getAxios()
-  return (await instance.get('/providers/proxies').catch(() => {
+  try {
+    return await instance.get('/providers/proxies')
+  } catch (e) {
     return { providers: {} }
-  })) as IMihomoProxyProviders
+  }
 }
 
 export const mihomoUpdateProxyProviders = async (name: string): Promise<void> => {
   const instance = await getAxios()
-  return instance.put(`/providers/proxies/${encodeURIComponent(name)}`).catch((e) => {
-    return e.response.data
-  })
+  return await instance.put(`/providers/proxies/${encodeURIComponent(name)}`)
 }
 
 export const mihomoRuleProviders = async (): Promise<IMihomoRuleProviders> => {
   const instance = await getAxios()
-  return (await instance.get('/providers/rules').catch(() => {
+  try {
+    return await instance.get('/providers/rules')
+  } catch (e) {
     return { providers: {} }
-  })) as IMihomoRuleProviders
+  }
 }
 
 export const mihomoUpdateRuleProviders = async (name: string): Promise<void> => {
   const instance = await getAxios()
-  return instance.put(`/providers/rules/${encodeURIComponent(name)}`).catch((e) => {
-    return e.response.data
-  })
+  return await instance.put(`/providers/rules/${encodeURIComponent(name)}`)
 }
 
 export const mihomoChangeProxy = async (group: string, proxy: string): Promise<IMihomoProxy> => {
   const instance = await getAxios()
-  return (await instance.put(`/proxies/${encodeURIComponent(group)}`, { name: proxy }).catch(() => {
-    return {
-      alive: false,
-      extra: {},
-      history: [],
-      id: '',
-      name: '',
-      tfo: false,
-      type: 'Shadowsocks',
-      udp: false,
-      xudp: false
-    }
-  })) as IMihomoProxy
+  return await instance.put(`/proxies/${encodeURIComponent(group)}`, { name: proxy })
 }
 
 export const mihomoUpgradeGeo = async (): Promise<void> => {
   const instance = await getAxios()
-  return instance.post('/configs/geo').catch((e) => {
-    return e.response.data
-  })
+  return await instance.post('/configs/geo')
 }
 
 export const mihomoProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
-  const appConfig = getAppConfig()
+  const appConfig = await getAppConfig()
   const { delayTestUrl, delayTestTimeout } = appConfig
   const instance = await getAxios()
-  return (await instance
-    .get(`/proxies/${encodeURIComponent(proxy)}/delay`, {
-      params: {
-        url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
-        timeout: delayTestTimeout || 5000
-      }
-    })
-    .catch((e) => {
-      return e.response.data
-    })) as IMihomoDelay
+  return await instance.get(`/proxies/${encodeURIComponent(proxy)}/delay`, {
+    params: {
+      url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
+      timeout: delayTestTimeout || 5000
+    }
+  })
 }
 
 export const mihomoGroupDelay = async (group: string, url?: string): Promise<IMihomoGroupDelay> => {
-  const appConfig = getAppConfig()
+  const appConfig = await getAppConfig()
   const { delayTestUrl, delayTestTimeout } = appConfig
   const instance = await getAxios()
-  return (await instance
-    .get(`/group/${encodeURIComponent(group)}/delay`, {
-      params: {
-        url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
-        timeout: delayTestTimeout || 5000
-      }
-    })
-    .catch((e) => {
-      return e.response.data
-    })) as IMihomoGroupDelay
+  return await instance.get(`/group/${encodeURIComponent(group)}/delay`, {
+    params: {
+      url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
+      timeout: delayTestTimeout || 5000
+    }
+  })
 }
 
-export const startMihomoTraffic = (): void => {
-  mihomoTraffic()
+export const startMihomoTraffic = async (): Promise<void> => {
+  await mihomoTraffic()
 }
 
 export const stopMihomoTraffic = (): void => {
@@ -170,9 +159,10 @@ export const stopMihomoTraffic = (): void => {
   }
 }
 
-const mihomoTraffic = (): void => {
-  let server = getControledMihomoConfig()['external-controller']
-  const secret = getControledMihomoConfig().secret ?? ''
+const mihomoTraffic = async (): Promise<void> => {
+  const controledMihomoConfig = await getControledMihomoConfig()
+  let server = controledMihomoConfig['external-controller']
+  const secret = controledMihomoConfig.secret ?? ''
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoTraffic()
 
@@ -181,7 +171,7 @@ const mihomoTraffic = (): void => {
   mihomoTrafficWs.onmessage = (e): void => {
     const data = e.data as string
     trafficRetry = 10
-    window?.webContents.send('mihomoTraffic', JSON.parse(data) as IMihomoTrafficInfo)
+    mainWindow?.webContents.send('mihomoTraffic', JSON.parse(data) as IMihomoTrafficInfo)
   }
 
   mihomoTrafficWs.onclose = (): void => {
@@ -199,8 +189,8 @@ const mihomoTraffic = (): void => {
   }
 }
 
-export const startMihomoMemory = (): void => {
-  mihomoMemory()
+export const startMihomoMemory = async (): Promise<void> => {
+  await mihomoMemory()
 }
 
 export const stopMihomoMemory = (): void => {
@@ -213,9 +203,10 @@ export const stopMihomoMemory = (): void => {
   }
 }
 
-const mihomoMemory = (): void => {
-  let server = getControledMihomoConfig()['external-controller']
-  const secret = getControledMihomoConfig().secret ?? ''
+const mihomoMemory = async (): Promise<void> => {
+  const controledMihomoConfig = await getControledMihomoConfig()
+  let server = controledMihomoConfig['external-controller']
+  const secret = controledMihomoConfig.secret ?? ''
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoMemory()
 
@@ -224,7 +215,7 @@ const mihomoMemory = (): void => {
   mihomoMemoryWs.onmessage = (e): void => {
     const data = e.data as string
     memoryRetry = 10
-    window?.webContents.send('mihomoMemory', JSON.parse(data) as IMihomoMemoryInfo)
+    mainWindow?.webContents.send('mihomoMemory', JSON.parse(data) as IMihomoMemoryInfo)
   }
 
   mihomoMemoryWs.onclose = (): void => {
@@ -242,8 +233,8 @@ const mihomoMemory = (): void => {
   }
 }
 
-export const startMihomoLogs = (): void => {
-  mihomoLogs()
+export const startMihomoLogs = async (): Promise<void> => {
+  await mihomoLogs()
 }
 
 export const stopMihomoLogs = (): void => {
@@ -256,9 +247,10 @@ export const stopMihomoLogs = (): void => {
   }
 }
 
-const mihomoLogs = (): void => {
-  const { secret = '', 'log-level': level = 'info' } = getControledMihomoConfig()
-  let { 'external-controller': server } = getControledMihomoConfig()
+const mihomoLogs = async (): Promise<void> => {
+  const controledMihomoConfig = await getControledMihomoConfig()
+  const { secret = '', 'log-level': level = 'info' } = controledMihomoConfig
+  let { 'external-controller': server } = controledMihomoConfig
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoLogs()
 
@@ -269,7 +261,7 @@ const mihomoLogs = (): void => {
   mihomoLogsWs.onmessage = (e): void => {
     const data = e.data as string
     logsRetry = 10
-    window?.webContents.send('mihomoLogs', JSON.parse(data) as IMihomoLogInfo)
+    mainWindow?.webContents.send('mihomoLogs', JSON.parse(data) as IMihomoLogInfo)
   }
 
   mihomoLogsWs.onclose = (): void => {
@@ -287,8 +279,8 @@ const mihomoLogs = (): void => {
   }
 }
 
-export const startMihomoConnections = (): void => {
-  mihomoConnections()
+export const startMihomoConnections = async (): Promise<void> => {
+  await mihomoConnections()
 }
 
 export const stopMihomoConnections = (): void => {
@@ -301,9 +293,10 @@ export const stopMihomoConnections = (): void => {
   }
 }
 
-const mihomoConnections = (): void => {
-  let server = getControledMihomoConfig()['external-controller']
-  const secret = getControledMihomoConfig().secret ?? ''
+const mihomoConnections = async (): Promise<void> => {
+  const controledMihomoConfig = await getControledMihomoConfig()
+  let server = controledMihomoConfig['external-controller']
+  const secret = controledMihomoConfig.secret ?? ''
   if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoConnections()
 
@@ -314,7 +307,7 @@ const mihomoConnections = (): void => {
   mihomoConnectionsWs.onmessage = (e): void => {
     const data = e.data as string
     connectionsRetry = 10
-    window?.webContents.send('mihomoConnections', JSON.parse(data) as IMihomoConnectionsInfo)
+    mainWindow?.webContents.send('mihomoConnections', JSON.parse(data) as IMihomoConnectionsInfo)
   }
 
   mihomoConnectionsWs.onclose = (): void => {

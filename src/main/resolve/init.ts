@@ -20,83 +20,98 @@ import {
   defaultProfileConfig
 } from '../utils/template'
 import yaml from 'yaml'
-import fs from 'fs'
+import { mkdir, writeFile, copyFile } from 'fs/promises'
+import { existsSync } from 'fs'
 import path from 'path'
 import { startPacServer } from './server'
 import { triggerSysProxy } from './sysproxy'
 import { getAppConfig } from '../config'
 import { app } from 'electron'
+import { startCore } from '../core/manager'
+import { initProfileUpdater } from '../core/profileUpdater'
 
-function initDirs(): void {
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir)
+async function initDirs(): Promise<void> {
+  if (!existsSync(dataDir)) {
+    await mkdir(dataDir)
   }
-  if (!fs.existsSync(profilesDir())) {
-    fs.mkdirSync(profilesDir())
+  if (!existsSync(profilesDir())) {
+    await mkdir(profilesDir())
   }
-  if (!fs.existsSync(overrideDir())) {
-    fs.mkdirSync(overrideDir())
+  if (!existsSync(overrideDir())) {
+    await mkdir(overrideDir())
   }
-  if (!fs.existsSync(mihomoWorkDir())) {
-    fs.mkdirSync(mihomoWorkDir())
+  if (!existsSync(mihomoWorkDir())) {
+    await mkdir(mihomoWorkDir())
   }
-  if (!fs.existsSync(logDir())) {
-    fs.mkdirSync(logDir())
+  if (!existsSync(logDir())) {
+    await mkdir(logDir())
   }
-  if (!fs.existsSync(mihomoTestDir())) {
-    fs.mkdirSync(mihomoTestDir())
+  if (!existsSync(mihomoTestDir())) {
+    await mkdir(mihomoTestDir())
   }
 }
 
-function initConfig(): void {
-  if (!fs.existsSync(appConfigPath())) {
-    fs.writeFileSync(appConfigPath(), yaml.stringify(defaultConfig))
+async function initConfig(): Promise<void> {
+  if (!existsSync(appConfigPath())) {
+    await writeFile(appConfigPath(), yaml.stringify(defaultConfig))
   }
-  if (!fs.existsSync(profileConfigPath())) {
-    fs.writeFileSync(profileConfigPath(), yaml.stringify(defaultProfileConfig))
+  if (!existsSync(profileConfigPath())) {
+    await writeFile(profileConfigPath(), yaml.stringify(defaultProfileConfig))
   }
-  if (!fs.existsSync(overrideConfigPath())) {
-    fs.writeFileSync(overrideConfigPath(), yaml.stringify(defaultOverrideConfig))
+  if (!existsSync(overrideConfigPath())) {
+    await writeFile(overrideConfigPath(), yaml.stringify(defaultOverrideConfig))
   }
-  if (!fs.existsSync(profilePath('default'))) {
-    fs.writeFileSync(profilePath('default'), yaml.stringify(defaultProfile))
+  if (!existsSync(profilePath('default'))) {
+    await writeFile(profilePath('default'), yaml.stringify(defaultProfile))
   }
-  if (!fs.existsSync(controledMihomoConfigPath())) {
-    fs.writeFileSync(controledMihomoConfigPath(), yaml.stringify(defaultControledMihomoConfig))
+  if (!existsSync(controledMihomoConfigPath())) {
+    await writeFile(controledMihomoConfigPath(), yaml.stringify(defaultControledMihomoConfig))
   }
 }
 
-function initFiles(): void {
-  const fileList = ['country.mmdb', 'geoip.dat', 'geosite.dat', 'ASN.mmdb']
-  for (const file of fileList) {
+async function initFiles(): Promise<void> {
+  const copy = async (file: string): Promise<void> => {
     const targetPath = path.join(mihomoWorkDir(), file)
     const testTargrtPath = path.join(mihomoTestDir(), file)
     const sourcePath = path.join(resourcesFilesDir(), file)
-    if (!fs.existsSync(targetPath) && fs.existsSync(sourcePath)) {
-      fs.copyFileSync(sourcePath, targetPath)
+    if (!existsSync(targetPath) && existsSync(sourcePath)) {
+      await copyFile(sourcePath, targetPath)
     }
-    if (!fs.existsSync(testTargrtPath) && fs.existsSync(sourcePath)) {
-      fs.copyFileSync(sourcePath, testTargrtPath)
+    if (!existsSync(testTargrtPath) && existsSync(sourcePath)) {
+      await copyFile(sourcePath, testTargrtPath)
     }
   }
+  await Promise.all([
+    copy('country.mmdb'),
+    copy('geoip.dat'),
+    copy('geosite.dat'),
+    copy('ASN.mmdb')
+  ])
 }
 
 function initDeeplink(): void {
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
       app.setAsDefaultProtocolClient('clash', process.execPath, [path.resolve(process.argv[1])])
+      app.setAsDefaultProtocolClient('mihomo', process.execPath, [path.resolve(process.argv[1])])
     }
   } else {
     app.setAsDefaultProtocolClient('clash')
+    app.setAsDefaultProtocolClient('mihomo')
   }
 }
 
-export function init(): void {
-  initDirs()
-  initConfig()
-  initFiles()
-  initDeeplink()
-  startPacServer().then(() => {
-    triggerSysProxy(getAppConfig().sysProxy.enable)
+export async function init(): Promise<void> {
+  await initDirs()
+  await initConfig()
+  await initFiles()
+  await startPacServer()
+  const { sysProxy } = await getAppConfig()
+  await triggerSysProxy(sysProxy.enable)
+  startCore().then(() => {
+    setTimeout(async () => {
+      await initProfileUpdater()
+    }, 60000)
   })
+  initDeeplink()
 }

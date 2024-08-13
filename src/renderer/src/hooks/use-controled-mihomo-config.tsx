@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { getControledMihomoConfig, setControledMihomoConfig } from '@renderer/utils/ipc'
+import { getControledMihomoConfig, patchControledMihomoConfig as patch } from '@renderer/utils/ipc'
 import { useEffect } from 'react'
 
 interface RetuenType {
@@ -15,7 +15,7 @@ export const useControledMihomoConfig = (listenUpdate = false): RetuenType => {
   )
 
   const patchControledMihomoConfig = async (value: Partial<IMihomoConfig>): Promise<void> => {
-    await setControledMihomoConfig(value)
+    await patch(value)
     mutateControledMihomoConfig()
     window.electron.ipcRenderer.send('controledMihomoConfigUpdated')
   }

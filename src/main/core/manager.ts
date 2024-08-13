@@ -1,4 +1,4 @@
-import { ChildProcess, execFile, execSync, spawn } from 'child_process'
+import { ChildProcess, exec, execFile, spawn } from 'child_process'
 import {
   logPath,
   mihomoCorePath,
@@ -7,29 +7,44 @@ import {
   mihomoWorkDir
 } from '../utils/dirs'
 import { generateProfile } from '../resolve/factory'
-import { getAppConfig, setAppConfig } from '../config'
+import { getAppConfig, patchAppConfig } from '../config'
 import { dialog, safeStorage } from 'electron'
-import fs from 'fs'
 import { pauseWebsockets } from './mihomoApi'
+import { writeFile } from 'fs/promises'
+import { promisify } from 'util'
 
 let child: ChildProcess
 let retry = 10
 
 export async function startCore(): Promise<void> {
-  const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
-  grantCorePermition(corePath)
-  generateProfile()
+  const { core = 'mihomo' } = await getAppConfig()
+  const corePath = mihomoCorePath(core)
+  await grantCorePermition(corePath)
+  await generateProfile()
   await checkProfile()
   stopCore()
+  child = spawn(corePath, ['-d', mihomoWorkDir()])
+  child.on('close', async (code, signal) => {
+    await writeFile(logPath(), `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`, {
+      flag: 'a'
+    })
+    if (retry) {
+      await writeFile(logPath(), `[Manager]: Try Restart Core\n`, { flag: 'a' })
+      retry--
+      await restartCore()
+    } else {
+      stopCore()
+    }
+  })
   return new Promise((resolve, reject) => {
-    child = spawn(corePath, ['-d', mihomoWorkDir()])
-    child.stdout?.on('data', (data) => {
+    child.stdout?.on('data', async (data) => {
       if (data.toString().includes('External controller listen error')) {
         if (retry) {
           retry--
-          resolve(startCore())
+          resolve(await startCore())
         } else {
-          dialog.showErrorBox('External controller listen error', data.toString())
+          dialog.showErrorBox('内核连接失败', '请尝试更改外部控制端口后重启内核')
+          stopCore()
           reject('External controller listen error')
         }
       }
@@ -37,36 +52,7 @@ export async function startCore(): Promise<void> {
         retry = 10
         resolve()
       }
-      fs.writeFileSync(
-        logPath(),
-        data
-          .toString()
-          .split('\n')
-          .map((line: string) => {
-            if (line) return `[Mihomo]: ${line}`
-            return ''
-          })
-          .filter(Boolean)
-          .join('\n'),
-        {
-          flag: 'a'
-        }
-      )
-    })
-    child.on('close', async (code, signal) => {
-      fs.writeFileSync(logPath(), `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`, {
-        flag: 'a'
-      })
-      fs.writeFileSync(logPath(), `[Manager]: Restart Core\n`, {
-        flag: 'a'
-      })
-      if (retry) {
-        retry--
-        await restartCore()
-      } else {
-        dialog.showErrorBox('Mihomo Core Closed', `Core closed, code: ${code}, signal: ${signal}`)
-        stopCore()
-      }
+      await writeFile(logPath(), data, { flag: 'a' })
     })
   })
 }
@@ -84,44 +70,49 @@ export async function restartCore(): Promise<void> {
   recover()
 }
 
-export function checkProfile(): Promise<void> {
-  const corePath = mihomoCorePath(getAppConfig().core ?? 'mihomo')
-  return new Promise((resolve, reject) => {
-    const child = execFile(corePath, ['-t', '-f', mihomoWorkConfigPath(), '-d', mihomoTestDir()])
-    child.stdout?.on('data', (data) => {
-      data
-        .toString()
+async function checkProfile(): Promise<void> {
+  const { core = 'mihomo' } = await getAppConfig()
+  const corePath = mihomoCorePath(core)
+  const execFilePromise = promisify(execFile)
+  try {
+    await execFilePromise(corePath, ['-t', '-f', mihomoWorkConfigPath(), '-d', mihomoTestDir()])
+  } catch (error) {
+    if (error instanceof Error && 'stdout' in error) {
+      const { stdout } = error as { stdout: string }
+      const errorLines = stdout
         .split('\n')
-        .forEach((line: string) => {
-          if (line.includes('level=error')) {
-            dialog.showErrorBox('Profile Check Failed', line.split('level=error')[1])
-            reject(line)
-          }
-        })
-    })
-    child.on('close', (code) => {
-      if (code === 0) {
-        resolve()
-      }
-    })
-  })
+        .filter((line) => line.includes('level=error'))
+        .map((line) => line.split('level=error')[1])
+      throw new Error(`Profile Check Failed:\n${errorLines.join('\n')}`)
+    } else {
+      throw error
+    }
+  }
 }
 
-export function grantCorePermition(corePath: string): void {
-  if (getAppConfig().encryptedPassword && isEncryptionAvailable()) {
-    const password = safeStorage.decryptString(Buffer.from(getAppConfig().encryptedPassword ?? []))
-    try {
-      if (process.platform === 'linux') {
-        execSync(
+export async function grantCorePermition(corePath: string): Promise<void> {
+  const { encryptedPassword } = await getAppConfig()
+  const execPromise = promisify(exec)
+  if (encryptedPassword && isEncryptionAvailable()) {
+    const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
+    if (process.platform === 'linux') {
+      try {
+        await execPromise(
           `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_sys_ptrace,cap_dac_read_search,cap_dac_override,cap_net_raw=+ep ${corePath}`
         )
+      } catch (error) {
+        patchAppConfig({ encryptedPassword: undefined })
+        throw error
       }
-      if (process.platform === 'darwin') {
-        execSync(`echo "${password}" | sudo -S chown root:admin ${corePath}`)
-        execSync(`echo "${password}" | sudo -S chmod +sx ${corePath}`)
+    }
+    if (process.platform === 'darwin') {
+      try {
+        await execPromise(`echo "${password}" | sudo -S chown root:admin ${corePath}`)
+        await execPromise(`echo "${password}" | sudo -S chmod +sx ${corePath}`)
+      } catch (error) {
+        patchAppConfig({ encryptedPassword: undefined })
+        throw error
       }
-    } catch (e) {
-      setAppConfig({ encryptedPassword: undefined })
     }
   }
 }

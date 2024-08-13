@@ -3,6 +3,7 @@ import { app } from 'electron'
 import path from 'path'
 
 export const dataDir = app.getPath('userData')
+export const homeDir = app.getPath('home')
 
 export function exePath(): string {
   return app.getPath('exe')
