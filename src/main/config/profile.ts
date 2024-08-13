@@ -103,6 +103,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
     type: item.type,
     url: item.url,
     interval: item.interval || 0,
+    override: item.override || [],
     updated: new Date().getTime()
   } as IProfileItem
   switch (newItem.type) {
