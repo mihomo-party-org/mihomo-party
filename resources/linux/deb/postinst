@@ -1,10 +1,21 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Link the binary into global /usr/bin
-ln -sf '/opt/${productFilename}/${maintainer}' '/usr/bin/${maintainer}'
+if type update-alternatives 2>/dev/null >&1; then
+    # Remove previous link if it doesn't use update-alternatives
+    if [ -L '/usr/bin/mihomo-party' -a -e '/usr/bin/mihomo-party' -a "`readlink '/usr/bin/mihomo-party'`" != '/etc/alternatives/mihomo-party' ]; then
+        rm -f '/usr/bin/mihomo-party'
+    fi
+    update-alternatives --install '/usr/bin/mihomo-party' 'mihomo-party' '/opt/mihomo-party/mihomo-party' 100 || ln -sf '/opt/mihomo-party/mihomo-party' '/usr/bin/mihomo-party'
+else
+    ln -sf '/opt/mihomo-party/mihomo-party' '/usr/bin/mihomo-party'
+fi
 
-# SUID chrome-sandbox for Electron 5+
-chmod 4755 '/opt/${productFilename}/chrome-sandbox' || true
+chmod 4755 '/opt/mihomo-party/chrome-sandbox' || true
 
-update-mime-database /usr/share/mime || true
-update-desktop-database /usr/share/applications || true
+if hash update-mime-database 2>/dev/null; then
+    update-mime-database /usr/share/mime || true
+fi
+
+if hash update-desktop-database 2>/dev/null; then
+    update-desktop-database /usr/share/applications || true
+fi
