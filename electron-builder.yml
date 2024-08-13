@@ -58,8 +58,6 @@ linux:
   maintainer: mihomo-party
   category: Utility
   artifactName: ${name}-linux-${version}-${arch}.${ext}
-
-
 deb:
   afterInstall: "./resources/linux/deb/postinst"
 npmRebuild: true
