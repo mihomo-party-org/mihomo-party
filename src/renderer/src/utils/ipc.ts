@@ -233,6 +233,10 @@ export async function getPlatform(): Promise<NodeJS.Platform> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('platform'))
 }
 
+export async function openUWPTool(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('openUWPTool'))
+}
+
 export async function setupFirewall(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setupFirewall'))
 }

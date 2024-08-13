@@ -86,13 +86,18 @@ const Settings: React.FC = () => {
           <Switch
             size="sm"
             isSelected={enable}
-            onValueChange={(v) => {
-              if (v) {
-                enableAutoRun()
-              } else {
-                disableAutoRun()
+            onValueChange={async (v) => {
+              try {
+                if (v) {
+                  await enableAutoRun()
+                } else {
+                  await disableAutoRun()
+                }
+              } catch (e) {
+                alert(e)
+              } finally {
+                mutate()
               }
-              mutate()
             }}
           />
         </SettingItem>
@@ -196,17 +201,22 @@ const Settings: React.FC = () => {
         <SettingItem title="检查更新" divider>
           <Button
             size="sm"
-            onPress={() => {
-              checkUpdate().then((v) => {
-                if (v) {
-                  new window.Notification(`v${v}版本已发布`, { body: '点击前往下载' }).onclick =
-                    (): void => {
-                      open(`https://github.com/pompurin404/mihomo-party/releases/tag/v${v}`)
-                    }
+            onPress={async () => {
+              try {
+                const version = await checkUpdate()
+
+                if (version) {
+                  new window.Notification(`v${version}版本已发布`, {
+                    body: '点击前往下载'
+                  }).onclick = (): void => {
+                    open(`https://github.com/pompurin404/mihomo-party/releases/tag/v${version}`)
+                  }
                 } else {
                   new window.Notification('当前已是最新版本', { body: '无需更新' })
                 }
-              })
+              } catch (e) {
+                alert(e)
+              }
             }}
           >
             检查更新

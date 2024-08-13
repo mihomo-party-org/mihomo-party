@@ -25,28 +25,53 @@ export const useProfileConfig = (): RetuenType => {
   )
 
   const setProfileConfig = async (config: IProfileConfig): Promise<void> => {
-    await set(config)
-    mutateProfileConfig()
+    try {
+      await set(config)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateProfileConfig()
+    }
   }
 
   const addProfileItem = async (item: Partial<IProfileItem>): Promise<void> => {
-    await add(item)
-    mutateProfileConfig()
+    try {
+      await add(item)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateProfileConfig()
+    }
   }
 
   const removeProfileItem = async (id: string): Promise<void> => {
-    await remove(id)
-    mutateProfileConfig()
+    try {
+      await remove(id)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateProfileConfig()
+    }
   }
 
   const updateProfileItem = async (item: IProfileItem): Promise<void> => {
-    await update(item)
-    mutateProfileConfig()
+    try {
+      await update(item)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateProfileConfig()
+    }
   }
 
   const changeCurrentProfile = async (id: string): Promise<void> => {
-    await change(id)
-    mutateProfileConfig()
+    try {
+      await change(id)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateProfileConfig()
+    }
   }
 
   useEffect(() => {

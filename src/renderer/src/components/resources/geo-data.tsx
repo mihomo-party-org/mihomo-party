@@ -115,16 +115,16 @@ const GeoData: React.FC = () => {
             size="sm"
             isIconOnly
             variant="light"
-            onPress={() => {
+            onPress={async () => {
               setUpdating(true)
-              mihomoUpgradeGeo()
-                .catch((e) => {
-                  new Notification('更新失败', { body: e.message })
-                })
-                .finally(() => {
-                  new Notification('Geo 数据库更新成功')
-                  setUpdating(false)
-                })
+              try {
+                await mihomoUpgradeGeo()
+                new Notification('Geo 数据库更新成功')
+              } catch (e) {
+                alert(e)
+              } finally {
+                setUpdating(false)
+              }
             }}
           >
             <IoMdRefresh className={`text-lg ${updating ? 'animate-spin' : ''}`} />

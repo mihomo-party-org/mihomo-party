@@ -87,11 +87,10 @@ const ProfileCard: React.FC = () => {
                   disabled={updating}
                   variant="light"
                   color="default"
-                  onPress={() => {
+                  onPress={async () => {
                     setUpdating(true)
-                    addProfileItem(info).finally(() => {
-                      setUpdating(false)
-                    })
+                    await addProfileItem(info)
+                    setUpdating(false)
                   }}
                 >
                   <IoMdRefresh

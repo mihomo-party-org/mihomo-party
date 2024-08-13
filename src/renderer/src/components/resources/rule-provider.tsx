@@ -15,18 +15,22 @@ const RuleProvider: React.FC = () => {
   }, [data])
   const [updating, setUpdating] = useState(Array(providers.length).fill(false))
 
-  const onUpdate = (name: string, index: number): void => {
+  const onUpdate = async (name: string, index: number): Promise<void> => {
     setUpdating((prev) => {
       prev[index] = true
       return [...prev]
     })
-    mihomoUpdateRuleProviders(name).finally(() => {
+    try {
+      await mihomoUpdateRuleProviders(name)
+      mutate()
+    } catch (e) {
+      alert(e)
+    } finally {
       setUpdating((prev) => {
         prev[index] = false
         return [...prev]
       })
-      mutate()
-    })
+    }
   }
 
   if (!providers.length) {

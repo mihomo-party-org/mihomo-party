@@ -22,23 +22,43 @@ export const useOverrideConfig = (): RetuenType => {
   )
 
   const setOverrideConfig = async (config: IOverrideConfig): Promise<void> => {
-    await set(config)
-    mutateOverrideConfig()
+    try {
+      await set(config)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateOverrideConfig()
+    }
   }
 
   const addOverrideItem = async (item: Partial<IOverrideItem>): Promise<void> => {
-    await add(item)
-    mutateOverrideConfig()
+    try {
+      await add(item)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateOverrideConfig()
+    }
   }
 
   const removeOverrideItem = async (id: string): Promise<void> => {
-    await remove(id)
-    mutateOverrideConfig()
+    try {
+      await remove(id)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateOverrideConfig()
+    }
   }
 
   const updateOverrideItem = async (item: IOverrideItem): Promise<void> => {
-    await update(item)
-    mutateOverrideConfig()
+    try {
+      await update(item)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateOverrideConfig()
+    }
   }
 
   return {

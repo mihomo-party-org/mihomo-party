@@ -15,9 +15,14 @@ export const useControledMihomoConfig = (listenUpdate = false): RetuenType => {
   )
 
   const patchControledMihomoConfig = async (value: Partial<IMihomoConfig>): Promise<void> => {
-    await patch(value)
-    mutateControledMihomoConfig()
-    window.electron.ipcRenderer.send('controledMihomoConfigUpdated')
+    try {
+      await patch(value)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateControledMihomoConfig()
+      window.electron.ipcRenderer.send('controledMihomoConfigUpdated')
+    }
   }
 
   useEffect(() => {

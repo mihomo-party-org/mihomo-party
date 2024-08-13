@@ -71,13 +71,17 @@ const Tun: React.FC = () => {
               size="sm"
               color="primary"
               isLoading={loading}
-              onPress={() => {
+              onPress={async () => {
                 setLoading(true)
-                setupFirewall()
-                  .then(() => {
-                    new Notification('防火墙重设成功')
-                  })
-                  .finally(() => setLoading(false))
+                try {
+                  await setupFirewall()
+                  new Notification('防火墙重设成功')
+                  await restartCore()
+                } catch (e) {
+                  alert(e)
+                } finally {
+                  setLoading(false)
+                }
               }}
             >
               重设防火墙

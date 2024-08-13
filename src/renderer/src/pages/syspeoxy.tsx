@@ -5,7 +5,7 @@ import SettingItem from '@renderer/components/base/base-setting-item'
 import PacEditorViewer from '@renderer/components/sysproxy/pac-editor-modal'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
-import { triggerSysProxy } from '@renderer/utils/ipc'
+import { openUWPTool, triggerSysProxy } from '@renderer/utils/ipc'
 import { Key, useState } from 'react'
 import React from 'react'
 import { MdDeleteForever } from 'react-icons/md'
@@ -90,7 +90,8 @@ const Sysproxy: React.FC = () => {
     try {
       await triggerSysProxy(true)
       await patchAppConfig({ sysProxy: { enable: true } })
-    } catch {
+    } catch (e) {
+      alert(e)
       await patchAppConfig({ sysProxy: { enable: false } })
     }
   }
@@ -141,8 +142,8 @@ const Sysproxy: React.FC = () => {
           <SettingItem title="UWP 工具" divider>
             <Button
               size="sm"
-              onPress={() => {
-                window.electron.ipcRenderer.invoke('openUWPTool')
+              onPress={async () => {
+                await openUWPTool()
               }}
             >
               打开 UWP 工具

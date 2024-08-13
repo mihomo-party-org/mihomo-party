@@ -22,9 +22,6 @@ const MihomoCoreCard: React.FC = () => {
   useEffect(() => {
     const token = PubSub.subscribe('mihomo-core-changed', () => {
       mutate()
-      setTimeout(() => {
-        mutate()
-      }, 1000)
     })
     window.electron.ipcRenderer.on('mihomoMemory', (_e, info: IMihomoMemoryInfo) => {
       setMem(info.inuse)
@@ -70,11 +67,13 @@ const MihomoCoreCard: React.FC = () => {
               variant="light"
               color="default"
               onPress={async () => {
-                await restartCore()
-                mutate()
-                setTimeout(() => {
+                try {
+                  await restartCore()
+                } catch (e) {
+                  alert(e)
+                } finally {
                   mutate()
-                }, 2000)
+                }
               }}
             >
               <IoMdRefresh className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`} />

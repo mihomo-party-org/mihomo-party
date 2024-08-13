@@ -33,13 +33,8 @@ const Profiles: React.FC = () => {
   const sensors = useSensors(useSensor(PointerSensor))
   const handleImport = async (): Promise<void> => {
     setImporting(true)
-    try {
-      await addProfileItem({ name: '', type: 'remote', url })
-    } catch (e) {
-      alert(e)
-    } finally {
-      setImporting(false)
-    }
+    await addProfileItem({ name: '', type: 'remote', url })
+    setImporting(false)
   }
   const pageRef = useRef<HTMLDivElement>(null)
 
@@ -75,11 +70,11 @@ const Profiles: React.FC = () => {
       if (event.dataTransfer?.files) {
         const file = event.dataTransfer.files[0]
         if (file.name.endsWith('.yml') || file.name.endsWith('.yaml')) {
-          const content = await readTextFile(file.path)
           try {
+            const content = await readTextFile(file.path)
             await addProfileItem({ name: file.name, type: 'local', file: content })
-          } finally {
-            setFileOver(false)
+          } catch (e) {
+            alert(e)
           }
         } else {
           alert('不支持的文件类型')
@@ -135,14 +130,17 @@ const Profiles: React.FC = () => {
           size="sm"
           color="primary"
           className="ml-2"
-          onPress={() => {
-            getFilePath(['yml', 'yaml']).then(async (files) => {
+          onPress={async () => {
+            try {
+              const files = await getFilePath(['yml', 'yaml'])
               if (files?.length) {
                 const content = await readTextFile(files[0])
                 const fileName = files[0].split('/').pop()?.split('\\').pop()
                 await addProfileItem({ name: fileName, type: 'local', file: content })
               }
-            })
+            } catch (e) {
+              alert(e)
+            }
           }}
         >
           打开
@@ -167,11 +165,7 @@ const Profiles: React.FC = () => {
                 updateProfileItem={updateProfileItem}
                 info={item}
                 onClick={async () => {
-                  try {
-                    await changeCurrentProfile(item.id)
-                  } catch (e) {
-                    alert(e)
-                  }
+                  await changeCurrentProfile(item.id)
                 }}
               />
             ))}

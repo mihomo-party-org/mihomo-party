@@ -83,13 +83,12 @@ const Proxies: React.FC = () => {
     return { groupCounts, allProxies }
   }, [groups, isOpen, proxyDisplayOrder])
 
-  const onChangeProxy = (group: string, proxy: string): void => {
-    mihomoChangeProxy(group, proxy).then(() => {
-      if (autoCloseConnection) {
-        mihomoCloseAllConnections()
-      }
-      mutate()
-    })
+  const onChangeProxy = async (group: string, proxy: string): Promise<void> => {
+    await mihomoChangeProxy(group, proxy)
+    if (autoCloseConnection) {
+      await mihomoCloseAllConnections()
+    }
+    mutate()
   }
 
   const onProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
@@ -152,7 +151,7 @@ const Proxies: React.FC = () => {
         style={{ height: 'calc(100vh - 50px)' }}
         groupCounts={groupCounts}
         groupContent={(index) => {
-          return (
+          return groups[index] ? (
             <div
               className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}
             >
@@ -242,6 +241,8 @@ const Proxies: React.FC = () => {
                 </CardBody>
               </Card>
             </div>
+          ) : (
+            <div>Never See This</div>
           )
         }}
         itemContent={(index, groupIndex) => {

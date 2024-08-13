@@ -12,9 +12,14 @@ export const useAppConfig = (listenUpdate = false): RetuenType => {
   const { data: appConfig, mutate: mutateAppConfig } = useSWR('getConfig', () => getAppConfig())
 
   const patchAppConfig = async (value: Partial<IAppConfig>): Promise<void> => {
-    await patch(value)
-    mutateAppConfig()
-    window.electron.ipcRenderer.send('appConfigUpdated')
+    try {
+      await patch(value)
+    } catch (e) {
+      alert(e)
+    } finally {
+      mutateAppConfig()
+      window.electron.ipcRenderer.send('appConfigUpdated')
+    }
   }
 
   useEffect(() => {

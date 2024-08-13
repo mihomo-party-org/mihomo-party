@@ -59,8 +59,14 @@ const Mihomo: React.FC = () => {
             size="sm"
             selectedKeys={new Set([core])}
             onSelectionChange={async (v) => {
-              await patchAppConfig({ core: v.currentKey as 'mihomo' | 'mihomo-alpha' })
-              restartCore().then(() => PubSub.publish('mihomo-core-changed'))
+              try {
+                await patchAppConfig({ core: v.currentKey as 'mihomo' | 'mihomo-alpha' })
+                await restartCore()
+              } catch (e) {
+                alert(e)
+              } finally {
+                PubSub.publish('mihomo-core-changed')
+              }
             }}
           >
             <SelectItem key="mihomo">{CoreMap['mihomo']}</SelectItem>

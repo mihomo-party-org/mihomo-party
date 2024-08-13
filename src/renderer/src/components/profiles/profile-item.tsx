@@ -94,7 +94,7 @@ const ProfileItem: React.FC<Props> = (props) => {
     return list
   }, [info])
 
-  const onMenuAction = (key: Key): void => {
+  const onMenuAction = async (key: Key): Promise<void> => {
     switch (key) {
       case 'edit-info': {
         setOpenInfo(true)
@@ -105,7 +105,7 @@ const ProfileItem: React.FC<Props> = (props) => {
         break
       }
       case 'delete': {
-        removeProfileItem(info.id)
+        await removeProfileItem(info.id)
         mutateProfileConfig()
         break
       }
@@ -177,15 +177,10 @@ const ProfileItem: React.FC<Props> = (props) => {
                   variant="light"
                   color="default"
                   disabled={updating}
-                  onPress={() => {
+                  onPress={async () => {
                     setUpdating(true)
-                    addProfileItem(info)
-                      .catch((e) => {
-                        alert(e)
-                      })
-                      .finally(() => {
-                        setUpdating(false)
-                      })
+                    await addProfileItem(info)
+                    setUpdating(false)
                   }}
                 >
                   <IoMdRefresh
