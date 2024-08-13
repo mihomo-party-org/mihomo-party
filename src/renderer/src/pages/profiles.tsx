@@ -35,6 +35,8 @@ const Profiles: React.FC = () => {
     setImporting(true)
     try {
       await addProfileItem({ name: '', type: 'remote', url })
+    } catch (e) {
+      alert(e)
     } finally {
       setImporting(false)
     }

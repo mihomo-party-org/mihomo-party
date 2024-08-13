@@ -55,13 +55,12 @@ export async function updateProfileItem(item: IProfileItem): Promise<void> {
   }
   config.items[index] = item
   await setProfileConfig(config)
-  await addProfileUpdater(item)
 }
 
 export async function addProfileItem(item: Partial<IProfileItem>): Promise<void> {
   const newItem = await createProfile(item)
   const config = await getProfileConfig()
-  if (await getProfileItem(item.id)) {
+  if (await getProfileItem(newItem.id)) {
     await updateProfileItem(newItem)
   } else {
     config.items.push(newItem)
