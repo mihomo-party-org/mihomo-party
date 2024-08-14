@@ -7,7 +7,7 @@ import {
 import icoIcon from '../../../resources/icon.ico?asset'
 import pngIcon from '../../../resources/icon.png?asset'
 import { patchMihomoConfig } from './mihomoApi'
-import { createWindow, destroyTimer, mainWindow } from '..'
+import { mainWindow, showMainWindow } from '..'
 import { app, ipcMain, Menu, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../resolve/sysproxy'
@@ -23,15 +23,7 @@ const buildContextMenu = async (): Promise<Menu> => {
       label: '显示窗口',
       type: 'normal',
       click: (): void => {
-        if (!mainWindow) {
-          if (destroyTimer) {
-            clearTimeout(destroyTimer)
-          }
-          createWindow(true)
-        } else {
-          mainWindow?.show()
-          mainWindow?.focusOnWebView()
-        }
+        showMainWindow()
       }
     },
     {
@@ -169,14 +161,7 @@ export async function createTray(): Promise<void> {
     if (mainWindow?.isVisible()) {
       mainWindow?.close()
     } else {
-      if (!mainWindow) {
-        if (destroyTimer) {
-          clearTimeout(destroyTimer)
-        }
-        createWindow(true)
-      } else {
-        mainWindow?.show()
-      }
+      showMainWindow()
     }
   })
 }

@@ -94,7 +94,29 @@ const Profiles: React.FC = () => {
   }, [items])
 
   return (
-    <BasePage ref={pageRef} title="订阅管理">
+    <BasePage
+      ref={pageRef}
+      title="订阅管理"
+      header={
+        <Button
+          size="sm"
+          color="primary"
+          onPress={async () => {
+            for (const item of items) {
+              if (item.id === current) continue
+              if (item.type !== 'remote') continue
+              await addProfileItem(item)
+            }
+            const currentItem = items.find((item) => item.id === current)
+            if (currentItem && currentItem.type === 'remote') {
+              await addProfileItem(currentItem)
+            }
+          }}
+        >
+          更新全部订阅
+        </Button>
+      }
+    >
       <div className="sticky top-[48px] z-40 backdrop-blur bg-background/40 flex p-2">
         <Input
           variant="bordered"

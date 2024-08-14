@@ -27,16 +27,7 @@ if (!gotTheLock) {
 const initPromise = init()
 
 app.on('second-instance', async (_event, commandline) => {
-  if (!mainWindow) {
-    if (destroyTimer) {
-      clearTimeout(destroyTimer)
-    }
-    createWindow(true)
-  } else {
-    mainWindow?.show()
-    mainWindow?.focusOnWebView()
-  }
-
+  showMainWindow()
   const url = commandline.pop()
   if (url) {
     await handleDeepLink(url)
@@ -44,16 +35,7 @@ app.on('second-instance', async (_event, commandline) => {
 })
 
 app.on('open-url', async (_event, url) => {
-  if (!mainWindow) {
-    if (destroyTimer) {
-      clearTimeout(destroyTimer)
-    }
-    createWindow(true)
-  } else {
-    mainWindow?.show()
-    mainWindow?.focusOnWebView()
-  }
-
+  showMainWindow()
   await handleDeepLink(url)
 })
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -191,7 +173,6 @@ export function createWindow(show = false): void {
       mainWindow?.destroy()
       mainWindow = null
     }, 300000)
-    // mainWindow?.webContents.reload()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -205,5 +186,17 @@ export function createWindow(show = false): void {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
+}
+
+export function showMainWindow(): void {
+  if (destroyTimer) {
+    clearTimeout(destroyTimer)
+  }
+  if (mainWindow) {
+    mainWindow.show()
+    mainWindow.focusOnWebView()
+  } else {
+    createWindow(true)
   }
 }
