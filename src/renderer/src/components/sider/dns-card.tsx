@@ -13,9 +13,17 @@ const DNSCard: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
   const { dns, tun } = controledMihomoConfig || {}
   const { enable } = dns || {}
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: 'dns'
   })
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const onChange = async (enable: boolean): Promise<void> => {
     await patchControledMihomoConfig({ dns: { enable } })
     await patchMihomoConfig({ dns: { enable } })

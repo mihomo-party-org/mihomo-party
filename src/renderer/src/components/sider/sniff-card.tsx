@@ -14,10 +14,17 @@ const SniffCard: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
   const { sniffer } = controledMihomoConfig || {}
   const { enable } = sniffer || {}
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: 'sniff'
   })
-
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const onChange = async (enable: boolean): Promise<void> => {
     await patchControledMihomoConfig({ sniffer: { enable } })
     await patchMihomoConfig({ sniffer: { enable } })

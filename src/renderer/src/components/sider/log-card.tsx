@@ -7,9 +7,17 @@ const LogCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/logs')
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: 'log'
   })
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   return (
     <div
       style={{

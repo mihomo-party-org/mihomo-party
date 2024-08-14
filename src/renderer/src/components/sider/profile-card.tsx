@@ -23,9 +23,17 @@ const ProfileCard: React.FC = () => {
   const [showRuntimeConfig, setShowRuntimeConfig] = useState(false)
   const { profileConfig, addProfileItem } = useProfileConfig()
   const { current, items } = profileConfig ?? {}
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: 'profile'
   })
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const info = items?.find((item) => item.id === current) ?? {
     id: 'default',
     type: 'local',

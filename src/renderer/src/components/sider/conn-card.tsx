@@ -14,10 +14,17 @@ const ConnCard: React.FC = () => {
 
   const [upload, setUpload] = useState(0)
   const [download, setDownload] = useState(0)
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: 'connection'
   })
-
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   useEffect(() => {
     window.electron.ipcRenderer.on('mihomoTraffic', (_e, info: IMihomoTrafficInfo) => {
       setUpload(info.up)

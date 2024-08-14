@@ -15,9 +15,17 @@ const SysproxySwitcher: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig(true)
   const { sysProxy } = appConfig || {}
   const { enable } = sysProxy || {}
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: 'sysproxy'
   })
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const onChange = async (enable: boolean): Promise<void> => {
     await triggerSysProxy(enable)
     await patchAppConfig({ sysProxy: { enable } })

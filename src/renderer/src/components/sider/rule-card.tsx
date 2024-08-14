@@ -13,10 +13,17 @@ const RuleCard: React.FC = () => {
   const { data: rules } = useSWR<IMihomoRulesInfo>('mihomoRules', mihomoRules, {
     refreshInterval: 5000
   })
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: 'rule'
   })
-
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   return (
     <div
       style={{

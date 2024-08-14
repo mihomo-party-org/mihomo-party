@@ -53,9 +53,17 @@ const ProfileItem: React.FC<Props> = (props) => {
   const [selecting, setSelecting] = useState(false)
   const [openInfo, setOpenInfo] = useState(false)
   const [openFile, setOpenFile] = useState(false)
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: info.id
   })
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const [disableSelect, setDisableSelect] = useState(false)
 
   const menuItems: MenuItem[] = useMemo(() => {

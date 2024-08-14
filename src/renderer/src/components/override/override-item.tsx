@@ -62,9 +62,17 @@ const OverrideItem: React.FC<Props> = (props) => {
   const [updating, setUpdating] = useState(false)
   const [openInfo, setOpenInfo] = useState(false)
   const [openFile, setOpenFile] = useState(false)
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: info.id
   })
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const [disableOpen, setDisableOpen] = useState(false)
 
   const onMenuAction = (key: Key): void => {

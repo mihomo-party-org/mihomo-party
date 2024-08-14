@@ -20,10 +20,17 @@ const TunSwitcher: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
   const { tun } = controledMihomoConfig || {}
   const { enable } = tun || {}
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: 'tun'
   })
-
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const onChange = async (enable: boolean): Promise<void> => {
     if (enable && platform !== 'win32') {
       const encryptionAvailable = await isEncryptionAvailable()

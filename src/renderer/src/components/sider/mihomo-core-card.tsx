@@ -13,10 +13,17 @@ const MihomoCoreCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/mihomo')
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform: tf,
+    transition,
+    isDragging
+  } = useSortable({
     id: 'mihomo'
   })
-
+  const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const [mem, setMem] = useState(0)
 
   useEffect(() => {
