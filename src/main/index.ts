@@ -159,6 +159,14 @@ export function createWindow(show = false): void {
     if (!silentStart || show) {
       mainWindow?.show()
       mainWindow?.focusOnWebView()
+    } else {
+      if (destroyTimer) {
+        clearTimeout(destroyTimer)
+      }
+      destroyTimer = setTimeout(() => {
+        mainWindow?.destroy()
+        mainWindow = null
+      }, 300000)
     }
   })
 
