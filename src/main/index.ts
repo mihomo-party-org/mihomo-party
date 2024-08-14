@@ -16,6 +16,7 @@ import {
 } from './core/mihomoApi'
 
 export let mainWindow: BrowserWindow | null = null
+export let destroyTimer: NodeJS.Timeout | null = null
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -25,8 +26,16 @@ if (!gotTheLock) {
 const initPromise = init()
 
 app.on('second-instance', async (_event, commandline) => {
-  mainWindow?.show()
-  mainWindow?.focusOnWebView()
+  if (!mainWindow) {
+    if (destroyTimer) {
+      clearTimeout(destroyTimer)
+    }
+    createWindow(true)
+  } else {
+    mainWindow?.show()
+    mainWindow?.focusOnWebView()
+  }
+
   const url = commandline.pop()
   if (url) {
     await handleDeepLink(url)
@@ -34,17 +43,26 @@ app.on('second-instance', async (_event, commandline) => {
 })
 
 app.on('open-url', async (_event, url) => {
-  mainWindow?.show()
-  mainWindow?.focusOnWebView()
+  if (!mainWindow) {
+    if (destroyTimer) {
+      clearTimeout(destroyTimer)
+    }
+    createWindow(true)
+  } else {
+    mainWindow?.show()
+    mainWindow?.focusOnWebView()
+  }
+
   await handleDeepLink(url)
 })
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+app.on('window-all-closed', (e) => {
+  e.preventDefault()
+  // if (process.platform !== 'darwin') {
+  //   app.quit()
+  // }
 })
 
 app.on('before-quit', () => {
@@ -78,7 +96,12 @@ app.whenReady().then(async () => {
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      if (destroyTimer) {
+        clearTimeout(destroyTimer)
+      }
+      createWindow(true)
+    }
   })
 })
 
@@ -106,7 +129,7 @@ async function handleDeepLink(url: string): Promise<void> {
   }
 }
 
-function createWindow(): void {
+export function createWindow(show = false): void {
   Menu.setApplicationMenu(null)
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -125,7 +148,7 @@ function createWindow(): void {
   })
   mainWindow.on('ready-to-show', async () => {
     const { silentStart } = await getAppConfig()
-    if (!silentStart) {
+    if (!silentStart || show) {
       mainWindow?.show()
       mainWindow?.focusOnWebView()
     }
@@ -145,7 +168,14 @@ function createWindow(): void {
     stopMihomoMemory()
     event.preventDefault()
     mainWindow?.hide()
-    mainWindow?.webContents.reload()
+    if (destroyTimer) {
+      clearTimeout(destroyTimer)
+    }
+    destroyTimer = setTimeout(() => {
+      mainWindow?.destroy()
+      mainWindow = null
+    }, 300000)
+    // mainWindow?.webContents.reload()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

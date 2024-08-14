@@ -7,7 +7,7 @@ import {
 import icoIcon from '../../../resources/icon.ico?asset'
 import pngIcon from '../../../resources/icon.png?asset'
 import { patchMihomoConfig } from './mihomoApi'
-import { mainWindow } from '..'
+import { createWindow, destroyTimer, mainWindow } from '..'
 import { app, ipcMain, Menu, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../resolve/sysproxy'
@@ -23,8 +23,15 @@ const buildContextMenu = async (): Promise<Menu> => {
       label: '显示窗口',
       type: 'normal',
       click: (): void => {
-        mainWindow?.show()
-        mainWindow?.focusOnWebView()
+        if (!mainWindow) {
+          if (destroyTimer) {
+            clearTimeout(destroyTimer)
+          }
+          createWindow(true)
+        } else {
+          mainWindow?.show()
+          mainWindow?.focusOnWebView()
+        }
       }
     },
     {
@@ -159,7 +166,18 @@ export async function createTray(): Promise<void> {
   tray.setToolTip('Another Mihomo GUI.')
   tray.setTitle('Mihomo Party')
   tray.addListener('click', () => {
-    mainWindow?.isVisible() ? mainWindow?.hide() : mainWindow?.show()
+    if (mainWindow?.isVisible()) {
+      mainWindow?.close()
+    } else {
+      if (!mainWindow) {
+        if (destroyTimer) {
+          clearTimeout(destroyTimer)
+        }
+        createWindow(true)
+      } else {
+        mainWindow?.show()
+      }
+    }
   })
 }
 
