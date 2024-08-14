@@ -19,7 +19,7 @@ let retry = 10
 export async function startCore(): Promise<void> {
   const { core = 'mihomo' } = await getAppConfig()
   const corePath = mihomoCorePath(core)
-  await grantCorePermition(corePath)
+  await autoGrantCorePermition(corePath)
   await generateProfile()
   await checkProfile()
   stopCore()
@@ -90,7 +90,7 @@ async function checkProfile(): Promise<void> {
   }
 }
 
-export async function grantCorePermition(corePath: string): Promise<void> {
+export async function autoGrantCorePermition(corePath: string): Promise<void> {
   const { encryptedPassword } = await getAppConfig()
   const execPromise = promisify(exec)
   if (encryptedPassword && isEncryptionAvailable()) {
@@ -114,6 +114,17 @@ export async function grantCorePermition(corePath: string): Promise<void> {
         throw error
       }
     }
+  }
+}
+
+export async function manualGrantCorePermition(): Promise<void> {
+  const { core = 'mihomo' } = await getAppConfig()
+  const corePath = mihomoCorePath(core)
+  const execPromise = promisify(exec)
+  if (process.platform === 'darwin') {
+    const shell = `chown root:admin ${corePath}\nchmod +sx ${corePath}`
+    const command = `do shell script "${shell}" with administrator privileges`
+    await execPromise(`osascript -e '${command}'`)
   }
 }
 

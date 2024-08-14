@@ -205,6 +205,10 @@ export async function encryptString(str: string): Promise<Buffer> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('encryptString', str))
 }
 
+export async function manualGrantCorePermition(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('manualGrantCorePermition'))
+}
+
 export async function getFilePath(ext: string[]): Promise<string[] | undefined> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getFilePath', ext))
 }

@@ -3,7 +3,7 @@ import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
-import { restartCore, setupFirewall } from '@renderer/utils/ipc'
+import { manualGrantCorePermition, restartCore, setupFirewall } from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import React, { Key, useState } from 'react'
 
@@ -85,6 +85,29 @@ const Tun: React.FC = () => {
               }}
             >
               重设防火墙
+            </Button>
+          </SettingItem>
+        )}
+        {platform === 'darwin' && (
+          <SettingItem title="手动授权内核" divider>
+            <Button
+              size="sm"
+              color="primary"
+              isLoading={loading}
+              onPress={async () => {
+                setLoading(true)
+                try {
+                  await manualGrantCorePermition()
+                  new Notification('内核授权成功')
+                  await restartCore()
+                } catch (e) {
+                  alert(e)
+                } finally {
+                  setLoading(false)
+                }
+              }}
+            >
+              手动授权内核
             </Button>
           </SettingItem>
         )}

@@ -44,7 +44,7 @@ import {
   setOverride,
   updateOverrideItem
 } from '../config'
-import { isEncryptionAvailable, restartCore } from '../core/manager'
+import { isEncryptionAvailable, manualGrantCorePermition, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../resolve/sysproxy'
 import { checkUpdate } from '../resolve/autoUpdater'
 import { exePath, mihomoCorePath, mihomoWorkConfigPath, resourcesDir } from './dirs'
@@ -128,6 +128,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('triggerSysProxy', (_e, enable) => ipcErrorWrapper(triggerSysProxy)(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
+  ipcMain.handle('manualGrantCorePermition', ipcErrorWrapper(manualGrantCorePermition))
   ipcMain.handle('getFilePath', (_e, ext) => getFilePath(ext))
   ipcMain.handle('readTextFile', (_e, filePath) => ipcErrorWrapper(readTextFile)(filePath))
   ipcMain.handle('getRuntimeConfigStr', ipcErrorWrapper(getRuntimeConfigStr))
