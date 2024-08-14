@@ -58,6 +58,10 @@ const App: React.FC = () => {
   const page = useRoutes(routes)
 
   useEffect(() => {
+    setOrder(siderOrder)
+  }, [siderOrder])
+
+  useEffect(() => {
     setTheme(appTheme)
   }, [appTheme])
 
