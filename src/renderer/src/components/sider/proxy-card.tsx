@@ -69,7 +69,7 @@ const ProxyCard: React.FC = () => {
               }
               size="sm"
               variant="bordered"
-              className="mr-3 mt-2"
+              className="mr-2 mt-2"
             >
               {filtered.length}
             </Chip>
