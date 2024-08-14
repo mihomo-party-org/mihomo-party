@@ -1,5 +1,6 @@
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcMainHandlers } from './utils/ipc'
+import windowStateKeeper from 'electron-window-state'
 import { app, shell, BrowserWindow, Menu, dialog, Notification } from 'electron'
 import { stopCore } from './core/manager'
 import { triggerSysProxy } from './resolve/sysproxy'
@@ -132,11 +133,17 @@ async function handleDeepLink(url: string): Promise<void> {
 export function createWindow(show = false): void {
   Menu.setApplicationMenu(null)
   // Create the browser window.
+  const mainWindowState = windowStateKeeper({
+    defaultWidth: 800,
+    defaultHeight: 600
+  })
   mainWindow = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
-    width: 800,
-    height: 600,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon: icon } : {}),
@@ -146,6 +153,7 @@ export function createWindow(show = false): void {
       sandbox: false
     }
   })
+  mainWindowState.manage(mainWindow)
   mainWindow.on('ready-to-show', async () => {
     const { silentStart } = await getAppConfig()
     if (!silentStart || show) {
