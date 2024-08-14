@@ -49,14 +49,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Windows ${{ matrix.arch }}
-          path: dist/*.exe
+          path: |
+            dist/*setup.exe
+            dist/*portable.7z
           if-no-files-found: error
       - name: Publish Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/*.exe
+            dist/*setup.exe
+            dist/*portable.7z
             dist/latest.yml
           token: ${{ secrets.GITHUB_TOKEN }}
 

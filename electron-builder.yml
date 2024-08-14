@@ -25,11 +25,14 @@ protocols:
     - 'clash'
     - 'mihomo'
 win:
-  target: nsis
+  target:
+    - nsis
+    - 7z
+  artifactName: ${name}-windows-${version}-${arch}-portable.${ext}
   requestedExecutionLevel: requireAdministrator
   executableName: mihomo-party
-  artifactName: ${name}-windows-${version}-${arch}-setup.${ext}
 nsis:
+  artifactName: ${name}-windows-${version}-${arch}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   deleteAppDataOnUninstall: true
@@ -59,6 +62,6 @@ linux:
   category: Utility
   artifactName: ${name}-linux-${version}-${arch}.${ext}
 deb:
-  afterInstall: "build/linux/deb/postinst"
+  afterInstall: 'build/linux/deb/postinst'
 npmRebuild: true
 publish: []
