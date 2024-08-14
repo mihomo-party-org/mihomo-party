@@ -28,6 +28,7 @@ const Profiles: React.FC = () => {
   const { current, items = [] } = profileConfig || {}
   const [sortedItems, setSortedItems] = useState(items)
   const [importing, setImporting] = useState(false)
+  const [updating, setUpdating] = useState(false)
   const [fileOver, setFileOver] = useState(false)
   const [url, setUrl] = useState('')
   const sensors = useSensors(useSensor(PointerSensor))
@@ -101,7 +102,9 @@ const Profiles: React.FC = () => {
         <Button
           size="sm"
           color="primary"
+          isLoading={updating}
           onPress={async () => {
+            setUpdating(true)
             for (const item of items) {
               if (item.id === current) continue
               if (item.type !== 'remote') continue
@@ -111,6 +114,7 @@ const Profiles: React.FC = () => {
             if (currentItem && currentItem.type === 'remote') {
               await addProfileItem(currentItem)
             }
+            setUpdating(false)
           }}
         >
           更新全部订阅
