@@ -4,6 +4,7 @@ import yaml from 'yaml'
 import { getAxios, startMihomoMemory, startMihomoTraffic } from '../core/mihomoApi'
 import { generateProfile } from '../resolve/factory'
 import { getAppConfig } from './app'
+import { defaultControledMihomoConfig } from '../utils/template'
 
 let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
 
@@ -16,11 +17,20 @@ export async function getControledMihomoConfig(force = false): Promise<Partial<I
 }
 
 export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
-  const { useNameserverPolicy } = await getAppConfig()
+  const { useNameserverPolicy, controlDns, controlSniff } = await getAppConfig()
   if (patch.tun) {
     const oldTun = controledMihomoConfig.tun || {}
     const newTun = Object.assign(oldTun, patch.tun)
     patch.tun = newTun
+  }
+  if (!controlDns) {
+    delete controledMihomoConfig.dns
+    delete controledMihomoConfig.hosts
+  } else {
+    if (controledMihomoConfig.hosts === undefined) {
+      controledMihomoConfig.dns = defaultControledMihomoConfig.dns
+      controledMihomoConfig.hosts = defaultControledMihomoConfig.hosts
+    }
   }
   if (patch.dns) {
     const oldDns = controledMihomoConfig.dns || {}
@@ -29,6 +39,13 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
       delete newDns['nameserver-policy']
     }
     patch.dns = newDns
+  }
+  if (!controlSniff) {
+    delete controledMihomoConfig.sniffer
+  } else {
+    if (!controledMihomoConfig.sniffer) {
+      controledMihomoConfig.sniffer = defaultControledMihomoConfig.sniffer
+    }
   }
   if (patch.sniffer) {
     const oldSniffer = controledMihomoConfig.sniffer || {}

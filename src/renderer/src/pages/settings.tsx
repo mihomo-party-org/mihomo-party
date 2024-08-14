@@ -8,7 +8,8 @@ import {
   enableAutoRun,
   disableAutoRun,
   quitApp,
-  checkUpdate
+  checkUpdate,
+  patchControledMihomoConfig
 } from '@renderer/utils/ipc'
 import { IoLogoGithub } from 'react-icons/io5'
 import { version } from '@renderer/utils/init'
@@ -26,6 +27,8 @@ const Settings: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     silentStart = false,
+    controlDns = true,
+    controlSniff = true,
     delayTestUrl,
     delayTestTimeout,
     autoCheckUpdate,
@@ -185,6 +188,26 @@ const Settings: React.FC = () => {
             placeholder="默认5000"
             onValueChange={(v) => {
               patchAppConfig({ delayTestTimeout: parseInt(v) })
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="接管DNS设置" divider>
+          <Switch
+            size="sm"
+            isSelected={controlDns}
+            onValueChange={async (v) => {
+              await patchAppConfig({ controlDns: v })
+              await patchControledMihomoConfig({})
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="接管域名嗅探设置" divider>
+          <Switch
+            size="sm"
+            isSelected={controlSniff}
+            onValueChange={async (v) => {
+              await patchAppConfig({ controlSniff: v })
+              await patchControledMihomoConfig({})
             }}
           />
         </SettingItem>

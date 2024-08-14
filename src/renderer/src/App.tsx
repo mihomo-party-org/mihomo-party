@@ -33,6 +33,8 @@ const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     appTheme = 'system',
+    controlDns = true,
+    controlSniff = true,
     siderOrder = [
       'sysproxy',
       'tun',
@@ -119,6 +121,8 @@ const App: React.FC = () => {
               })}
             >
               {order.map((key: string) => {
+                if (key === 'dns' && controlDns === false) return null
+                if (key === 'sniff' && controlSniff === false) return null
                 return componentMap[key]
               })}
             </SortableContext>

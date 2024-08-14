@@ -7,6 +7,8 @@ export const defaultConfig: IAppConfig = {
   autoCheckUpdate: true,
   autoCloseConnection: true,
   useNameserverPolicy: false,
+  controlDns: true,
+  controlSniff: true,
   nameserverPolicy: {},
   siderOrder: [
     'mode',

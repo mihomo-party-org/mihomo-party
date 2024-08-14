@@ -214,6 +214,8 @@ interface IAppConfig {
   delayTestUrl?: string
   delayTestTimeout?: number
   encryptedPassword?: Buffer
+  controlDns?: boolean
+  controlSniff?: boolean
   useNameserverPolicy: boolean
   nameserverPolicy: { [key: string]: string | string[] }
 }
