@@ -12,6 +12,7 @@ const ProxyProvider: React.FC = () => {
   const { data, mutate } = useSWR('mihomoProxyProviders', mihomoProxyProviders)
   const providers = useMemo(() => {
     if (!data) return []
+    if (!data.providers) return []
     return Object.keys(data.providers)
       .map((key) => data.providers[key])
       .filter((provider) => {

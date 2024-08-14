@@ -11,6 +11,7 @@ const RuleProvider: React.FC = () => {
   const { data, mutate } = useSWR('mihomoRuleProviders', mihomoRuleProviders)
   const providers = useMemo(() => {
     if (!data) return []
+    if (!data.providers) return []
     return Object.keys(data.providers).map((key) => data.providers[key])
   }, [data])
   const [updating, setUpdating] = useState(Array(providers.length).fill(false))

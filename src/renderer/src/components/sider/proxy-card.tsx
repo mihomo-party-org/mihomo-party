@@ -11,7 +11,7 @@ const ProxyCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/proxies')
-  const { data: proxies = { proxies: {} } } = useSWR('mihomoProxies', mihomoProxies)
+  const { data: proxies } = useSWR('mihomoProxies', mihomoProxies)
   const {
     attributes,
     listeners,
@@ -24,6 +24,8 @@ const ProxyCard: React.FC = () => {
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const filtered = useMemo(() => {
+    if (!proxies) return []
+    if (!proxies.proxies) return []
     return Object.keys(proxies.proxies).filter((key) => 'all' in proxies.proxies[key])
   }, [proxies])
 

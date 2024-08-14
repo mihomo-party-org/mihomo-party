@@ -32,24 +32,24 @@ const Proxies: React.FC = () => {
   } = appConfig || {}
 
   const groups = useMemo(() => {
+    if (!proxies) return []
+    if (!proxies.proxies) return []
     const groups: IMihomoGroup[] = []
-    if (proxies && proxies.proxies) {
-      runtime?.['proxy-groups']?.forEach((group: { name: string; url?: string }) => {
-        group = Object.assign(group, group['<<'])
-        const { name, url } = group
-        if (
-          proxies.proxies[name] &&
-          isGroup(proxies.proxies[name]) &&
-          !proxies.proxies[name].hidden
-        ) {
-          const newGroup = proxies.proxies[name]
-          newGroup.testUrl = url
-          groups.push(newGroup as IMihomoGroup)
-        }
-      })
-      if (!groups.find((group) => group.name === 'GLOBAL')) {
-        groups.push(proxies.proxies['GLOBAL'] as IMihomoGroup)
+    runtime?.['proxy-groups']?.forEach((group: { name: string; url?: string }) => {
+      group = Object.assign(group, group['<<'])
+      const { name, url } = group
+      if (
+        proxies.proxies[name] &&
+        isGroup(proxies.proxies[name]) &&
+        !proxies.proxies[name].hidden
+      ) {
+        const newGroup = proxies.proxies[name]
+        newGroup.testUrl = url
+        groups.push(newGroup as IMihomoGroup)
       }
+    })
+    if (!groups.find((group) => group.name === 'GLOBAL')) {
+      groups.push(proxies.proxies['GLOBAL'] as IMihomoGroup)
     }
     return groups
   }, [proxies, runtime])
