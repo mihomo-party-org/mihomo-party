@@ -43,11 +43,7 @@ export const getAxios = async (force: boolean = false): Promise<AxiosInstance> =
 
 export async function mihomoVersion(): Promise<IMihomoVersion> {
   const instance = await getAxios()
-  try {
-    return await instance.get('/version')
-  } catch (error) {
-    return { version: '-', meta: true }
-  }
+  return await instance.get('/version')
 }
 
 export const patchMihomoConfig = async (patch: Partial<IMihomoConfig>): Promise<void> => {
@@ -67,29 +63,18 @@ export const mihomoCloseAllConnections = async (): Promise<void> => {
 
 export const mihomoRules = async (): Promise<IMihomoRulesInfo> => {
   const instance = await getAxios()
-  try {
-    return await instance.get('/rules')
-  } catch (e) {
-    return { rules: [] }
-  }
+  return await instance.get('/rules')
 }
 
 export const mihomoProxies = async (): Promise<IMihomoProxies> => {
   const instance = await getAxios()
-  try {
-    return await instance.get('/proxies')
-  } catch (e) {
-    return { proxies: {} }
-  }
+
+  return await instance.get('/proxies')
 }
 
 export const mihomoProxyProviders = async (): Promise<IMihomoProxyProviders> => {
   const instance = await getAxios()
-  try {
-    return await instance.get('/providers/proxies')
-  } catch (e) {
-    return { providers: {} }
-  }
+  return await instance.get('/providers/proxies')
 }
 
 export const mihomoUpdateProxyProviders = async (name: string): Promise<void> => {
@@ -99,11 +84,7 @@ export const mihomoUpdateProxyProviders = async (name: string): Promise<void> =>
 
 export const mihomoRuleProviders = async (): Promise<IMihomoRuleProviders> => {
   const instance = await getAxios()
-  try {
-    return await instance.get('/providers/rules')
-  } catch (e) {
-    return { providers: {} }
-  }
+  return await instance.get('/providers/rules')
 }
 
 export const mihomoUpdateRuleProviders = async (name: string): Promise<void> => {

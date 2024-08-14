@@ -6,9 +6,10 @@ import {
 } from '../config'
 import icoIcon from '../../../resources/icon.ico?asset'
 import pngIcon from '../../../resources/icon.png?asset'
+import templateIcon from '../../../resources/iconTemplate.png?asset'
 import { patchMihomoConfig } from './mihomoApi'
 import { mainWindow, showMainWindow } from '..'
-import { app, ipcMain, Menu, shell, Tray } from 'electron'
+import { app, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../resolve/sysproxy'
 
@@ -141,7 +142,13 @@ const buildContextMenu = async (): Promise<Menu> => {
 export async function createTray(): Promise<void> {
   if (process.platform === 'linux') {
     tray = new Tray(pngIcon)
-  } else {
+  }
+  if (process.platform === 'darwin') {
+    const icon = nativeImage.createFromPath(templateIcon)
+    icon.setTemplateImage(true)
+    tray = new Tray(icon)
+  }
+  if (process.platform === 'win32') {
     tray = new Tray(icoIcon)
   }
   const menu = await buildContextMenu()
@@ -153,11 +160,10 @@ export async function createTray(): Promise<void> {
     await updateTrayMenu()
   })
 
-  tray.setContextMenu(menu)
-  tray.setIgnoreDoubleClickEvents(true)
-  tray.setToolTip('Another Mihomo GUI.')
-  tray.setTitle('Mihomo Party')
-  tray.addListener('click', () => {
+  tray?.setContextMenu(menu)
+  tray?.setIgnoreDoubleClickEvents(true)
+  tray?.setToolTip('Mihomo Party')
+  tray?.addListener('click', () => {
     if (mainWindow?.isVisible()) {
       mainWindow?.close()
     } else {
