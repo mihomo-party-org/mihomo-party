@@ -61,7 +61,7 @@ jobs:
             dist/*setup.exe
             dist/*portable.7z
             dist/latest.yml
-          body: changelog.md
+          body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
   linux:
@@ -114,7 +114,7 @@ jobs:
           files: |
             dist/*.deb
             dist/*.rpm
-          body: changelog.md
+          body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
   macos:
@@ -163,7 +163,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.dmg
-          body: changelog.md
+          body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
   aur-release-updater:
