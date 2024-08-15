@@ -217,6 +217,7 @@ interface IAppConfig {
   controlDns?: boolean
   controlSniff?: boolean
   useDockIcon?: boolean
+  showTraffic?: boolean
   useNameserverPolicy: boolean
   nameserverPolicy: { [key: string]: string | string[] }
 }

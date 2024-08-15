@@ -11,7 +11,8 @@ import {
   checkUpdate,
   patchControledMihomoConfig,
   isPortable,
-  setPortable
+  setPortable,
+  restartCore
 } from '@renderer/utils/ipc'
 import { IoLogoGithub } from 'react-icons/io5'
 import { platform, version } from '@renderer/utils/init'
@@ -30,6 +31,7 @@ const Settings: React.FC = () => {
     controlDns = true,
     controlSniff = true,
     useDockIcon = true,
+    showTraffic = true,
     delayTestUrl,
     delayTestTimeout,
     autoCheckUpdate,
@@ -124,15 +126,27 @@ const Settings: React.FC = () => {
           />
         </SettingItem>
         {platform === 'darwin' && (
-          <SettingItem title="显示Dock图标" divider>
-            <Switch
-              size="sm"
-              isSelected={useDockIcon}
-              onValueChange={(v) => {
-                patchAppConfig({ useDockIcon: v })
-              }}
-            />
-          </SettingItem>
+          <>
+            <SettingItem title="显示Dock图标" divider>
+              <Switch
+                size="sm"
+                isSelected={useDockIcon}
+                onValueChange={async (v) => {
+                  await patchAppConfig({ useDockIcon: v })
+                }}
+              />
+            </SettingItem>
+            <SettingItem title="显示网速信息" divider>
+              <Switch
+                size="sm"
+                isSelected={showTraffic}
+                onValueChange={async (v) => {
+                  await patchAppConfig({ showTraffic: v })
+                  await restartCore()
+                }}
+              />
+            </SettingItem>
+          </>
         )}
         {platform === 'win32' && (
           <SettingItem title="数据存储路径" divider>

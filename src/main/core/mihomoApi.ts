@@ -144,6 +144,7 @@ export const stopMihomoTraffic = (): void => {
 }
 
 const mihomoTraffic = async (): Promise<void> => {
+  const { showTraffic = true } = await getAppConfig()
   const controledMihomoConfig = await getControledMihomoConfig()
   let server = controledMihomoConfig['external-controller']
   const secret = controledMihomoConfig.secret ?? ''
@@ -155,16 +156,20 @@ const mihomoTraffic = async (): Promise<void> => {
   mihomoTrafficWs.onmessage = (e): void => {
     const data = e.data as string
     const json = JSON.parse(data) as IMihomoTrafficInfo
-    if (trafficHopping) {
-      tray?.setTitle('↑' + `${calcTraffic(json.up)}/s`.padStart(12), {
-        fontType: 'monospaced'
-      })
+    if (showTraffic) {
+      if (trafficHopping) {
+        tray?.setTitle('↑' + `${calcTraffic(json.up)}/s`.padStart(12), {
+          fontType: 'monospaced'
+        })
+      } else {
+        tray?.setTitle('↓' + `${calcTraffic(json.down)}/s`.padStart(12), {
+          fontType: 'monospaced'
+        })
+      }
+      trafficHopping = !trafficHopping
     } else {
-      tray?.setTitle('↓' + `${calcTraffic(json.down)}/s`.padStart(12), {
-        fontType: 'monospaced'
-      })
+      tray?.setTitle('')
     }
-    trafficHopping = !trafficHopping
 
     tray?.setToolTip(
       '↑' +
