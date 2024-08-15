@@ -156,21 +156,21 @@ const mihomoTraffic = async (): Promise<void> => {
     const data = e.data as string
     const json = JSON.parse(data) as IMihomoTrafficInfo
     if (trafficHopping) {
-      tray?.setTitle('↑' + `${calcTraffic(json.up)}/s`.padStart(14), {
-        fontType: 'monospacedDigit'
+      tray?.setTitle('↑' + `${calcTraffic(json.up)}/s`.padStart(12), {
+        fontType: 'monospaced'
       })
     } else {
-      tray?.setTitle('↓' + `${calcTraffic(json.down)}/s`.padStart(14), {
-        fontType: 'monospacedDigit'
+      tray?.setTitle('↓' + `${calcTraffic(json.down)}/s`.padStart(12), {
+        fontType: 'monospaced'
       })
     }
     trafficHopping = !trafficHopping
 
     tray?.setToolTip(
       '↑' +
-        `${calcTraffic(json.up)}/s`.padStart(14) +
+        `${calcTraffic(json.up)}/s`.padStart(12) +
         '\n↓' +
-        `${calcTraffic(json.down)}/s`.padStart(14)
+        `${calcTraffic(json.down)}/s`.padStart(12)
     )
     trafficRetry = 10
     mainWindow?.webContents.send('mihomoTraffic', json)
