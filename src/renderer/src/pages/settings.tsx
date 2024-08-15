@@ -12,7 +12,7 @@ import {
   patchControledMihomoConfig
 } from '@renderer/utils/ipc'
 import { IoLogoGithub } from 'react-icons/io5'
-import { version } from '@renderer/utils/init'
+import { platform, version } from '@renderer/utils/init'
 import useSWR from 'swr'
 import { Key, useState } from 'react'
 import debounce from '@renderer/utils/debounce'
@@ -29,6 +29,7 @@ const Settings: React.FC = () => {
     silentStart = false,
     controlDns = true,
     controlSniff = true,
+    useDockIcon = true,
     delayTestUrl,
     delayTestTimeout,
     autoCheckUpdate,
@@ -122,6 +123,18 @@ const Settings: React.FC = () => {
             }}
           />
         </SettingItem>
+        {platform === 'darwin' && (
+          <SettingItem title="显示Dock图标" divider>
+            <Switch
+              size="sm"
+              isSelected={useDockIcon}
+              onValueChange={(v) => {
+                patchAppConfig({ useDockIcon: v })
+              }}
+            />
+          </SettingItem>
+        )}
+
         <SettingItem title="背景色" divider={appTheme !== 'system'}>
           <Tabs
             size="sm"

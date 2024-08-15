@@ -140,6 +140,7 @@ const buildContextMenu = async (): Promise<Menu> => {
 }
 
 export async function createTray(): Promise<void> {
+  const { useDockIcon = true } = await getAppConfig()
   if (process.platform === 'linux') {
     tray = new Tray(pngIcon)
   }
@@ -159,11 +160,16 @@ export async function createTray(): Promise<void> {
   ipcMain.on('appConfigUpdated', async () => {
     await updateTrayMenu()
   })
+
   tray?.setToolTip('Mihomo Party')
   tray?.setContextMenu(menu)
   tray?.setIgnoreDoubleClickEvents(true)
   if (process.platform === 'darwin') {
-    app.dock.setMenu(menu)
+    if (!useDockIcon) {
+      app.dock.hide()
+    } else {
+      app.dock.setMenu(menu)
+    }
     tray?.addListener('right-click', () => {
       if (mainWindow?.isVisible()) {
         mainWindow?.close()

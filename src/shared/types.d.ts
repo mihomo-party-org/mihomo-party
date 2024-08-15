@@ -216,6 +216,7 @@ interface IAppConfig {
   encryptedPassword?: Buffer
   controlDns?: boolean
   controlSniff?: boolean
+  useDockIcon?: boolean
   useNameserverPolicy: boolean
   nameserverPolicy: { [key: string]: string | string[] }
 }
