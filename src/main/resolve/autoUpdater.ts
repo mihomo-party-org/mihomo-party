@@ -4,6 +4,7 @@ import { app } from 'electron'
 import { getControledMihomoConfig } from '../config'
 
 export async function checkUpdate(): Promise<string | undefined> {
+  const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
   const res = await axios.get(
     'https://github.com/pompurin404/mihomo-party/releases/latest/download/latest.yml',
     {
@@ -11,7 +12,7 @@ export async function checkUpdate(): Promise<string | undefined> {
       proxy: {
         protocol: 'http',
         host: '127.0.0.1',
-        port: getControledMihomoConfig()['mixed-port'] || 7890
+        port: mixedPort
       }
     }
   )
