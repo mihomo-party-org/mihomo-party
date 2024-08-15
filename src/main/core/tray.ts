@@ -13,7 +13,7 @@ import { app, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../resolve/sysproxy'
 
-let tray: Tray | null = null
+export let tray: Tray | null = null
 
 const buildContextMenu = async (): Promise<Menu> => {
   const { mode, tun } = await getControledMihomoConfig()
@@ -159,20 +159,33 @@ export async function createTray(): Promise<void> {
   ipcMain.on('appConfigUpdated', async () => {
     await updateTrayMenu()
   })
-
+  tray?.setToolTip('Mihomo Party')
   tray?.setContextMenu(menu)
   tray?.setIgnoreDoubleClickEvents(true)
-  tray?.setToolTip('Mihomo Party')
-  tray?.addListener('click', () => {
-    if (mainWindow?.isVisible()) {
-      mainWindow?.close()
-    } else {
-      showMainWindow()
-    }
-  })
+  if (process.platform === 'darwin') {
+    app.dock.setMenu(menu)
+    tray?.addListener('right-click', () => {
+      if (mainWindow?.isVisible()) {
+        mainWindow?.close()
+      } else {
+        showMainWindow()
+      }
+    })
+  } else {
+    tray?.addListener('click', () => {
+      if (mainWindow?.isVisible()) {
+        mainWindow?.close()
+      } else {
+        showMainWindow()
+      }
+    })
+  }
 }
 
 async function updateTrayMenu(): Promise<void> {
   const menu = await buildContextMenu()
+  if (process.platform === 'darwin') {
+    app.dock.setMenu(menu) // 更新dock菜单
+  }
   tray?.setContextMenu(menu) // 更新菜单
 }

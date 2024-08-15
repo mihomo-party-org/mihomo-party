@@ -17,7 +17,7 @@ const OutboundModeSwitcher: React.FC = () => {
       await mihomoCloseAllConnections()
     }
   }
-
+  if (!mode) return null
   return (
     <Tabs
       fullWidth

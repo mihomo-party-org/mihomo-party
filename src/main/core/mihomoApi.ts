@@ -2,6 +2,8 @@ import axios, { AxiosInstance } from 'axios'
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { mainWindow } from '..'
 import WebSocket from 'ws'
+import { tray } from './tray'
+import { calcTraffic } from '../utils/calc'
 
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
@@ -151,8 +153,21 @@ const mihomoTraffic = async (): Promise<void> => {
 
   mihomoTrafficWs.onmessage = (e): void => {
     const data = e.data as string
+    const json = JSON.parse(data) as IMihomoTrafficInfo
+    tray?.setTitle(
+      '↑' +
+        `${calcTraffic(json.up)}/s`.padStart(16) +
+        '\n↓' +
+        `${calcTraffic(json.down)}/s`.padStart(16)
+    )
+    tray?.setToolTip(
+      '↑' +
+        `${calcTraffic(json.up)}/s`.padStart(16) +
+        '\n↓' +
+        `${calcTraffic(json.down)}/s`.padStart(16)
+    )
     trafficRetry = 10
-    mainWindow?.webContents.send('mihomoTraffic', JSON.parse(data) as IMihomoTrafficInfo)
+    mainWindow?.webContents.send('mihomoTraffic', json)
   }
 
   mihomoTrafficWs.onclose = (): void => {
@@ -308,10 +323,9 @@ const mihomoConnections = async (): Promise<void> => {
 
 export const pauseWebsockets = () => {
   const recoverList: (() => void)[] = []
-  if (mihomoTrafficWs) {
-    stopMihomoTraffic()
-    recoverList.push(startMihomoTraffic)
-  }
+  // Traffic 始终开启
+  stopMihomoTraffic()
+  recoverList.push(startMihomoTraffic)
   if (mihomoMemoryWs) {
     stopMihomoMemory()
     recoverList.push(startMihomoMemory)

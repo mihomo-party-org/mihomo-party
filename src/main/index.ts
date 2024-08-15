@@ -9,12 +9,7 @@ import { createTray } from './core/tray'
 import { init } from './resolve/init'
 import { addProfileItem, getAppConfig } from './config'
 import { join } from 'path'
-import {
-  startMihomoMemory,
-  startMihomoTraffic,
-  stopMihomoMemory,
-  stopMihomoTraffic
-} from './core/mihomoApi'
+import { startMihomoMemory, stopMihomoMemory } from './core/mihomoApi'
 
 export let mainWindow: BrowserWindow | null = null
 export let destroyTimer: NodeJS.Timeout | null = null
@@ -159,12 +154,10 @@ export function createWindow(show = false): void {
   })
 
   mainWindow.on('show', () => {
-    startMihomoTraffic()
     startMihomoMemory()
   })
 
   mainWindow.on('close', (event) => {
-    stopMihomoTraffic()
     stopMihomoMemory()
     event.preventDefault()
     mainWindow?.hide()

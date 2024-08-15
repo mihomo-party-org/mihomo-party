@@ -278,12 +278,12 @@ const resolveFont = async () => {
 
 const tasks = [
   {
-    name: 'verge-mihomo-alpha',
+    name: 'mihomo-alpha',
     func: () => getLatestAlphaVersion().then(() => resolveSidecar(MihomoAlpha())),
     retry: 5
   },
   {
-    name: 'verge-mihomo',
+    name: 'mihomo',
     func: () => getLatestReleaseVersion().then(() => resolveSidecar(mihomo())),
     retry: 5
   },
