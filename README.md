@@ -42,7 +42,7 @@
 
 下载dmg包，打开后将mihomo-party图标拖入Applications文件夹安装
 
-> 如果第一次打开遇到 '"mihomo-party.app" is damaged and can't be opened. You should move it to the Trash.' 的问题，请执行以下命令：
+> 如果打开时遇到 '"mihomo-party.app" is damaged and can't be opened.' 的问题，请执行以下命令：
 >
 > `sudo xattr -r -d com.apple.quarantine /Applications/mihomo-party.app`
 
