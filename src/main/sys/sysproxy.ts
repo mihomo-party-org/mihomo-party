@@ -1,6 +1,6 @@
 import { triggerAutoProxy, triggerManualProxy } from '@mihomo-party/sysproxy'
 import { getAppConfig, getControledMihomoConfig } from '../config'
-import { pacPort } from './server'
+import { pacPort } from '../resolve/server'
 
 let defaultBypass: string[]
 

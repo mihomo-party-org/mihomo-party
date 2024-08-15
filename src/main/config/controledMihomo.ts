@@ -2,7 +2,7 @@ import { controledMihomoConfigPath } from '../utils/dirs'
 import { readFile, writeFile } from 'fs/promises'
 import yaml from 'yaml'
 import { getAxios, startMihomoMemory, startMihomoTraffic } from '../core/mihomoApi'
-import { generateProfile } from '../resolve/factory'
+import { generateProfile } from '../core/factory'
 import { getAppConfig } from './app'
 import { defaultControledMihomoConfig } from '../utils/template'
 

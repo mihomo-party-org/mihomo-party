@@ -1,9 +1,36 @@
 import { is } from '@electron-toolkit/utils'
 import { app } from 'electron'
+import fs from 'fs'
+import { rm, writeFile } from 'fs/promises'
 import path from 'path'
 
-export const dataDir = app.getPath('userData')
 export const homeDir = app.getPath('home')
+
+export function isPortable(): boolean {
+  return fs.existsSync(path.join(exeDir(), 'PORTABLE'))
+}
+
+export async function setPortable(portable: boolean): Promise<void> {
+  if (portable) {
+    await writeFile(path.join(exeDir(), 'PORTABLE'), '')
+  } else {
+    await rm(path.join(exeDir(), 'PORTABLE'))
+  }
+  app.relaunch()
+  app.quit()
+}
+
+export function dataDir(): string {
+  if (isPortable()) {
+    return path.join(exeDir(), 'data')
+  } else {
+    return app.getPath('userData')
+  }
+}
+
+export function exeDir(): string {
+  return path.dirname(exePath())
+}
 
 export function exePath(): string {
   return app.getPath('exe')
@@ -35,19 +62,19 @@ export function mihomoCorePath(core: string): string {
 }
 
 export function appConfigPath(): string {
-  return path.join(dataDir, 'config.yaml')
+  return path.join(dataDir(), 'config.yaml')
 }
 
 export function controledMihomoConfigPath(): string {
-  return path.join(dataDir, 'mihomo.yaml')
+  return path.join(dataDir(), 'mihomo.yaml')
 }
 
 export function profileConfigPath(): string {
-  return path.join(dataDir, 'profile.yaml')
+  return path.join(dataDir(), 'profile.yaml')
 }
 
 export function profilesDir(): string {
-  return path.join(dataDir, 'profiles')
+  return path.join(dataDir(), 'profiles')
 }
 
 export function profilePath(id: string): string {
@@ -55,11 +82,11 @@ export function profilePath(id: string): string {
 }
 
 export function overrideDir(): string {
-  return path.join(dataDir, 'override')
+  return path.join(dataDir(), 'override')
 }
 
 export function overrideConfigPath(): string {
-  return path.join(dataDir, 'override.yaml')
+  return path.join(dataDir(), 'override.yaml')
 }
 
 export function overridePath(id: string): string {
@@ -67,11 +94,11 @@ export function overridePath(id: string): string {
 }
 
 export function mihomoWorkDir(): string {
-  return path.join(dataDir, 'work')
+  return path.join(dataDir(), 'work')
 }
 
 export function mihomoTestDir(): string {
-  return path.join(dataDir, 'test')
+  return path.join(dataDir(), 'test')
 }
 
 export function mihomoWorkConfigPath(): string {
@@ -79,7 +106,7 @@ export function mihomoWorkConfigPath(): string {
 }
 
 export function logDir(): string {
-  return path.join(dataDir, 'logs')
+  return path.join(dataDir(), 'logs')
 }
 
 export function logPath(): string {

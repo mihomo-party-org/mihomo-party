@@ -8,6 +8,7 @@ import {
 import { mihomoWorkConfigPath } from '../utils/dirs'
 import yaml from 'yaml'
 import fs from 'fs'
+import { readFile } from 'fs/promises'
 
 export async function generateProfile(): Promise<void> {
   const { current } = await getProfileConfig()
@@ -58,4 +59,12 @@ function runOverrideScript(profile: IMihomoConfig, script: string): IMihomoConfi
   } catch (e) {
     return profile
   }
+}
+
+export async function getRuntimeConfigStr(): Promise<string> {
+  return await readFile(mihomoWorkConfigPath(), 'utf8')
+}
+
+export async function getRuntimeConfig(): Promise<IMihomoConfig> {
+  return yaml.parse(await getRuntimeConfigStr())
 }

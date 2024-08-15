@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain, safeStorage } from 'electron'
+import { app, ipcMain, safeStorage } from 'electron'
 import {
   mihomoChangeProxy,
   mihomoCloseAllConnections,
@@ -19,7 +19,7 @@ import {
   stopMihomoConnections,
   stopMihomoLogs
 } from '../core/mihomoApi'
-import { checkAutoRun, disableAutoRun, enableAutoRun } from '../resolve/autoRun'
+import { checkAutoRun, disableAutoRun, enableAutoRun } from '../sys/autoRun'
 import {
   getAppConfig,
   patchAppConfig,
@@ -45,14 +45,11 @@ import {
   updateOverrideItem
 } from '../config'
 import { isEncryptionAvailable, manualGrantCorePermition, restartCore } from '../core/manager'
-import { triggerSysProxy } from '../resolve/sysproxy'
+import { triggerSysProxy } from '../sys/sysproxy'
 import { checkUpdate } from '../resolve/autoUpdater'
-import { exePath, mihomoCorePath, mihomoWorkConfigPath, resourcesDir } from './dirs'
-import { exec, execFile } from 'child_process'
-import yaml from 'yaml'
-import path from 'path'
-import { promisify } from 'util'
-import { readFile } from 'fs/promises'
+import { getFilePath, openUWPTool, readTextFile, setupFirewall } from '../sys/misc'
+import { getRuntimeConfig, getRuntimeConfigStr } from '../core/factory'
+import { isPortable, setPortable } from './dirs'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -138,50 +135,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('platform', () => process.platform)
   ipcMain.handle('openUWPTool', ipcErrorWrapper(openUWPTool))
   ipcMain.handle('setupFirewall', ipcErrorWrapper(setupFirewall))
+  ipcMain.handle('setPortable', (_e, portable) => ipcErrorWrapper(setPortable)(portable))
+  ipcMain.handle('isPortable', isPortable)
   ipcMain.handle('quitApp', () => app.quit())
-}
-
-function getFilePath(ext: string[]): string[] | undefined {
-  return dialog.showOpenDialogSync({
-    title: '选择订阅文件',
-    filters: [{ name: `${ext} file`, extensions: ext }],
-    properties: ['openFile']
-  })
-}
-
-async function readTextFile(filePath: string): Promise<string> {
-  return await readFile(filePath, 'utf8')
-}
-
-async function getRuntimeConfigStr(): Promise<string> {
-  return readFile(mihomoWorkConfigPath(), 'utf8')
-}
-
-async function getRuntimeConfig(): Promise<IMihomoConfig> {
-  return yaml.parse(await getRuntimeConfigStr())
-}
-
-async function openUWPTool(): Promise<void> {
-  const execFilePromise = promisify(execFile)
-  const uwpToolPath = path.join(resourcesDir(), 'files', 'enableLoopback.exe')
-  await execFilePromise(uwpToolPath)
-}
-
-async function setupFirewall(): Promise<void> {
-  const execPromise = promisify(exec)
-  const removeCommand = `
-  Remove-NetFirewallRule -DisplayName "mihomo" -ErrorAction SilentlyContinue
-  Remove-NetFirewallRule -DisplayName "mihomo-alpha" -ErrorAction SilentlyContinue
-  Remove-NetFirewallRule -DisplayName "Mihomo Party" -ErrorAction SilentlyContinue
-  `
-  const createCommand = `
-  New-NetFirewallRule -DisplayName "mihomo" -Direction Inbound -Action Allow -Program "${mihomoCorePath('mihomo')}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
-  New-NetFirewallRule -DisplayName "mihomo-alpha" -Direction Inbound -Action Allow -Program "${mihomoCorePath('mihomo-alpha')}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
-  New-NetFirewallRule -DisplayName "Mihomo Party" -Direction Inbound -Action Allow -Program "${exePath()}" -Enabled True -Profile Any -ErrorAction SilentlyContinue
-  `
-
-  if (process.platform === 'win32') {
-    await execPromise(removeCommand, { shell: 'powershell' })
-    await execPromise(createCommand, { shell: 'powershell' })
-  }
 }

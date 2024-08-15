@@ -245,6 +245,14 @@ export async function setupFirewall(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setupFirewall'))
 }
 
+export async function setPortable(portable: boolean): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setPortable', portable))
+}
+
+export async function isPortable(): Promise<boolean> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('isPortable'))
+}
+
 export async function quitApp(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('quitApp'))
 }

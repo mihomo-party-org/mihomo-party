@@ -11,20 +11,20 @@ import {
   profilePath,
   profilesDir,
   resourcesFilesDir
-} from '../utils/dirs'
+} from './dirs'
 import {
   defaultConfig,
   defaultControledMihomoConfig,
   defaultOverrideConfig,
   defaultProfile,
   defaultProfileConfig
-} from '../utils/template'
+} from './template'
 import yaml from 'yaml'
 import { mkdir, writeFile, copyFile } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
-import { startPacServer } from './server'
-import { triggerSysProxy } from './sysproxy'
+import { startPacServer } from '../resolve/server'
+import { triggerSysProxy } from '../sys/sysproxy'
 import { getAppConfig } from '../config'
 import { app } from 'electron'
 import { startCore } from '../core/manager'
@@ -32,8 +32,8 @@ import { initProfileUpdater } from '../core/profileUpdater'
 import { startMihomoTraffic } from '../core/mihomoApi'
 
 async function initDirs(): Promise<void> {
-  if (!existsSync(dataDir)) {
-    await mkdir(dataDir)
+  if (!existsSync(dataDir())) {
+    await mkdir(dataDir())
   }
   if (!existsSync(profilesDir())) {
     await mkdir(profilesDir())

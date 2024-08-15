@@ -1,4 +1,4 @@
-import { Button, Input, Switch, Tab, Tabs } from '@nextui-org/react'
+import { Button, Input, Select, SelectItem, Switch, Tab, Tabs } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
@@ -9,7 +9,9 @@ import {
   disableAutoRun,
   quitApp,
   checkUpdate,
-  patchControledMihomoConfig
+  patchControledMihomoConfig,
+  isPortable,
+  setPortable
 } from '@renderer/utils/ipc'
 import { IoLogoGithub } from 'react-icons/io5'
 import { platform, version } from '@renderer/utils/init'
@@ -20,10 +22,8 @@ import { useTheme } from 'next-themes'
 
 const Settings: React.FC = () => {
   const { setTheme } = useTheme()
-  const { data: enable, mutate } = useSWR('checkAutoRun', checkAutoRun, {
-    errorRetryCount: 5,
-    errorRetryInterval: 200
-  })
+  const { data: enable, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
+  const { data: portable, mutate: mutatePortable } = useSWR('isPortable', isPortable)
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     silentStart = false,
@@ -100,7 +100,7 @@ const Settings: React.FC = () => {
               } catch (e) {
                 alert(e)
               } finally {
-                mutate()
+                mutateEnable()
               }
             }}
           />
@@ -132,6 +132,27 @@ const Settings: React.FC = () => {
                 patchAppConfig({ useDockIcon: v })
               }}
             />
+          </SettingItem>
+        )}
+        {platform === 'win32' && (
+          <SettingItem title="数据存储路径" divider>
+            <Select
+              className="w-[150px]"
+              size="sm"
+              selectedKeys={new Set([portable ? 'portable' : 'data'])}
+              onSelectionChange={async (v) => {
+                try {
+                  await setPortable(v.currentKey === 'portable')
+                } catch (e) {
+                  alert(e)
+                } finally {
+                  mutatePortable()
+                }
+              }}
+            >
+              <SelectItem key="data">AppData</SelectItem>
+              <SelectItem key="portable">安装目录</SelectItem>
+            </Select>
           </SettingItem>
         )}
 

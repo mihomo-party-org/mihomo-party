@@ -7,11 +7,11 @@ import {
 import icoIcon from '../../../resources/icon.ico?asset'
 import pngIcon from '../../../resources/icon.png?asset'
 import templateIcon from '../../../resources/iconTemplate.png?asset'
-import { patchMihomoConfig } from './mihomoApi'
+import { patchMihomoConfig } from '../core/mihomoApi'
 import { mainWindow, showMainWindow } from '..'
 import { app, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
-import { triggerSysProxy } from '../resolve/sysproxy'
+import { triggerSysProxy } from '../sys/sysproxy'
 
 export let tray: Tray | null = null
 
@@ -105,7 +105,7 @@ const buildContextMenu = async (): Promise<Menu> => {
         {
           type: 'normal',
           label: '应用目录',
-          click: (): Promise<string> => shell.openPath(dataDir)
+          click: (): Promise<string> => shell.openPath(dataDir())
         },
         {
           type: 'normal',

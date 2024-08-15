@@ -76,7 +76,7 @@ export async function checkAutoRun(): Promise<boolean> {
 export async function enableAutoRun(): Promise<void> {
   if (process.platform === 'win32') {
     const execPromise = promisify(exec)
-    const taskFilePath = path.join(dataDir, `${appName}.xml`)
+    const taskFilePath = path.join(dataDir(), `${appName}.xml`)
     await writeFile(taskFilePath, taskXml)
     await execPromise(`schtasks /create /tn "${appName}" /xml "${taskFilePath}" /f`)
   }

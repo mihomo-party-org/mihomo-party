@@ -6,7 +6,7 @@ import {
   mihomoWorkConfigPath,
   mihomoWorkDir
 } from '../utils/dirs'
-import { generateProfile } from '../resolve/factory'
+import { generateProfile } from './factory'
 import { getAppConfig, patchAppConfig } from '../config'
 import { dialog, safeStorage } from 'electron'
 import { pauseWebsockets } from './mihomoApi'

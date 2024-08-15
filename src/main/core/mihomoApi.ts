@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { mainWindow } from '..'
 import WebSocket from 'ws'
-import { tray } from './tray'
+import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
 
 let axiosIns: AxiosInstance = null!
