@@ -11,8 +11,14 @@ depends=('electron' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'at-
 optdepends=('libappindicator-gtk3: Allow mihomo-party to extend a menu via Ayatana indicators in Unity, KDE or Systray (GTK+ 3 library).')
 makedepends=('nodejs' 'pnpm' 'libxcrypt-compat' 'asar')
 install=$_pkgname.install
-source=("${_pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz")
-sha256sums=("52d761e9432e17477acb8adb5744676df946476e0eb5210fee2b6d45f497f218")
+source=(
+    "${_pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz"
+    "${_pkgname}.sh"
+    )
+sha256sums=(
+    "52d761e9432e17477acb8adb5744676df946476e0eb5210fee2b6d45f497f218"
+    "560733f0e5bd9b47ff50c849301c8a22ae17a5df26830d8c97033dfcbd392382"
+    )
 options=('!lto')
 
 prepare(){
