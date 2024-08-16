@@ -188,8 +188,8 @@ jobs:
         if: matrix.pkgname == 'mihomo-party' || matrix.pkgname == 'mihomo-party-electron'
         run: |
           wget https://github.com/pompurin404/mihomo-party/archive/refs/tags/$(echo ${{ github.ref }} | tr -d 'refs/tags/').tar.gz -O release.tar.gz
-          sed -i "s/sha256sums=.*/sha256sums=(\"$(sha256sum ./release.tar.gz | awk '{print $1}')\")/" aur/mihomo-party/PKGBUILD
-          sed -i "s/sha256sums=.*/sha256sums=(\"$(sha256sum ./release.tar.gz | awk '{print $1}')\")/" aur/mihomo-party-electron/PKGBUILD
+          sed -i "s/sha256sums=.*/sha256sums=(\"$(sha256sum ./release.tar.gz | awk '{print $1}')\"/" aur/mihomo-party/PKGBUILD
+          sed -i "s/sha256sums=.*/sha256sums=(\"$(sha256sum ./release.tar.gz | awk '{print $1}')\"/" aur/mihomo-party-electron/PKGBUILD
       - name: Update Checksums
         if: matrix.pkgname == 'mihomo-party-bin' || matrix.pkgname == 'mihomo-party-electron-bin'
         run: |
