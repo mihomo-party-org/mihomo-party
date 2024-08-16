@@ -103,6 +103,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
     url: item.url,
     interval: item.interval || 0,
     override: item.override || [],
+    useProxy: item.useProxy || false,
     updated: new Date().getTime()
   } as IProfileItem
   switch (newItem.type) {
@@ -111,11 +112,13 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
       const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
       if (!item.url) throw new Error('Empty URL')
       const res = await axios.get(item.url, {
-        proxy: {
-          protocol: 'http',
-          host: '127.0.0.1',
-          port: mixedPort
-        },
+        proxy: newItem.useProxy
+          ? {
+              protocol: 'http',
+              host: '127.0.0.1',
+              port: mixedPort
+            }
+          : false,
         headers: {
           'User-Agent': userAgent
         }

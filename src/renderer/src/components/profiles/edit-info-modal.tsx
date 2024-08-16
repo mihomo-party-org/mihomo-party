@@ -7,7 +7,8 @@ import {
   Button,
   Input,
   Select,
-  SelectItem
+  SelectItem,
+  Switch
 } from '@nextui-org/react'
 import React, { useState } from 'react'
 import SettingItem from '../base/base-setting-item'
@@ -58,29 +59,38 @@ const EditInfoModal: React.FC<Props> = (props) => {
             />
           </SettingItem>
           {values.type === 'remote' && (
-            <SettingItem title="订阅地址">
-              <Input
-                size="sm"
-                className="w-[200px]"
-                value={values.url}
-                onValueChange={(v) => {
-                  setValues({ ...values, url: v })
-                }}
-              />
-            </SettingItem>
-          )}
-          {values.type === 'remote' && (
-            <SettingItem title="更新间隔（分钟）">
-              <Input
-                size="sm"
-                type="number"
-                className="w-[200px]"
-                value={values.interval?.toString() ?? ''}
-                onValueChange={(v) => {
-                  setValues({ ...values, interval: parseInt(v) })
-                }}
-              />
-            </SettingItem>
+            <>
+              <SettingItem title="订阅地址">
+                <Input
+                  size="sm"
+                  className="w-[200px]"
+                  value={values.url}
+                  onValueChange={(v) => {
+                    setValues({ ...values, url: v })
+                  }}
+                />
+              </SettingItem>
+              <SettingItem title="使用代理更新">
+                <Switch
+                  size="sm"
+                  isSelected={values.useProxy ?? false}
+                  onValueChange={(v) => {
+                    setValues({ ...values, useProxy: v })
+                  }}
+                />
+              </SettingItem>
+              <SettingItem title="更新间隔（分钟）">
+                <Input
+                  size="sm"
+                  type="number"
+                  className="w-[200px]"
+                  value={values.interval?.toString() ?? ''}
+                  onValueChange={(v) => {
+                    setValues({ ...values, interval: parseInt(v) })
+                  }}
+                />
+              </SettingItem>
+            </>
           )}
           <SettingItem title="覆写脚本">
             <Select

@@ -1,4 +1,4 @@
-import { Button, Input } from '@nextui-org/react'
+import { Button, Checkbox, Input } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import ProfileItem from '@renderer/components/profiles/profile-item'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
@@ -27,6 +27,7 @@ const Profiles: React.FC = () => {
   } = useProfileConfig()
   const { current, items = [] } = profileConfig || {}
   const [sortedItems, setSortedItems] = useState(items)
+  const [useProxy, setUseProxy] = useState(false)
   const [importing, setImporting] = useState(false)
   const [updating, setUpdating] = useState(false)
   const [fileOver, setFileOver] = useState(false)
@@ -34,7 +35,7 @@ const Profiles: React.FC = () => {
   const sensors = useSensors(useSensor(PointerSensor))
   const handleImport = async (): Promise<void> => {
     setImporting(true)
-    await addProfileItem({ name: '', type: 'remote', url })
+    await addProfileItem({ name: '', type: 'remote', url, useProxy })
     setImporting(false)
   }
   const pageRef = useRef<HTMLDivElement>(null)
@@ -128,20 +129,30 @@ const Profiles: React.FC = () => {
           value={url}
           onValueChange={setUrl}
           endContent={
-            <Button
-              size="sm"
-              isIconOnly
-              variant="light"
-              onPress={() => {
-                navigator.clipboard.readText().then((text) => {
-                  setUrl(text)
-                })
-              }}
-            >
-              <MdContentPaste className="text-lg" />
-            </Button>
+            <>
+              <Button
+                size="sm"
+                isIconOnly
+                variant="light"
+                onPress={() => {
+                  navigator.clipboard.readText().then((text) => {
+                    setUrl(text)
+                  })
+                }}
+              >
+                <MdContentPaste className="text-lg" />
+              </Button>
+              <Checkbox
+                className="whitespace-nowrap"
+                checked={useProxy}
+                onValueChange={setUseProxy}
+              >
+                代理
+              </Checkbox>
+            </>
           }
         />
+
         <Button
           size="sm"
           color="primary"

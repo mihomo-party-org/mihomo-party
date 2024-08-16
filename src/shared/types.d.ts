@@ -355,5 +355,6 @@ interface IProfileItem {
   home?: string
   updated?: number
   override?: string[]
+  useProxy?: boolean
   extra?: ISubscriptionUserInfo
 }
