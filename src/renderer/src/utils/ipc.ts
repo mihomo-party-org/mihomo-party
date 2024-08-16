@@ -253,6 +253,18 @@ export async function isPortable(): Promise<boolean> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('isPortable'))
 }
 
+export async function webdavBackup(): Promise<boolean> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('webdavBackup'))
+}
+
+export async function webdavRestore(filename: string): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('webdavRestore', filename))
+}
+
+export async function listWebdavBackups(): Promise<string[]> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('listWebdavBackups'))
+}
+
 export async function quitApp(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('quitApp'))
 }

@@ -218,6 +218,9 @@ interface IAppConfig {
   controlSniff?: boolean
   useDockIcon?: boolean
   showTraffic?: boolean
+  webdavUrl?: string
+  webdavUsername?: string
+  webdavPassword?: string
   useNameserverPolicy: boolean
   nameserverPolicy: { [key: string]: string | string[] }
 }

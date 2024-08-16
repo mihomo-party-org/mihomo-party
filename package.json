@@ -22,7 +22,9 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
     "@mihomo-party/sysproxy": "^2.0.0",
+    "adm-zip": "^0.5.15",
     "axios": "^1.7.3",
+    "webdav": "^5.7.1",
     "ws": "^8.18.0",
     "yaml": "^2.5.0"
   },
@@ -40,7 +42,6 @@
     "@types/react-dom": "^18.3.0",
     "@types/ws": "^8.5.12",
     "@vitejs/plugin-react": "^4.3.1",
-    "adm-zip": "^0.5.15",
     "autoprefixer": "^10.4.20",
     "dayjs": "^1.11.12",
     "electron": "^31.3.1",
