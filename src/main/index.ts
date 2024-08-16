@@ -12,7 +12,6 @@ import { init } from './utils/init'
 import { join } from 'path'
 
 export let mainWindow: BrowserWindow | null = null
-export let destroyTimer: NodeJS.Timeout | null = null
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -74,14 +73,7 @@ app.whenReady().then(async () => {
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (!mainWindow) {
-      if (destroyTimer) {
-        clearTimeout(destroyTimer)
-      }
-      createWindow(true)
-    } else {
-      showMainWindow()
-    }
+    showMainWindow()
   })
 })
 
@@ -97,7 +89,7 @@ async function handleDeepLink(url: string): Promise<void> {
         .replace('mihomo://install-config/?url=', '')
         .replace('mihomo://install-config?url=', '')
     }
-    url = url.split('&')[0]
+    url = decodeURIComponent(url.split('&')[0])
     await addProfileItem({
       type: 'remote',
       name: 'Remote File',
@@ -138,14 +130,6 @@ export function createWindow(show = false): void {
     if (!silentStart || show) {
       mainWindow?.show()
       mainWindow?.focusOnWebView()
-    } else {
-      if (destroyTimer) {
-        clearTimeout(destroyTimer)
-      }
-      destroyTimer = setTimeout(() => {
-        mainWindow?.destroy()
-        mainWindow = null
-      }, 300000)
     }
   })
 
@@ -158,16 +142,10 @@ export function createWindow(show = false): void {
   })
 
   mainWindow.on('close', (event) => {
-    stopMihomoMemory()
     event.preventDefault()
+    stopMihomoMemory()
     mainWindow?.hide()
-    if (destroyTimer) {
-      clearTimeout(destroyTimer)
-    }
-    destroyTimer = setTimeout(() => {
-      mainWindow?.destroy()
-      mainWindow = null
-    }, 300000)
+    mainWindow?.reload()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -185,9 +163,6 @@ export function createWindow(show = false): void {
 }
 
 export function showMainWindow(): void {
-  if (destroyTimer) {
-    clearTimeout(destroyTimer)
-  }
   if (mainWindow) {
     mainWindow.show()
     mainWindow.focusOnWebView()
