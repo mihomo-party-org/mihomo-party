@@ -2,7 +2,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcMainHandlers } from './utils/ipc'
 import windowStateKeeper from 'electron-window-state'
 import { app, shell, BrowserWindow, Menu, dialog, Notification } from 'electron'
-import { startMihomoMemory, stopMihomoMemory } from './core/mihomoApi'
+import { pauseWebsockets, startMihomoMemory, stopMihomoMemory } from './core/mihomoApi'
 import { addProfileItem, getAppConfig } from './config'
 import { stopCore } from './core/manager'
 import { triggerSysProxy } from './sys/sysproxy'
@@ -43,6 +43,7 @@ app.on('window-all-closed', (e) => {
 })
 
 app.on('before-quit', () => {
+  pauseWebsockets()
   stopCore()
   triggerSysProxy(false)
   app.exit()

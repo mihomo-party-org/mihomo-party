@@ -8,48 +8,48 @@ import path from 'path'
 
 const appName = 'mihomo-party'
 
-const taskXml = `
-   <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
-     <RegistrationInfo>
-       <Date>${new Date().toISOString()}</Date>
-       <Author>${process.env.USERNAME}</Author>
-     </RegistrationInfo>
-     <Triggers>
-       <LogonTrigger>
-         <Enabled>true</Enabled>
-       </LogonTrigger>
-     </Triggers>
-     <Principals>
-       <Principal id="Author">
-         <LogonType>InteractiveToken</LogonType>
-         <RunLevel>HighestAvailable</RunLevel>
-       </Principal>
-     </Principals>
-     <Settings>
-       <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
-       <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
-       <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
-       <AllowHardTerminate>false</AllowHardTerminate>
-       <StartWhenAvailable>true</StartWhenAvailable>
-       <RunOnlyIfNetworkAvailable>true</RunOnlyIfNetworkAvailable>
-       <IdleSettings>
-         <StopOnIdleEnd>false</StopOnIdleEnd>
-         <RestartOnIdle>false</RestartOnIdle>
-       </IdleSettings>
-       <AllowStartOnDemand>true</AllowStartOnDemand>
-       <Enabled>true</Enabled>
-       <Hidden>false</Hidden>
-       <RunOnlyIfIdle>false</RunOnlyIfIdle>
-       <WakeToRun>false</WakeToRun>
-       <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
-       <Priority>7</Priority>
-     </Settings>
-     <Actions Context="Author">
-       <Exec>
-         <Command>${exePath()}</Command>
-       </Exec>
-     </Actions>
-   </Task>
+const taskXml = `<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Date>${new Date().toISOString()}</Date>
+    <Author>${process.env.USERNAME}</Author>
+  </RegistrationInfo>
+  <Triggers>
+    <LogonTrigger>
+      <Enabled>true</Enabled>
+    </LogonTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author">
+      <LogonType>InteractiveToken</LogonType>
+      <RunLevel>HighestAvailable</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <AllowHardTerminate>false</AllowHardTerminate>
+    <StartWhenAvailable>true</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>true</RunOnlyIfNetworkAvailable>
+    <IdleSettings>
+      <StopOnIdleEnd>false</StopOnIdleEnd>
+      <RestartOnIdle>false</RestartOnIdle>
+    </IdleSettings>
+    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <Enabled>true</Enabled>
+    <Hidden>false</Hidden>
+    <RunOnlyIfIdle>false</RunOnlyIfIdle>
+    <WakeToRun>false</WakeToRun>
+    <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
+    <Priority>7</Priority>
+  </Settings>
+  <Actions Context="Author">
+    <Exec>
+      <Command>${exePath()}</Command>
+    </Exec>
+  </Actions>
+</Task>
  `
 
 export async function checkAutoRun(): Promise<boolean> {
@@ -77,7 +77,7 @@ export async function enableAutoRun(): Promise<void> {
   if (process.platform === 'win32') {
     const execPromise = promisify(exec)
     const taskFilePath = path.join(dataDir(), `${appName}.xml`)
-    await writeFile(taskFilePath, taskXml)
+    await writeFile(taskFilePath, Buffer.from(`\ufeff${taskXml}`, 'utf-16le'))
     await execPromise(`schtasks /create /tn "${appName}" /xml "${taskFilePath}" /f`)
   }
   if (process.platform === 'darwin') {
