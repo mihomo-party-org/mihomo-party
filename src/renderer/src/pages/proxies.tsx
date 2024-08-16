@@ -169,7 +169,7 @@ const Proxies: React.FC = () => {
                 <CardBody className="w-full">
                   <div className="flex justify-between">
                     <div className="flex text-ellipsis overflow-hidden whitespace-nowrap">
-                      {groups[index].icon.length > 0 ? (
+                      {groups[index].icon ? (
                         <Avatar
                           className="bg-transparent mr-2"
                           size="sm"
