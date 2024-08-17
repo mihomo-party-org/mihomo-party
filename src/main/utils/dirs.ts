@@ -38,7 +38,7 @@ export function exePath(): string {
 
 export function resourcesDir(): string {
   if (is.dev) {
-    return path.join(__dirname, '../../resources')
+    return path.join(__dirname, '../../extra')
   } else {
     if (app.getAppPath().endsWith('asar')) {
       return process.resourcesPath

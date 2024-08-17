@@ -129,7 +129,7 @@ function mihomo() {
 async function resolveSidecar(binInfo) {
   const { name, targetFile, zipFile, exeFile, downloadURL } = binInfo
 
-  const sidecarDir = path.join(cwd, 'resources', 'sidecar')
+  const sidecarDir = path.join(cwd, 'extra', 'sidecar')
   const sidecarPath = path.join(sidecarDir, targetFile)
 
   fs.mkdirSync(sidecarDir, { recursive: true })
@@ -204,12 +204,12 @@ async function resolveSidecar(binInfo) {
 }
 
 /**
- * download the file to the resources dir
+ * download the file to the extra dir
  */
 async function resolveResource(binInfo) {
   const { file, downloadURL } = binInfo
 
-  const resDir = path.join(cwd, 'resources', 'files')
+  const resDir = path.join(cwd, 'extra', 'files')
   const targetPath = path.join(resDir, file)
 
   if (fs.existsSync(targetPath)) {
