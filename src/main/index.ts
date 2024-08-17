@@ -146,7 +146,6 @@ export function createWindow(show = false): void {
     event.preventDefault()
     stopMihomoMemory()
     mainWindow?.hide()
-    mainWindow?.reload()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
