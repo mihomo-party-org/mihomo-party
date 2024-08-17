@@ -31,9 +31,20 @@ async function overrideProfile(
       case 'js':
         profile = runOverrideScript(profile, content)
         break
-      case 'yaml':
-        profile = deepMerge(profile, yaml.parse(content))
+      case 'yaml': {
+        const patch = yaml.parse(content)
+        if (patch.rules) {
+          patch.rules = [...patch.rules, ...(profile.rules || [])]
+        }
+        if (patch.proxies) {
+          patch.proxies = [...patch.proxies, ...(profile.proxies || [])]
+        }
+        if (patch['proxy-groups']) {
+          patch['proxy-groups'] = [...patch['proxy-groups'], ...(profile['proxy-groups'] || [])]
+        }
+        profile = deepMerge(profile, patch)
         break
+      }
     }
   }
   return profile

@@ -14,6 +14,7 @@ import React, { useState } from 'react'
 import SettingItem from '../base/base-setting-item'
 import dayjs from 'dayjs'
 import { useOverrideConfig } from '@renderer/hooks/use-override-config'
+import { restartCore } from '@renderer/utils/ipc'
 interface Props {
   item: IProfileItem
   updateProfileItem: (item: IProfileItem) => Promise<void>
@@ -27,6 +28,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
 
   const onSave = async (): Promise<void> => {
     await updateProfileItem(values)
+    await restartCore()
     onClose()
   }
 
