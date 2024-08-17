@@ -46,9 +46,13 @@ const EditFileModal: React.FC<Props> = (props) => {
           <Button
             color="primary"
             onPress={async () => {
-              await setOverride(id, language === 'javascript' ? 'js' : 'yaml', currData)
-              await restartCore()
-              onClose()
+              try {
+                await setOverride(id, language === 'javascript' ? 'js' : 'yaml', currData)
+                await restartCore()
+                onClose()
+              } catch (e) {
+                alert(e)
+              }
             }}
           >
             确认

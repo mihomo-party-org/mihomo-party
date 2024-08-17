@@ -1,4 +1,4 @@
-import { app, ipcMain, safeStorage } from 'electron'
+import { app, dialog, ipcMain, safeStorage } from 'electron'
 import {
   mihomoChangeProxy,
   mihomoCloseAllConnections,
@@ -141,5 +141,8 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('webdavBackup', ipcErrorWrapper(webdavBackup))
   ipcMain.handle('webdavRestore', (_e, filename) => ipcErrorWrapper(webdavRestore)(filename))
   ipcMain.handle('listWebdavBackups', ipcErrorWrapper(listWebdavBackups))
+  ipcMain.handle('alert', (_e, msg) => {
+    dialog.showErrorBox('Mihomo Party', msg)
+  })
   ipcMain.handle('quitApp', () => app.quit())
 }

@@ -27,9 +27,13 @@ const EditInfoModal: React.FC<Props> = (props) => {
   const [values, setValues] = useState(item)
 
   const onSave = async (): Promise<void> => {
-    await updateProfileItem(values)
-    await restartCore()
-    onClose()
+    try {
+      await updateProfileItem(values)
+      await restartCore()
+      onClose()
+    } catch (e) {
+      alert(e)
+    }
   }
 
   return (
