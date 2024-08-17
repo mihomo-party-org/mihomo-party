@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'fs/promises'
 import { appConfigPath } from '../utils/dirs'
 import yaml from 'yaml'
+import { deepMerge } from '../utils/merge'
 
 let appConfig: IAppConfig // config.yaml
 
@@ -13,11 +14,6 @@ export async function getAppConfig(force = false): Promise<IAppConfig> {
 }
 
 export async function patchAppConfig(patch: Partial<IAppConfig>): Promise<void> {
-  if (patch.sysProxy) {
-    const oldSysProxy = appConfig.sysProxy || {}
-    const newSysProxy = Object.assign(oldSysProxy, patch.sysProxy)
-    patch.sysProxy = newSysProxy
-  }
-  appConfig = Object.assign(appConfig, patch)
+  appConfig = deepMerge(appConfig, patch)
   await writeFile(appConfigPath(), yaml.stringify(appConfig))
 }

@@ -1,13 +1,13 @@
 import { is } from '@electron-toolkit/utils'
 import { app } from 'electron'
-import fs from 'fs'
+import { existsSync } from 'fs'
 import { rm, writeFile } from 'fs/promises'
 import path from 'path'
 
 export const homeDir = app.getPath('home')
 
 export function isPortable(): boolean {
-  return fs.existsSync(path.join(exeDir(), 'PORTABLE'))
+  return existsSync(path.join(exeDir(), 'PORTABLE'))
 }
 
 export async function setPortable(portable: boolean): Promise<void> {

@@ -5,6 +5,7 @@ import { getAxios, startMihomoMemory, startMihomoTraffic } from '../core/mihomoA
 import { generateProfile } from '../core/factory'
 import { getAppConfig } from './app'
 import { defaultControledMihomoConfig } from '../utils/template'
+import { deepMerge } from '../utils/merge'
 
 let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
 
@@ -18,11 +19,6 @@ export async function getControledMihomoConfig(force = false): Promise<Partial<I
 
 export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
   const { useNameserverPolicy, controlDns = true, controlSniff = true } = await getAppConfig()
-  if (patch.tun) {
-    const oldTun = controledMihomoConfig.tun || {}
-    const newTun = Object.assign(oldTun, patch.tun)
-    patch.tun = newTun
-  }
   if (!controlDns) {
     delete controledMihomoConfig.dns
     delete controledMihomoConfig.hosts
@@ -32,14 +28,6 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
       controledMihomoConfig.dns = defaultControledMihomoConfig.dns
     }
   }
-  if (patch.dns) {
-    const oldDns = controledMihomoConfig.dns || {}
-    const newDns = Object.assign(oldDns, patch.dns)
-    if (!useNameserverPolicy) {
-      delete newDns['nameserver-policy']
-    }
-    patch.dns = newDns
-  }
   if (!controlSniff) {
     delete controledMihomoConfig.sniffer
   } else {
@@ -48,12 +36,10 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
       controledMihomoConfig.sniffer = defaultControledMihomoConfig.sniffer
     }
   }
-  if (patch.sniffer) {
-    const oldSniffer = controledMihomoConfig.sniffer || {}
-    const newSniffer = Object.assign(oldSniffer, patch.sniffer)
-    patch.sniffer = newSniffer
+  controledMihomoConfig = deepMerge(controledMihomoConfig, patch)
+  if (!useNameserverPolicy) {
+    delete controledMihomoConfig?.dns?.['nameserver-policy']
   }
-  controledMihomoConfig = Object.assign(controledMihomoConfig, patch)
 
   if (patch['external-controller'] || patch.secret) {
     await getAxios(true)
