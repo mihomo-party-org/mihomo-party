@@ -4,14 +4,15 @@ import { BaseEditor } from '../base/base-editor'
 import { getOverride, setOverride } from '@renderer/utils/ipc'
 interface Props {
   id: string
+  language: 'javascript' | 'yaml'
   onClose: () => void
 }
 const EditFileModal: React.FC<Props> = (props) => {
-  const { id, onClose } = props
+  const { id, language, onClose } = props
   const [currData, setCurrData] = useState('')
 
   const getContent = async (): Promise<void> => {
-    setCurrData(await getOverride(id))
+    setCurrData(await getOverride(id, language === 'javascript' ? 'js' : 'yaml'))
   }
 
   useEffect(() => {
@@ -28,10 +29,12 @@ const EditFileModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex">编辑覆写脚本</ModalHeader>
+        <ModalHeader className="flex">
+          编辑覆写{language === 'javascript' ? '脚本' : '配置'}
+        </ModalHeader>
         <ModalBody className="h-full">
           <BaseEditor
-            language="javascript"
+            language={language}
             value={currData}
             onChange={(value) => setCurrData(value)}
           />
@@ -43,7 +46,7 @@ const EditFileModal: React.FC<Props> = (props) => {
           <Button
             color="primary"
             onPress={async () => {
-              await setOverride(id, currData)
+              await setOverride(id, language === 'javascript' ? 'js' : 'yaml', currData)
               onClose()
             }}
           >

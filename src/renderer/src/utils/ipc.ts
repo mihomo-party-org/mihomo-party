@@ -181,12 +181,12 @@ export async function updateOverrideItem(item: IOverrideItem): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('updateOverrideItem', item))
 }
 
-export async function getOverride(id: string): Promise<string> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getOverride', id))
+export async function getOverride(id: string, ext: 'js' | 'yaml'): Promise<string> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getOverride', id, ext))
 }
 
-export async function setOverride(id: string, str: string): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setOverride', id, str))
+export async function setOverride(id: string, ext: 'js' | 'yaml', str: string): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setOverride', id, ext, str))
 }
 
 export async function restartCore(): Promise<void> {

@@ -331,6 +331,7 @@ interface IProfileConfig {
 interface IOverrideItem {
   id: string
   type: 'remote' | 'local'
+  ext: 'js' | 'yaml'
   name: string
   updated: number
   url?: string

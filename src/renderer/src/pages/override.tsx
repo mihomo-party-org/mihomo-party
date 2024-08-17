@@ -33,7 +33,12 @@ const Override: React.FC = () => {
   const handleImport = async (): Promise<void> => {
     setImporting(true)
     try {
-      await addOverrideItem({ name: '', type: 'remote', url })
+      await addOverrideItem({
+        name: '',
+        type: 'remote',
+        url,
+        ext: url.endsWith('.js') ? 'js' : 'yaml'
+      })
     } finally {
       setImporting(false)
     }
@@ -71,10 +76,15 @@ const Override: React.FC = () => {
       event.stopPropagation()
       if (event.dataTransfer?.files) {
         const file = event.dataTransfer.files[0]
-        if (file.name.endsWith('.js')) {
+        if (file.name.endsWith('.js') || file.name.endsWith('.yaml')) {
           const content = await readTextFile(file.path)
           try {
-            await addOverrideItem({ name: file.name, type: 'local', file: content })
+            await addOverrideItem({
+              name: file.name,
+              type: 'local',
+              file: content,
+              ext: file.name.endsWith('.js') ? 'js' : 'yaml'
+            })
           } finally {
             setFileOver(false)
           }
@@ -96,7 +106,7 @@ const Override: React.FC = () => {
   }, [items])
 
   return (
-    <BasePage ref={pageRef} title="覆写脚本">
+    <BasePage ref={pageRef} title="覆写">
       <div className="sticky top-[48px] z-40 backdrop-blur bg-background/40 flex p-2">
         <Input
           variant="bordered"
@@ -133,11 +143,16 @@ const Override: React.FC = () => {
           color="primary"
           className="ml-2"
           onPress={() => {
-            getFilePath(['js']).then(async (files) => {
+            getFilePath(['js', 'yaml']).then(async (files) => {
               if (files?.length) {
                 const content = await readTextFile(files[0])
                 const fileName = files[0].split('/').pop()?.split('\\').pop()
-                await addOverrideItem({ name: fileName, type: 'local', file: content })
+                await addOverrideItem({
+                  name: fileName,
+                  type: 'local',
+                  file: content,
+                  ext: fileName?.endsWith('.js') ? 'js' : 'yaml'
+                })
               }
             })
           }}

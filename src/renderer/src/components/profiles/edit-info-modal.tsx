@@ -92,14 +92,19 @@ const EditInfoModal: React.FC<Props> = (props) => {
               </SettingItem>
             </>
           )}
-          <SettingItem title="覆写脚本">
+          <SettingItem title="覆写">
             <Select
               className="w-[200px]"
               size="sm"
               selectionMode="multiple"
               selectedKeys={new Set(values.override || [])}
               onSelectionChange={(v) => {
-                setValues({ ...values, override: Array.from(v).map((i) => i.toString()) })
+                setValues({
+                  ...values,
+                  override: Array.from(v)
+                    .map((i) => i.toString())
+                    .filter((i) => overrideItems.find((t) => t.id === i))
+                })
               }}
             >
               {overrideItems.map((i) => (

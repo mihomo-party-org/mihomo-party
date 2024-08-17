@@ -48,9 +48,10 @@ export async function addOverrideItem(item: Partial<IOverrideItem>): Promise<voi
 
 export async function removeOverrideItem(id: string): Promise<void> {
   const config = await getOverrideConfig()
+  const item = await getOverrideItem(id)
   config.items = config.items?.filter((item) => item.id !== id)
   await setOverrideConfig(config)
-  await rm(overridePath(id))
+  await rm(overridePath(id, item?.ext || 'js'))
 }
 
 export async function createOverride(item: Partial<IOverrideItem>): Promise<IOverrideItem> {
@@ -59,6 +60,7 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
     id,
     name: item.name || (item.type === 'remote' ? 'Remote File' : 'Local File'),
     type: item.type,
+    ext: item.ext || 'js',
     url: item.url,
     updated: new Date().getTime()
   } as IOverrideItem
@@ -74,12 +76,12 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
         }
       })
       const data = res.data
-      await setOverride(id, data)
+      await setOverride(id, newItem.ext, data)
       break
     }
     case 'local': {
       const data = item.file || ''
-      setOverride(id, data)
+      setOverride(id, newItem.ext, data)
       break
     }
   }
@@ -87,13 +89,13 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
   return newItem
 }
 
-export async function getOverride(id: string): Promise<string> {
-  if (!existsSync(overridePath(id))) {
-    return `function main(config){ return config }`
+export async function getOverride(id: string, ext: 'js' | 'yaml'): Promise<string> {
+  if (!existsSync(overridePath(id, ext))) {
+    return ''
   }
-  return await readFile(overridePath(id), 'utf-8')
+  return await readFile(overridePath(id, ext), 'utf-8')
 }
 
-export async function setOverride(id: string, content: string): Promise<void> {
-  await writeFile(overridePath(id), content, 'utf-8')
+export async function setOverride(id: string, ext: 'js' | 'yaml', content: string): Promise<void> {
+  await writeFile(overridePath(id, ext), content, 'utf-8')
 }

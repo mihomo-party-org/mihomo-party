@@ -115,7 +115,13 @@ const OverrideItem: React.FC<Props> = (props) => {
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
     >
-      {openFile && <EditFileModal id={info.id} onClose={() => setOpenFile(false)} />}
+      {openFile && (
+        <EditFileModal
+          id={info.id}
+          language={info.ext === 'yaml' ? 'yaml' : 'javascript'}
+          onClose={() => setOpenFile(false)}
+        />
+      )}
       {openInfo && (
         <EditInfoModal
           item={info}
@@ -184,18 +190,21 @@ const OverrideItem: React.FC<Props> = (props) => {
               </Dropdown>
             </div>
           </div>
-          {info.type === 'remote' && (
-            <div className={`mt-2 flex justify-end`}>
-              <small>{dayjs(info.updated).fromNow()}</small>
-            </div>
-          )}
-          {info.type === 'local' && (
-            <div className={`mt-2 flex justify-between`}>
+          <div className="flex justify-between">
+            <div className={`mt-2 flex justify-start`}>
               <Chip size="sm" variant="bordered">
-                本地
+                {info.type === 'local' ? '本地' : '远程'}
+              </Chip>
+              <Chip size="sm" variant="bordered" className="ml-2">
+                {info.ext === 'yaml' ? 'YAML' : 'JavaScript'}
               </Chip>
             </div>
-          )}
+            {info.type === 'remote' && (
+              <div className={`mt-2 flex justify-end`}>
+                <small>{dayjs(info.updated).fromNow()}</small>
+              </div>
+            )}
+          </div>
         </CardBody>
       </Card>
     </div>

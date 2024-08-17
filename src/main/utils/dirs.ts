@@ -89,8 +89,8 @@ export function overrideConfigPath(): string {
   return path.join(dataDir(), 'override.yaml')
 }
 
-export function overridePath(id: string): string {
-  return path.join(overrideDir(), `${id}.js`)
+export function overridePath(id: string, ext: 'js' | 'yaml'): string {
+  return path.join(overrideDir(), `${id}.${ext}`)
 }
 
 export function mihomoWorkDir(): string {

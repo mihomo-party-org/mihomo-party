@@ -29,7 +29,10 @@ const DNS: React.FC = () => {
     'use-system-hosts': useSystemHosts = false,
     'respect-rules': respectRules = false,
     nameserver = ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'],
-    'proxy-server-nameserver': proxyServerNameserver = ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'],
+    'proxy-server-nameserver': proxyServerNameserver = [
+      'https://doh.pub/dns-query',
+      'https://dns.alidns.com/dns-query'
+    ]
   } = dns || {}
 
   const [values, setValues] = useState({
