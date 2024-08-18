@@ -296,6 +296,12 @@ interface IMihomoSnifferConfig {
     }
   }
 }
+
+interface IMihomoProfileConfig {
+  'store-selected'?: boolean
+  'store-fake-ip'?: boolean
+}
+
 interface IMihomoConfig {
   'external-controller': string
   secret?: string
@@ -304,6 +310,7 @@ interface IMihomoConfig {
   'mixed-port': number
   'allow-lan': boolean
   'unified-delay': boolean
+  'tcp-concurrent': boolean
   'log-level': LogLevel
   'find-process-mode': FindProcessMode
   'socks-port'?: number
@@ -326,6 +333,7 @@ interface IMihomoConfig {
   tun: IMihomoTunConfig
   dns: IMihomoDNSConfig
   sniffer: IMihomoSnifferConfig
+  profile: IMihomoProfileConfig
 }
 
 interface IProfileConfig {

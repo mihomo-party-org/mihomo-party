@@ -40,6 +40,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
   'tproxy-port': 0,
   'allow-lan': false,
   'unified-delay': false,
+  'tcp-concurrent': false,
   'log-level': 'info',
   'find-process-mode': 'strict',
   tun: {
@@ -81,6 +82,10 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
       }
     },
     'skip-domain': ['+.push.apple.com']
+  },
+  profile: {
+    'store-selected': true,
+    'store-fake-ip': true
   },
   'geo-auto-update': false,
   'geo-update-interval': 24,

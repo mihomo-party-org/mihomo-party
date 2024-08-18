@@ -5,7 +5,7 @@ import SettingItem from '@renderer/components/base/base-setting-item'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { platform } from '@renderer/utils/init'
-import { patchMihomoConfig, restartCore } from '@renderer/utils/ipc'
+import { restartCore } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 
 const CoreMap = {
@@ -21,16 +21,19 @@ const Mihomo: React.FC = () => {
     ipv6,
     'external-controller': externalController,
     secret,
-    'log-level': level = 'info',
-    'find-process-mode': mode = 'strict',
-    'allow-lan': lan,
-    'unified-delay': delay,
+    'log-level': logLevel = 'info',
+    'find-process-mode': findProcessMode = 'strict',
+    'allow-lan': allowLan,
+    'unified-delay': unifiedDelay,
+    'tcp-concurrent': tcpConcurrent,
     'mixed-port': mixedPort = 7890,
     'socks-port': socksPort = 7891,
     port: httpPort = 7892,
     'redir-port': redirPort = 0,
-    'tproxy-port': tproxyPort = 0
+    'tproxy-port': tproxyPort = 0,
+    profile = {}
   } = controledMihomoConfig || {}
+  const { 'store-selected': storeSelected, 'store-fake-ip': storeFakeIp } = profile
 
   const [mixedPortInput, setMixedPortInput] = useState(mixedPort)
   const [socksPortInput, setSocksPortInput] = useState(socksPort)
@@ -39,11 +42,6 @@ const Mihomo: React.FC = () => {
   const [tproxyPortInput, setTproxyPortInput] = useState(tproxyPort)
   const [externalControllerInput, setExternalControllerInput] = useState(externalController)
   const [secretInput, setSecretInput] = useState(secret)
-
-  const onChange = async (patch: Partial<IMihomoConfig>): Promise<void> => {
-    await patchControledMihomoConfig(patch)
-    await patchMihomoConfig(patch)
-  }
 
   const onChangeNeedRestart = async (patch: Partial<IMihomoConfig>): Promise<void> => {
     await patchControledMihomoConfig(patch)
@@ -271,25 +269,52 @@ const Mihomo: React.FC = () => {
             size="sm"
             isSelected={ipv6}
             onValueChange={(v) => {
-              onChange({ ipv6: v })
+              onChangeNeedRestart({ ipv6: v })
             }}
           />
         </SettingItem>
         <SettingItem title="允许局域网连接" divider>
           <Switch
             size="sm"
-            isSelected={lan}
+            isSelected={allowLan}
             onValueChange={(v) => {
-              onChange({ 'allow-lan': v })
+              onChangeNeedRestart({ 'allow-lan': v })
             }}
           />
         </SettingItem>
         <SettingItem title="使用RTT延迟测试" divider>
           <Switch
             size="sm"
-            isSelected={delay}
+            isSelected={unifiedDelay}
             onValueChange={(v) => {
-              onChange({ 'unified-delay': v })
+              onChangeNeedRestart({ 'unified-delay': v })
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="TCP并发" divider>
+          <Switch
+            size="sm"
+            isSelected={tcpConcurrent}
+            onValueChange={(v) => {
+              onChangeNeedRestart({ 'tcp-concurrent': v })
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="存储选择节点" divider>
+          <Switch
+            size="sm"
+            isSelected={storeSelected}
+            onValueChange={(v) => {
+              onChangeNeedRestart({ profile: { 'store-selected': v } })
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="存储FakeIP" divider>
+          <Switch
+            size="sm"
+            isSelected={storeFakeIp}
+            onValueChange={(v) => {
+              onChangeNeedRestart({ profile: { 'store-fake-ip': v } })
             }}
           />
         </SettingItem>
@@ -297,9 +322,9 @@ const Mihomo: React.FC = () => {
           <Select
             className="w-[100px]"
             size="sm"
-            selectedKeys={new Set([level])}
+            selectedKeys={new Set([logLevel])}
             onSelectionChange={(v) => {
-              onChange({ 'log-level': v.currentKey as LogLevel })
+              onChangeNeedRestart({ 'log-level': v.currentKey as LogLevel })
             }}
           >
             <SelectItem key="silent">静默</SelectItem>
@@ -313,9 +338,9 @@ const Mihomo: React.FC = () => {
           <Select
             className="w-[100px]"
             size="sm"
-            selectedKeys={new Set([mode])}
+            selectedKeys={new Set([findProcessMode])}
             onSelectionChange={(v) => {
-              onChange({ 'find-process-mode': v.currentKey as FindProcessMode })
+              onChangeNeedRestart({ 'find-process-mode': v.currentKey as FindProcessMode })
             }}
           >
             <SelectItem key="strict">自动</SelectItem>
