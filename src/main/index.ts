@@ -79,6 +79,7 @@ app.whenReady().then(async () => {
 })
 
 async function handleDeepLink(url: string): Promise<void> {
+  if (!url.startsWith('clash://') && !url.startsWith('mihomo://')) return
   try {
     if (url.startsWith('clash://install-config')) {
       url = url
