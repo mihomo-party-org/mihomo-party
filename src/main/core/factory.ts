@@ -39,9 +39,6 @@ async function overrideProfile(
         if (patch.proxies) {
           patch.proxies = [...patch.proxies, ...(profile.proxies || [])]
         }
-        if (patch['proxy-groups']) {
-          patch['proxy-groups'] = [...patch['proxy-groups'], ...(profile['proxy-groups'] || [])]
-        }
         profile = deepMerge(profile, patch)
         break
       }
