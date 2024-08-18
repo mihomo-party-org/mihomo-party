@@ -80,26 +80,27 @@ app.whenReady().then(async () => {
 
 async function handleDeepLink(url: string): Promise<void> {
   if (!url.startsWith('clash://') && !url.startsWith('mihomo://')) return
-  try {
-    if (url.startsWith('clash://install-config')) {
-      url = url
-        .replace('clash://install-config/?url=', '')
-        .replace('clash://install-config?url=', '')
+
+  const urlObj = new URL(url)
+  switch (urlObj.host) {
+    case 'install-config': {
+      try {
+        const profileUrl = urlObj.searchParams.get('url')
+        const profileName = urlObj.searchParams.get('name')
+        if (!profileUrl) {
+          throw new Error('缺少参数 url')
+        }
+        await addProfileItem({
+          type: 'remote',
+          name: profileName ?? undefined,
+          url: profileUrl
+        })
+        new Notification({ title: '订阅导入成功' }).show()
+        break
+      } catch (e) {
+        dialog.showErrorBox('订阅导入失败', `${url}\n${e}`)
+      }
     }
-    if (url.startsWith('mihomo://install-config')) {
-      url = url
-        .replace('mihomo://install-config/?url=', '')
-        .replace('mihomo://install-config?url=', '')
-    }
-    url = decodeURIComponent(url.split('&')[0])
-    await addProfileItem({
-      type: 'remote',
-      name: 'Remote File',
-      url: decodeURIComponent(url)
-    })
-    new Notification({ title: '订阅导入成功' }).show()
-  } catch (e) {
-    dialog.showErrorBox('订阅导入失败', `${url}\n${e}`)
   }
 }
 
