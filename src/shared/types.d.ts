@@ -213,7 +213,7 @@ interface IAppConfig {
   userAgent?: string
   delayTestUrl?: string
   delayTestTimeout?: number
-  encryptedPassword?: Buffer
+  encryptedPassword?: number[]
   controlDns?: boolean
   controlSniff?: boolean
   useDockIcon?: boolean

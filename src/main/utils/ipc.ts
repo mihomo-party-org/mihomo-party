@@ -125,7 +125,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('restartCore', ipcErrorWrapper(restartCore))
   ipcMain.handle('triggerSysProxy', (_e, enable) => ipcErrorWrapper(triggerSysProxy)(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
-  ipcMain.handle('encryptString', (_e, str) => safeStorage.encryptString(str))
+  ipcMain.handle('encryptString', (_e, str) => encryptString(str))
   ipcMain.handle('manualGrantCorePermition', ipcErrorWrapper(manualGrantCorePermition))
   ipcMain.handle('getFilePath', (_e, ext) => getFilePath(ext))
   ipcMain.handle('readTextFile', (_e, filePath) => ipcErrorWrapper(readTextFile)(filePath))
@@ -145,4 +145,8 @@ export function registerIpcMainHandlers(): void {
     dialog.showErrorBox('Mihomo Party', msg)
   })
   ipcMain.handle('quitApp', () => app.quit())
+}
+
+function encryptString(str: string): number[] {
+  return safeStorage.encryptString(str).toJSON().data
 }

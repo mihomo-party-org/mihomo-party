@@ -201,7 +201,7 @@ export async function isEncryptionAvailable(): Promise<boolean> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('isEncryptionAvailable'))
 }
 
-export async function encryptString(str: string): Promise<Buffer> {
+export async function encryptString(str: string): Promise<number[]> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('encryptString', str))
 }
 
