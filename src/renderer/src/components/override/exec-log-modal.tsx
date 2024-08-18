@@ -39,7 +39,7 @@ const ExecLogModal: React.FC<Props> = (props) => {
           {logs.map((log) => {
             return (
               <>
-                <small className="break-all">{log}</small>
+                <small className="break-all select-text">{log}</small>
                 <Divider />
               </>
             )

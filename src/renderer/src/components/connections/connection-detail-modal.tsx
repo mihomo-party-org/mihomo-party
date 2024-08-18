@@ -20,7 +20,7 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
         <ModalHeader className="flex">连接详情</ModalHeader>
         <ModalBody>
           <pre>
-            <code>{JSON.stringify(connection, null, 2)}</code>
+            <code className="select-text">{JSON.stringify(connection, null, 2)}</code>
           </pre>
         </ModalBody>
         <ModalFooter>
