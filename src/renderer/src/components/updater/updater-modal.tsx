@@ -36,7 +36,19 @@ const UpdaterModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex">v{version} 版本就绪</ModalHeader>
+        <ModalHeader className="flex justify-between">
+          <div>v{version} 版本就绪</div>
+          <Button
+            color="primary"
+            size="sm"
+            className="flex"
+            onPress={() => {
+              open(`https://github.com/pompurin404/mihomo-party/releases/tag/v${version}`)
+            }}
+          >
+            前往下载
+          </Button>
+        </ModalHeader>
         <ModalBody className="h-full">
           <ReactMarkdown
             className="markdown-body select-text"

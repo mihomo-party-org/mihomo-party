@@ -3,6 +3,7 @@ import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
+import UpdaterModal from '@renderer/components/updater/updater-modal'
 import {
   checkAutoRun,
   enableAutoRun,
@@ -45,6 +46,10 @@ const Settings: React.FC = () => {
     webdavUsername,
     webdavPassword
   } = appConfig || {}
+  const [newVersion, setNewVersion] = useState('')
+  const [changelog, setChangelog] = useState('')
+  const [openUpdate, setOpenUpdate] = useState(false)
+  const [checkingUpdate, setCheckingUpdate] = useState(false)
   const [backuping, setBackuping] = useState(false)
   const [restoring, setRestoring] = useState(false)
   const [filenames, setFilenames] = useState<string[]>([])
@@ -113,6 +118,13 @@ const Settings: React.FC = () => {
     <>
       {restoreOpen && (
         <WebdavRestoreModal filenames={filenames} onClose={() => setRestoreOpen(false)} />
+      )}
+      {openUpdate && (
+        <UpdaterModal
+          onClose={() => setOpenUpdate(false)}
+          version={newVersion}
+          changelog={changelog}
+        />
       )}
 
       <BasePage
@@ -370,21 +382,22 @@ const Settings: React.FC = () => {
           <SettingItem title="检查更新" divider>
             <Button
               size="sm"
+              isLoading={checkingUpdate}
               onPress={async () => {
                 try {
+                  setCheckingUpdate(true)
                   const version = await checkUpdate()
-
                   if (version) {
-                    new window.Notification(`v${version}版本已发布`, {
-                      body: '点击前往下载'
-                    }).onclick = (): void => {
-                      open(`https://github.com/pompurin404/mihomo-party/releases/tag/v${version}`)
-                    }
+                    setNewVersion(version.version)
+                    setChangelog(version.changelog)
+                    setOpenUpdate(true)
                   } else {
                     new window.Notification('当前已是最新版本', { body: '无需更新' })
                   }
                 } catch (e) {
                   alert(e)
+                } finally {
+                  setCheckingUpdate(false)
                 }
               }}
             >
