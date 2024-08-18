@@ -89,7 +89,7 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
   return newItem
 }
 
-export async function getOverride(id: string, ext: 'js' | 'yaml'): Promise<string> {
+export async function getOverride(id: string, ext: 'js' | 'yaml' | 'log'): Promise<string> {
   if (!existsSync(overridePath(id, ext))) {
     return ''
   }

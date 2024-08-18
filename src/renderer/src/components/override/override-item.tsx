@@ -15,6 +15,7 @@ import EditFileModal from './edit-file-modal'
 import EditInfoModal from './edit-info-modal'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import ExecLogModal from './exec-log-modal'
 
 interface Props {
   info: IOverrideItem
@@ -43,6 +44,13 @@ const menuItems: MenuItem[] = [
   {
     key: 'edit-file',
     label: '编辑文件',
+    showDivider: false,
+    color: 'default',
+    className: ''
+  } as MenuItem,
+  {
+    key: 'exec-log',
+    label: '执行日志',
     showDivider: true,
     color: 'default',
     className: ''
@@ -62,6 +70,7 @@ const OverrideItem: React.FC<Props> = (props) => {
   const [updating, setUpdating] = useState(false)
   const [openInfo, setOpenInfo] = useState(false)
   const [openFile, setOpenFile] = useState(false)
+  const [openLog, setOpenLog] = useState(false)
   const {
     attributes,
     listeners,
@@ -83,6 +92,10 @@ const OverrideItem: React.FC<Props> = (props) => {
       }
       case 'edit-file': {
         setOpenFile(true)
+        break
+      }
+      case 'exec-log': {
+        setOpenLog(true)
         break
       }
       case 'delete': {
@@ -129,6 +142,7 @@ const OverrideItem: React.FC<Props> = (props) => {
           updateOverrideItem={updateOverrideItem}
         />
       )}
+      {openLog && <ExecLogModal id={info.id} onClose={() => setOpenLog(false)} />}
       <Card
         fullWidth
         isPressable

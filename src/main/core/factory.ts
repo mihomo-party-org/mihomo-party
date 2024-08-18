@@ -6,10 +6,12 @@ import {
   getOverride,
   getOverrideItem
 } from '../config'
-import { mihomoWorkConfigPath } from '../utils/dirs'
+import { mihomoWorkConfigPath, overridePath } from '../utils/dirs'
 import yaml from 'yaml'
 import { readFile, writeFile } from 'fs/promises'
 import { deepMerge } from '../utils/merge'
+import vm from 'vm'
+import { writeFileSync } from 'fs'
 
 export async function generateProfile(): Promise<void> {
   const { current } = await getProfileConfig()
@@ -29,7 +31,7 @@ async function overrideProfile(
     const content = await getOverride(ov, item?.ext || 'js')
     switch (item?.ext) {
       case 'js':
-        profile = runOverrideScript(profile, content)
+        profile = runOverrideScript(profile, content, item)
         break
       case 'yaml': {
         const patch = yaml.parse(content)
@@ -47,13 +49,45 @@ async function overrideProfile(
   return profile
 }
 
-function runOverrideScript(profile: IMihomoConfig, script: string): IMihomoConfig {
+function runOverrideScript(
+  profile: IMihomoConfig,
+  script: string,
+  item: IOverrideItem
+): IMihomoConfig {
+  const log = (type: string, data: string, flag = 'a'): void => {
+    writeFileSync(overridePath(item.id, 'log'), `[${type}] ${data}\n`, {
+      encoding: 'utf-8',
+      flag
+    })
+  }
   try {
-    const func = eval(`${script} main`)
-    const newProfile = func(profile)
-    if (typeof newProfile !== 'object') return profile
+    const ctx = {
+      console: Object.freeze({
+        log(data: never) {
+          log('log', JSON.stringify(data))
+        },
+        info(data: never) {
+          log('info', JSON.stringify(data))
+        },
+        error(data: never) {
+          log('error', JSON.stringify(data))
+        },
+        debug(data: never) {
+          log('debug', JSON.stringify(data))
+        }
+      })
+    }
+    vm.createContext(ctx)
+    const code = `${script} main(${JSON.stringify(profile)})`
+    log('info', '开始执行脚本', 'w')
+    const newProfile = vm.runInContext(code, ctx)
+    if (typeof newProfile !== 'object') {
+      throw new Error('脚本返回值必须是对象')
+    }
+    log('info', '脚本执行成功')
     return newProfile
   } catch (e) {
+    log('exception', `脚本执行失败: ${e}`)
     return profile
   }
 }
