@@ -60,7 +60,6 @@ jobs:
           files: |
             dist/*setup.exe
             dist/*portable.7z
-            dist/latest.yml
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -163,6 +162,30 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*.dmg
+          body_path: changelog.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  updater:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Build Latest
+        run: pnpm install && pnpm updater
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: latest.yml
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 

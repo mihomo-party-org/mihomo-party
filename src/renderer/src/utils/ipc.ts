@@ -225,8 +225,14 @@ export async function getRuntimeConfig(): Promise<IMihomoConfig> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getRuntimeConfig'))
 }
 
-export async function checkUpdate(): Promise<string | undefined> {
+export async function checkUpdate(): Promise<IAppVersion | undefined> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('checkUpdate'))
+}
+
+export async function downloadAndInstallUpdate(version: string): Promise<void> {
+  return ipcErrorWrapper(
+    await window.electron.ipcRenderer.invoke('downloadAndInstallUpdate', version)
+  )
 }
 
 export async function getVersion(): Promise<string> {

@@ -46,7 +46,7 @@ import {
 } from '../config'
 import { isEncryptionAvailable, manualGrantCorePermition, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../sys/sysproxy'
-import { checkUpdate } from '../resolve/autoUpdater'
+import { checkUpdate, downloadAndInstallUpdate } from '../resolve/autoUpdater'
 import { getFilePath, openUWPTool, readTextFile, setupFirewall } from '../sys/misc'
 import { getRuntimeConfig, getRuntimeConfigStr } from '../core/factory'
 import { isPortable, setPortable } from './dirs'
@@ -131,6 +131,9 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('readTextFile', (_e, filePath) => ipcErrorWrapper(readTextFile)(filePath))
   ipcMain.handle('getRuntimeConfigStr', ipcErrorWrapper(getRuntimeConfigStr))
   ipcMain.handle('getRuntimeConfig', ipcErrorWrapper(getRuntimeConfig))
+  ipcMain.handle('downloadAndInstallUpdate', (_e, version) =>
+    ipcErrorWrapper(downloadAndInstallUpdate)(version)
+  )
   ipcMain.handle('checkUpdate', ipcErrorWrapper(checkUpdate))
   ipcMain.handle('getVersion', () => app.getVersion())
   ipcMain.handle('platform', () => process.platform)
