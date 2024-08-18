@@ -33,11 +33,13 @@ const Override: React.FC = () => {
   const handleImport = async (): Promise<void> => {
     setImporting(true)
     try {
+      const urlObj = new URL(url)
+      const name = urlObj.pathname.split('/').pop()
       await addOverrideItem({
-        name: '',
+        name: name ? decodeURIComponent(name) : undefined,
         type: 'remote',
         url,
-        ext: url.endsWith('.js') ? 'js' : 'yaml'
+        ext: urlObj.pathname.endsWith('.js') ? 'js' : 'yaml'
       })
     } finally {
       setImporting(false)
@@ -106,7 +108,31 @@ const Override: React.FC = () => {
   }, [items])
 
   return (
-    <BasePage ref={pageRef} title="覆写">
+    <BasePage
+      ref={pageRef}
+      title="覆写"
+      header={
+        <>
+          <Button
+            size="sm"
+            className="mr-2"
+            onPress={() => {
+              open('https://mihomo.party/guides/function/override/yaml/')
+            }}
+          >
+            使用文档
+          </Button>
+          <Button
+            size="sm"
+            onPress={() => {
+              open('https://github.com/pompurin404/override-hub')
+            }}
+          >
+            常用覆写仓库
+          </Button>
+        </>
+      }
+    >
       <div className="sticky top-[48px] z-40 backdrop-blur bg-background/40 flex p-2">
         <Input
           variant="bordered"

@@ -17,6 +17,7 @@ import {
   webdavBackup,
   listWebdavBackups
 } from '@renderer/utils/ipc'
+import { CgWebsite } from 'react-icons/cg'
 import { IoLogoGithub } from 'react-icons/io5'
 import { platform, version } from '@renderer/utils/init'
 import useSWR from 'swr'
@@ -130,15 +131,29 @@ const Settings: React.FC = () => {
       <BasePage
         title="应用设置"
         header={
-          <Button
-            isIconOnly
-            size="sm"
-            onPress={() => {
-              window.open('https://github.com/pompurin404/mihomo-party')
-            }}
-          >
-            <IoLogoGithub className="text-lg" />
-          </Button>
+          <>
+            <Button
+              isIconOnly
+              size="sm"
+              title="官方文档"
+              className="mr-2"
+              onPress={() => {
+                window.open('https://mihomo.party')
+              }}
+            >
+              <CgWebsite className="text-lg" />
+            </Button>
+            <Button
+              isIconOnly
+              size="sm"
+              title="GitHub仓库"
+              onPress={() => {
+                window.open('https://github.com/pompurin404/mihomo-party')
+              }}
+            >
+              <IoLogoGithub className="text-lg" />
+            </Button>
+          </>
         }
       >
         <SettingCard>
