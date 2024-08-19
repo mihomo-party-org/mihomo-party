@@ -31,7 +31,7 @@ export default defineConfig({
       react(),
       monacoEditorPlugin({
         languageWorkers: ['editorWorkerService', 'typescript', 'json'],
-        customDistPath: () => 'out/renderer',
+        customDistPath: (_, out) => `${out}/monacoeditorwork`,
         customWorkers: [
           {
             label: 'yaml',
