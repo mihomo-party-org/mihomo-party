@@ -16,7 +16,8 @@ import {
   restartCore,
   webdavBackup,
   listWebdavBackups,
-  copyEnv
+  copyEnv,
+  setNativeTheme
 } from '@renderer/utils/ipc'
 import { BiCopy } from 'react-icons/bi'
 import { CgWebsite } from 'react-icons/cg'
@@ -82,6 +83,14 @@ const Settings: React.FC = () => {
         }
       }
       setTheme(themeStr)
+      if (themeStr === 'system') {
+        setNativeTheme('system')
+      }
+      if (themeStr.includes('light')) {
+        setNativeTheme('light')
+      } else {
+        setNativeTheme('dark')
+      }
       patchAppConfig({ appTheme: themeStr as AppTheme })
     } else {
       let themeStr = theme

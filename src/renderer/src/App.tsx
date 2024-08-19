@@ -28,6 +28,7 @@ import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
 import ResourceCard from '@renderer/components/sider/resource-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from './hooks/use-app-config'
+import { setNativeTheme } from './utils/ipc'
 
 const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -63,6 +64,14 @@ const App: React.FC = () => {
 
   useEffect(() => {
     setTheme(appTheme)
+    if (appTheme === 'system') {
+      setNativeTheme('system')
+    }
+    if (appTheme.includes('light')) {
+      setNativeTheme('light')
+    } else {
+      setNativeTheme('dark')
+    }
   }, [appTheme])
 
   const onDragEnd = async (event: DragEndEvent): Promise<void> => {

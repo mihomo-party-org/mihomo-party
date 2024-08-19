@@ -48,7 +48,7 @@ import {
 import { isEncryptionAvailable, manualGrantCorePermition, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { checkUpdate, downloadAndInstallUpdate } from '../resolve/autoUpdater'
-import { getFilePath, openUWPTool, readTextFile, setupFirewall } from '../sys/misc'
+import { getFilePath, openUWPTool, readTextFile, setNativeTheme, setupFirewall } from '../sys/misc'
 import { getRuntimeConfig, getRuntimeConfigStr } from '../core/factory'
 import { isPortable, setPortable } from './dirs'
 import { listWebdavBackups, webdavBackup, webdavRestore } from '../resolve/backup'
@@ -149,6 +149,9 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('webdavBackup', ipcErrorWrapper(webdavBackup))
   ipcMain.handle('webdavRestore', (_e, filename) => ipcErrorWrapper(webdavRestore)(filename))
   ipcMain.handle('listWebdavBackups', ipcErrorWrapper(listWebdavBackups))
+  ipcMain.handle('setNativeTheme', (_e, theme) => {
+    setNativeTheme(theme)
+  })
   ipcMain.handle('copyEnv', ipcErrorWrapper(copyEnv))
   ipcMain.handle('alert', (_e, msg) => {
     dialog.showErrorBox('Mihomo Party', msg)

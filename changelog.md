@@ -1,6 +1,7 @@
 ### New Features
 
 - 支持一键复制环境变量
+- 同步标题栏深浅主题
 
 ### Bug Fixes
 

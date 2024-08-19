@@ -1,5 +1,5 @@
 import { exec, execFile } from 'child_process'
-import { dialog } from 'electron'
+import { dialog, nativeTheme } from 'electron'
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { promisify } from 'util'
@@ -40,4 +40,8 @@ export async function setupFirewall(): Promise<void> {
     await execPromise(removeCommand, { shell: 'powershell' })
     await execPromise(createCommand, { shell: 'powershell' })
   }
+}
+
+export function setNativeTheme(theme: 'system' | 'light' | 'dark'): void {
+  nativeTheme.themeSource = theme
 }
