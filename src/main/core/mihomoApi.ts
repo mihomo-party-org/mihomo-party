@@ -193,13 +193,15 @@ const mihomoTraffic = async (): Promise<void> => {
     } else {
       tray?.setTitle('')
     }
+    if (process.platform !== 'linux') {
+      tray?.setToolTip(
+        '↑' +
+          `${calcTraffic(json.up)}/s`.padStart(12) +
+          '\n↓' +
+          `${calcTraffic(json.down)}/s`.padStart(12)
+      )
+    }
 
-    tray?.setToolTip(
-      '↑' +
-        `${calcTraffic(json.up)}/s`.padStart(12) +
-        '\n↓' +
-        `${calcTraffic(json.down)}/s`.padStart(12)
-    )
     trafficRetry = 10
     mainWindow?.webContents.send('mihomoTraffic', json)
   }

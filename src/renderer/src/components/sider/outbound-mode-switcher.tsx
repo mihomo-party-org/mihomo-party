@@ -16,6 +16,7 @@ const OutboundModeSwitcher: React.FC = () => {
     if (autoCloseConnection) {
       await mihomoCloseAllConnections()
     }
+    window.electron.ipcRenderer.send('updateTrayMenu')
   }
   if (!mode) return null
   return (

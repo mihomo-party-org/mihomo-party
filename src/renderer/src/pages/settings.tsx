@@ -195,15 +195,18 @@ const Settings: React.FC = () => {
               }}
             />
           </SettingItem>
-          <SettingItem title="托盘菜单显示节点信息" divider>
-            <Switch
-              size="sm"
-              isSelected={proxyInTray}
-              onValueChange={(v) => {
-                patchAppConfig({ proxyInTray: v })
-              }}
-            />
-          </SettingItem>
+          {platform !== 'linux' && (
+            <SettingItem title="托盘菜单显示节点信息" divider>
+              <Switch
+                size="sm"
+                isSelected={proxyInTray}
+                onValueChange={async (v) => {
+                  await patchAppConfig({ proxyInTray: v })
+                }}
+              />
+            </SettingItem>
+          )}
+
           {platform === 'darwin' && (
             <>
               <SettingItem title="显示Dock图标" divider>
