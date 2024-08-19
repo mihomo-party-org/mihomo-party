@@ -14,7 +14,7 @@ import {
   patchMihomoConfig
 } from '../core/mihomoApi'
 import { mainWindow, showMainWindow } from '..'
-import { app, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
+import { app, clipboard, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../sys/sysproxy'
 
@@ -170,6 +170,12 @@ const buildContextMenu = async (): Promise<Menu> => {
         }
       ]
     },
+    {
+      id: 'copyenv',
+      label: '复制环境变量',
+      type: 'normal',
+      click: copyEnv
+    },
     { type: 'separator' },
     {
       id: 'restart',
@@ -248,5 +254,32 @@ async function updateTrayMenu(): Promise<void> {
   tray?.popUpContextMenu(menu) // 弹出菜单
   if (process.platform === 'linux') {
     tray?.setContextMenu(menu)
+  }
+}
+
+export async function copyEnv(): Promise<void> {
+  const defaultType = process.platform === 'win32' ? 'powershell' : 'bash'
+  const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
+  const { envType = defaultType, sysProxy } = await getAppConfig()
+  const { host } = sysProxy
+  switch (envType) {
+    case 'bash': {
+      clipboard.writeText(
+        `export https_proxy=http://${host || '127.0.0.1'}:${mixedPort} http_proxy=http://${host || '127.0.0.1'}:${mixedPort} all_proxy=http://${host || '127.0.0.1'}:${mixedPort}`
+      )
+      break
+    }
+    case 'cmd': {
+      clipboard.writeText(
+        `set http_proxy=http://${host || '127.0.0.1'}:${mixedPort}\r\nset https_proxy=http://${host || '127.0.0.1'}:${mixedPort}`
+      )
+      break
+    }
+    case 'powershell': {
+      clipboard.writeText(
+        `$env:HTTP_PROXY="http://${host || '127.0.0.1'}:${mixedPort}"; $env:HTTPS_PROXY="http://${host || '127.0.0.1'}:${mixedPort}"`
+      )
+      break
+    }
   }
 }

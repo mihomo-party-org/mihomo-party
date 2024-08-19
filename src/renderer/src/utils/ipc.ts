@@ -283,6 +283,10 @@ export async function quitApp(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('quitApp'))
 }
 
+export async function copyEnv(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('copyEnv'))
+}
+
 async function alert<T>(msg: T): Promise<void> {
   const msgStr = typeof msg === 'string' ? msg : JSON.stringify(msg)
   return await window.electron.ipcRenderer.invoke('alert', msgStr)

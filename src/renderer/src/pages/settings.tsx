@@ -15,8 +15,10 @@ import {
   setPortable,
   restartCore,
   webdavBackup,
-  listWebdavBackups
+  listWebdavBackups,
+  copyEnv
 } from '@renderer/utils/ipc'
+import { BiCopy } from 'react-icons/bi'
 import { CgWebsite } from 'react-icons/cg'
 import { IoLogoGithub } from 'react-icons/io5'
 import { platform, version } from '@renderer/utils/init'
@@ -38,6 +40,7 @@ const Settings: React.FC = () => {
     useDockIcon = true,
     showTraffic = true,
     proxyInTray = true,
+    envType = platform === 'win32' ? 'powershell' : 'bash',
     delayTestUrl,
     delayTestTimeout,
     autoCheckUpdate,
@@ -195,6 +198,32 @@ const Settings: React.FC = () => {
               }}
             />
           </SettingItem>
+          <SettingItem
+            title="复制环境变量类型"
+            actions={
+              <Button isIconOnly size="sm" className="ml-2" variant="light" onPress={copyEnv}>
+                <BiCopy className="text-lg" />
+              </Button>
+            }
+            divider
+          >
+            <Select
+              className="w-[150px]"
+              size="sm"
+              selectedKeys={new Set([envType])}
+              onSelectionChange={async (v) => {
+                try {
+                  await patchAppConfig({ envType: v.currentKey as 'bash' | 'cmd' | 'powershell' })
+                } catch (e) {
+                  alert(e)
+                }
+              }}
+            >
+              <SelectItem key="bash">Bash</SelectItem>
+              <SelectItem key="cmd">CMD</SelectItem>
+              <SelectItem key="powershell">PowerShell</SelectItem>
+            </Select>
+          </SettingItem>
           {platform !== 'linux' && (
             <SettingItem title="托盘菜单显示节点信息" divider>
               <Switch
@@ -206,7 +235,6 @@ const Settings: React.FC = () => {
               />
             </SettingItem>
           )}
-
           {platform === 'darwin' && (
             <>
               <SettingItem title="显示Dock图标" divider>
