@@ -62,6 +62,7 @@ const Proxies: React.FC = () => {
     if (autoCloseConnection) {
       await mihomoCloseAllConnections()
     }
+    // window.electron.ipcRenderer.send('mihomoGroupsUpdated')
     mutate()
   }
 

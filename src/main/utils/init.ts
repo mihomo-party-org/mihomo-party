@@ -109,11 +109,11 @@ export async function init(): Promise<void> {
   await startPacServer()
   const { sysProxy } = await getAppConfig()
   await triggerSysProxy(sysProxy.enable)
-  startCore().then(() => {
-    startMihomoTraffic()
-    setTimeout(async () => {
-      await initProfileUpdater()
-    }, 60000)
-  })
+  await startCore()
+  await startMihomoTraffic()
+  setTimeout(async () => {
+    await initProfileUpdater()
+  }, 60000)
+
   initDeeplink()
 }

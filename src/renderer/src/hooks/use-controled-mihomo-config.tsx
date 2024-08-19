@@ -21,7 +21,6 @@ export const useControledMihomoConfig = (listenUpdate = false): RetuenType => {
       alert(e)
     } finally {
       mutateControledMihomoConfig()
-      window.electron.ipcRenderer.send('controledMihomoConfigUpdated')
     }
   }
 

@@ -37,6 +37,7 @@ const Settings: React.FC = () => {
     controlSniff = true,
     useDockIcon = true,
     showTraffic = true,
+    proxyInTray = true,
     delayTestUrl,
     delayTestTimeout,
     autoCheckUpdate,
@@ -191,6 +192,15 @@ const Settings: React.FC = () => {
               isSelected={silentStart}
               onValueChange={(v) => {
                 patchAppConfig({ silentStart: v })
+              }}
+            />
+          </SettingItem>
+          <SettingItem title="托盘菜单显示节点信息" divider>
+            <Switch
+              size="sm"
+              isSelected={proxyInTray}
+              onValueChange={(v) => {
+                patchAppConfig({ proxyInTray: v })
               }}
             />
           </SettingItem>

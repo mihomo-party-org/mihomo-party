@@ -18,7 +18,6 @@ export const useAppConfig = (listenUpdate = false): RetuenType => {
       alert(e)
     } finally {
       mutateAppConfig()
-      window.electron.ipcRenderer.send('appConfigUpdated')
     }
   }
 
