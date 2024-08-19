@@ -82,15 +82,14 @@ const Settings: React.FC = () => {
           themeStr += `-${color}`
         }
       }
-      setTheme(themeStr)
-      if (themeStr === 'system') {
-        setNativeTheme('system')
-      }
       if (themeStr.includes('light')) {
         setNativeTheme('light')
+      } else if (themeStr === 'system') {
+        setNativeTheme('system')
       } else {
         setNativeTheme('dark')
       }
+      setTheme(themeStr)
       patchAppConfig({ appTheme: themeStr as AppTheme })
     } else {
       let themeStr = theme

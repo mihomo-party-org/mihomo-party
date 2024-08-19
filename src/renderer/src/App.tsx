@@ -63,15 +63,14 @@ const App: React.FC = () => {
   }, [siderOrder])
 
   useEffect(() => {
-    setTheme(appTheme)
-    if (appTheme === 'system') {
-      setNativeTheme('system')
-    }
     if (appTheme.includes('light')) {
       setNativeTheme('light')
+    } else if (appTheme === 'system') {
+      setNativeTheme('system')
     } else {
       setNativeTheme('dark')
     }
+    setTheme(appTheme)
   }, [appTheme])
 
   const onDragEnd = async (event: DragEndEvent): Promise<void> => {
