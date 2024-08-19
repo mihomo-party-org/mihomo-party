@@ -1,17 +1,16 @@
 import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
-import { mihomoProxies } from '@renderer/utils/ipc'
-import { useMemo } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { LuGroup } from 'react-icons/lu'
 import { useLocation, useNavigate } from 'react-router-dom'
 import useSWR from 'swr'
+import { mihomoGroups } from '@renderer/utils/ipc'
 
 const ProxyCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/proxies')
-  const { data: proxies } = useSWR('mihomoProxies', mihomoProxies)
+  const { data: groups = [] } = useSWR('mihomoGroups', mihomoGroups)
   const {
     attributes,
     listeners,
@@ -23,11 +22,6 @@ const ProxyCard: React.FC = () => {
     id: 'proxy'
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
-  const filtered = useMemo(() => {
-    if (!proxies) return []
-    if (!proxies.proxies) return []
-    return Object.keys(proxies.proxies).filter((key) => 'all' in proxies.proxies[key])
-  }, [proxies])
 
   return (
     <div
@@ -73,7 +67,7 @@ const ProxyCard: React.FC = () => {
               variant="bordered"
               className="mr-2 mt-2"
             >
-              {filtered.length}
+              {groups.length}
             </Chip>
           </div>
         </CardBody>

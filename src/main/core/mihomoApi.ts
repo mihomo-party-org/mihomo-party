@@ -4,6 +4,7 @@ import { mainWindow } from '..'
 import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
+import { getRuntimeConfig } from './factory'
 
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
@@ -73,6 +74,28 @@ export const mihomoProxies = async (): Promise<IMihomoProxies> => {
   const instance = await getAxios()
 
   return await instance.get('/proxies')
+}
+
+export const mihomoGroups = async (): Promise<IMihomoMixedGroup[]> => {
+  const proxies = await mihomoProxies()
+  const runtime = await getRuntimeConfig()
+  const groups: IMihomoMixedGroup[] = []
+  runtime?.['proxy-groups']?.forEach((group: { name: string; url?: string }) => {
+    group = Object.assign(group, group['<<'])
+    const { name, url } = group
+    if (proxies.proxies[name] && 'all' in proxies.proxies[name] && !proxies.proxies[name].hidden) {
+      const newGroup = proxies.proxies[name]
+      newGroup.testUrl = url
+      const newAll = newGroup.all.map((name) => proxies.proxies[name])
+      groups.push({ ...newGroup, all: newAll })
+    }
+  })
+  if (!groups.find((group) => group.name === 'GLOBAL')) {
+    const newGlobal = proxies.proxies['GLOBAL'] as IMihomoGroup
+    const newAll = newGlobal.all.map((name) => proxies.proxies[name])
+    groups.push({ ...newGlobal, all: newAll })
+  }
+  return groups
 }
 
 export const mihomoProxyProviders = async (): Promise<IMihomoProxyProviders> => {

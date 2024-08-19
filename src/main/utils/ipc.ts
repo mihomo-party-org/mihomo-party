@@ -4,6 +4,7 @@ import {
   mihomoCloseAllConnections,
   mihomoCloseConnection,
   mihomoGroupDelay,
+  mihomoGroups,
   mihomoProxies,
   mihomoProxyDelay,
   mihomoProxyProviders,
@@ -71,6 +72,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoCloseAllConnections', ipcErrorWrapper(mihomoCloseAllConnections))
   ipcMain.handle('mihomoRules', ipcErrorWrapper(mihomoRules))
   ipcMain.handle('mihomoProxies', ipcErrorWrapper(mihomoProxies))
+  ipcMain.handle('mihomoGroups', ipcErrorWrapper(mihomoGroups))
   ipcMain.handle('mihomoProxyProviders', ipcErrorWrapper(mihomoProxyProviders))
   ipcMain.handle('mihomoUpdateProxyProviders', (_e, name) =>
     ipcErrorWrapper(mihomoUpdateProxyProviders)(name)

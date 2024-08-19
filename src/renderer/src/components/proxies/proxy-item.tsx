@@ -7,7 +7,7 @@ interface Props {
   onProxyDelay: (proxy: string, url?: string) => Promise<IMihomoDelay>
   proxyDisplayMode: 'simple' | 'full'
   proxy: IMihomoProxy | IMihomoGroup
-  group: IMihomoGroup
+  group: IMihomoMixedGroup
   onSelect: (group: string, proxy: string) => void
   selected: boolean
 }

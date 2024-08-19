@@ -2,11 +2,10 @@ import { Avatar, Button, Card, CardBody, Chip } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import {
-  getRuntimeConfig,
   mihomoChangeProxy,
   mihomoCloseAllConnections,
   mihomoGroupDelay,
-  mihomoProxies,
+  mihomoGroups,
   mihomoProxyDelay
 } from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
@@ -22,38 +21,13 @@ import { IoIosArrowBack } from 'react-icons/io'
 import { MdOutlineSpeed } from 'react-icons/md'
 
 const Proxies: React.FC = () => {
-  const { data: proxies, mutate } = useSWR('mihomoProxies', mihomoProxies)
-  const { data: runtime } = useSWR('getRuntimeConfig', getRuntimeConfig)
+  const { data: groups = [], mutate } = useSWR('mihomoGroups', mihomoGroups)
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     proxyDisplayMode = 'simple',
     proxyDisplayOrder = 'default',
     autoCloseConnection = true
   } = appConfig || {}
-
-  const groups = useMemo(() => {
-    if (!proxies) return []
-    if (!proxies.proxies) return []
-    const groups: IMihomoGroup[] = []
-    runtime?.['proxy-groups']?.forEach((group: { name: string; url?: string }) => {
-      group = Object.assign(group, group['<<'])
-      const { name, url } = group
-      if (
-        proxies.proxies[name] &&
-        isGroup(proxies.proxies[name]) &&
-        !proxies.proxies[name].hidden
-      ) {
-        const newGroup = proxies.proxies[name]
-        newGroup.testUrl = url
-        groups.push(newGroup as IMihomoGroup)
-      }
-    })
-    if (!groups.find((group) => group.name === 'GLOBAL')) {
-      groups.push(proxies.proxies['GLOBAL'] as IMihomoGroup)
-    }
-    return groups
-  }, [proxies, runtime])
-
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const { groupCounts, allProxies } = useMemo(() => {
@@ -62,8 +36,8 @@ const Proxies: React.FC = () => {
     })
     const allProxies: (IMihomoProxy | IMihomoGroup)[] = []
     groups.forEach((group, index) => {
-      if (isOpen[index] && proxies) {
-        let groupProxies = group.all.map((name) => proxies.proxies[name])
+      if (isOpen[index]) {
+        let groupProxies = group.all
         if (proxyDisplayOrder === 'delay') {
           groupProxies = groupProxies.sort((a, b) => {
             if (a.history.length === 0) return -1
@@ -265,10 +239,6 @@ const Proxies: React.FC = () => {
       />
     </BasePage>
   )
-}
-
-function isGroup(proxy: IMihomoProxy | IMihomoGroup): proxy is IMihomoGroup {
-  return 'all' in proxy
 }
 
 export default Proxies

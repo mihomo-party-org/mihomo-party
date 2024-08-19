@@ -162,6 +162,10 @@ interface IMihomoProxies {
   proxies: Record<string, IMihomoProxy | IMihomoGroup>
 }
 
+interface IMihomoMixedGroup extends IMihomoGroup {
+  all: (IMihomoProxy | IMihomoGroup)[]
+}
+
 interface IMihomoRuleProviders {
   providers: Record<string, IMihomoRuleProvider>
 }

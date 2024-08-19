@@ -27,6 +27,10 @@ export async function mihomoProxies(): Promise<IMihomoProxies> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoProxies'))
 }
 
+export async function mihomoGroups(): Promise<IMihomoMixedGroup[]> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoGroups'))
+}
+
 export async function mihomoProxyProviders(): Promise<IMihomoProxyProviders> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoProxyProviders'))
 }
