@@ -36,6 +36,7 @@ type MihomoProxyType =
 type TunStack = 'gvisor' | 'mixed' | 'system'
 type FindProcessMode = 'off' | 'strict' | 'always'
 type DnsMode = 'normal' | 'fake-ip' | 'redir-host'
+type NetworkInterfaceInfo = os.NetworkInterfaceInfo
 
 interface IAppVersion {
   version: string

@@ -251,6 +251,10 @@ export async function setupFirewall(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setupFirewall'))
 }
 
+export async function getInterfaces(): Promise<Record<string, NetworkInterfaceInfo[]>> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getInterfaces'))
+}
+
 export async function setPortable(portable: boolean): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setPortable', portable))
 }

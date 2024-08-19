@@ -5,8 +5,10 @@ import SettingItem from '@renderer/components/base/base-setting-item'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { platform } from '@renderer/utils/init'
+import { FaNetworkWired } from 'react-icons/fa'
 import { restartCore } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
+import InterfaceModal from '@renderer/components/mihomo/interface-modal'
 
 const CoreMap = {
   mihomo: '稳定版',
@@ -43,128 +45,47 @@ const Mihomo: React.FC = () => {
   const [externalControllerInput, setExternalControllerInput] = useState(externalController)
   const [secretInput, setSecretInput] = useState(secret)
 
+  const [lanOpen, setLanOpen] = useState(false)
+
   const onChangeNeedRestart = async (patch: Partial<IMihomoConfig>): Promise<void> => {
     await patchControledMihomoConfig(patch)
     await restartCore()
   }
 
   return (
-    <BasePage title="内核设置">
-      <SettingCard>
-        <SettingItem title="内核版本" divider>
-          <Select
-            className="w-[100px]"
-            size="sm"
-            selectedKeys={new Set([core])}
-            onSelectionChange={async (v) => {
-              try {
-                await patchAppConfig({ core: v.currentKey as 'mihomo' | 'mihomo-alpha' })
-                await restartCore()
-              } catch (e) {
-                alert(e)
-              } finally {
-                PubSub.publish('mihomo-core-changed')
-              }
-            }}
-          >
-            <SelectItem key="mihomo">{CoreMap['mihomo']}</SelectItem>
-            <SelectItem key="mihomo-alpha">{CoreMap['mihomo-alpha']}</SelectItem>
-          </Select>
-        </SettingItem>
-        <SettingItem title="混合端口" divider>
-          <div className="flex">
-            {mixedPortInput !== mixedPort && (
-              <Button
-                size="sm"
-                color="primary"
-                className="mr-2"
-                onPress={() => {
-                  onChangeNeedRestart({ 'mixed-port': mixedPortInput })
-                }}
-              >
-                确认
-              </Button>
-            )}
-
-            <Input
-              size="sm"
-              type="number"
+    <>
+      {lanOpen && <InterfaceModal onClose={() => setLanOpen(false)} />}
+      <BasePage title="内核设置">
+        <SettingCard>
+          <SettingItem title="内核版本" divider>
+            <Select
               className="w-[100px]"
-              value={mixedPortInput.toString()}
-              max={65535}
-              min={0}
-              onValueChange={(v) => {
-                setMixedPortInput(parseInt(v))
-              }}
-            />
-          </div>
-        </SettingItem>
-        <SettingItem title="Socks端口" divider>
-          <div className="flex">
-            {socksPortInput !== socksPort && (
-              <Button
-                size="sm"
-                color="primary"
-                className="mr-2"
-                onPress={() => {
-                  onChangeNeedRestart({ 'socks-port': socksPortInput })
-                }}
-              >
-                确认
-              </Button>
-            )}
-
-            <Input
               size="sm"
-              type="number"
-              className="w-[100px]"
-              value={socksPortInput.toString()}
-              max={65535}
-              min={0}
-              onValueChange={(v) => {
-                setSocksPortInput(parseInt(v))
+              selectedKeys={new Set([core])}
+              onSelectionChange={async (v) => {
+                try {
+                  await patchAppConfig({ core: v.currentKey as 'mihomo' | 'mihomo-alpha' })
+                  await restartCore()
+                } catch (e) {
+                  alert(e)
+                } finally {
+                  PubSub.publish('mihomo-core-changed')
+                }
               }}
-            />
-          </div>
-        </SettingItem>
-        <SettingItem title="Http端口" divider>
-          <div className="flex">
-            {httpPortInput !== httpPort && (
-              <Button
-                size="sm"
-                color="primary"
-                className="mr-2"
-                onPress={() => {
-                  onChangeNeedRestart({ port: httpPortInput })
-                }}
-              >
-                确认
-              </Button>
-            )}
-
-            <Input
-              size="sm"
-              type="number"
-              className="w-[100px]"
-              value={httpPortInput.toString()}
-              max={65535}
-              min={0}
-              onValueChange={(v) => {
-                setHttpPortInput(parseInt(v))
-              }}
-            />
-          </div>
-        </SettingItem>
-        {platform !== 'win32' && (
-          <SettingItem title="Redir端口" divider>
+            >
+              <SelectItem key="mihomo">{CoreMap['mihomo']}</SelectItem>
+              <SelectItem key="mihomo-alpha">{CoreMap['mihomo-alpha']}</SelectItem>
+            </Select>
+          </SettingItem>
+          <SettingItem title="混合端口" divider>
             <div className="flex">
-              {redirPortInput !== redirPort && (
+              {mixedPortInput !== mixedPort && (
                 <Button
                   size="sm"
                   color="primary"
                   className="mr-2"
                   onPress={() => {
-                    onChangeNeedRestart({ 'redir-port': redirPortInput })
+                    onChangeNeedRestart({ 'mixed-port': mixedPortInput })
                   }}
                 >
                   确认
@@ -175,26 +96,24 @@ const Mihomo: React.FC = () => {
                 size="sm"
                 type="number"
                 className="w-[100px]"
-                value={redirPortInput.toString()}
+                value={mixedPortInput.toString()}
                 max={65535}
                 min={0}
                 onValueChange={(v) => {
-                  setRedirPortInput(parseInt(v))
+                  setMixedPortInput(parseInt(v))
                 }}
               />
             </div>
           </SettingItem>
-        )}
-        {platform === 'linux' && (
-          <SettingItem title="TProxy端口" divider>
+          <SettingItem title="Socks端口" divider>
             <div className="flex">
-              {tproxyPortInput !== tproxyPort && (
+              {socksPortInput !== socksPort && (
                 <Button
                   size="sm"
                   color="primary"
                   className="mr-2"
                   onPress={() => {
-                    onChangeNeedRestart({ 'tproxy-port': tproxyPortInput })
+                    onChangeNeedRestart({ 'socks-port': socksPortInput })
                   }}
                 >
                   确认
@@ -205,151 +124,255 @@ const Mihomo: React.FC = () => {
                 size="sm"
                 type="number"
                 className="w-[100px]"
-                value={tproxyPortInput.toString()}
+                value={socksPortInput.toString()}
                 max={65535}
                 min={0}
                 onValueChange={(v) => {
-                  setTproxyPortInput(parseInt(v))
+                  setSocksPortInput(parseInt(v))
                 }}
               />
             </div>
           </SettingItem>
-        )}
-        <SettingItem title="外部控制" divider>
-          <div className="flex">
-            {externalControllerInput !== externalController && (
-              <Button
-                size="sm"
-                color="primary"
-                className="mr-2"
-                onPress={() => {
-                  onChangeNeedRestart({ 'external-controller': externalControllerInput })
-                }}
-              >
-                确认
-              </Button>
-            )}
+          <SettingItem title="Http端口" divider>
+            <div className="flex">
+              {httpPortInput !== httpPort && (
+                <Button
+                  size="sm"
+                  color="primary"
+                  className="mr-2"
+                  onPress={() => {
+                    onChangeNeedRestart({ port: httpPortInput })
+                  }}
+                >
+                  确认
+                </Button>
+              )}
 
-            <Input
+              <Input
+                size="sm"
+                type="number"
+                className="w-[100px]"
+                value={httpPortInput.toString()}
+                max={65535}
+                min={0}
+                onValueChange={(v) => {
+                  setHttpPortInput(parseInt(v))
+                }}
+              />
+            </div>
+          </SettingItem>
+          {platform !== 'win32' && (
+            <SettingItem title="Redir端口" divider>
+              <div className="flex">
+                {redirPortInput !== redirPort && (
+                  <Button
+                    size="sm"
+                    color="primary"
+                    className="mr-2"
+                    onPress={() => {
+                      onChangeNeedRestart({ 'redir-port': redirPortInput })
+                    }}
+                  >
+                    确认
+                  </Button>
+                )}
+
+                <Input
+                  size="sm"
+                  type="number"
+                  className="w-[100px]"
+                  value={redirPortInput.toString()}
+                  max={65535}
+                  min={0}
+                  onValueChange={(v) => {
+                    setRedirPortInput(parseInt(v))
+                  }}
+                />
+              </div>
+            </SettingItem>
+          )}
+          {platform === 'linux' && (
+            <SettingItem title="TProxy端口" divider>
+              <div className="flex">
+                {tproxyPortInput !== tproxyPort && (
+                  <Button
+                    size="sm"
+                    color="primary"
+                    className="mr-2"
+                    onPress={() => {
+                      onChangeNeedRestart({ 'tproxy-port': tproxyPortInput })
+                    }}
+                  >
+                    确认
+                  </Button>
+                )}
+
+                <Input
+                  size="sm"
+                  type="number"
+                  className="w-[100px]"
+                  value={tproxyPortInput.toString()}
+                  max={65535}
+                  min={0}
+                  onValueChange={(v) => {
+                    setTproxyPortInput(parseInt(v))
+                  }}
+                />
+              </div>
+            </SettingItem>
+          )}
+          <SettingItem title="外部控制" divider>
+            <div className="flex">
+              {externalControllerInput !== externalController && (
+                <Button
+                  size="sm"
+                  color="primary"
+                  className="mr-2"
+                  onPress={() => {
+                    onChangeNeedRestart({ 'external-controller': externalControllerInput })
+                  }}
+                >
+                  确认
+                </Button>
+              )}
+
+              <Input
+                size="sm"
+                value={externalControllerInput}
+                onValueChange={(v) => {
+                  setExternalControllerInput(v)
+                }}
+              />
+            </div>
+          </SettingItem>
+          <SettingItem title="外部控制访问密钥" divider>
+            <div className="flex">
+              {secretInput !== secret && (
+                <Button
+                  size="sm"
+                  color="primary"
+                  className="mr-2"
+                  onPress={() => {
+                    onChangeNeedRestart({ secret: secretInput })
+                  }}
+                >
+                  确认
+                </Button>
+              )}
+
+              <Input
+                size="sm"
+                type="password"
+                value={secretInput}
+                onValueChange={(v) => {
+                  setSecretInput(v)
+                }}
+              />
+            </div>
+          </SettingItem>
+          <SettingItem title="IPv6" divider>
+            <Switch
               size="sm"
-              value={externalControllerInput}
+              isSelected={ipv6}
               onValueChange={(v) => {
-                setExternalControllerInput(v)
+                onChangeNeedRestart({ ipv6: v })
               }}
             />
-          </div>
-        </SettingItem>
-        <SettingItem title="外部控制访问密钥" divider>
-          <div className="flex">
-            {secretInput !== secret && (
+          </SettingItem>
+          <SettingItem
+            title="允许局域网连接"
+            actions={
               <Button
                 size="sm"
-                color="primary"
-                className="mr-2"
+                isIconOnly
+                variant="light"
+                className="ml-2"
                 onPress={() => {
-                  onChangeNeedRestart({ secret: secretInput })
+                  setLanOpen(true)
                 }}
               >
-                确认
+                <FaNetworkWired className="text-lg" />
               </Button>
-            )}
-
-            <Input
+            }
+            divider
+          >
+            <Switch
               size="sm"
-              type="password"
-              value={secretInput}
+              isSelected={allowLan}
               onValueChange={(v) => {
-                setSecretInput(v)
+                onChangeNeedRestart({ 'allow-lan': v })
               }}
             />
-          </div>
-        </SettingItem>
-        <SettingItem title="IPv6" divider>
-          <Switch
-            size="sm"
-            isSelected={ipv6}
-            onValueChange={(v) => {
-              onChangeNeedRestart({ ipv6: v })
-            }}
-          />
-        </SettingItem>
-        <SettingItem title="允许局域网连接" divider>
-          <Switch
-            size="sm"
-            isSelected={allowLan}
-            onValueChange={(v) => {
-              onChangeNeedRestart({ 'allow-lan': v })
-            }}
-          />
-        </SettingItem>
-        <SettingItem title="使用RTT延迟测试" divider>
-          <Switch
-            size="sm"
-            isSelected={unifiedDelay}
-            onValueChange={(v) => {
-              onChangeNeedRestart({ 'unified-delay': v })
-            }}
-          />
-        </SettingItem>
-        <SettingItem title="TCP并发" divider>
-          <Switch
-            size="sm"
-            isSelected={tcpConcurrent}
-            onValueChange={(v) => {
-              onChangeNeedRestart({ 'tcp-concurrent': v })
-            }}
-          />
-        </SettingItem>
-        <SettingItem title="存储选择节点" divider>
-          <Switch
-            size="sm"
-            isSelected={storeSelected}
-            onValueChange={(v) => {
-              onChangeNeedRestart({ profile: { 'store-selected': v } })
-            }}
-          />
-        </SettingItem>
-        <SettingItem title="存储FakeIP" divider>
-          <Switch
-            size="sm"
-            isSelected={storeFakeIp}
-            onValueChange={(v) => {
-              onChangeNeedRestart({ profile: { 'store-fake-ip': v } })
-            }}
-          />
-        </SettingItem>
-        <SettingItem title="日志等级" divider>
-          <Select
-            className="w-[100px]"
-            size="sm"
-            selectedKeys={new Set([logLevel])}
-            onSelectionChange={(v) => {
-              onChangeNeedRestart({ 'log-level': v.currentKey as LogLevel })
-            }}
-          >
-            <SelectItem key="silent">静默</SelectItem>
-            <SelectItem key="error">错误</SelectItem>
-            <SelectItem key="warning">警告</SelectItem>
-            <SelectItem key="info">信息</SelectItem>
-            <SelectItem key="debug">调试</SelectItem>
-          </Select>
-        </SettingItem>
-        <SettingItem title="查找进程">
-          <Select
-            className="w-[100px]"
-            size="sm"
-            selectedKeys={new Set([findProcessMode])}
-            onSelectionChange={(v) => {
-              onChangeNeedRestart({ 'find-process-mode': v.currentKey as FindProcessMode })
-            }}
-          >
-            <SelectItem key="strict">自动</SelectItem>
-            <SelectItem key="off">关闭</SelectItem>
-            <SelectItem key="always">开启</SelectItem>
-          </Select>
-        </SettingItem>
-      </SettingCard>
-    </BasePage>
+          </SettingItem>
+          <SettingItem title="使用RTT延迟测试" divider>
+            <Switch
+              size="sm"
+              isSelected={unifiedDelay}
+              onValueChange={(v) => {
+                onChangeNeedRestart({ 'unified-delay': v })
+              }}
+            />
+          </SettingItem>
+          <SettingItem title="TCP并发" divider>
+            <Switch
+              size="sm"
+              isSelected={tcpConcurrent}
+              onValueChange={(v) => {
+                onChangeNeedRestart({ 'tcp-concurrent': v })
+              }}
+            />
+          </SettingItem>
+          <SettingItem title="存储选择节点" divider>
+            <Switch
+              size="sm"
+              isSelected={storeSelected}
+              onValueChange={(v) => {
+                onChangeNeedRestart({ profile: { 'store-selected': v } })
+              }}
+            />
+          </SettingItem>
+          <SettingItem title="存储FakeIP" divider>
+            <Switch
+              size="sm"
+              isSelected={storeFakeIp}
+              onValueChange={(v) => {
+                onChangeNeedRestart({ profile: { 'store-fake-ip': v } })
+              }}
+            />
+          </SettingItem>
+          <SettingItem title="日志等级" divider>
+            <Select
+              className="w-[100px]"
+              size="sm"
+              selectedKeys={new Set([logLevel])}
+              onSelectionChange={(v) => {
+                onChangeNeedRestart({ 'log-level': v.currentKey as LogLevel })
+              }}
+            >
+              <SelectItem key="silent">静默</SelectItem>
+              <SelectItem key="error">错误</SelectItem>
+              <SelectItem key="warning">警告</SelectItem>
+              <SelectItem key="info">信息</SelectItem>
+              <SelectItem key="debug">调试</SelectItem>
+            </Select>
+          </SettingItem>
+          <SettingItem title="查找进程">
+            <Select
+              className="w-[100px]"
+              size="sm"
+              selectedKeys={new Set([findProcessMode])}
+              onSelectionChange={(v) => {
+                onChangeNeedRestart({ 'find-process-mode': v.currentKey as FindProcessMode })
+              }}
+            >
+              <SelectItem key="strict">自动</SelectItem>
+              <SelectItem key="off">关闭</SelectItem>
+              <SelectItem key="always">开启</SelectItem>
+            </Select>
+          </SettingItem>
+        </SettingCard>
+      </BasePage>
+    </>
   )
 }
 

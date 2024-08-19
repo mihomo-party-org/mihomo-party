@@ -51,6 +51,7 @@ import { getFilePath, openUWPTool, readTextFile, setupFirewall } from '../sys/mi
 import { getRuntimeConfig, getRuntimeConfigStr } from '../core/factory'
 import { isPortable, setPortable } from './dirs'
 import { listWebdavBackups, webdavBackup, webdavRestore } from '../resolve/backup'
+import { getInterfaces } from '../sys/interface'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -139,6 +140,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('platform', () => process.platform)
   ipcMain.handle('openUWPTool', ipcErrorWrapper(openUWPTool))
   ipcMain.handle('setupFirewall', ipcErrorWrapper(setupFirewall))
+  ipcMain.handle('getInterfaces', getInterfaces)
   ipcMain.handle('setPortable', (_e, portable) => ipcErrorWrapper(setPortable)(portable))
   ipcMain.handle('isPortable', isPortable)
   ipcMain.handle('webdavBackup', ipcErrorWrapper(webdavBackup))
