@@ -32,8 +32,7 @@ const buildContextMenu = async (): Promise<Menu> => {
     ruleModeShortcut = '',
     globalModeShortcut = '',
     directModeShortcut = '',
-    restartAppShortcut = '',
-    quitAppShortcut = ''
+    restartAppShortcut = ''
   } = await getAppConfig()
   let groupsMenu: Electron.MenuItemConstructorOptions[] = []
   if (proxyInTray && process.platform !== 'linux') {
@@ -209,7 +208,7 @@ const buildContextMenu = async (): Promise<Menu> => {
       id: 'quit',
       label: '退出应用',
       type: 'normal',
-      accelerator: quitAppShortcut,
+      accelerator: 'CommandOrControl+Q',
       click: (): void => app.quit()
     }
   ] as Electron.MenuItemConstructorOptions[]

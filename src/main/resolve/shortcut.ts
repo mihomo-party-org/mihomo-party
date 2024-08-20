@@ -86,11 +86,6 @@ export async function registerShortcut(
         app.quit()
       })
     }
-    case 'quitAppShortcut': {
-      return globalShortcut.register(newShortcut, () => {
-        app.quit()
-      })
-    }
   }
   throw new Error('Unknown action')
 }
@@ -103,8 +98,7 @@ export async function initShortcut(): Promise<void> {
     ruleModeShortcut,
     globalModeShortcut,
     directModeShortcut,
-    restartAppShortcut,
-    quitAppShortcut
+    restartAppShortcut
   } = await getAppConfig()
   if (showWindowShortcut) {
     try {
@@ -151,13 +145,6 @@ export async function initShortcut(): Promise<void> {
   if (restartAppShortcut) {
     try {
       await registerShortcut('', restartAppShortcut, 'restartAppShortcut')
-    } catch {
-      // ignore
-    }
-  }
-  if (quitAppShortcut) {
-    try {
-      await registerShortcut('', quitAppShortcut, 'quitAppShortcut')
     } catch {
       // ignore
     }

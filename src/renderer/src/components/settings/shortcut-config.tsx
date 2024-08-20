@@ -48,8 +48,7 @@ const ShortcutConfig: React.FC = () => {
     ruleModeShortcut = '',
     globalModeShortcut = '',
     directModeShortcut = '',
-    restartAppShortcut = '',
-    quitAppShortcut = ''
+    restartAppShortcut = ''
   } = appConfig || {}
 
   return (
@@ -108,21 +107,12 @@ const ShortcutConfig: React.FC = () => {
           />
         </div>
       </SettingItem>
-      <SettingItem title="重启应用" divider>
+      <SettingItem title="重启应用">
         <div className="flex justify-end w-[60%]">
           <ShortcutInput
             value={restartAppShortcut}
             patchAppConfig={patchAppConfig}
             action="restartAppShortcut"
-          />
-        </div>
-      </SettingItem>
-      <SettingItem title="退出应用">
-        <div className="flex justify-end w-[60%]">
-          <ShortcutInput
-            value={quitAppShortcut}
-            patchAppConfig={patchAppConfig}
-            action="quitAppShortcut"
           />
         </div>
       </SettingItem>
