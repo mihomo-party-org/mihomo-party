@@ -20,9 +20,15 @@ importers:
       adm-zip:
         specifier: ^0.5.15
         version: 0.5.15
+      apexcharts:
+        specifier: ^3.52.0
+        version: 3.52.0
       axios:
         specifier: ^1.7.3
         version: 1.7.4
+      react-apexcharts:
+        specifier: ^1.4.1
+        version: 1.4.1(apexcharts@3.52.0)(react@18.3.1)
       webdav:
         specifier: ^5.7.1
         version: 5.7.1
@@ -2113,6 +2119,9 @@ packages:
     resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
     engines: {node: '>=10.0.0'}
 
+  '@yr/monotone-cubic-spline@1.0.3':
+    resolution: {integrity: sha512-FQXkOta0XBSUPHndIKON2Y9JeQz5ZeMqLYZVVK93FliNBFm7LNMIZmY6FrMEB9XPcDbE2bekMbZD6kzDkxwYjA==}
+
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
 
@@ -2176,6 +2185,9 @@ packages:
   anymatch@3.1.3:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
+
+  apexcharts@3.52.0:
+    resolution: {integrity: sha512-7dg0ADKs8AA89iYMZMe2sFDG0XK5PfqllKV9N+i3hKHm3vEtdhwz8AlXGm+/b0nJ6jKiaXsqci5LfVxNhtB+dA==}
 
   app-builder-bin@5.0.0-alpha.7:
     resolution: {integrity: sha512-ww2mK4ITUvqisnqOuUWAeHzokpPidyZ7a0ZkwW+V7sF5/Pdi2OldkRjAWqEzn6Xtmj3SLVT84as4wB59A6jJ4g==}
@@ -4094,6 +4106,12 @@ packages:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
 
+  react-apexcharts@1.4.1:
+    resolution: {integrity: sha512-G14nVaD64Bnbgy8tYxkjuXEUp/7h30Q0U33xc3AwtGFijJB9nHqOt1a6eG0WBn055RgRg+NwqbKGtqPxy15d0Q==}
+    peerDependencies:
+      apexcharts: ^3.41.0
+      react: '>=0.13'
+
   react-dom@18.3.1:
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
@@ -4496,6 +4514,37 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  svg.draggable.js@2.2.2:
+    resolution: {integrity: sha512-JzNHBc2fLQMzYCZ90KZHN2ohXL0BQJGQimK1kGk6AvSeibuKcIdDX9Kr0dT9+UJ5O8nYA0RB839Lhvk4CY4MZw==}
+    engines: {node: '>= 0.8.0'}
+
+  svg.easing.js@2.0.0:
+    resolution: {integrity: sha512-//ctPdJMGy22YoYGV+3HEfHbm6/69LJUTAqI2/5qBvaNHZ9uUFVC82B0Pl299HzgH13rKrBgi4+XyXXyVWWthA==}
+    engines: {node: '>= 0.8.0'}
+
+  svg.filter.js@2.0.2:
+    resolution: {integrity: sha512-xkGBwU+dKBzqg5PtilaTb0EYPqPfJ9Q6saVldX+5vCRy31P6TlRCP3U9NxH3HEufkKkpNgdTLBJnmhDHeTqAkw==}
+    engines: {node: '>= 0.8.0'}
+
+  svg.js@2.7.1:
+    resolution: {integrity: sha512-ycbxpizEQktk3FYvn/8BH+6/EuWXg7ZpQREJvgacqn46gIddG24tNNe4Son6omdXCnSOaApnpZw6MPCBA1dODA==}
+
+  svg.pathmorphing.js@0.1.3:
+    resolution: {integrity: sha512-49HWI9X4XQR/JG1qXkSDV8xViuTLIWm/B/7YuQELV5KMOPtXjiwH4XPJvr/ghEDibmLQ9Oc22dpWpG0vUDDNww==}
+    engines: {node: '>= 0.8.0'}
+
+  svg.resize.js@1.4.3:
+    resolution: {integrity: sha512-9k5sXJuPKp+mVzXNvxz7U0uC9oVMQrrf7cFsETznzUDDm0x8+77dtZkWdMfRlmbkEEYvUn9btKuZ3n41oNA+uw==}
+    engines: {node: '>= 0.8.0'}
+
+  svg.select.js@2.1.2:
+    resolution: {integrity: sha512-tH6ABEyJsAOVAhwcCjF8mw4crjXSI1aa7j2VQR8ZuJ37H2MBUbyeqYr5nEO7sSN3cy9AR9DUwNg0t/962HlDbQ==}
+    engines: {node: '>= 0.8.0'}
+
+  svg.select.js@3.0.1:
+    resolution: {integrity: sha512-h5IS/hKkuVCbKSieR9uQCj9w+zLHoPh+ce19bBYyqF53g6mnPB8sAtIbe1s9dh2S2fCmYX2xel1Ln3PJBbK4kw==}
+    engines: {node: '>= 0.8.0'}
 
   swr@2.2.5:
     resolution: {integrity: sha512-QtxqyclFeAsxEUeZIYmsaQ0UjimSq1RZ9Un7I68/0ClKK/U3LoyQunwkQfJZr2fc22DfIXLNDc2wFyTEikCUpg==}
@@ -7689,6 +7738,8 @@ snapshots:
 
   '@xmldom/xmldom@0.8.10': {}
 
+  '@yr/monotone-cubic-spline@1.0.3': {}
+
   abbrev@1.1.1: {}
 
   acorn-jsx@5.3.2(acorn@8.12.1):
@@ -7746,9 +7797,19 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
+  apexcharts@3.52.0:
+    dependencies:
+      '@yr/monotone-cubic-spline': 1.0.3
+      svg.draggable.js: 2.2.2
+      svg.easing.js: 2.0.0
+      svg.filter.js: 2.0.2
+      svg.pathmorphing.js: 0.1.3
+      svg.resize.js: 1.4.3
+      svg.select.js: 3.0.1
+
   app-builder-bin@5.0.0-alpha.7: {}
 
-  app-builder-lib@25.0.4(dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4))(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4)):
+  app-builder-lib@25.0.4(dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4)))(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4)):
     dependencies:
       '@develar/schema-utils': 2.6.5
       '@electron/notarize': 2.3.2
@@ -7763,7 +7824,7 @@ snapshots:
       builder-util-runtime: 9.2.5
       chromium-pickle-js: 0.2.0
       debug: 4.3.6
-      dmg-builder: 25.0.4(electron-builder-squirrel-windows@25.0.4)
+      dmg-builder: 25.0.4(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4))
       ejs: 3.1.10
       electron-builder-squirrel-windows: 25.0.4(dmg-builder@25.0.4)
       electron-publish: 25.0.3
@@ -8309,9 +8370,9 @@ snapshots:
 
   dlv@1.1.3: {}
 
-  dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4):
+  dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4)):
     dependencies:
-      app-builder-lib: 25.0.4(dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4))(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4))
+      app-builder-lib: 25.0.4(dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4)))(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4))
       builder-util: 25.0.3
       builder-util-runtime: 9.2.5
       fs-extra: 10.1.0
@@ -8358,7 +8419,7 @@ snapshots:
 
   electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4):
     dependencies:
-      app-builder-lib: 25.0.4(dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4))(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4))
+      app-builder-lib: 25.0.4(dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4)))(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4))
       archiver: 5.3.2
       builder-util: 25.0.3
       fs-extra: 10.1.0
@@ -8369,11 +8430,11 @@ snapshots:
 
   electron-builder@25.0.4(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4)):
     dependencies:
-      app-builder-lib: 25.0.4(dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4))(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4))
+      app-builder-lib: 25.0.4(dmg-builder@25.0.4(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4)))(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4))
       builder-util: 25.0.3
       builder-util-runtime: 9.2.5
       chalk: 4.1.2
-      dmg-builder: 25.0.4(electron-builder-squirrel-windows@25.0.4)
+      dmg-builder: 25.0.4(electron-builder-squirrel-windows@25.0.4(dmg-builder@25.0.4))
       fs-extra: 10.1.0
       is-ci: 3.0.1
       lazy-val: 1.0.5
@@ -10074,6 +10135,12 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
+  react-apexcharts@1.4.1(apexcharts@3.52.0)(react@18.3.1):
+    dependencies:
+      apexcharts: 3.52.0
+      prop-types: 15.8.1
+      react: 18.3.1
+
   react-dom@18.3.1(react@18.3.1):
     dependencies:
       loose-envify: 1.4.0
@@ -10573,6 +10640,37 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  svg.draggable.js@2.2.2:
+    dependencies:
+      svg.js: 2.7.1
+
+  svg.easing.js@2.0.0:
+    dependencies:
+      svg.js: 2.7.1
+
+  svg.filter.js@2.0.2:
+    dependencies:
+      svg.js: 2.7.1
+
+  svg.js@2.7.1: {}
+
+  svg.pathmorphing.js@0.1.3:
+    dependencies:
+      svg.js: 2.7.1
+
+  svg.resize.js@1.4.3:
+    dependencies:
+      svg.js: 2.7.1
+      svg.select.js: 2.1.2
+
+  svg.select.js@2.1.2:
+    dependencies:
+      svg.js: 2.7.1
+
+  svg.select.js@3.0.1:
+    dependencies:
+      svg.js: 2.7.1
 
   swr@2.2.5(react@18.3.1):
     dependencies:

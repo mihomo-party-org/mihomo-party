@@ -6,8 +6,12 @@ import { useEffect, useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { IoLink } from 'react-icons/io5'
+import Chart from 'react-apexcharts'
+import { ApexOptions } from 'apexcharts'
+import { useTheme } from 'next-themes'
 
 const ConnCard: React.FC = () => {
+  const { theme = 'system', systemTheme = 'dark' } = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/connections')
@@ -24,11 +28,111 @@ const ConnCard: React.FC = () => {
   } = useSortable({
     id: 'connection'
   })
+  const [series, setSeries] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+  const getApexChartOptions = (): ApexOptions => {
+    const islight = theme === 'system' ? systemTheme === 'light' : theme.includes('light')
+    const primaryColor = match
+      ? 'rgba(255,255,255,0.6)'
+      : islight
+        ? 'rgba(0,0,0,0.6)'
+        : 'rgba(255,255,255,0.6)'
+    const transparentColor = match
+      ? 'rgba(255,255,255,0)'
+      : islight
+        ? 'rgba(0,0,0,0)'
+        : 'rgba(255,255,255,0)'
+    return {
+      chart: {
+        background: 'transparent',
+        stacked: false,
+        toolbar: {
+          show: false
+        },
+        animations: {
+          enabled: false
+        },
+        parentHeightOffset: 0,
+        sparkline: {
+          enabled: false
+        }
+      },
+      colors: [primaryColor],
+      stroke: {
+        show: false,
+        curve: 'smooth',
+        width: 0
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          type: 'vertical',
+          shadeIntensity: 0,
+          gradientToColors: [transparentColor, primaryColor],
+          inverseColors: false,
+          opacityTo: 0,
+          stops: [0, 100]
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false
+        }
+      },
+
+      xaxis: {
+        labels: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        axisBorder: {
+          show: false
+        }
+      },
+      yaxis: {
+        labels: {
+          show: false
+        },
+        min: 0
+      },
+      tooltip: {
+        enabled: false
+      },
+      legend: {
+        show: false
+      },
+      grid: {
+        show: false,
+        padding: {
+          left: -10,
+          right: 0,
+          bottom: -15,
+          top: 30
+        },
+        column: {
+          opacity: 0
+        },
+        xaxis: {
+          lines: {
+            show: false
+          }
+        }
+      }
+    }
+  }
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   useEffect(() => {
     window.electron.ipcRenderer.on('mihomoTraffic', (_e, info: IMihomoTrafficInfo) => {
       setUpload(info.up)
       setDownload(info.down)
+      const data = series
+      data.shift()
+      data.push(info.up + info.down)
+      setSeries([...data])
     })
     return (): void => {
       window.electron.ipcRenderer.removeAllListeners('mihomoTraffic')
@@ -80,6 +184,15 @@ const ConnCard: React.FC = () => {
           <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>连接</h3>
         </CardFooter>
       </Card>
+      <div className="w-full h-full absolute top-0 left-0 pointer-events-none rounded-[14px] overflow-hidden">
+        <Chart
+          options={getApexChartOptions()}
+          series={[{ name: 'Total', data: series }]}
+          height={'100%'}
+          width={'100%'}
+          type="area"
+        />
+      </div>
     </div>
   )
 }
