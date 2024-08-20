@@ -26,36 +26,7 @@
 - [x] 多种配色主题可选，UI焕然一新
 - [x] 支持大部分Mihomo常用配置修改
 - [x] 内置稳定版和预览版Mihomo内核
-- [x] 一键更新geo数据库
+- [x] 通过WebDav一键备份和恢复配置
+- [x] 强大的覆写功能，任意修订配置文件
 
-### 安装
-
-在 [Releases](https://github.com/pompurin404/mihomo-party/releases/latest) 页面下载对应平台的安装包，安装后即可使用。
-
-#### Windows
-
-下载exe安装包，双击安装
-
-或者下载便携版压缩包，解压后运行mihomo-party.exe文件
-
-#### MacOS
-
-下载dmg包，打开后将mihomo-party图标拖入Applications文件夹安装
-
-> 如果打开时遇到 '"mihomo-party.app" is damaged and can't be opened.' 的问题，请执行以下命令：
->
-> `sudo xattr -r -d com.apple.quarantine /Applications/mihomo-party.app`
-
-#### Linux
-
-##### Debian/Ubuntu
-
-下载deb包，使用apt安装
-
-##### Fedora
-
-下载rpm包，使用dnf安装
-
-##### Arch/Manjaro
-
-通过 [AUR](https://aur.archlinux.org/packages?O=0&K=mihomo-party) 安装
+### 安装/使用指南见 [官方文档](https://mihomo.party)
