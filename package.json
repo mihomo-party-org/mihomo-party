@@ -24,7 +24,9 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@mihomo-party/sysproxy": "^2.0.0",
     "adm-zip": "^0.5.15",
+    "apexcharts": "^3.52.0",
     "axios": "^1.7.3",
+    "react-apexcharts": "^1.4.1",
     "webdav": "^5.7.1",
     "ws": "^8.18.0",
     "yaml": "^2.5.0"
