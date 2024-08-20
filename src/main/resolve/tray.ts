@@ -22,7 +22,19 @@ export let tray: Tray | null = null
 
 const buildContextMenu = async (): Promise<Menu> => {
   const { mode, tun } = await getControledMihomoConfig()
-  const { sysProxy, autoCloseConnection, proxyInTray = true } = await getAppConfig()
+  const {
+    sysProxy,
+    autoCloseConnection,
+    proxyInTray = true,
+    triggerSysProxyShortcut = '',
+    showWindowShortcut = '',
+    triggerTunShortcut = '',
+    ruleModeShortcut = '',
+    globalModeShortcut = '',
+    directModeShortcut = '',
+    restartAppShortcut = '',
+    quitAppShortcut = ''
+  } = await getAppConfig()
   let groupsMenu: Electron.MenuItemConstructorOptions[] = []
   if (proxyInTray && process.platform !== 'linux') {
     try {
@@ -66,6 +78,7 @@ const buildContextMenu = async (): Promise<Menu> => {
   const contextMenu = [
     {
       id: 'show',
+      accelerator: showWindowShortcut,
       label: '显示窗口',
       type: 'normal',
       click: (): void => {
@@ -75,6 +88,7 @@ const buildContextMenu = async (): Promise<Menu> => {
     {
       id: 'rule',
       label: '规则模式',
+      accelerator: ruleModeShortcut,
       type: 'radio',
       checked: mode === 'rule',
       click: async (): Promise<void> => {
@@ -87,6 +101,7 @@ const buildContextMenu = async (): Promise<Menu> => {
     {
       id: 'global',
       label: '全局模式',
+      accelerator: globalModeShortcut,
       type: 'radio',
       checked: mode === 'global',
       click: async (): Promise<void> => {
@@ -99,6 +114,7 @@ const buildContextMenu = async (): Promise<Menu> => {
     {
       id: 'direct',
       label: '直连模式',
+      accelerator: directModeShortcut,
       type: 'radio',
       checked: mode === 'direct',
       click: async (): Promise<void> => {
@@ -112,14 +128,15 @@ const buildContextMenu = async (): Promise<Menu> => {
     {
       type: 'checkbox',
       label: '系统代理',
+      accelerator: triggerSysProxyShortcut,
       checked: sysProxy.enable,
       click: async (item): Promise<void> => {
         const enable = item.checked
         try {
+          await triggerSysProxy(enable)
           await patchAppConfig({ sysProxy: { enable } })
-          triggerSysProxy(enable)
         } catch (e) {
-          await patchAppConfig({ sysProxy: { enable: !enable } })
+          // ignore
         } finally {
           mainWindow?.webContents.send('appConfigUpdated')
           ipcMain.emit('updateTrayMenu')
@@ -129,6 +146,7 @@ const buildContextMenu = async (): Promise<Menu> => {
     {
       type: 'checkbox',
       label: '虚拟网卡',
+      accelerator: triggerTunShortcut,
       checked: tun?.enable ?? false,
       click: async (item): Promise<void> => {
         const enable = item.checked
@@ -181,12 +199,19 @@ const buildContextMenu = async (): Promise<Menu> => {
       id: 'restart',
       label: '重启应用',
       type: 'normal',
+      accelerator: restartAppShortcut,
       click: (): void => {
         app.relaunch()
         app.quit()
       }
     },
-    { id: 'quit', label: '退出应用', type: 'normal', click: (): void => app.quit() }
+    {
+      id: 'quit',
+      label: '退出应用',
+      type: 'normal',
+      accelerator: quitAppShortcut,
+      click: (): void => app.quit()
+    }
   ] as Electron.MenuItemConstructorOptions[]
   return Menu.buildFromTemplate(contextMenu)
 }

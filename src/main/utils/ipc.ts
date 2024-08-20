@@ -54,6 +54,7 @@ import { isPortable, setPortable } from './dirs'
 import { listWebdavBackups, webdavBackup, webdavRestore } from '../resolve/backup'
 import { getInterfaces } from '../sys/interface'
 import { copyEnv } from '../resolve/tray'
+import { registerShortcut } from '../resolve/shortcut'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -149,6 +150,9 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('webdavBackup', ipcErrorWrapper(webdavBackup))
   ipcMain.handle('webdavRestore', (_e, filename) => ipcErrorWrapper(webdavRestore)(filename))
   ipcMain.handle('listWebdavBackups', ipcErrorWrapper(listWebdavBackups))
+  ipcMain.handle('registerShortcut', (_e, oldShortcut, newShortcut, action) =>
+    ipcErrorWrapper(registerShortcut)(oldShortcut, newShortcut, action)
+  )
   ipcMain.handle('setNativeTheme', (_e, theme) => {
     setNativeTheme(theme)
   })

@@ -235,6 +235,14 @@ interface IAppConfig {
   webdavPassword?: string
   useNameserverPolicy: boolean
   nameserverPolicy: { [key: string]: string | string[] }
+  showWindowShortcut?: string
+  triggerSysProxyShortcut?: string
+  triggerTunShortcut?: string
+  ruleModeShortcut?: string
+  globalModeShortcut?: string
+  directModeShortcut?: string
+  restartAppShortcut?: string
+  quitAppShortcut?: string
 }
 
 interface IMihomoTunConfig {

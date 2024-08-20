@@ -287,6 +287,16 @@ export async function setNativeTheme(theme: 'system' | 'light' | 'dark'): Promis
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setNativeTheme', theme))
 }
 
+export async function registerShortcut(
+  oldShortcut: string,
+  newShortcut: string,
+  action: string
+): Promise<boolean> {
+  return ipcErrorWrapper(
+    await window.electron.ipcRenderer.invoke('registerShortcut', oldShortcut, newShortcut, action)
+  )
+}
+
 export async function copyEnv(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('copyEnv'))
 }

@@ -10,6 +10,7 @@ import icon from '../../resources/icon.png?asset'
 import { createTray } from './resolve/tray'
 import { init } from './utils/init'
 import { join } from 'path'
+import { initShortcut } from './resolve/shortcut'
 
 export let mainWindow: BrowserWindow | null = null
 
@@ -69,6 +70,7 @@ app.whenReady().then(async () => {
     optimizer.watchWindowShortcuts(window)
   })
   registerIpcMainHandlers()
+  await initShortcut()
   createWindow()
   await createTray()
   app.on('activate', function () {
