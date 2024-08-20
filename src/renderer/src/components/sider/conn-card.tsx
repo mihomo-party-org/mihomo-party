@@ -7,10 +7,11 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { IoLink } from 'react-icons/io5'
 import Chart from 'react-apexcharts'
-import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { ApexOptions } from 'apexcharts'
+import { useTheme } from 'next-themes'
 
 const ConnCard: React.FC = () => {
+  const { theme = 'system', systemTheme = 'dark' } = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/connections')
@@ -27,36 +28,19 @@ const ConnCard: React.FC = () => {
   } = useSortable({
     id: 'connection'
   })
-  const { appConfig } = useAppConfig()
-  const [series, setSeries] = useState([
-    {
-      name: 'Total',
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    }
-  ])
-  const chartColorMap = {
-    light: 'rgba(152,152,152,0.4)',
-    dark: 'rgba(236,236,236,0.4)',
-    gray: 'rgba(198,198,198,0.5)',
-    blue: 'rgba(15,31,216,0.45)',
-    green: 'rgba(31,163,112,0.5)',
-    pink: 'rgba(195,128,128,0.4)'
-  }
+  const [series, setSeries] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
   const getApexChartOptions = (): ApexOptions => {
-    const theme = appConfig?.appTheme || 'system'
-    const themeArr = theme.split('-')
-    if (themeArr.length <= 1) {
-      if (themeArr[0] === 'system') {
-        themeArr.shift()
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          themeArr.push('dark')
-        } else {
-          themeArr.push('light')
-        }
-      }
-      themeArr.push('blue')
-    }
-    const colorKey = match ? themeArr[1] : themeArr[0]
+    const islight = theme === 'system' ? systemTheme === 'light' : theme.includes('light')
+    const primaryColor = match
+      ? 'rgba(255,255,255,0.6)'
+      : islight
+        ? 'rgba(0,0,0,0.6)'
+        : 'rgba(255,255,255,0.6)'
+    const transparentColor = match
+      ? 'rgba(255,255,255,0)'
+      : islight
+        ? 'rgba(0,0,0,0)'
+        : 'rgba(255,255,255,0)'
     return {
       chart: {
         background: 'transparent',
@@ -72,7 +56,7 @@ const ConnCard: React.FC = () => {
           enabled: false
         }
       },
-      colors: [chartColorMap[colorKey] || 'rgba(152,152,152,0.4)'],
+      colors: [primaryColor],
       stroke: {
         show: false,
         curve: 'smooth',
@@ -81,10 +65,9 @@ const ConnCard: React.FC = () => {
       fill: {
         type: 'gradient',
         gradient: {
-          shade: 'light',
           type: 'vertical',
           shadeIntensity: 0,
-          gradientToColors: ['rgba(0,0,0,0.1)', 'rgba(0,0,0,1)'],
+          gradientToColors: [transparentColor, primaryColor],
           inverseColors: false,
           opacityTo: 0,
           stops: [0, 100]
@@ -98,6 +81,7 @@ const ConnCard: React.FC = () => {
           horizontal: false
         }
       },
+
       xaxis: {
         labels: {
           show: false
@@ -145,10 +129,10 @@ const ConnCard: React.FC = () => {
     window.electron.ipcRenderer.on('mihomoTraffic', (_e, info: IMihomoTrafficInfo) => {
       setUpload(info.up)
       setDownload(info.down)
-      const data = series[0].data
+      const data = series
       data.shift()
       data.push(info.up + info.down)
-      setSeries([{ name: 'Total', data }])
+      setSeries([...data])
     })
     return (): void => {
       window.electron.ipcRenderer.removeAllListeners('mihomoTraffic')
@@ -203,7 +187,7 @@ const ConnCard: React.FC = () => {
       <div className="w-full h-full absolute top-0 left-0 pointer-events-none rounded-[14px] overflow-hidden">
         <Chart
           options={getApexChartOptions()}
-          series={series}
+          series={[{ name: 'Total', data: series }]}
           height={'100%'}
           width={'100%'}
           type="area"
