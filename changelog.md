@@ -1,6 +1,7 @@
 ### New Features
 
 - 自动删除过期日志与更新缓存
+- 添加更新内核功能
 
 ### Bug Fixes
 

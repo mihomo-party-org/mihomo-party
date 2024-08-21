@@ -152,6 +152,11 @@ export const mihomoGroupDelay = async (group: string, url?: string): Promise<IMi
   })
 }
 
+export const mihomoUpgrade = async (): Promise<void> => {
+  const instance = await getAxios()
+  return await instance.post('/upgrade')
+}
+
 export const startMihomoTraffic = async (): Promise<void> => {
   await mihomoTraffic()
 }

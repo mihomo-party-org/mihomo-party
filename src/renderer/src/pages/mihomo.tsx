@@ -6,7 +6,8 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { platform } from '@renderer/utils/init'
 import { FaNetworkWired } from 'react-icons/fa'
-import { restartCore } from '@renderer/utils/ipc'
+import { IoMdCloudDownload } from 'react-icons/io'
+import { mihomoUpgrade, restartCore } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import InterfaceModal from '@renderer/components/mihomo/interface-modal'
 
@@ -45,6 +46,7 @@ const Mihomo: React.FC = () => {
   const [externalControllerInput, setExternalControllerInput] = useState(externalController)
   const [secretInput, setSecretInput] = useState(secret)
 
+  const [upgrading, setUpgrading] = useState(false)
   const [lanOpen, setLanOpen] = useState(false)
 
   const onChangeNeedRestart = async (patch: Partial<IMihomoConfig>): Promise<void> => {
@@ -57,7 +59,33 @@ const Mihomo: React.FC = () => {
       {lanOpen && <InterfaceModal onClose={() => setLanOpen(false)} />}
       <BasePage title="内核设置">
         <SettingCard>
-          <SettingItem title="内核版本" divider>
+          <SettingItem
+            title="内核版本"
+            actions={
+              <Button
+                size="sm"
+                isIconOnly
+                title="升级内核"
+                variant="light"
+                className="ml-2"
+                isLoading={upgrading}
+                onPress={async () => {
+                  try {
+                    setUpgrading(true)
+                    await mihomoUpgrade()
+                    PubSub.publish('mihomo-core-changed')
+                  } catch (e) {
+                    alert(e)
+                  } finally {
+                    setUpgrading(false)
+                  }
+                }}
+              >
+                <IoMdCloudDownload className="text-lg" />
+              </Button>
+            }
+            divider
+          >
             <Select
               className="w-[100px]"
               size="sm"

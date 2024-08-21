@@ -61,6 +61,10 @@ export async function mihomoUpgradeGeo(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoUpgradeGeo'))
 }
 
+export async function mihomoUpgrade(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoUpgrade'))
+}
+
 export async function mihomoProxyDelay(proxy: string, url?: string): Promise<IMihomoDelay> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoProxyDelay', proxy, url))
 }

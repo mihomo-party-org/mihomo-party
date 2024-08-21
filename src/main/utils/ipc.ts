@@ -12,6 +12,7 @@ import {
   mihomoRules,
   mihomoUpdateProxyProviders,
   mihomoUpdateRuleProviders,
+  mihomoUpgrade,
   mihomoUpgradeGeo,
   mihomoVersion,
   patchMihomoConfig,
@@ -64,7 +65,17 @@ function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-e
     try {
       return await fn(...args)
     } catch (e) {
-      return { invokeError: `${e}` }
+      if (e && typeof e === 'object') {
+        if ('message' in e) {
+          return { invokeError: e.message }
+        } else {
+          return { invokeError: JSON.stringify(e) }
+        }
+      }
+      if (e instanceof Error || typeof e === 'string') {
+        return { invokeError: e }
+      }
+      return { invokeError: 'Unknown Error' }
     }
   }
 }
@@ -87,6 +98,7 @@ export function registerIpcMainHandlers(): void {
     ipcErrorWrapper(mihomoChangeProxy)(group, proxy)
   )
   ipcMain.handle('mihomoUpgradeGeo', ipcErrorWrapper(mihomoUpgradeGeo))
+  ipcMain.handle('mihomoUpgrade', ipcErrorWrapper(mihomoUpgrade))
   ipcMain.handle('mihomoProxyDelay', (_e, proxy, url) =>
     ipcErrorWrapper(mihomoProxyDelay)(proxy, url)
   )

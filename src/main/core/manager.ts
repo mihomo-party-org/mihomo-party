@@ -38,6 +38,10 @@ export async function startCore(): Promise<void> {
   })
   return new Promise((resolve, reject) => {
     child.stdout?.on('data', async (data) => {
+      if (data.toString().includes('updater: finished')) {
+        stopCore()
+        await startCore()
+      }
       if (data.toString().includes('External controller listen error')) {
         if (retry) {
           retry--
