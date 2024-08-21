@@ -95,7 +95,11 @@ async function cleanup(): Promise<void> {
   const files = await readdir(dataDir())
   for (const file of files) {
     if (file.endsWith('.exe') || file.endsWith('.dmg')) {
-      await rm(path.join(dataDir(), file))
+      try {
+        await rm(path.join(dataDir(), file))
+      } catch {
+        // ignore
+      }
     }
   }
   // logs
@@ -105,7 +109,11 @@ async function cleanup(): Promise<void> {
     const date = new Date(log.split('.')[0])
     const diff = Date.now() - date.getTime()
     if (diff > maxLogDays * 24 * 60 * 60 * 1000) {
-      await rm(path.join(logDir(), log))
+      try {
+        await rm(path.join(logDir(), log))
+      } catch {
+        // ignore
+      }
     }
   }
 }

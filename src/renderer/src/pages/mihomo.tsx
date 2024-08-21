@@ -73,7 +73,9 @@ const Mihomo: React.FC = () => {
                   try {
                     setUpgrading(true)
                     await mihomoUpgrade()
-                    PubSub.publish('mihomo-core-changed')
+                    setTimeout(() => {
+                      PubSub.publish('mihomo-core-changed')
+                    }, 2000)
                   } catch (e) {
                     alert(e)
                   } finally {
