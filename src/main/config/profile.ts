@@ -108,7 +108,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
   } as IProfileItem
   switch (newItem.type) {
     case 'remote': {
-      const { userAgent = 'clash-meta' } = await getAppConfig()
+      const { userAgent } = await getAppConfig()
       const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
       if (!item.url) throw new Error('Empty URL')
       const res = await axios.get(item.url, {
@@ -120,7 +120,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
             }
           : false,
         headers: {
-          'User-Agent': userAgent
+          'User-Agent': userAgent || 'clash.meta'
         }
       })
       const data = res.data
