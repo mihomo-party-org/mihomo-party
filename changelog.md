@@ -1,8 +1,4 @@
-### New Features
-
-- 支持全局快捷键
-- 添加流量图显
-
 ### Bug Fixes
 
-- 修复Windows托盘菜单重复出现的问题
+- 修复接管dns后自定义hosts无法删除的问题
+- 删除退出应用全局快捷键(仅支持应用内CommandOrCtrl+Q退出)

@@ -36,6 +36,9 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
       controledMihomoConfig.sniffer = defaultControledMihomoConfig.sniffer
     }
   }
+  if (patch.hosts) {
+    controledMihomoConfig.hosts = patch.hosts
+  }
   controledMihomoConfig = deepMerge(controledMihomoConfig, patch)
   if (!useNameserverPolicy) {
     delete controledMihomoConfig?.dns?.['nameserver-policy']
