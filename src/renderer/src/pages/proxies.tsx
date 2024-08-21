@@ -37,7 +37,7 @@ const Proxies: React.FC = () => {
     const allProxies: (IMihomoProxy | IMihomoGroup)[] = []
     groups.forEach((group, index) => {
       if (isOpen[index]) {
-        let groupProxies = group.all
+        let groupProxies = [...group.all]
         if (proxyDisplayOrder === 'delay') {
           groupProxies = groupProxies.sort((a, b) => {
             if (a.history.length === 0) return -1
