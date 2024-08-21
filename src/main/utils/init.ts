@@ -20,7 +20,7 @@ import {
   defaultProfileConfig
 } from './template'
 import yaml from 'yaml'
-import { mkdir, writeFile, copyFile } from 'fs/promises'
+import { mkdir, writeFile, copyFile, rm, readdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
 import { startPacServer } from '../resolve/server'
@@ -90,6 +90,26 @@ async function initFiles(): Promise<void> {
   ])
 }
 
+async function cleanup(): Promise<void> {
+  // update cache
+  const files = await readdir(dataDir())
+  for (const file of files) {
+    if (file.endsWith('.exe') || file.endsWith('.dmg')) {
+      await rm(path.join(dataDir(), file))
+    }
+  }
+  // logs
+  const { maxLogDays = 7 } = await getAppConfig()
+  const logs = await readdir(logDir())
+  for (const log of logs) {
+    const date = new Date(log.split('.')[0])
+    const diff = Date.now() - date.getTime()
+    if (diff > maxLogDays * 24 * 60 * 60 * 1000) {
+      await rm(path.join(logDir(), log))
+    }
+  }
+}
+
 function initDeeplink(): void {
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
@@ -106,6 +126,7 @@ export async function init(): Promise<void> {
   await initDirs()
   await initConfig()
   await initFiles()
+  await cleanup()
   await startPacServer()
   const { sysProxy } = await getAppConfig()
   await triggerSysProxy(sysProxy.enable)

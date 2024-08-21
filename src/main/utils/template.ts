@@ -3,6 +3,7 @@ export const defaultConfig: IAppConfig = {
   silentStart: false,
   appTheme: 'system',
   proxyInTray: true,
+  maxLogDays: 7,
   proxyDisplayMode: 'simple',
   proxyDisplayOrder: 'default',
   autoCheckUpdate: true,

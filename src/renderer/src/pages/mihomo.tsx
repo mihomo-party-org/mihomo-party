@@ -17,7 +17,7 @@ const CoreMap = {
 
 const Mihomo: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { core = 'mihomo' } = appConfig || {}
+  const { core = 'mihomo', maxLogDays = 7 } = appConfig || {}
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const {
     ipv6,
@@ -337,6 +337,17 @@ const Mihomo: React.FC = () => {
               isSelected={storeFakeIp}
               onValueChange={(v) => {
                 onChangeNeedRestart({ profile: { 'store-fake-ip': v } })
+              }}
+            />
+          </SettingItem>
+          <SettingItem title="日志保留天数" divider>
+            <Input
+              size="sm"
+              type="number"
+              className="w-[100px]"
+              value={maxLogDays.toString()}
+              onValueChange={(v) => {
+                patchAppConfig({ maxLogDays: parseInt(v) })
               }}
             />
           </SettingItem>

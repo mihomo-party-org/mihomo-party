@@ -214,7 +214,7 @@ interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha'
   proxyDisplayMode: 'simple' | 'full'
   proxyDisplayOrder: 'default' | 'delay' | 'name'
-  envType: 'bash' | 'cmd' | 'powershell'
+  envType?: 'bash' | 'cmd' | 'powershell'
   proxyInTray: boolean
   siderOrder: string[]
   appTheme: AppTheme
@@ -222,6 +222,7 @@ interface IAppConfig {
   silentStart: boolean
   autoCloseConnection: boolean
   sysProxy: ISysProxyConfig
+  maxLogDays: number
   userAgent?: string
   delayTestUrl?: string
   delayTestTimeout?: number
