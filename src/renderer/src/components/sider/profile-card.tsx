@@ -92,6 +92,7 @@ const ProfileCard: React.FC = () => {
                 <Button
                   isIconOnly
                   size="sm"
+                  title={dayjs(info.updated).fromNow()}
                   disabled={updating}
                   variant="light"
                   color="default"
@@ -113,7 +114,7 @@ const ProfileCard: React.FC = () => {
               className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'} `}
             >
               <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
-              <small>{dayjs(info.updated).fromNow()}</small>
+              <small>{extra ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : ''}</small>
             </div>
           )}
           {info.type === 'local' && (
