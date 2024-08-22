@@ -287,6 +287,10 @@ export async function quitApp(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('quitApp'))
 }
 
+export async function createShortcut(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('createShortcut'))
+}
+
 export async function setNativeTheme(theme: 'system' | 'light' | 'dark'): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setNativeTheme', theme))
 }

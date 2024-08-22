@@ -1,4 +1,4 @@
-import React, { Key } from 'react'
+import React, { Key, useState } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
 import { Button, Select, SelectItem, Switch, Tab, Tabs } from '@nextui-org/react'
@@ -7,6 +7,7 @@ import useSWR from 'swr'
 import {
   checkAutoRun,
   copyEnv,
+  createShortcut,
   disableAutoRun,
   enableAutoRun,
   isPortable,
@@ -22,6 +23,7 @@ const GeneralConfig: React.FC = () => {
   const { data: enable, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
   const { data: portable, mutate: mutatePortable } = useSWR('isPortable', isPortable)
   const { appConfig, patchAppConfig } = useAppConfig()
+  const [creating, setCreating] = useState(false)
   const { setTheme } = useTheme()
   const {
     silentStart = false,
@@ -164,25 +166,46 @@ const GeneralConfig: React.FC = () => {
         </>
       )}
       {platform === 'win32' && (
-        <SettingItem title="数据存储路径" divider>
-          <Select
-            className="w-[150px]"
-            size="sm"
-            selectedKeys={new Set([portable ? 'portable' : 'data'])}
-            onSelectionChange={async (v) => {
-              try {
-                await setPortable(v.currentKey === 'portable')
-              } catch (e) {
-                alert(e)
-              } finally {
-                mutatePortable()
-              }
-            }}
-          >
-            <SelectItem key="data">AppData</SelectItem>
-            <SelectItem key="portable">安装目录</SelectItem>
-          </Select>
-        </SettingItem>
+        <>
+          <SettingItem title="创建无UAC弹窗快捷方式" divider>
+            <Button
+              size="sm"
+              color="primary"
+              isLoading={creating}
+              onClick={async () => {
+                try {
+                  setCreating(true)
+                  await createShortcut()
+                } catch (e) {
+                  alert(e)
+                } finally {
+                  setCreating(false)
+                }
+              }}
+            >
+              创建快捷方式
+            </Button>
+          </SettingItem>
+          <SettingItem title="数据存储路径" divider>
+            <Select
+              className="w-[150px]"
+              size="sm"
+              selectedKeys={new Set([portable ? 'portable' : 'data'])}
+              onSelectionChange={async (v) => {
+                try {
+                  await setPortable(v.currentKey === 'portable')
+                } catch (e) {
+                  alert(e)
+                } finally {
+                  mutatePortable()
+                }
+              }}
+            >
+              <SelectItem key="data">AppData</SelectItem>
+              <SelectItem key="portable">安装目录</SelectItem>
+            </Select>
+          </SettingItem>
+        </>
       )}
       <SettingItem title="背景色" divider={appTheme !== 'system'}>
         <Tabs

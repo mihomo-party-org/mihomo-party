@@ -21,7 +21,7 @@ import {
   stopMihomoConnections,
   stopMihomoLogs
 } from '../core/mihomoApi'
-import { checkAutoRun, disableAutoRun, enableAutoRun } from '../sys/autoRun'
+import { checkAutoRun, createShortcut, disableAutoRun, enableAutoRun } from '../sys/autoRun'
 import {
   getAppConfig,
   patchAppConfig,
@@ -165,6 +165,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('registerShortcut', (_e, oldShortcut, newShortcut, action) =>
     ipcErrorWrapper(registerShortcut)(oldShortcut, newShortcut, action)
   )
+  ipcMain.handle('createShortcut', ipcErrorWrapper(createShortcut))
   ipcMain.handle('setNativeTheme', (_e, theme) => {
     setNativeTheme(theme)
   })
