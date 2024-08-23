@@ -1,6 +1,10 @@
 import { triggerAutoProxy, triggerManualProxy } from '@mihomo-party/sysproxy'
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { pacPort } from '../resolve/server'
+import { promisify } from 'util'
+import { execFile } from 'child_process'
+import path from 'path'
+import { resourcesFilesDir } from '../utils/dirs'
 
 let defaultBypass: string[]
 
@@ -55,26 +59,42 @@ export async function enableSysProxy(): Promise<void> {
   const { sysProxy } = await getAppConfig()
   const { mode, host, bypass = defaultBypass } = sysProxy
   const { 'mixed-port': port = 7890 } = await getControledMihomoConfig()
-
+  const execFilePromise = promisify(execFile)
   switch (mode || 'manual') {
     case 'auto': {
-      triggerAutoProxy(true, `http://${host || '127.0.0.1'}:${pacPort}/pac`)
+      if (process.platform === 'win32') {
+        await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), [
+          'pac',
+          `http://${host || '127.0.0.1'}:${pacPort}/pac`
+        ])
+      } else {
+        triggerAutoProxy(true, `http://${host || '127.0.0.1'}:${pacPort}/pac`)
+      }
+
       break
     }
 
     case 'manual': {
-      triggerManualProxy(
-        true,
-        host || '127.0.0.1',
-        port,
-        bypass.join(process.platform === 'win32' ? ';' : ',')
-      )
+      if (process.platform === 'win32') {
+        await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), [
+          'global',
+          `${host || '127.0.0.1'}:${port}`,
+          bypass.join(';')
+        ])
+      } else {
+        triggerManualProxy(true, host || '127.0.0.1', port, bypass.join(','))
+      }
       break
     }
   }
 }
 
 export function disableSysProxy(): void {
-  triggerAutoProxy(false, '')
-  triggerManualProxy(false, '', 0, '')
+  const execFilePromise = promisify(execFile)
+  if (process.platform === 'win32') {
+    execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), ['set', '1'])
+  } else {
+    triggerAutoProxy(false, '')
+    triggerManualProxy(false, '', 0, '')
+  }
 }

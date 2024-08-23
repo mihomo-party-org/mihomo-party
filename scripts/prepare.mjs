@@ -261,6 +261,11 @@ const resolveEnableLoopback = () =>
     file: 'enableLoopback.exe',
     downloadURL: `https://github.com/Kuingsmile/uwp-tool/releases/download/latest/enableLoopback.exe`
   })
+const resolveSysproxy = () =>
+  resolveResource({
+    file: 'sysproxy.exe',
+    downloadURL: `https://github.com/pompurin404/sysproxy/releases/download/${arch}/sysproxy.exe`
+  })
 
 const resolveFont = async () => {
   const targetPath = path.join(cwd, 'src', 'renderer', 'src', 'assets', 'NotoColorEmoji.ttf')
@@ -299,6 +304,12 @@ const tasks = [
   {
     name: 'enableLoopback',
     func: resolveEnableLoopback,
+    retry: 5,
+    winOnly: true
+  },
+  {
+    name: 'sysproxy',
+    func: resolveSysproxy,
     retry: 5,
     winOnly: true
   }
