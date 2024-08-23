@@ -283,6 +283,10 @@ export async function listWebdavBackups(): Promise<string[]> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('listWebdavBackups'))
 }
 
+export async function webdavDelete(filename: string): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('webdavDelete', filename))
+}
+
 export async function quitApp(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('quitApp'))
 }

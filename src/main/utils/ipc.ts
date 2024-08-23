@@ -52,7 +52,7 @@ import { checkUpdate, downloadAndInstallUpdate } from '../resolve/autoUpdater'
 import { getFilePath, openUWPTool, readTextFile, setNativeTheme, setupFirewall } from '../sys/misc'
 import { getRuntimeConfig, getRuntimeConfigStr } from '../core/factory'
 import { isPortable, setPortable } from './dirs'
-import { listWebdavBackups, webdavBackup, webdavRestore } from '../resolve/backup'
+import { listWebdavBackups, webdavBackup, webdavDelete, webdavRestore } from '../resolve/backup'
 import { getInterfaces } from '../sys/interface'
 import { copyEnv } from '../resolve/tray'
 import { registerShortcut } from '../resolve/shortcut'
@@ -162,6 +162,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('webdavBackup', ipcErrorWrapper(webdavBackup))
   ipcMain.handle('webdavRestore', (_e, filename) => ipcErrorWrapper(webdavRestore)(filename))
   ipcMain.handle('listWebdavBackups', ipcErrorWrapper(listWebdavBackups))
+  ipcMain.handle('webdavDelete', (_e, filename) => ipcErrorWrapper(webdavDelete)(filename))
   ipcMain.handle('registerShortcut', (_e, oldShortcut, newShortcut, action) =>
     ipcErrorWrapper(registerShortcut)(oldShortcut, newShortcut, action)
   )

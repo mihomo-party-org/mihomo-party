@@ -1,12 +1,14 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react'
-import { webdavRestore } from '@renderer/utils/ipc'
+import { webdavDelete, webdavRestore } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
+import { MdDeleteForever } from 'react-icons/md'
 interface Props {
   filenames: string[]
   onClose: () => void
 }
 const WebdavRestoreModal: React.FC<Props> = (props) => {
-  const { filenames, onClose } = props
+  const { filenames: names, onClose } = props
+  const [filenames, setFilenames] = useState<string[]>(names)
   const [restoring, setRestoring] = useState(false)
 
   return (
@@ -24,25 +26,42 @@ const WebdavRestoreModal: React.FC<Props> = (props) => {
             <div className="flex justify-center">还没有备份</div>
           ) : (
             filenames.map((filename) => (
-              <Button
-                size="sm"
-                fullWidth
-                key={filename}
-                isLoading={restoring}
-                variant="flat"
-                onPress={async () => {
-                  setRestoring(true)
-                  try {
-                    await webdavRestore(filename)
-                  } catch (e) {
-                    alert(`恢复失败: ${e}`)
-                  } finally {
-                    setRestoring(false)
-                  }
-                }}
-              >
-                {filename}
-              </Button>
+              <div className="flex" key={filename}>
+                <Button
+                  size="sm"
+                  fullWidth
+                  isLoading={restoring}
+                  variant="flat"
+                  onPress={async () => {
+                    setRestoring(true)
+                    try {
+                      await webdavRestore(filename)
+                    } catch (e) {
+                      alert(`恢复失败: ${e}`)
+                    } finally {
+                      setRestoring(false)
+                    }
+                  }}
+                >
+                  {filename}
+                </Button>
+                <Button
+                  size="sm"
+                  color="warning"
+                  variant="flat"
+                  className="ml-2"
+                  onClick={async () => {
+                    try {
+                      await webdavDelete(filename)
+                      setFilenames(filenames.filter((name) => name !== filename))
+                    } catch (e) {
+                      alert(`删除失败: ${e}`)
+                    }
+                  }}
+                >
+                  <MdDeleteForever className="text-lg" />
+                </Button>
+              </div>
             ))
           )}
         </ModalBody>
