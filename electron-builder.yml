@@ -30,7 +30,6 @@ win:
     - nsis
     - 7z
   artifactName: ${name}-windows-${version}-${arch}-portable.${ext}
-  requestedExecutionLevel: highestAvailable
   executableName: mihomo-party
 nsis:
   artifactName: ${name}-windows-${version}-${arch}-setup.${ext}

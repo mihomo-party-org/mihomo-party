@@ -1,6 +1,7 @@
 ### New Features
 
 - 支持删除 Webdav 备份文件
+- Windows 绕过UAC弹窗
 - Esc关闭窗口
 
 ### Bug Fixes

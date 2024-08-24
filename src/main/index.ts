@@ -11,14 +11,31 @@ import { createTray } from './resolve/tray'
 import { init } from './utils/init'
 import { join } from 'path'
 import { initShortcut } from './resolve/shortcut'
+import { execSync } from 'child_process'
+import { createElevateTask } from './sys/misc'
 
 export let mainWindow: BrowserWindow | null = null
+
+if (process.platform === 'win32') {
+  try {
+    createElevateTask()
+  } catch (e) {
+    try {
+      execSync('schtasks /run /tn mihomo-party-run')
+    } catch (e) {
+      dialog.showErrorBox('首次启动请以管理员权限运行', '首次启动请以管理员权限运行')
+    } finally {
+      app.exit()
+    }
+  }
+}
 
 const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
   app.quit()
 }
+
 const initPromise = init()
 
 app.on('second-instance', async (_event, commandline) => {
