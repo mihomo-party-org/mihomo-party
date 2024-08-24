@@ -61,6 +61,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            dist/*.sha256
             dist/*setup.exe
             dist/*portable.7z
           body_path: changelog.md
@@ -117,6 +118,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
+            dist/*.sha256
             dist/*.deb
             dist/*.rpm
           body_path: changelog.md
@@ -172,7 +174,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            *.sha256
+            dist/*.sha256
             dist/*.dmg
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
