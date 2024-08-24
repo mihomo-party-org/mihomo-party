@@ -19,6 +19,10 @@ init().then(() => {
       e.preventDefault()
       quitApp()
     }
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      window.close()
+    }
   })
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>

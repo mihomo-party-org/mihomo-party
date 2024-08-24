@@ -137,7 +137,9 @@ export function createWindow(show = false): void {
       mainWindow?.focusOnWebView()
     }
   })
-
+  mainWindow.webContents.on('did-fail-load', () => {
+    mainWindow?.webContents.reload()
+  })
   mainWindow.on('resize', () => {
     mainWindow?.webContents.send('resize')
   })
