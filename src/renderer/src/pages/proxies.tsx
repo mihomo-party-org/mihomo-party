@@ -13,7 +13,7 @@ import { FaBoltLightning } from 'react-icons/fa6'
 import { TbCircleLetterD } from 'react-icons/tb'
 import { FaLocationCrosshairs } from 'react-icons/fa6'
 import { RxLetterCaseCapitalize } from 'react-icons/rx'
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import useSWR from 'swr'
 import { GroupedVirtuoso, GroupedVirtuosoHandle } from 'react-virtuoso'
 import ProxyItem from '@renderer/components/proxies/proxy-item'
@@ -26,15 +26,19 @@ const Proxies: React.FC = () => {
   const {
     proxyDisplayMode = 'simple',
     proxyDisplayOrder = 'default',
-    autoCloseConnection = true
+    autoCloseConnection = true,
+    proxyCols = 'auto'
   } = appConfig || {}
+  const [cols, setCols] = useState(1)
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const { groupCounts, allProxies } = useMemo(() => {
     const groupCounts = groups.map((group, index) => {
-      return isOpen[index] ? group.all.length : 0
+      if (!isOpen[index]) return 0
+      const count = Math.floor(group.all.length / cols)
+      return group.all.length % cols === 0 ? count : count + 1
     })
-    const allProxies: (IMihomoProxy | IMihomoGroup)[] = []
+    const allProxies: (IMihomoProxy | IMihomoGroup)[][] = []
     groups.forEach((group, index) => {
       if (isOpen[index]) {
         let groupProxies = [...group.all]
@@ -50,7 +54,9 @@ const Proxies: React.FC = () => {
         if (proxyDisplayOrder === 'name') {
           groupProxies = groupProxies.sort((a, b) => a.name.localeCompare(b.name))
         }
-        allProxies.push(...groupProxies)
+        allProxies.push(groupProxies)
+      } else {
+        allProxies.push([])
       }
     })
 
@@ -73,6 +79,33 @@ const Proxies: React.FC = () => {
     PubSub.publish(`${group}-delay`)
     await mihomoGroupDelay(group, url)
   }
+
+  const calcCols = (): void => {
+    if (window.innerWidth >= 1280) {
+      setCols(4)
+      return
+    }
+    if (window.innerWidth >= 1024) {
+      setCols(3)
+      return
+    }
+    if (window.innerWidth >= 768) {
+      setCols(2)
+      return
+    }
+  }
+
+  useEffect(() => {
+    if (proxyCols !== 'auto') {
+      setCols(parseInt(proxyCols))
+      return
+    }
+    calcCols()
+    window.onresize = calcCols
+    return (): void => {
+      window.onresize = null
+    }
+  }, [])
 
   return (
     <BasePage
@@ -155,7 +188,6 @@ const Proxies: React.FC = () => {
                         <div className="inline flag-emoji h-[32px] text-md leading-[32px]">
                           {groups[index].name}
                         </div>
-
                         {proxyDisplayMode === 'full' && (
                           <div className="inline ml-2 text-sm text-default-500">
                             {groups[index].type}
@@ -185,13 +217,15 @@ const Proxies: React.FC = () => {
                           for (let j = 0; j < index; j++) {
                             i += groupCounts[j]
                           }
-                          for (let j = 0; j < groupCounts[index]; j++) {
-                            if (allProxies[i + j].name === groups[index].now) {
-                              i += j
-                              break
-                            }
-                          }
-                          virtuosoRef.current?.scrollToIndex({ index: i, align: 'start' })
+                          i += Math.floor(
+                            allProxies[index].findIndex(
+                              (proxy) => proxy.name === groups[index].now
+                            ) / cols
+                          )
+                          virtuosoRef.current?.scrollToIndex({
+                            index: Math.floor(i),
+                            align: 'start'
+                          })
                         }}
                       >
                         <FaLocationCrosshairs className="text-lg text-default-500" />
@@ -220,17 +254,29 @@ const Proxies: React.FC = () => {
           )
         }}
         itemContent={(index, groupIndex) => {
-          return allProxies[index] ? (
-            <div className="pt-2 mx-2">
-              <ProxyItem
-                mutateProxies={mutate}
-                onProxyDelay={onProxyDelay}
-                onSelect={onChangeProxy}
-                proxy={allProxies[index]}
-                group={groups[groupIndex]}
-                proxyDisplayMode={proxyDisplayMode}
-                selected={allProxies[index]?.name === groups[groupIndex].now}
-              />
+          let innerIndex = index
+          groupCounts.slice(0, groupIndex).forEach((count) => {
+            innerIndex -= count
+          })
+          return allProxies[groupIndex] ? (
+            <div className={`grid grid-cols-${cols} gap-2 pt-2 mx-2`}>
+              {Array.from({ length: cols }).map((_, i) => {
+                if (!allProxies[groupIndex][innerIndex * cols + i]) return null
+                return (
+                  <ProxyItem
+                    key={allProxies[groupIndex][innerIndex * cols + i].name}
+                    mutateProxies={mutate}
+                    onProxyDelay={onProxyDelay}
+                    onSelect={onChangeProxy}
+                    proxy={allProxies[groupIndex][innerIndex * cols + i]}
+                    group={groups[groupIndex]}
+                    proxyDisplayMode={proxyDisplayMode}
+                    selected={
+                      allProxies[groupIndex][innerIndex * cols + i]?.name === groups[groupIndex].now
+                    }
+                  />
+                )
+              })}
             </div>
           ) : (
             <div>Never See This</div>

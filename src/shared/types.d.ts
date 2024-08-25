@@ -215,6 +215,7 @@ interface IAppConfig {
   proxyDisplayMode: 'simple' | 'full'
   proxyDisplayOrder: 'default' | 'delay' | 'name'
   envType?: 'bash' | 'cmd' | 'powershell'
+  proxyCols: 'auto' | '1' | '2' | '3' | '4'
   proxyInTray: boolean
   siderOrder: string[]
   appTheme: AppTheme

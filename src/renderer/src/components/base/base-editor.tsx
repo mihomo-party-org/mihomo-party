@@ -58,12 +58,11 @@ export const BaseEditor: React.FC<Props> = (props) => {
   }
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('resize', () => {
+    window.onresize = (): void => {
       editorRef.current?.layout()
-    })
-
+    }
     return (): void => {
-      window.electron.ipcRenderer.removeAllListeners('resize')
+      window.onresize = null
       editorRef.current?.dispose()
       editorRef.current = undefined
     }
