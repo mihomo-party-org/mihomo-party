@@ -7,11 +7,12 @@ import {
   mihomoWorkDir
 } from '../utils/dirs'
 import { generateProfile } from './factory'
-import { getAppConfig, patchAppConfig } from '../config'
+import { getAppConfig, patchAppConfig, patchControledMihomoConfig } from '../config'
 import { dialog, safeStorage } from 'electron'
 import { pauseWebsockets } from './mihomoApi'
 import { writeFile } from 'fs/promises'
 import { promisify } from 'util'
+import { mainWindow } from '..'
 
 let child: ChildProcess
 let retry = 10
@@ -41,6 +42,11 @@ export async function startCore(): Promise<void> {
       if (data.toString().includes('updater: finished')) {
         stopCore()
         await startCore()
+      }
+      if (data.toString().includes('configure tun interface: operation not permitted')) {
+        await patchControledMihomoConfig({ tun: { enable: false } })
+        mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        dialog.showErrorBox('虚拟网卡启动失败', '请尝试手动授予内核权限')
       }
       if (data.toString().includes('External controller listen error')) {
         if (retry) {
@@ -121,7 +127,7 @@ export async function autoGrantCorePermition(corePath: string): Promise<void> {
   }
 }
 
-export async function manualGrantCorePermition(): Promise<void> {
+export async function manualGrantCorePermition(password?: string): Promise<void> {
   const { core = 'mihomo' } = await getAppConfig()
   const corePath = mihomoCorePath(core)
   const execPromise = promisify(exec)
@@ -129,6 +135,11 @@ export async function manualGrantCorePermition(): Promise<void> {
     const shell = `chown root:admin ${corePath}\nchmod +sx ${corePath}`
     const command = `do shell script "${shell}" with administrator privileges`
     await execPromise(`osascript -e '${command}'`)
+  }
+  if (process.platform === 'linux') {
+    await execPromise(
+      `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_sys_ptrace,cap_dac_read_search,cap_dac_override,cap_net_raw=+ep ${corePath}`
+    )
   }
 }
 

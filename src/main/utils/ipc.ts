@@ -143,7 +143,9 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('triggerSysProxy', (_e, enable) => ipcErrorWrapper(triggerSysProxy)(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => encryptString(str))
-  ipcMain.handle('manualGrantCorePermition', ipcErrorWrapper(manualGrantCorePermition))
+  ipcMain.handle('manualGrantCorePermition', (_e, password) =>
+    ipcErrorWrapper(manualGrantCorePermition)(password)
+  )
   ipcMain.handle('getFilePath', (_e, ext) => getFilePath(ext))
   ipcMain.handle('readTextFile', (_e, filePath) => ipcErrorWrapper(readTextFile)(filePath))
   ipcMain.handle('getRuntimeConfigStr', ipcErrorWrapper(getRuntimeConfigStr))

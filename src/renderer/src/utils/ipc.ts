@@ -213,8 +213,10 @@ export async function encryptString(str: string): Promise<number[]> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('encryptString', str))
 }
 
-export async function manualGrantCorePermition(): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('manualGrantCorePermition'))
+export async function manualGrantCorePermition(password?: string): Promise<void> {
+  return ipcErrorWrapper(
+    await window.electron.ipcRenderer.invoke('manualGrantCorePermition', password)
+  )
 }
 
 export async function getFilePath(ext: string[]): Promise<string[] | undefined> {
