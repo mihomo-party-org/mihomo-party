@@ -186,11 +186,11 @@ const mihomoTraffic = async (): Promise<void> => {
     const json = JSON.parse(data) as IMihomoTrafficInfo
     if (showTraffic) {
       if (trafficHopping) {
-        tray?.setTitle('↑' + `${calcTraffic(json.up)}/s`.padStart(12), {
+        tray?.setTitle('↑' + `${calcTraffic(json.up)}/s`.padStart(9), {
           fontType: 'monospaced'
         })
       } else {
-        tray?.setTitle('↓' + `${calcTraffic(json.down)}/s`.padStart(12), {
+        tray?.setTitle('↓' + `${calcTraffic(json.down)}/s`.padStart(9), {
           fontType: 'monospaced'
         })
       }
@@ -201,9 +201,9 @@ const mihomoTraffic = async (): Promise<void> => {
     if (process.platform !== 'linux') {
       tray?.setToolTip(
         '↑' +
-          `${calcTraffic(json.up)}/s`.padStart(12) +
+          `${calcTraffic(json.up)}/s`.padStart(9) +
           '\n↓' +
-          `${calcTraffic(json.down)}/s`.padStart(12)
+          `${calcTraffic(json.down)}/s`.padStart(9)
       )
     }
 

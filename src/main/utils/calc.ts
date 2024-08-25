@@ -1,19 +1,19 @@
 export function calcTraffic(byte: number): string {
   if (byte < 1024) return `${byte} B`
   byte /= 1024
-  if (byte < 1024) return `${byte.toFixed(2)} KB`
+  if (byte < 1024) return `${Math.round(byte)} KB`
   byte /= 1024
-  if (byte < 1024) return `${byte.toFixed(2)} MB`
+  if (byte < 1024) return `${Math.round(byte)} MB`
   byte /= 1024
-  if (byte < 1024) return `${byte.toFixed(2)} GB`
+  if (byte < 1024) return `${Math.round(byte)} GB`
   byte /= 1024
-  if (byte < 1024) return `${byte.toFixed(2)} TB`
+  if (byte < 1024) return `${Math.round(byte)} TB`
   byte /= 1024
-  if (byte < 1024) return `${byte.toFixed(2)} PB`
+  if (byte < 1024) return `${Math.round(byte)} PB`
   byte /= 1024
-  if (byte < 1024) return `${byte.toFixed(2)} EB`
+  if (byte < 1024) return `${Math.round(byte)} EB`
   byte /= 1024
-  if (byte < 1024) return `${byte.toFixed(2)} ZB`
+  if (byte < 1024) return `${Math.round(byte)} ZB`
   byte /= 1024
-  return `${byte.toFixed(2)} YB`
+  return `${Math.round(byte)} YB`
 }
