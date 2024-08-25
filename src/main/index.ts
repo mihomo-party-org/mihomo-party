@@ -16,7 +16,7 @@ import { createElevateTask } from './sys/misc'
 
 export let mainWindow: BrowserWindow | null = null
 
-if (process.platform === 'win32') {
+if (process.platform === 'win32' && !is.dev) {
   try {
     createElevateTask()
   } catch (e) {

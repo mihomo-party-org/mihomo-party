@@ -61,7 +61,7 @@ const Proxies: React.FC = () => {
     })
 
     return { groupCounts, allProxies }
-  }, [groups, isOpen, proxyDisplayOrder])
+  }, [groups, isOpen, proxyDisplayOrder, cols])
 
   const onChangeProxy = async (group: string, proxy: string): Promise<void> => {
     await mihomoChangeProxy(group, proxy)
@@ -80,18 +80,15 @@ const Proxies: React.FC = () => {
     await mihomoGroupDelay(group, url)
   }
 
-  const calcCols = (): void => {
-    if (window.innerWidth >= 1280) {
-      setCols(4)
-      return
-    }
-    if (window.innerWidth >= 1024) {
-      setCols(3)
-      return
-    }
-    if (window.innerWidth >= 768) {
-      setCols(2)
-      return
+  const calcCols = (): number => {
+    if (window.matchMedia('(min-width: 1536px)').matches) {
+      return 5
+    } else if (window.matchMedia('(min-width: 1280px)').matches) {
+      return 4
+    } else if (window.matchMedia('(min-width: 1024px)').matches) {
+      return 3
+    } else {
+      return 2
     }
   }
 
@@ -100,8 +97,10 @@ const Proxies: React.FC = () => {
       setCols(parseInt(proxyCols))
       return
     }
-    calcCols()
-    window.onresize = calcCols
+    setCols(calcCols())
+    window.onresize = (): void => {
+      setCols(calcCols())
+    }
     return (): void => {
       window.onresize = null
     }
@@ -259,7 +258,9 @@ const Proxies: React.FC = () => {
             innerIndex -= count
           })
           return allProxies[groupIndex] ? (
-            <div className={`grid grid-cols-${cols} gap-2 pt-2 mx-2`}>
+            <div
+              className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : `grid-cols-${cols}`} gap-2 pt-2 mx-2`}
+            >
               {Array.from({ length: cols }).map((_, i) => {
                 if (!allProxies[groupIndex][innerIndex * cols + i]) return null
                 return (
