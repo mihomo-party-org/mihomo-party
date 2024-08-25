@@ -7,7 +7,7 @@ import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-c
 import { platform } from '@renderer/utils/init'
 import { FaNetworkWired } from 'react-icons/fa'
 import { IoMdCloudDownload } from 'react-icons/io'
-import { mihomoUpgrade, restartCore } from '@renderer/utils/ipc'
+import { mihomoUpgrade, restartCore, triggerSysProxy } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import InterfaceModal from '@renderer/components/mihomo/interface-modal'
 
@@ -18,7 +18,7 @@ const CoreMap = {
 
 const Mihomo: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { core = 'mihomo', maxLogDays = 7 } = appConfig || {}
+  const { core = 'mihomo', maxLogDays = 7, sysProxy } = appConfig || {}
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const {
     ipv6,
@@ -114,8 +114,11 @@ const Mihomo: React.FC = () => {
                   size="sm"
                   color="primary"
                   className="mr-2"
-                  onPress={() => {
-                    onChangeNeedRestart({ 'mixed-port': mixedPortInput })
+                  onPress={async () => {
+                    await onChangeNeedRestart({ 'mixed-port': mixedPortInput })
+                    if (sysProxy?.enable) {
+                      triggerSysProxy(true)
+                    }
                   }}
                 >
                   确认
