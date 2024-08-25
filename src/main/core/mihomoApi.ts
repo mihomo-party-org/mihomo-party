@@ -1,11 +1,17 @@
 import axios, { AxiosInstance } from 'axios'
 import { getAppConfig, getControledMihomoConfig } from '../config'
+import templateIcon from '../../../resources/iconTemplate.png?asset'
 import { mainWindow } from '..'
 import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
 import { getRuntimeConfig } from './factory'
+import { nativeImage } from 'electron'
+import svg2img from 'svg2img'
 
+const icon = nativeImage.createFromPath(templateIcon)
+icon.setTemplateImage(true)
+const base64 = icon.toPNG().toString('base64')
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
 let trafficRetry = 10
@@ -15,7 +21,6 @@ let mihomoLogsWs: WebSocket | null = null
 let logsRetry = 10
 let mihomoConnectionsWs: WebSocket | null = null
 let connectionsRetry = 10
-let trafficHopping = false
 
 export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
   if (axiosIns && !force) return axiosIns
@@ -185,18 +190,20 @@ const mihomoTraffic = async (): Promise<void> => {
     const data = e.data as string
     const json = JSON.parse(data) as IMihomoTrafficInfo
     if (showTraffic) {
-      if (trafficHopping) {
-        tray?.setTitle('↑' + `${calcTraffic(json.up)}/s`.padStart(9), {
-          fontType: 'monospaced'
-        })
-      } else {
-        tray?.setTitle('↓' + `${calcTraffic(json.down)}/s`.padStart(9), {
-          fontType: 'monospaced'
-        })
-      }
-      trafficHopping = !trafficHopping
+      const svgContent = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 36">
+        <image height='36' width='36' href='data:image/png;base64,${base64}'/>
+        <text x='40' y='15' font-size='15' font-family='system-ui'>↑ ${calcTraffic(json.up)}/s</text>
+        <text x='40' y='32' font-size='15' font-family='system-ui'>↓ ${calcTraffic(json.down)}/s</text>
+      </svg>`
+      svg2img(svgContent, {}, (error, buffer) => {
+        if (error) return
+        const image = nativeImage.createFromBuffer(buffer).resize({ height: 16 })
+        image.setTemplateImage(true)
+        tray?.setImage(image)
+      })
     } else {
-      tray?.setTitle('')
+      tray?.setImage(icon)
     }
     if (process.platform !== 'linux') {
       tray?.setToolTip(

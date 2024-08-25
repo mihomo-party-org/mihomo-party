@@ -29,7 +29,7 @@ const Proxies: React.FC = () => {
     autoCloseConnection = true,
     proxyCols = 'auto'
   } = appConfig || {}
-  const [cols, setCols] = useState(1)
+  const [cols, setCols] = useState(3)
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const { groupCounts, allProxies } = useMemo(() => {
