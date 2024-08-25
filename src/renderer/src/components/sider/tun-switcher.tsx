@@ -43,8 +43,10 @@ const TunSwitcher: React.FC = () => {
         setOpenPasswordModal(true)
         return
       }
-      if (!encryptionAvailable) {
+      if (!appConfig?.encryptedPassword && !encryptionAvailable) {
         alert('加密不可用，请手动给内核授权')
+        await patchAppConfig({ encryptedPassword: [] })
+        return
       }
     }
 
