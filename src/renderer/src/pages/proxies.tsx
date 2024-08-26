@@ -29,7 +29,7 @@ const Proxies: React.FC = () => {
     autoCloseConnection = true,
     proxyCols = 'auto'
   } = appConfig || {}
-  const [cols, setCols] = useState(3)
+  const [cols, setCols] = useState(1)
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const { groupCounts, allProxies } = useMemo(() => {
@@ -259,7 +259,12 @@ const Proxies: React.FC = () => {
           })
           return allProxies[groupIndex] ? (
             <div
-              className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : `grid-cols-${cols}`} gap-2 pt-2 mx-2`}
+              style={
+                proxyCols !== 'auto'
+                  ? { gridTemplateColumns: `repeat(${proxyCols}, minmax(0, 1fr))` }
+                  : {}
+              }
+              className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} gap-2 pt-2 mx-2`}
             >
               {Array.from({ length: cols }).map((_, i) => {
                 if (!allProxies[groupIndex][innerIndex * cols + i]) return null
