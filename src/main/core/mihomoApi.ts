@@ -12,6 +12,7 @@ import svg2img from 'svg2img'
 const icon = nativeImage.createFromPath(templateIcon)
 icon.setTemplateImage(true)
 const base64 = icon.toPNG().toString('base64')
+let hasShowTraffic = false
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
 let trafficRetry = 10
@@ -192,10 +193,12 @@ const mihomoTraffic = async (): Promise<void> => {
     if (process.platform === 'darwin') {
       if (showTraffic) {
         const svgContent = `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 36">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 36">
         <image height='36' width='36' href='data:image/png;base64,${base64}'/>
-        <text x='40' y='15' font-size='15' font-family='system-ui'>↑ ${calcTraffic(json.up)}/s</text>
-        <text x='40' y='32' font-size='15' font-family='system-ui'>↓ ${calcTraffic(json.down)}/s</text>
+        <text x='40' y='15' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='start'>↑</text>
+        <text x='40' y='34' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='start'>↓</text>
+        <text x='156' y='15' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='end'>${calcTraffic(json.up)}/s</text>
+        <text x='156' y='34' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='end'>${calcTraffic(json.down)}/s</text>
       </svg>`
         svg2img(svgContent, {}, (error, buffer) => {
           if (error) return
@@ -203,8 +206,13 @@ const mihomoTraffic = async (): Promise<void> => {
           image.setTemplateImage(true)
           tray?.setImage(image)
         })
+        hasShowTraffic = true
       } else {
-        tray?.setImage(icon)
+        if (hasShowTraffic) {
+          hasShowTraffic = false
+          icon.resize({ height: 16 })
+          tray?.setImage(icon)
+        }
       }
     }
     if (process.platform !== 'linux') {
