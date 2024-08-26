@@ -193,8 +193,8 @@ const mihomoTraffic = async (): Promise<void> => {
       const svgContent = `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 36">
         <image height='36' width='36' href='data:image/png;base64,${base64}'/>
-        <text x='40' y='15' font-size='15' font-family='system-ui'>↑ ${calcTraffic(json.up)}/s</text>
-        <text x='40' y='32' font-size='15' font-family='system-ui'>↓ ${calcTraffic(json.down)}/s</text>
+        <text x='40' y='15' font-size='18' font-family='system-ui'>↑ ${calcTraffic(json.up)}</text>
+        <text x='40' y='36' font-size='18' font-family='system-ui'>↓ ${calcTraffic(json.down)}</text>
       </svg>`
       svg2img(svgContent, {}, (error, buffer) => {
         if (error) return
