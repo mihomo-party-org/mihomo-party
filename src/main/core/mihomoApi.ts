@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 import { getAppConfig, getControledMihomoConfig } from '../config'
-import templateIcon from '../../../resources/iconTemplate.png?asset'
+import templateIcon from '../../../resources/iconTemplate@2x.png?asset'
 import { mainWindow } from '..'
 import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
@@ -189,21 +189,23 @@ const mihomoTraffic = async (): Promise<void> => {
   mihomoTrafficWs.onmessage = (e): void => {
     const data = e.data as string
     const json = JSON.parse(data) as IMihomoTrafficInfo
-    if (showTraffic) {
-      const svgContent = `
+    if (process.platform === 'darwin') {
+      if (showTraffic) {
+        const svgContent = `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 36">
         <image height='36' width='36' href='data:image/png;base64,${base64}'/>
         <text x='40' y='15' font-size='15' font-family='system-ui'>↑ ${calcTraffic(json.up)}/s</text>
         <text x='40' y='32' font-size='15' font-family='system-ui'>↓ ${calcTraffic(json.down)}/s</text>
       </svg>`
-      svg2img(svgContent, {}, (error, buffer) => {
-        if (error) return
-        const image = nativeImage.createFromBuffer(buffer).resize({ height: 16 })
-        image.setTemplateImage(true)
-        tray?.setImage(image)
-      })
-    } else {
-      tray?.setImage(icon)
+        svg2img(svgContent, {}, (error, buffer) => {
+          if (error) return
+          const image = nativeImage.createFromBuffer(buffer).resize({ height: 16 })
+          image.setTemplateImage(true)
+          tray?.setImage(image)
+        })
+      } else {
+        tray?.setImage(icon)
+      }
     }
     if (process.platform !== 'linux') {
       tray?.setToolTip(
