@@ -7,7 +7,7 @@ import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
 import { getRuntimeConfig } from './factory'
-import { dialog, nativeImage } from 'electron'
+import { nativeImage } from 'electron'
 import parseSvg from '../utils/parseSvg'
 
 const icon = nativeImage.createFromPath(svgIcon)
@@ -213,7 +213,7 @@ const mihomoTraffic = async (): Promise<void> => {
           tray?.setImage(image)
           hasShowTraffic = true
         } catch (e) {
-          dialog.showErrorBox('Parse SVG Error', JSON.stringify(e))
+          // ignore
         } finally {
           drawing = false
         }
