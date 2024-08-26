@@ -7,7 +7,7 @@ import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
 import { getRuntimeConfig } from './factory'
-import { nativeImage } from 'electron'
+import { dialog, nativeImage } from 'electron'
 import parseSvg from '../utils/parseSvg'
 
 const icon = nativeImage.createFromPath(svgIcon)
@@ -192,6 +192,8 @@ const mihomoTraffic = async (): Promise<void> => {
   mihomoTrafficWs.onmessage = async (e): Promise<void> => {
     const data = e.data as string
     const json = JSON.parse(data) as IMihomoTrafficInfo
+    trafficRetry = 10
+    mainWindow?.webContents.send('mihomoTraffic', json)
     if (process.platform === 'darwin') {
       if (showTraffic) {
         if (drawing) return
@@ -204,12 +206,17 @@ const mihomoTraffic = async (): Promise<void> => {
         <text x='156' y='15' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='end'>${calcTraffic(json.up)}/s</text>
         <text x='156' y='34' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='end'>${calcTraffic(json.down)}/s</text>
       </svg>`
-        const buffer = await parseSvg(svgContent)
-        const image = nativeImage.createFromBuffer(buffer).resize({ height: 16 })
-        image.setTemplateImage(true)
-        tray?.setImage(image)
-        drawing = false
-        hasShowTraffic = true
+        try {
+          const buffer = await parseSvg(svgContent)
+          const image = nativeImage.createFromBuffer(buffer).resize({ height: 16 })
+          image.setTemplateImage(true)
+          tray?.setImage(image)
+          hasShowTraffic = true
+        } catch (e) {
+          dialog.showErrorBox('Parse SVG Error', JSON.stringify(e))
+        } finally {
+          drawing = false
+        }
       } else {
         if (hasShowTraffic) {
           const icon = nativeImage.createFromPath(templateIcon)
@@ -227,9 +234,6 @@ const mihomoTraffic = async (): Promise<void> => {
           `${calcTraffic(json.down)}/s`.padStart(9)
       )
     }
-
-    trafficRetry = 10
-    mainWindow?.webContents.send('mihomoTraffic', json)
   }
 
   mihomoTrafficWs.onclose = (): void => {
