@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { getAppConfig, getControledMihomoConfig } from '../config'
-import templateIcon from '../../../resources/iconTemplate@2x.png?asset'
+import templateIcon from '../../../resources/iconTemplate.png?asset'
+import svgIcon from '../../../resources/iconTemplate@2x.png?asset'
 import { mainWindow } from '..'
 import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
@@ -9,7 +10,7 @@ import { getRuntimeConfig } from './factory'
 import { nativeImage } from 'electron'
 import parseSvg from '../utils/parseSvg'
 
-const icon = nativeImage.createFromPath(templateIcon)
+const icon = nativeImage.createFromPath(svgIcon)
 icon.setTemplateImage(true)
 const base64 = icon.toPNG().toString('base64')
 let hasShowTraffic = false
@@ -211,9 +212,10 @@ const mihomoTraffic = async (): Promise<void> => {
         hasShowTraffic = true
       } else {
         if (hasShowTraffic) {
-          hasShowTraffic = false
-          icon.resize({ height: 16 })
+          const icon = nativeImage.createFromPath(templateIcon)
+          icon.setTemplateImage(true)
           tray?.setImage(icon)
+          hasShowTraffic = false
         }
       }
     }
