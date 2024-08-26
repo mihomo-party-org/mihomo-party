@@ -228,7 +228,9 @@ const ProfileItem: React.FC<Props> = (props) => {
               className={`mt-2 flex justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
             >
               <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
-              <small>{extra ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : ''}</small>
+              <small>
+                {extra && extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : ''}
+              </small>
             </div>
           )}
           {info.type === 'local' && (
