@@ -17,6 +17,7 @@ import { mainWindow, showMainWindow } from '..'
 import { app, clipboard, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../sys/sysproxy'
+import { restartCore } from '../core/manager'
 
 export let tray: Tray | null = null
 
@@ -154,8 +155,8 @@ const buildContextMenu = async (): Promise<Menu> => {
         } else {
           await patchControledMihomoConfig({ tun: { enable } })
         }
-        await patchMihomoConfig({ tun: { enable } })
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        await restartCore()
         ipcMain.emit('updateTrayMenu')
       }
     },
