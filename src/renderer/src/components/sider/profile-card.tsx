@@ -109,13 +109,13 @@ const ProfileCard: React.FC = () => {
               )}
             </div>
           </div>
-          {info.type === 'remote' && (
+          {info.type === 'remote' && extra && (
             <div
               className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'} `}
             >
-              <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
+              <small>{`${calcTraffic(usage)}/${calcTraffic(total)}`}</small>
               <small>
-                {extra && extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : ''}
+                {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
               </small>
             </div>
           )}
