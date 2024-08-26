@@ -114,7 +114,9 @@ const ProfileCard: React.FC = () => {
               className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'} `}
             >
               <small>{extra ? `${calcTraffic(usage)}/${calcTraffic(total)}` : undefined}</small>
-              <small>{extra ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : ''}</small>
+              <small>
+                {extra && extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : ''}
+              </small>
             </div>
           )}
           {info.type === 'local' && (
