@@ -7,12 +7,13 @@ import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
 import { getRuntimeConfig } from './factory'
 import { nativeImage } from 'electron'
-import svg2img from 'svg2img'
+import parseSvg from '../utils/parseSvg'
 
 const icon = nativeImage.createFromPath(templateIcon)
 icon.setTemplateImage(true)
 const base64 = icon.toPNG().toString('base64')
 let hasShowTraffic = false
+let drawing = false
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
 let trafficRetry = 10
@@ -187,11 +188,13 @@ const mihomoTraffic = async (): Promise<void> => {
 
   mihomoTrafficWs = new WebSocket(`ws://${server}/traffic?token=${encodeURIComponent(secret)}`)
 
-  mihomoTrafficWs.onmessage = (e): void => {
+  mihomoTrafficWs.onmessage = async (e): Promise<void> => {
     const data = e.data as string
     const json = JSON.parse(data) as IMihomoTrafficInfo
     if (process.platform === 'darwin') {
       if (showTraffic) {
+        if (drawing) return
+        drawing = true
         const svgContent = `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 36">
         <image height='36' width='36' href='data:image/png;base64,${base64}'/>
@@ -200,12 +203,11 @@ const mihomoTraffic = async (): Promise<void> => {
         <text x='156' y='15' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='end'>${calcTraffic(json.up)}/s</text>
         <text x='156' y='34' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='end'>${calcTraffic(json.down)}/s</text>
       </svg>`
-        svg2img(svgContent, {}, (error, buffer) => {
-          if (error) return
-          const image = nativeImage.createFromBuffer(buffer).resize({ height: 16 })
-          image.setTemplateImage(true)
-          tray?.setImage(image)
-        })
+        const buffer = await parseSvg(svgContent)
+        const image = nativeImage.createFromBuffer(buffer).resize({ height: 16 })
+        image.setTemplateImage(true)
+        tray?.setImage(image)
+        drawing = false
         hasShowTraffic = true
       } else {
         if (hasShowTraffic) {
