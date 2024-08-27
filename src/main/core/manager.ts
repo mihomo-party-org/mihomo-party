@@ -9,7 +9,7 @@ import {
 import { generateProfile } from './factory'
 import { getAppConfig, patchAppConfig, patchControledMihomoConfig } from '../config'
 import { dialog, safeStorage } from 'electron'
-import { pauseWebsockets } from './mihomoApi'
+import { pauseWebsockets, startMihomoTraffic } from './mihomoApi'
 import { writeFile } from 'fs/promises'
 import { promisify } from 'util'
 import { mainWindow } from '..'
@@ -59,6 +59,7 @@ export async function startCore(): Promise<void> {
         }
       }
       if (data.toString().includes('RESTful API listening at')) {
+        await startMihomoTraffic()
         retry = 10
         resolve()
       }

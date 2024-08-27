@@ -27,9 +27,6 @@ import { startPacServer } from '../resolve/server'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { getAppConfig } from '../config'
 import { app } from 'electron'
-import { startCore } from '../core/manager'
-import { initProfileUpdater } from '../core/profileUpdater'
-import { startMihomoTraffic } from '../core/mihomoApi'
 
 async function initDirs(): Promise<void> {
   if (!existsSync(dataDir())) {
@@ -138,11 +135,6 @@ export async function init(): Promise<void> {
   await startPacServer()
   const { sysProxy } = await getAppConfig()
   await triggerSysProxy(sysProxy.enable)
-  await startCore()
-  await startMihomoTraffic()
-  setTimeout(async () => {
-    await initProfileUpdater()
-  }, 60000)
 
   initDeeplink()
 }

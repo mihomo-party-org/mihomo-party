@@ -147,6 +147,7 @@ interface IMihomoGroup {
   all: string[]
   extra: Record<string, { alive: boolean; history: IMihomoHistory[] }>
   testUrl?: string
+  fixed?: string
   hidden: boolean
   history: IMihomoHistory[]
   icon: string

@@ -52,13 +52,14 @@ const ProxyItem: React.FC<Props> = (props) => {
       PubSub.unsubscribe(token)
     }
   }, [])
+  const fixed = group.fixed && group.fixed === proxy.name
 
   return (
     <Card
       onPress={() => onSelect(group.name, proxy.name)}
       isPressable
       fullWidth
-      className={`${selected ? 'bg-primary/30' : 'bg-content2'}`}
+      className={`${fixed ? 'bg-secondary/30' : selected ? 'bg-primary/30' : 'bg-content2'}`}
       radius="sm"
     >
       <CardBody className="p-2">

@@ -389,9 +389,8 @@ const mihomoConnections = async (): Promise<void> => {
 
 export const pauseWebsockets = () => {
   const recoverList: (() => void)[] = []
-  // Traffic 始终开启
+  // Traffic 内核启动时始终开启
   stopMihomoTraffic()
-  recoverList.push(startMihomoTraffic)
   if (mihomoMemoryWs) {
     stopMihomoMemory()
     recoverList.push(startMihomoMemory)

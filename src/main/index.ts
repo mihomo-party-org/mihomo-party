@@ -4,7 +4,7 @@ import windowStateKeeper from 'electron-window-state'
 import { app, shell, BrowserWindow, Menu, dialog, Notification } from 'electron'
 import { pauseWebsockets, startMihomoMemory, stopMihomoMemory } from './core/mihomoApi'
 import { addProfileItem, getAppConfig } from './config'
-import { stopCore } from './core/manager'
+import { startCore, stopCore } from './core/manager'
 import { triggerSysProxy } from './sys/sysproxy'
 import icon from '../../resources/icon.png?asset'
 import { createTray } from './resolve/tray'
@@ -13,6 +13,7 @@ import { join } from 'path'
 import { initShortcut } from './resolve/shortcut'
 import { execSync } from 'child_process'
 import { createElevateTask } from './sys/misc'
+import { initProfileUpdater } from './core/profileUpdater'
 
 export let mainWindow: BrowserWindow | null = null
 
@@ -78,6 +79,14 @@ app.whenReady().then(async () => {
   } catch (e) {
     dialog.showErrorBox('应用初始化失败', `${e}`)
     app.quit()
+  }
+  try {
+    await startCore()
+    setTimeout(async () => {
+      await initProfileUpdater()
+    }, 60000)
+  } catch (e) {
+    dialog.showErrorBox('内核启动失败', `${e}`)
   }
 
   // Default open or close DevTools by F12 in development
