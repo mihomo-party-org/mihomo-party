@@ -14,6 +14,9 @@ export async function getAppConfig(force = false): Promise<IAppConfig> {
 }
 
 export async function patchAppConfig(patch: Partial<IAppConfig>): Promise<void> {
+  if (patch.nameserverPolicy) {
+    appConfig.nameserverPolicy = patch.nameserverPolicy
+  }
   appConfig = deepMerge(appConfig, patch)
   await writeFile(appConfigPath(), yaml.stringify(appConfig))
 }
