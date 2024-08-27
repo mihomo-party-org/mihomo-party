@@ -2,9 +2,8 @@ import { exec, execFile, execSync } from 'child_process'
 import { dialog, nativeTheme } from 'electron'
 import { readFile } from 'fs/promises'
 import path from 'path'
-import os from 'os'
 import { promisify } from 'util'
-import { exePath, mihomoCorePath, resourcesDir } from '../utils/dirs'
+import { dataDir, exePath, mihomoCorePath, resourcesDir } from '../utils/dirs'
 import { writeFileSync } from 'fs'
 
 export function getFilePath(ext: string[]): string[] | undefined {
@@ -82,14 +81,25 @@ const elevateTaskXml = `<?xml version="1.0" encoding="UTF-16"?>
   </Settings>
   <Actions Context="Author">
     <Exec>
-      <Command>${exePath()}</Command>
+      <Command>powershell</Command>
+      <Arguments>-WindowStyle Hidden -File "${path.join(dataDir(), `mihomo-party-run.ps1`)}"</Arguments>
     </Exec>
   </Actions>
 </Task>
 `
 
+const startScript = `$paramFilePath = Join-Path -Path $PSScriptRoot -ChildPath "param.txt"
+if (Test-Path -Path $paramFilePath) {
+    $paramContent = Get-Content -Path $paramFilePath
+    & "${exePath()}" $paramContent
+} else {
+    & "${exePath()}"
+}
+`
+
 export function createElevateTask(): void {
-  const taskFilePath = path.join(os.tmpdir(), `mihomo-party-run.xml`)
+  const taskFilePath = path.join(dataDir(), `mihomo-party-run.xml`)
+  writeFileSync(path.join(dataDir(), `mihomo-party-run.ps1`), startScript)
   writeFileSync(taskFilePath, Buffer.from(`\ufeff${elevateTaskXml}`, 'utf-16le'))
   execSync(`schtasks /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`)
 }

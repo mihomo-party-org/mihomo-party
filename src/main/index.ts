@@ -14,14 +14,21 @@ import { initShortcut } from './resolve/shortcut'
 import { execSync } from 'child_process'
 import { createElevateTask } from './sys/misc'
 import { initProfileUpdater } from './core/profileUpdater'
+import { writeFileSync } from 'fs'
+import { dataDir } from './utils/dirs'
+import path from 'path'
 
 export let mainWindow: BrowserWindow | null = null
-
 if (process.platform === 'win32' && !is.dev) {
   try {
     createElevateTask()
   } catch (e) {
     try {
+      if (process.argv.slice(1).length > 0) {
+        writeFileSync(path.join(dataDir(), 'param.txt'), process.argv.slice(1).join(' '))
+      } else {
+        writeFileSync(path.join(dataDir(), 'param.txt'), '')
+      }
       execSync('schtasks /run /tn mihomo-party-run')
     } catch (e) {
       dialog.showErrorBox('首次启动请以管理员权限运行', '首次启动请以管理员权限运行')
