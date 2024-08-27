@@ -25,7 +25,7 @@ export async function webdavBackup(): Promise<boolean> {
   zip.addLocalFolder(profilesDir(), 'profiles')
   zip.addLocalFolder(overrideDir(), 'override')
   const date = new Date()
-  const zipFileName = `Backup_${dayjs(date).format('YYYY-MM-DD_HH-mm-ss')}.zip`
+  const zipFileName = `${process.platform}_${dayjs(date).format('YYYY-MM-DD_HH-mm-ss')}.zip`
 
   const client = createClient(webdavUrl, {
     username: webdavUsername,
