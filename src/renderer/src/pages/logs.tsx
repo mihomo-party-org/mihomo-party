@@ -2,7 +2,7 @@ import BasePage from '@renderer/components/base/base-page'
 import { startMihomoLogs, stopMihomoLogs } from '@renderer/utils/ipc'
 import LogItem from '@renderer/components/logs/log-item'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Button, Input } from '@nextui-org/react'
+import { Button, Divider, Input } from '@nextui-org/react'
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
 
 const Logs: React.FC = () => {
@@ -45,8 +45,8 @@ const Logs: React.FC = () => {
 
   return (
     <BasePage title="实时日志">
-      <div className="sticky top-[49px] z-40 backdrop-blur bg-background/40 flex p-2">
-        <div className="w-full flex">
+      <div className="sticky top-[49px] z-40">
+        <div className="w-full flex p-2">
           <Input
             variant="bordered"
             size="sm"
@@ -66,17 +66,19 @@ const Logs: React.FC = () => {
             追踪
           </Button>
         </div>
+        <Divider />
       </div>
       <Virtuoso
         autoFocus
         ref={virtuosoRef}
         style={{ height: 'calc(100vh - 100px)' }}
+        data={filteredLogs}
         totalCount={filteredLogs.length}
-        itemContent={(index) => {
-          const log = filteredLogs[index]
+        itemContent={(i, log) => {
           return (
             <LogItem
-              key={log.payload + index}
+              index={i}
+              key={log.payload + i}
               time={log.time}
               type={log.type}
               payload={log.payload}

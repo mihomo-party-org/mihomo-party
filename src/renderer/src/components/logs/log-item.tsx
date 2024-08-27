@@ -7,18 +7,20 @@ const colorMap = {
   info: 'primary',
   debug: 'default'
 }
-const LogItem: React.FC<IMihomoLogInfo> = (props) => {
-  const { type, payload, time } = props
+const LogItem: React.FC<IMihomoLogInfo & { index: number }> = (props) => {
+  const { type, payload, time, index } = props
   return (
-    <Card className="m-2">
-      <CardHeader className="pb-0 pt-1">
-        <div className={`mr-2 text-lg font-bold text-${colorMap[type]}`}>
-          {props.type.toUpperCase()}
-        </div>
-        <small className="text-default-500">{time}</small>
-      </CardHeader>
-      <CardBody className="pt-0 text-sm">{payload}</CardBody>
-    </Card>
+    <div className={`px-2 pb-2 ${index === 0 ? 'pt-2' : ''}`}>
+      <Card>
+        <CardHeader className="pb-0 pt-1">
+          <div className={`mr-2 text-lg font-bold text-${colorMap[type]}`}>
+            {props.type.toUpperCase()}
+          </div>
+          <small className="text-default-500">{time}</small>
+        </CardHeader>
+        <CardBody className="pt-0 text-sm">{payload}</CardBody>
+      </Card>
+    </div>
   )
 }
 

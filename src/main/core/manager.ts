@@ -101,6 +101,7 @@ async function checkProfile(): Promise<void> {
 }
 
 export async function autoGrantCorePermition(corePath: string): Promise<void> {
+  if (process.platform === 'win32') return
   const { encryptedPassword } = await getAppConfig()
   const execPromise = promisify(exec)
   if (encryptedPassword && isEncryptionAvailable()) {

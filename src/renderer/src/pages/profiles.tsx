@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input } from '@nextui-org/react'
+import { Button, Checkbox, Divider, Input } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import ProfileItem from '@renderer/components/profiles/profile-item'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
@@ -122,70 +122,73 @@ const Profiles: React.FC = () => {
         </Button>
       }
     >
-      <div className="sticky top-[48px] z-40 backdrop-blur bg-background/40 flex p-2">
-        <Input
-          variant="bordered"
-          size="sm"
-          value={url}
-          onValueChange={setUrl}
-          endContent={
-            <>
-              <Button
-                size="sm"
-                isIconOnly
-                variant="light"
-                onPress={() => {
-                  navigator.clipboard.readText().then((text) => {
-                    setUrl(text)
-                  })
-                }}
-              >
-                <MdContentPaste className="text-lg" />
-              </Button>
-              <Checkbox
-                className="whitespace-nowrap"
-                checked={useProxy}
-                onValueChange={setUseProxy}
-              >
-                代理
-              </Checkbox>
-            </>
-          }
-        />
-
-        <Button
-          size="sm"
-          color="primary"
-          className="ml-2"
-          isDisabled={url === ''}
-          isLoading={importing}
-          onPress={handleImport}
-        >
-          导入
-        </Button>
-        <Button
-          size="sm"
-          color="primary"
-          className="ml-2"
-          onPress={async () => {
-            try {
-              const files = await getFilePath(['yml', 'yaml'])
-              if (files?.length) {
-                const content = await readTextFile(files[0])
-                const fileName = files[0].split('/').pop()?.split('\\').pop()
-                await addProfileItem({ name: fileName, type: 'local', file: content })
-              }
-            } catch (e) {
-              alert(e)
+      <div className="sticky top-[49px] z-40 backdrop-blur bg-background/40">
+        <div className="flex p-2">
+          <Input
+            variant="bordered"
+            size="sm"
+            value={url}
+            onValueChange={setUrl}
+            endContent={
+              <>
+                <Button
+                  size="sm"
+                  isIconOnly
+                  variant="light"
+                  onPress={() => {
+                    navigator.clipboard.readText().then((text) => {
+                      setUrl(text)
+                    })
+                  }}
+                >
+                  <MdContentPaste className="text-lg" />
+                </Button>
+                <Checkbox
+                  className="whitespace-nowrap"
+                  checked={useProxy}
+                  onValueChange={setUseProxy}
+                >
+                  代理
+                </Checkbox>
+              </>
             }
-          }}
-        >
-          打开
-        </Button>
+          />
+
+          <Button
+            size="sm"
+            color="primary"
+            className="ml-2"
+            isDisabled={url === ''}
+            isLoading={importing}
+            onPress={handleImport}
+          >
+            导入
+          </Button>
+          <Button
+            size="sm"
+            color="primary"
+            className="ml-2"
+            onPress={async () => {
+              try {
+                const files = await getFilePath(['yml', 'yaml'])
+                if (files?.length) {
+                  const content = await readTextFile(files[0])
+                  const fileName = files[0].split('/').pop()?.split('\\').pop()
+                  await addProfileItem({ name: fileName, type: 'local', file: content })
+                }
+              } catch (e) {
+                alert(e)
+              }
+            }}
+          >
+            打开
+          </Button>
+        </div>
+        <Divider />
       </div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <div
-          className={`${fileOver ? 'blur-sm' : ''} grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 mx-2`}
+          className={`${fileOver ? 'blur-sm' : ''} grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 m-2`}
         >
           <SortableContext
             items={sortedItems.map((item) => {

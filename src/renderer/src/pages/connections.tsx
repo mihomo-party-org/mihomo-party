@@ -6,7 +6,7 @@ import {
   stopMihomoConnections
 } from '@renderer/utils/ipc'
 import { Key, useEffect, useMemo, useState } from 'react'
-import { Button, Input } from '@nextui-org/react'
+import { Button, Divider, Input } from '@nextui-org/react'
 import { IoCloseCircle } from 'react-icons/io5'
 import { calcTraffic } from '@renderer/utils/calc'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react'
@@ -83,14 +83,17 @@ const Connections: React.FC = () => {
           connection={selectedConnection}
         />
       )}
-      <div className="overflow-x-auto sticky top-[49px] z-40 backdrop-blur bg-background/40 flex p-2">
-        <Input
-          variant="bordered"
-          size="sm"
-          value={filter}
-          placeholder="筛选过滤"
-          onValueChange={setFilter}
-        />
+      <div className="overflow-x-auto sticky top-[49px] z-40">
+        <div className="flex p-2">
+          <Input
+            variant="bordered"
+            size="sm"
+            value={filter}
+            placeholder="筛选过滤"
+            onValueChange={setFilter}
+          />
+        </div>
+        <Divider />
       </div>
       <Table
         onRowAction={(id: Key) => {
