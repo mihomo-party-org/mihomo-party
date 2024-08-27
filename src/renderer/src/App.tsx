@@ -89,18 +89,18 @@ const App: React.FC = () => {
   }
 
   const componentMap = {
-    sysproxy: <SysproxySwitcher />,
-    tun: <TunSwitcher />,
-    profile: <ProfileCard />,
-    proxy: <ProxyCard />,
-    mihomo: <MihomoCoreCard />,
-    connection: <ConnCard />,
-    dns: <DNSCard />,
-    sniff: <SniffCard />,
-    log: <LogCard />,
-    rule: <RuleCard />,
-    resource: <ResourceCard />,
-    override: <OverrideCard />
+    sysproxy: <SysproxySwitcher key="sysproxy" />,
+    tun: <TunSwitcher key="tun" />,
+    profile: <ProfileCard key="profile" />,
+    proxy: <ProxyCard key="proxy" />,
+    mihomo: <MihomoCoreCard key="mihomo" />,
+    connection: <ConnCard key="connection" />,
+    dns: <DNSCard key="dns" />,
+    sniff: <SniffCard key="sniff" />,
+    log: <LogCard key="log" />,
+    rule: <RuleCard key="rule" />,
+    resource: <ResourceCard key="resource" />,
+    override: <OverrideCard key="override" />
   }
 
   return (
