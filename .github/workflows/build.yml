@@ -38,7 +38,6 @@ jobs:
         run: |
           pnpm install
           pnpm add @mihomo-party/sysproxy-win32-${{ matrix.arch }}-msvc
-          pnpm add @resvg/resvg-js-win32-${{ matrix.arch }}-msvc
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:
@@ -96,7 +95,6 @@ jobs:
         run: |
           pnpm install
           pnpm add @mihomo-party/sysproxy-linux-${{ matrix.arch }}-gnu
-          pnpm add @resvg/resvg-js-linux-${{ matrix.arch }}-gnu
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:
@@ -154,7 +152,6 @@ jobs:
         run: |
           pnpm install
           pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
-          pnpm add @resvg/resvg-js-darwin-${{ matrix.arch }}
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:

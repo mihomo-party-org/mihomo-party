@@ -237,6 +237,11 @@ export async function createTray(): Promise<void> {
     if (!useDockIcon) {
       app.dock.hide()
     }
+    ipcMain.on('trayIconUpdate', async (_, png: string) => {
+      const image = nativeImage.createFromDataURL(png).resize({ height: 16 })
+      image.setTemplateImage(true)
+      tray?.setImage(image)
+    })
     tray?.addListener('right-click', async () => {
       if (mainWindow?.isVisible()) {
         mainWindow?.close()

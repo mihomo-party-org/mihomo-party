@@ -122,6 +122,7 @@ const Connections: React.FC = () => {
               <TableCell>{item.metadata.process || item.metadata.sourceIP}</TableCell>
               <TableCell className="max-w-[100px] text-ellipsis whitespace-nowrap overflow-hidden">
                 {item.metadata.host ||
+                  item.metadata.sniffHost ||
                   item.metadata.remoteDestination ||
                   item.metadata.destinationIP}
               </TableCell>

@@ -1,20 +1,11 @@
 import axios, { AxiosInstance } from 'axios'
 import { getAppConfig, getControledMihomoConfig } from '../config'
-import templateIcon from '../../../resources/iconTemplate.png?asset'
-import svgIcon from '../../../resources/iconTemplate@2x.png?asset'
 import { mainWindow } from '..'
 import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
 import { getRuntimeConfig } from './factory'
-import { nativeImage } from 'electron'
-import parseSvg from '../utils/parseSvg'
 
-const icon = nativeImage.createFromPath(svgIcon)
-icon.setTemplateImage(true)
-const base64 = icon.toPNG().toString('base64')
-let hasShowTraffic = false
-let drawing = false
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
 let trafficRetry = 10
@@ -180,7 +171,6 @@ export const stopMihomoTraffic = (): void => {
 }
 
 const mihomoTraffic = async (): Promise<void> => {
-  const { showTraffic = true } = await getAppConfig()
   const controledMihomoConfig = await getControledMihomoConfig()
   let server = controledMihomoConfig['external-controller']
   const secret = controledMihomoConfig.secret ?? ''
@@ -194,38 +184,6 @@ const mihomoTraffic = async (): Promise<void> => {
     const json = JSON.parse(data) as IMihomoTrafficInfo
     trafficRetry = 10
     mainWindow?.webContents.send('mihomoTraffic', json)
-    if (process.platform === 'darwin') {
-      if (showTraffic) {
-        if (drawing) return
-        drawing = true
-        const svgContent = `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 36">
-        <image height='36' width='36' href='data:image/png;base64,${base64}'/>
-        <text x='40' y='15' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='start'>↑</text>
-        <text x='40' y='34' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='start'>↓</text>
-        <text x='156' y='15' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='end'>${calcTraffic(json.up)}/s</text>
-        <text x='156' y='34' font-size='18' font-family="PingFang SC" font-weight='bold' text-anchor='end'>${calcTraffic(json.down)}/s</text>
-      </svg>`
-        try {
-          const buffer = await parseSvg(svgContent)
-          const image = nativeImage.createFromBuffer(buffer).resize({ height: 16 })
-          image.setTemplateImage(true)
-          tray?.setImage(image)
-          hasShowTraffic = true
-        } catch (e) {
-          // ignore
-        } finally {
-          drawing = false
-        }
-      } else {
-        if (hasShowTraffic) {
-          const icon = nativeImage.createFromPath(templateIcon)
-          icon.setTemplateImage(true)
-          tray?.setImage(icon)
-          hasShowTraffic = false
-        }
-      }
-    }
     if (process.platform !== 'linux') {
       tray?.setToolTip(
         '↑' +
