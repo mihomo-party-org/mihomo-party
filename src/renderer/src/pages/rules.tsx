@@ -29,6 +29,7 @@ const Rules: React.FC = () => {
             size="sm"
             value={filter}
             placeholder="筛选过滤"
+            isClearable
             onValueChange={setFilter}
           />
         </div>
