@@ -1,7 +1,5 @@
-### New Features
-
-- 调整UI细节
-
 ### Bug Fixes
 
-- 修复MacOS托盘绘制网速导致的占用异常
+- 修复MacOS系统代理修改失败的问题
+- 修复Windows URL Scheme失效的问题
+- 修复DNS策略无法删除的问题

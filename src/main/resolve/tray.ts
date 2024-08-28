@@ -224,7 +224,7 @@ export async function createTray(): Promise<void> {
     tray.setContextMenu(menu)
   }
   if (process.platform === 'darwin') {
-    const icon = nativeImage.createFromPath(templateIcon)
+    const icon = nativeImage.createFromPath(templateIcon).resize({ height: 16 })
     icon.setTemplateImage(true)
     tray = new Tray(icon)
   }

@@ -1,5 +1,5 @@
 export function calcTraffic(byte: number): string {
-  if (byte < 1024) return `${byte} B`
+  if (byte < 1024) return `${formatNumString(byte)} B`
   byte /= 1024
   if (byte < 1024) return `${formatNumString(byte)} KB`
   byte /= 1024
