@@ -4,7 +4,7 @@ import SettingItem from '../base/base-setting-item'
 import { Input, Select, SelectItem, Switch } from '@nextui-org/react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import debounce from '@renderer/utils/debounce'
-import { patchControledMihomoConfig } from '@renderer/utils/ipc'
+import { patchControledMihomoConfig, restartCore } from '@renderer/utils/ipc'
 
 const MihomoConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -84,8 +84,13 @@ const MihomoConfig: React.FC = () => {
           size="sm"
           isSelected={controlDns}
           onValueChange={async (v) => {
-            await patchAppConfig({ controlDns: v })
-            await patchControledMihomoConfig({})
+            try {
+              await patchAppConfig({ controlDns: v })
+              await patchControledMihomoConfig({})
+              await restartCore()
+            } catch (e) {
+              alert(e)
+            }
           }}
         />
       </SettingItem>
@@ -94,8 +99,13 @@ const MihomoConfig: React.FC = () => {
           size="sm"
           isSelected={controlSniff}
           onValueChange={async (v) => {
-            await patchAppConfig({ controlSniff: v })
-            await patchControledMihomoConfig({})
+            try {
+              await patchAppConfig({ controlSniff: v })
+              await patchControledMihomoConfig({})
+              await restartCore()
+            } catch (e) {
+              alert(e)
+            }
           }}
         />
       </SettingItem>
