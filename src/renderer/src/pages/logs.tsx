@@ -69,24 +69,23 @@ const Logs: React.FC = () => {
         </div>
         <Divider />
       </div>
-      <Virtuoso
-        autoFocus
-        ref={virtuosoRef}
-        style={{ height: 'calc(100vh - 100px)' }}
-        data={filteredLogs}
-        totalCount={filteredLogs.length}
-        itemContent={(i, log) => {
-          return (
-            <LogItem
-              index={i}
-              key={log.payload + i}
-              time={log.time}
-              type={log.type}
-              payload={log.payload}
-            />
-          )
-        }}
-      />
+      <div className="h-[calc(100vh-100px)] mt-[1px]">
+        <Virtuoso
+          ref={virtuosoRef}
+          data={filteredLogs}
+          itemContent={(i, log) => {
+            return (
+              <LogItem
+                index={i}
+                key={log.payload + i}
+                time={log.time}
+                type={log.type}
+                payload={log.payload}
+              />
+            )
+          }}
+        />
+      </div>
     </BasePage>
   )
 }

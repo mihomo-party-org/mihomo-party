@@ -35,19 +35,20 @@ const Rules: React.FC = () => {
         </div>
         <Divider />
       </div>
-      <Virtuoso
-        style={{ height: 'calc(100vh - 100px)', marginTop: '1px' }}
-        data={filteredRules}
-        itemContent={(i, rule) => (
-          <RuleItem
-            index={i}
-            type={rule.type}
-            payload={rule.payload}
-            proxy={rule.proxy}
-            size={rule.size}
-          />
-        )}
-      />
+      <div className="h-[calc(100vh-100px)] mt-[1px]">
+        <Virtuoso
+          data={filteredRules}
+          itemContent={(i, rule) => (
+            <RuleItem
+              index={i}
+              type={rule.type}
+              payload={rule.payload}
+              proxy={rule.proxy}
+              size={rule.size}
+            />
+          )}
+        />
+      </div>
     </BasePage>
   )
 }
