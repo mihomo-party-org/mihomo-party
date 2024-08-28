@@ -10,9 +10,7 @@ const RuleCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/rules')
-  const { data: rules } = useSWR<IMihomoRulesInfo>('mihomoRules', mihomoRules, {
-    refreshInterval: 5000
-  })
+  const { data: rules } = useSWR<IMihomoRulesInfo>('mihomoRules', mihomoRules)
   const {
     attributes,
     listeners,

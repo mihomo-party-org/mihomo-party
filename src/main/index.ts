@@ -27,7 +27,7 @@ if (process.platform === 'win32' && !is.dev) {
       if (process.argv.slice(1).length > 0) {
         writeFileSync(path.join(dataDir(), 'param.txt'), process.argv.slice(1).join(' '))
       } else {
-        writeFileSync(path.join(dataDir(), 'param.txt'), '')
+        writeFileSync(path.join(dataDir(), 'param.txt'), 'empty')
       }
       execSync('schtasks /run /tn mihomo-party-run')
     } catch (e) {

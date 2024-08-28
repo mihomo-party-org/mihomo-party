@@ -81,25 +81,27 @@ const elevateTaskXml = `<?xml version="1.0" encoding="UTF-16"?>
   </Settings>
   <Actions Context="Author">
     <Exec>
-      <Command>powershell</Command>
-      <Arguments>-WindowStyle Hidden -File "${path.join(dataDir(), `mihomo-party-run.ps1`)}"</Arguments>
+      <Command>wscript.exe</Command>
+      <Arguments>"${path.join(dataDir(), `mihomo-party-run.vbs`)}"</Arguments>
     </Exec>
   </Actions>
 </Task>
 `
 
-const startScript = `$paramFilePath = Join-Path -Path $PSScriptRoot -ChildPath "param.txt"
-if (Test-Path -Path $paramFilePath) {
-    $paramContent = Get-Content -Path $paramFilePath
-    & "${exePath()}" $paramContent
-} else {
-    & "${exePath()}"
-}
+const startScript = `Dim fso, file, params, shell, currentPath
+Set fso = CreateObject("Scripting.FileSystemObject")
+currentPath = fso.GetParentFolderName(WScript.ScriptFullName)
+Set file = fso.OpenTextFile(currentPath & "\\param.txt", 1)
+params = file.ReadAll
+file.Close
+Set shell = CreateObject("WScript.Shell")
+commandLine = """" & "${exePath()}"" " & params
+shell.Run commandLine, 0, false
 `
 
 export function createElevateTask(): void {
   const taskFilePath = path.join(dataDir(), `mihomo-party-run.xml`)
-  writeFileSync(path.join(dataDir(), `mihomo-party-run.ps1`), startScript)
+  writeFileSync(path.join(dataDir(), `mihomo-party-run.vbs`), startScript)
   writeFileSync(taskFilePath, Buffer.from(`\ufeff${elevateTaskXml}`, 'utf-16le'))
   execSync(`schtasks /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`)
 }
