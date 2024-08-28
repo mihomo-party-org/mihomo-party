@@ -76,7 +76,9 @@ export async function addProfileItem(item: Partial<IProfileItem>): Promise<void>
 export async function removeProfileItem(id: string): Promise<void> {
   const config = await getProfileConfig()
   config.items = config.items?.filter((item) => item.id !== id)
+  let shouldRestart = false
   if (config.current === id) {
+    shouldRestart = true
     if (config.items.length > 0) {
       config.current = config.items[0].id
     } else {
@@ -86,6 +88,9 @@ export async function removeProfileItem(id: string): Promise<void> {
   await setProfileConfig(config)
   if (existsSync(profilePath(id))) {
     await rm(profilePath(id))
+  }
+  if (shouldRestart) {
+    await restartCore()
   }
 }
 
