@@ -36,6 +36,7 @@ const Profiles: React.FC = () => {
   const handleImport = async (): Promise<void> => {
     setImporting(true)
     await addProfileItem({ name: '', type: 'remote', url, useProxy })
+    setUrl('')
     setImporting(false)
   }
   const pageRef = useRef<HTMLDivElement>(null)

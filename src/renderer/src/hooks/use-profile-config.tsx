@@ -76,6 +76,15 @@ export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ child
     }
   }
 
+  React.useEffect(() => {
+    window.electron.ipcRenderer.on('profileConfigUpdated', () => {
+      mutateProfileConfig()
+    })
+    return (): void => {
+      window.electron.ipcRenderer.removeAllListeners('profileConfigUpdated')
+    }
+  }, [])
+
   return (
     <ProfileConfigContext.Provider
       value={{
