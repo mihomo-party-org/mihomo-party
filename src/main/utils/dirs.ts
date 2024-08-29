@@ -1,6 +1,6 @@
 import { is } from '@electron-toolkit/utils'
 import { app } from 'electron'
-import { existsSync } from 'fs'
+import { existsSync, mkdirSync } from 'fs'
 import { rm, writeFile } from 'fs/promises'
 import path from 'path'
 
@@ -26,6 +26,13 @@ export function dataDir(): string {
   } else {
     return app.getPath('userData')
   }
+}
+
+export function taskDir(): string {
+  if (!existsSync(app.getPath('userData'))) {
+    mkdirSync(app.getPath('userData'))
+  }
+  return app.getPath('userData')
 }
 
 export function exeDir(): string {

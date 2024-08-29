@@ -3,7 +3,7 @@ import { dialog, nativeTheme } from 'electron'
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { promisify } from 'util'
-import { exeDir, exePath, mihomoCorePath, resourcesDir } from '../utils/dirs'
+import { exePath, mihomoCorePath, resourcesDir, taskDir } from '../utils/dirs'
 import { writeFileSync } from 'fs'
 
 export function getFilePath(ext: string[]): string[] | undefined {
@@ -82,7 +82,7 @@ const elevateTaskXml = `<?xml version="1.0" encoding="UTF-16"?>
   <Actions Context="Author">
     <Exec>
       <Command>wscript.exe</Command>
-      <Arguments>"${path.join(exeDir(), `mihomo-party-run.vbs`)}"</Arguments>
+      <Arguments>"${path.join(taskDir(), `mihomo-party-run.vbs`)}"</Arguments>
     </Exec>
   </Actions>
 </Task>
@@ -100,8 +100,8 @@ shell.Run commandLine, 0, false
 `
 
 export function createElevateTask(): void {
-  const taskFilePath = path.join(exeDir(), `mihomo-party-run.xml`)
-  writeFileSync(path.join(exeDir(), `mihomo-party-run.vbs`), startScript)
+  const taskFilePath = path.join(taskDir(), `mihomo-party-run.xml`)
+  writeFileSync(path.join(taskDir(), `mihomo-party-run.vbs`), startScript)
   writeFileSync(taskFilePath, Buffer.from(`\ufeff${elevateTaskXml}`, 'utf-16le'))
   execSync(`schtasks /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`)
 }
