@@ -15,7 +15,7 @@ import { execSync } from 'child_process'
 import { createElevateTask } from './sys/misc'
 import { initProfileUpdater } from './core/profileUpdater'
 import { writeFileSync } from 'fs'
-import { dataDir } from './utils/dirs'
+import { exeDir } from './utils/dirs'
 import path from 'path'
 
 export let mainWindow: BrowserWindow | null = null
@@ -25,9 +25,9 @@ if (process.platform === 'win32' && !is.dev) {
   } catch (e) {
     try {
       if (process.argv.slice(1).length > 0) {
-        writeFileSync(path.join(dataDir(), 'param.txt'), process.argv.slice(1).join(' '))
+        writeFileSync(path.join(exeDir(), 'param.txt'), process.argv.slice(1).join(' '))
       } else {
-        writeFileSync(path.join(dataDir(), 'param.txt'), 'empty')
+        writeFileSync(path.join(exeDir(), 'param.txt'), 'empty')
       }
       execSync('schtasks /run /tn mihomo-party-run')
     } catch (e) {
