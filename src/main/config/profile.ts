@@ -4,7 +4,6 @@ import { addProfileUpdater } from '../core/profileUpdater'
 import { readFile, rm, writeFile } from 'fs/promises'
 import { restartCore } from '../core/manager'
 import { getAppConfig } from './app'
-import { mainWindow } from '..'
 import { existsSync } from 'fs'
 import axios from 'axios'
 import yaml from 'yaml'
@@ -22,7 +21,6 @@ export async function getProfileConfig(force = false): Promise<IProfileConfig> {
 
 export async function setProfileConfig(config: IProfileConfig): Promise<void> {
   profileConfig = config
-  mainWindow?.webContents.send('profileConfigUpdated')
   await writeFile(profileConfigPath(), yaml.stringify(config), 'utf-8')
 }
 

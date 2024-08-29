@@ -1,3 +1,4 @@
+import React, { createContext, useContext, ReactNode } from 'react'
 import useSWR from 'swr'
 import {
   getOverrideConfig,
@@ -7,7 +8,7 @@ import {
   updateOverrideItem as update
 } from '@renderer/utils/ipc'
 
-interface RetuenType {
+interface OverrideConfigContextType {
   overrideConfig: IOverrideConfig | undefined
   setOverrideConfig: (config: IOverrideConfig) => Promise<void>
   mutateOverrideConfig: () => void
@@ -16,7 +17,9 @@ interface RetuenType {
   removeOverrideItem: (id: string) => Promise<void>
 }
 
-export const useOverrideConfig = (): RetuenType => {
+const OverrideConfigContext = createContext<OverrideConfigContextType | undefined>(undefined)
+
+export const OverrideConfigProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { data: overrideConfig, mutate: mutateOverrideConfig } = useSWR('getOverrideConfig', () =>
     getOverrideConfig()
   )
@@ -61,12 +64,26 @@ export const useOverrideConfig = (): RetuenType => {
     }
   }
 
-  return {
-    overrideConfig,
-    setOverrideConfig,
-    mutateOverrideConfig,
-    addOverrideItem,
-    removeOverrideItem,
-    updateOverrideItem
+  return (
+    <OverrideConfigContext.Provider
+      value={{
+        overrideConfig,
+        setOverrideConfig,
+        mutateOverrideConfig,
+        addOverrideItem,
+        removeOverrideItem,
+        updateOverrideItem
+      }}
+    >
+      {children}
+    </OverrideConfigContext.Provider>
+  )
+}
+
+export const useOverrideConfig = (): OverrideConfigContextType => {
+  const context = useContext(OverrideConfigContext)
+  if (context === undefined) {
+    throw new Error('useOverrideConfig must be used within an OverrideConfigProvider')
   }
+  return context
 }

@@ -1,14 +1,16 @@
+import React, { createContext, useContext, ReactNode } from 'react'
 import useSWR from 'swr'
 import { getAppConfig, patchAppConfig as patch } from '@renderer/utils/ipc'
-import { useEffect } from 'react'
 
-interface RetuenType {
+interface AppConfigContextType {
   appConfig: IAppConfig | undefined
   mutateAppConfig: () => void
   patchAppConfig: (value: Partial<IAppConfig>) => Promise<void>
 }
 
-export const useAppConfig = (listenUpdate = false): RetuenType => {
+const AppConfigContext = createContext<AppConfigContextType | undefined>(undefined)
+
+export const AppConfigProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { data: appConfig, mutate: mutateAppConfig } = useSWR('getConfig', () => getAppConfig())
 
   const patchAppConfig = async (value: Partial<IAppConfig>): Promise<void> => {
@@ -21,8 +23,7 @@ export const useAppConfig = (listenUpdate = false): RetuenType => {
     }
   }
 
-  useEffect(() => {
-    if (!listenUpdate) return
+  React.useEffect(() => {
     window.electron.ipcRenderer.on('appConfigUpdated', () => {
       mutateAppConfig()
     })
@@ -31,9 +32,17 @@ export const useAppConfig = (listenUpdate = false): RetuenType => {
     }
   }, [])
 
-  return {
-    appConfig,
-    mutateAppConfig,
-    patchAppConfig
+  return (
+    <AppConfigContext.Provider value={{ appConfig, mutateAppConfig, patchAppConfig }}>
+      {children}
+    </AppConfigContext.Provider>
+  )
+}
+
+export const useAppConfig = (): AppConfigContextType => {
+  const context = useContext(AppConfigContext)
+  if (context === undefined) {
+    throw new Error('useAppConfig must be used within an AppConfigProvider')
   }
+  return context
 }

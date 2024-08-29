@@ -1,3 +1,4 @@
+import React, { createContext, useContext, ReactNode } from 'react'
 import useSWR from 'swr'
 import {
   getProfileConfig,
@@ -7,9 +8,8 @@ import {
   updateProfileItem as update,
   changeCurrentProfile as change
 } from '@renderer/utils/ipc'
-import { useEffect } from 'react'
 
-interface RetuenType {
+interface ProfileConfigContextType {
   profileConfig: IProfileConfig | undefined
   setProfileConfig: (config: IProfileConfig) => Promise<void>
   mutateProfileConfig: () => void
@@ -19,7 +19,9 @@ interface RetuenType {
   changeCurrentProfile: (id: string) => Promise<void>
 }
 
-export const useProfileConfig = (): RetuenType => {
+const ProfileConfigContext = createContext<ProfileConfigContextType | undefined>(undefined)
+
+export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { data: profileConfig, mutate: mutateProfileConfig } = useSWR('getProfileConfig', () =>
     getProfileConfig()
   )
@@ -74,22 +76,27 @@ export const useProfileConfig = (): RetuenType => {
     }
   }
 
-  useEffect(() => {
-    window.electron.ipcRenderer.on('profileConfigUpdated', () => {
-      mutateProfileConfig()
-    })
-    return (): void => {
-      window.electron.ipcRenderer.removeAllListeners('profileConfigUpdated')
-    }
-  }, [])
+  return (
+    <ProfileConfigContext.Provider
+      value={{
+        profileConfig,
+        setProfileConfig,
+        mutateProfileConfig,
+        addProfileItem,
+        removeProfileItem,
+        updateProfileItem,
+        changeCurrentProfile
+      }}
+    >
+      {children}
+    </ProfileConfigContext.Provider>
+  )
+}
 
-  return {
-    profileConfig,
-    setProfileConfig,
-    mutateProfileConfig,
-    addProfileItem,
-    removeProfileItem,
-    updateProfileItem,
-    changeCurrentProfile
+export const useProfileConfig = (): ProfileConfigContextType => {
+  const context = useContext(ProfileConfigContext)
+  if (context === undefined) {
+    throw new Error('useProfileConfig must be used within a ProfileConfigProvider')
   }
+  return context
 }
