@@ -63,10 +63,14 @@ export async function enableSysProxy(): Promise<void> {
   switch (mode || 'manual') {
     case 'auto': {
       if (process.platform === 'win32') {
-        await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), [
-          'pac',
-          `http://${host || '127.0.0.1'}:${pacPort}/pac`
-        ])
+        try {
+          await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), [
+            'pac',
+            `http://${host || '127.0.0.1'}:${pacPort}/pac`
+          ])
+        } catch {
+          triggerAutoProxy(true, `http://${host || '127.0.0.1'}:${pacPort}/pac`)
+        }
       } else {
         triggerAutoProxy(true, `http://${host || '127.0.0.1'}:${pacPort}/pac`)
       }
@@ -76,11 +80,15 @@ export async function enableSysProxy(): Promise<void> {
 
     case 'manual': {
       if (process.platform === 'win32') {
-        await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), [
-          'global',
-          `${host || '127.0.0.1'}:${port}`,
-          bypass.join(';')
-        ])
+        try {
+          await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), [
+            'global',
+            `${host || '127.0.0.1'}:${port}`,
+            bypass.join(';')
+          ])
+        } catch {
+          triggerManualProxy(true, host || '127.0.0.1', port, bypass.join(','))
+        }
       } else {
         triggerManualProxy(true, host || '127.0.0.1', port, bypass.join(','))
       }

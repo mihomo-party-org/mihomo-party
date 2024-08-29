@@ -27,9 +27,13 @@ const SysproxySwitcher: React.FC = () => {
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const onChange = async (enable: boolean): Promise<void> => {
-    await triggerSysProxy(enable)
-    await patchAppConfig({ sysProxy: { enable } })
-    window.electron.ipcRenderer.send('updateTrayMenu')
+    try {
+      await triggerSysProxy(enable)
+      await patchAppConfig({ sysProxy: { enable } })
+      window.electron.ipcRenderer.send('updateTrayMenu')
+    } catch (e) {
+      alert(e)
+    }
   }
 
   return (
