@@ -29,10 +29,11 @@ export function dataDir(): string {
 }
 
 export function taskDir(): string {
-  if (!existsSync(app.getPath('userData'))) {
-    mkdirSync(app.getPath('userData'))
+  const dir = path.join(app.getPath('userData'), 'tasks')
+  if (!existsSync(dir)) {
+    mkdirSync(dir, { recursive: true })
   }
-  return app.getPath('userData')
+  return dir
 }
 
 export function exeDir(): string {

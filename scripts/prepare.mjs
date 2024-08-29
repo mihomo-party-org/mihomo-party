@@ -266,7 +266,11 @@ const resolveSysproxy = () =>
     file: 'sysproxy.exe',
     downloadURL: `https://github.com/pompurin404/sysproxy/releases/download/${arch}/sysproxy.exe`
   })
-
+const resolveRunner = () =>
+  resolveResource({
+    file: 'mihomo-party-run.exe',
+    downloadURL: `https://github.com/pompurin404/mihomo-party-run/releases/download/${arch}/mihomo-party-run.exe`
+  })
 const resolveFont = async () => {
   const targetPath = path.join(cwd, 'src', 'renderer', 'src', 'assets', 'NotoColorEmoji.ttf')
 
@@ -310,6 +314,12 @@ const tasks = [
   {
     name: 'sysproxy',
     func: resolveSysproxy,
+    retry: 5,
+    winOnly: true
+  },
+  {
+    name: 'runner',
+    func: resolveRunner,
     retry: 5,
     winOnly: true
   }

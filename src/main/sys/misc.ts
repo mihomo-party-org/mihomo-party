@@ -3,8 +3,8 @@ import { dialog, nativeTheme } from 'electron'
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { promisify } from 'util'
-import { exePath, mihomoCorePath, resourcesDir, taskDir } from '../utils/dirs'
-import { writeFileSync } from 'fs'
+import { exePath, mihomoCorePath, resourcesDir, resourcesFilesDir, taskDir } from '../utils/dirs'
+import { copyFileSync, writeFileSync } from 'fs'
 
 export function getFilePath(ext: string[]): string[] | undefined {
   return dialog.showOpenDialogSync({
@@ -81,27 +81,19 @@ const elevateTaskXml = `<?xml version="1.0" encoding="UTF-16"?>
   </Settings>
   <Actions Context="Author">
     <Exec>
-      <Command>wscript.exe</Command>
-      <Arguments>"${path.join(taskDir(), `mihomo-party-run.vbs`)}"</Arguments>
+      <Command>"${path.join(taskDir(), `mihomo-party-run.exe`)}"</Command>
+      <Arguments>"${exePath()}"</Arguments>
     </Exec>
   </Actions>
 </Task>
 `
 
-const startScript = `Dim fso, file, params, shell, currentPath
-Set fso = CreateObject("Scripting.FileSystemObject")
-currentPath = fso.GetParentFolderName(WScript.ScriptFullName)
-Set file = fso.OpenTextFile(currentPath & "\\param.txt", 1)
-params = file.ReadAll
-file.Close
-Set shell = CreateObject("WScript.Shell")
-commandLine = """" & "${exePath()}"" " & params
-shell.Run commandLine, 0, false
-`
-
 export function createElevateTask(): void {
   const taskFilePath = path.join(taskDir(), `mihomo-party-run.xml`)
-  writeFileSync(path.join(taskDir(), `mihomo-party-run.vbs`), startScript)
   writeFileSync(taskFilePath, Buffer.from(`\ufeff${elevateTaskXml}`, 'utf-16le'))
   execSync(`schtasks /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`)
+  copyFileSync(
+    path.join(resourcesFilesDir(), 'mihomo-party-run.exe'),
+    path.join(taskDir(), 'mihomo-party-run.exe')
+  )
 }
