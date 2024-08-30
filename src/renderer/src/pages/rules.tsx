@@ -22,10 +22,9 @@ const Rules: React.FC = () => {
 
   return (
     <BasePage title="分流规则">
-      <div className="sticky top-[50px] z-40">
+      <div className="sticky top-[49px] z-40">
         <div className="flex p-2">
           <Input
-            variant="bordered"
             size="sm"
             value={filter}
             placeholder="筛选过滤"

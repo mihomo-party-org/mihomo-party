@@ -126,7 +126,7 @@ const Profiles: React.FC = () => {
       <div className="sticky top-[49px] z-40 backdrop-blur bg-background/40">
         <div className="flex p-2">
           <Input
-            variant="bordered"
+            // variant="bordered"
             size="sm"
             value={url}
             onValueChange={setUrl}

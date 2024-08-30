@@ -5,12 +5,12 @@ import {
   startMihomoConnections,
   stopMihomoConnections
 } from '@renderer/utils/ipc'
-import { Key, useEffect, useMemo, useState } from 'react'
-import { Button, Divider, Input } from '@nextui-org/react'
-import { IoCloseCircle } from 'react-icons/io5'
+import { useEffect, useMemo, useState } from 'react'
+import { Button, Divider, Input, Select, SelectItem } from '@nextui-org/react'
 import { calcTraffic } from '@renderer/utils/calc'
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react'
-import ConnectionDetailModal from '@renderer/components/connections/connection-detail-modal'
+import ConnectionItem from '@renderer/components/connections/connection-item'
+import { Virtuoso } from 'react-virtuoso'
+import dayjs from 'dayjs'
 
 let preData: IMihomoConnectionDetail[] = []
 
@@ -18,10 +18,42 @@ const Connections: React.FC = () => {
   const [filter, setFilter] = useState('')
   const [connectionsInfo, setConnectionsInfo] = useState<IMihomoConnectionsInfo>()
   const [connections, setConnections] = useState<IMihomoConnectionDetail[]>([])
-  const [selectedConnection, setSelectedConnection] = useState<IMihomoConnectionDetail>()
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
-
+  const [direction, setDirection] = useState(true)
+  const [sortBy, setSortBy] = useState('time')
   const filteredConnections = useMemo(() => {
+    if (sortBy) {
+      connections.sort((a, b) => {
+        if (direction) {
+          switch (sortBy) {
+            case 'time':
+              return dayjs(b.start).unix() - dayjs(a.start).unix()
+            case 'upload':
+              return a.upload - b.upload
+            case 'download':
+              return a.download - b.download
+            case 'uploadSpeed':
+              return (a.uploadSpeed || 0) - (b.uploadSpeed || 0)
+            case 'downloadSpeed':
+              return (a.downloadSpeed || 0) - (b.downloadSpeed || 0)
+          }
+          return 0
+        } else {
+          switch (sortBy) {
+            case 'time':
+              return dayjs(a.start).unix() - dayjs(b.start).unix()
+            case 'upload':
+              return b.upload - a.upload
+            case 'download':
+              return b.download - a.download
+            case 'uploadSpeed':
+              return (b.uploadSpeed || 0) - (a.uploadSpeed || 0)
+            case 'downloadSpeed':
+              return (b.downloadSpeed || 0) - (a.downloadSpeed || 0)
+          }
+          return 0
+        }
+      })
+    }
     if (filter === '') return connections
     return connections?.filter((connection) => {
       const raw = JSON.stringify(connection)
@@ -70,99 +102,70 @@ const Connections: React.FC = () => {
             className="ml-1"
             size="sm"
             color="primary"
-            onPress={() => mihomoCloseAllConnections()}
+            onPress={() => {
+              if (filter === '') {
+                mihomoCloseAllConnections()
+              } else {
+                filteredConnections.forEach((conn) => {
+                  mihomoCloseConnection(conn.id)
+                })
+              }
+            }}
           >
-            关闭所有连接
+            关闭所有连接({filteredConnections.length})
           </Button>
         </div>
       }
     >
-      {isDetailModalOpen && selectedConnection && (
-        <ConnectionDetailModal
-          onClose={() => setIsDetailModalOpen(false)}
-          connection={selectedConnection}
-        />
-      )}
       <div className="overflow-x-auto sticky top-[49px] z-40">
-        <div className="flex p-2">
+        <div className="flex p-2 gap-2">
           <Input
-            variant="bordered"
+            variant="flat"
             size="sm"
             value={filter}
             placeholder="筛选过滤"
             isClearable
             onValueChange={setFilter}
           />
+
+          <Select
+            size="sm"
+            className="w-[180px]"
+            selectedKeys={new Set([sortBy])}
+            onSelectionChange={async (v) => {
+              setSortBy(v.currentKey as string)
+            }}
+          >
+            <SelectItem key="upload">上传量</SelectItem>
+            <SelectItem key="download">下载量</SelectItem>
+            <SelectItem key="uploadSpeed">上传速度</SelectItem>
+            <SelectItem key="downloadSpeed">下载速度</SelectItem>
+            <SelectItem key="time">时间</SelectItem>
+          </Select>
+          <Button
+            size="sm"
+            onPress={() => {
+              setDirection((pre) => !pre)
+            }}
+          >
+            {direction ? '升序' : '降序'}
+          </Button>
         </div>
         <Divider />
       </div>
-      <Table
-        onRowAction={(id: Key) => {
-          setSelectedConnection(connections.find((c) => c.id === (id as string)))
-          setIsDetailModalOpen(true)
-        }}
-        isHeaderSticky
-        isStriped
-        className="h-[calc(100vh-100px)] p-2"
-      >
-        <TableHeader>
-          <TableColumn key="type">类型</TableColumn>
-          <TableColumn key="origin">来源</TableColumn>
-          <TableColumn key="target">目标</TableColumn>
-          <TableColumn key="rule">规则</TableColumn>
-          <TableColumn key="chains">链路</TableColumn>
-          <TableColumn key="close">关闭</TableColumn>
-        </TableHeader>
-        <TableBody items={filteredConnections ?? []}>
-          {(item) => (
-            <TableRow key={item.id}>
-              <TableCell>
-                {item.metadata.type}({item.metadata.network})
-              </TableCell>
-              <TableCell>{item.metadata.process || item.metadata.sourceIP}</TableCell>
-              <TableCell className="max-w-[100px] text-ellipsis whitespace-nowrap overflow-hidden">
-                {item.metadata.host ||
-                  item.metadata.sniffHost ||
-                  item.metadata.remoteDestination ||
-                  item.metadata.destinationIP}
-              </TableCell>
-              <TableCell className="max-w-[100px] text-ellipsis whitespace-nowrap overflow-hidden">
-                {item.rule} {item.rulePayload}
-              </TableCell>
-              <TableCell className="flag-emoji max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
-                {item.chains.reverse().join('::')}
-              </TableCell>
-              <TableCell>
-                <Button
-                  isIconOnly
-                  size="sm"
-                  color="danger"
-                  variant="light"
-                  onPress={() => mihomoCloseConnection(item.id)}
-                >
-                  <IoCloseCircle className="text-lg" />
-                </Button>
-              </TableCell>
-            </TableRow>
+      <div className="h-[calc(100vh-100px)] mt-[1px]">
+        <Virtuoso
+          data={filteredConnections}
+          itemContent={(i, connection) => (
+            <ConnectionItem
+              close={mihomoCloseConnection}
+              index={i}
+              key={connection.id}
+              info={connection}
+            />
           )}
-        </TableBody>
-      </Table>
-      {/* {filteredConnections?.map((connection) => {
-        return (
-          <ConnectionItem
-            mutate={mutate}
-            key={connection.id}
-            id={connection.id}
-            chains={connection.chains}
-            download={connection.download}
-            upload={connection.upload}
-            metadata={connection.metadata}
-            rule={connection.rule}
-            rulePayload={connection.rulePayload}
-            start={connection.start}
-          />
-        )
-      })} */}
+        />
+      </div>
     </BasePage>
   )
 }

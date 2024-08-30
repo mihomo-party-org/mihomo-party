@@ -48,7 +48,6 @@ const Logs: React.FC = () => {
       <div className="sticky top-[49px] z-40">
         <div className="w-full flex p-2">
           <Input
-            variant="bordered"
             size="sm"
             value={filter}
             placeholder="筛选过滤"
