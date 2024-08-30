@@ -98,7 +98,9 @@ const ProxyProvider: React.FC = () => {
               >
                 {provider.subscriptionInfo && (
                   <div className="h-[32px] leading-[32px] text-default-500">
-                    {dayjs.unix(provider.subscriptionInfo.Expire).format('YYYY-MM-DD')}
+                    {provider.subscriptionInfo.Expire
+                      ? dayjs.unix(provider.subscriptionInfo.Expire).format('YYYY-MM-DD')
+                      : '长期有效'}
                   </div>
                 )}
               </SettingItem>
