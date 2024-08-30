@@ -5,7 +5,7 @@ import { mihomoCloseAllConnections, patchMihomoConfig } from '@renderer/utils/ip
 import { Key } from 'react'
 
 const OutboundModeSwitcher: React.FC = () => {
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
+  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const { appConfig } = useAppConfig()
   const { autoCloseConnection = true } = appConfig || {}
   const { mode } = controledMihomoConfig || {}

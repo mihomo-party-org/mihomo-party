@@ -11,7 +11,7 @@ const SniffCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/sniffer')
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
+  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const { sniffer } = controledMihomoConfig || {}
   const { enable } = sniffer || {}
   const {

@@ -17,7 +17,7 @@ const TunSwitcher: React.FC = () => {
   const match = location.pathname.includes('/tun') || false
   const [openPasswordModal, setOpenPasswordModal] = useState(false)
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
+  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const { tun } = controledMihomoConfig || {}
   const { enable } = tun || {}
   const {
