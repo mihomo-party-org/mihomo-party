@@ -179,8 +179,23 @@ const Proxies: React.FC = () => {
                           <Avatar
                             className="bg-transparent mr-2"
                             size="sm"
+                            onLoad={() => {
+                              const img = new Image()
+                              img.crossOrigin = 'anonymous'
+                              img.onload = (): void => {
+                                const canvas = document.createElement('canvas')
+                                const ctx = canvas.getContext('2d')
+                                canvas.width = img.width
+                                canvas.height = img.height
+                                ctx?.drawImage(img, 0, 0)
+                                const data = canvas.toDataURL('image/png')
+                                console.log('set')
+                                localStorage.setItem(groups[index].icon, data)
+                              }
+                              img.src = groups[index].icon
+                            }}
                             radius="sm"
-                            src={groups[index].icon}
+                            src={localStorage.getItem(groups[index].icon) || groups[index].icon}
                           />
                         ) : null}
                         <div className="text-ellipsis overflow-hidden whitespace-nowrap">
