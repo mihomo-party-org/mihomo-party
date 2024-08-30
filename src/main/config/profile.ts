@@ -173,8 +173,8 @@ export async function getProfile(id: string | undefined): Promise<IMihomoConfig>
 
 // attachment;filename=xxx.yaml; filename*=UTF-8''%xx%xx%xx
 function parseFilename(str: string): string {
-  if (str.includes("filename*=UTF-8''")) {
-    const filename = decodeURIComponent(str.split("filename*=UTF-8''")[1])
+  if (str.match(/filename\*=.*''/)) {
+    const filename = decodeURIComponent(str.split(/filename\*=.*''/)[1])
     return filename
   } else {
     const filename = str.split('filename=')[1]
