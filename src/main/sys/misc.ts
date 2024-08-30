@@ -1,9 +1,17 @@
 import { exec, execFile, execSync } from 'child_process'
-import { dialog, nativeTheme } from 'electron'
+import { dialog, nativeTheme, shell } from 'electron'
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { promisify } from 'util'
-import { exePath, mihomoCorePath, resourcesDir, resourcesFilesDir, taskDir } from '../utils/dirs'
+import {
+  exePath,
+  mihomoCorePath,
+  overridePath,
+  profilePath,
+  resourcesDir,
+  resourcesFilesDir,
+  taskDir
+} from '../utils/dirs'
 import { copyFileSync, writeFileSync } from 'fs'
 
 export function getFilePath(ext: string[]): string[] | undefined {
@@ -16,6 +24,15 @@ export function getFilePath(ext: string[]): string[] | undefined {
 
 export async function readTextFile(filePath: string): Promise<string> {
   return await readFile(filePath, 'utf8')
+}
+
+export function openFile(type: 'profile' | 'override', id: string, ext?: 'yaml' | 'js'): void {
+  if (type === 'profile') {
+    shell.openPath(profilePath(id))
+  }
+  if (type === 'override') {
+    shell.openPath(overridePath(id, ext || 'js'))
+  }
 }
 
 export async function openUWPTool(): Promise<void> {

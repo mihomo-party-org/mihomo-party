@@ -16,6 +16,7 @@ import EditInfoModal from './edit-info-modal'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import ExecLogModal from './exec-log-modal'
+import { openFile } from '@renderer/utils/ipc'
 
 interface Props {
   info: IOverrideItem
@@ -49,6 +50,13 @@ const menuItems: MenuItem[] = [
     className: ''
   } as MenuItem,
   {
+    key: 'open-file',
+    label: '打开文件',
+    showDivider: false,
+    color: 'default',
+    className: ''
+  } as MenuItem,
+  {
     key: 'exec-log',
     label: '执行日志',
     showDivider: true,
@@ -68,8 +76,8 @@ const OverrideItem: React.FC<Props> = (props) => {
   const { info, addOverrideItem, removeOverrideItem, mutateOverrideConfig, updateOverrideItem } =
     props
   const [updating, setUpdating] = useState(false)
-  const [openInfo, setOpenInfo] = useState(false)
-  const [openFile, setOpenFile] = useState(false)
+  const [openInfoEditor, setOpenInfoEditor] = useState(false)
+  const [openFileEditor, setOpenFileEditor] = useState(false)
   const [openLog, setOpenLog] = useState(false)
   const {
     attributes,
@@ -87,11 +95,15 @@ const OverrideItem: React.FC<Props> = (props) => {
   const onMenuAction = (key: Key): void => {
     switch (key) {
       case 'edit-info': {
-        setOpenInfo(true)
+        setOpenInfoEditor(true)
         break
       }
       case 'edit-file': {
-        setOpenFile(true)
+        setOpenFileEditor(true)
+        break
+      }
+      case 'open-file': {
+        openFile('override', info.id, info.ext)
         break
       }
       case 'exec-log': {
@@ -128,17 +140,17 @@ const OverrideItem: React.FC<Props> = (props) => {
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
     >
-      {openFile && (
+      {openFileEditor && (
         <EditFileModal
           id={info.id}
           language={info.ext === 'yaml' ? 'yaml' : 'javascript'}
-          onClose={() => setOpenFile(false)}
+          onClose={() => setOpenFileEditor(false)}
         />
       )}
-      {openInfo && (
+      {openInfoEditor && (
         <EditInfoModal
           item={info}
-          onClose={() => setOpenInfo(false)}
+          onClose={() => setOpenInfoEditor(false)}
           updateOverrideItem={updateOverrideItem}
         />
       )}
@@ -148,7 +160,7 @@ const OverrideItem: React.FC<Props> = (props) => {
         isPressable
         onPress={() => {
           if (disableOpen) return
-          setOpenFile(true)
+          setOpenFileEditor(true)
         }}
       >
         <CardBody>

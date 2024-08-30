@@ -18,6 +18,7 @@ import EditFileModal from './edit-file-modal'
 import EditInfoModal from './edit-info-modal'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { openFile } from '@renderer/utils/ipc'
 
 interface Props {
   info: IProfileItem
@@ -51,8 +52,8 @@ const ProfileItem: React.FC<Props> = (props) => {
   const total = extra?.total ?? 0
   const [updating, setUpdating] = useState(false)
   const [selecting, setSelecting] = useState(false)
-  const [openInfo, setOpenInfo] = useState(false)
-  const [openFile, setOpenFile] = useState(false)
+  const [openInfoEditor, setOpenInfoEditor] = useState(false)
+  const [openFileEditor, setOpenFileEditor] = useState(false)
   const {
     attributes,
     listeners,
@@ -78,6 +79,13 @@ const ProfileItem: React.FC<Props> = (props) => {
       {
         key: 'edit-file',
         label: '编辑文件',
+        showDivider: false,
+        color: 'default',
+        className: ''
+      } as MenuItem,
+      {
+        key: 'open-file',
+        label: '打开文件',
         showDivider: true,
         color: 'default',
         className: ''
@@ -105,11 +113,15 @@ const ProfileItem: React.FC<Props> = (props) => {
   const onMenuAction = async (key: Key): Promise<void> => {
     switch (key) {
       case 'edit-info': {
-        setOpenInfo(true)
+        setOpenInfoEditor(true)
         break
       }
       case 'edit-file': {
-        setOpenFile(true)
+        setOpenFileEditor(true)
+        break
+      }
+      case 'open-file': {
+        openFile('profile', info.id)
         break
       }
       case 'delete': {
@@ -147,11 +159,11 @@ const ProfileItem: React.FC<Props> = (props) => {
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
     >
-      {openFile && <EditFileModal id={info.id} onClose={() => setOpenFile(false)} />}
-      {openInfo && (
+      {openFileEditor && <EditFileModal id={info.id} onClose={() => setOpenFileEditor(false)} />}
+      {openInfoEditor && (
         <EditInfoModal
           item={info}
-          onClose={() => setOpenInfo(false)}
+          onClose={() => setOpenInfoEditor(false)}
           updateProfileItem={updateProfileItem}
         />
       )}

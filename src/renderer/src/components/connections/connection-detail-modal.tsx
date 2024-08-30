@@ -7,23 +7,7 @@ interface Props {
   connection: IMihomoConnectionDetail
   onClose: () => void
 }
-// sourceIP: string
-// destinationIP: string
-// destinationGeoIP: string
-// destinationIPASN: string
-// sourcePort: string
-// destinationPort: string
-// inboundIP: string
-// inboundPort: string
-// inboundName: string
-// inboundUser: string
-// host: string
-// dnsMode: string
-// specialProxy: string
-// specialRules: string
-// remoteDestination: string
-// dscp: number
-// sniffHost: string
+
 const ConnectionDetailModal: React.FC<Props> = (props) => {
   const { connection, onClose } = props
   return (

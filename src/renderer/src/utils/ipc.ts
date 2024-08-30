@@ -297,6 +297,14 @@ export async function setNativeTheme(theme: 'system' | 'light' | 'dark'): Promis
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setNativeTheme', theme))
 }
 
+export async function openFile(
+  type: 'profile' | 'override',
+  id: string,
+  ext?: 'yaml' | 'js'
+): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('openFile', type, id, ext))
+}
+
 export async function registerShortcut(
   oldShortcut: string,
   newShortcut: string,
