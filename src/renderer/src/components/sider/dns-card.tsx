@@ -12,7 +12,7 @@ const DNSCard: React.FC = () => {
   const match = location.pathname.includes('/dns')
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig(true)
   const { dns, tun } = controledMihomoConfig || {}
-  const { enable } = dns || {}
+  const { enable = true } = dns || {}
   const {
     attributes,
     listeners,

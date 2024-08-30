@@ -4,6 +4,7 @@ export const defaultConfig: IAppConfig = {
   appTheme: 'system',
   proxyInTray: true,
   maxLogDays: 7,
+  proxyCols: 'auto',
   proxyDisplayMode: 'simple',
   proxyDisplayOrder: 'default',
   autoCheckUpdate: true,
@@ -56,7 +57,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     mtu: 1500
   },
   dns: {
-    enable: false,
+    enable: true,
     ipv6: false,
     'enhanced-mode': 'fake-ip',
     'fake-ip-range': '198.18.0.1/16',
