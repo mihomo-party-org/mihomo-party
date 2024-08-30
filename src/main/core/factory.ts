@@ -35,12 +35,6 @@ async function overrideProfile(
         break
       case 'yaml': {
         const patch = yaml.parse(content)
-        if (patch.rules) {
-          patch.rules = [...patch.rules, ...(profile.rules || [])]
-        }
-        if (patch.proxies) {
-          patch.proxies = [...patch.proxies, ...(profile.proxies || [])]
-        }
         profile = deepMerge(profile, patch)
         break
       }

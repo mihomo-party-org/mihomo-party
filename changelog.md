@@ -1,5 +1,7 @@
-### Bug Fixes
+### Break Changes
 
-- 修复便携模式无法启动的问题
-- 尝试修复Windows系统代理无法打开的问题
-- 优化Windows程序拉起方式
+- YAML覆写语法有所变动，请更新后参考文档进行修改
+
+### New Features
+
+- YAML覆写功能支持对数组进行覆盖/前置/追加操作
