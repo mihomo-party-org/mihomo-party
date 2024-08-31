@@ -110,10 +110,11 @@ const Proxies: React.FC = () => {
     <BasePage
       title="代理组"
       header={
-        <div className="app-nodrag">
+        <>
           <Button
             size="sm"
             isIconOnly
+            className="app-nodrag"
             onPress={() => {
               patchAppConfig({
                 proxyDisplayOrder:
@@ -136,7 +137,7 @@ const Proxies: React.FC = () => {
           <Button
             size="sm"
             isIconOnly
-            className="ml-2"
+            className="app-nodrag"
             onPress={() => {
               patchAppConfig({
                 proxyDisplayMode: proxyDisplayMode === 'simple' ? 'full' : 'simple'
@@ -149,7 +150,7 @@ const Proxies: React.FC = () => {
               <CgDetailsLess size={20} title="简洁信息" />
             )}
           </Button>
-        </div>
+        </>
       }
     >
       <div className="h-[calc(100vh-50px)]">

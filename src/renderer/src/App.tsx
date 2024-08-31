@@ -104,7 +104,7 @@ const App: React.FC = () => {
         // ignore
       }
     }
-  }, [appTheme])
+  }, [appTheme, systemTheme])
 
   const onDragEnd = async (event: DragEndEvent): Promise<void> => {
     const { active, over } = event

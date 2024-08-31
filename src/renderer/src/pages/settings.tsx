@@ -18,7 +18,7 @@ const Settings: React.FC = () => {
             isIconOnly
             size="sm"
             title="官方文档"
-            className="app-nodrag mr-2"
+            className="app-nodrag"
             onPress={() => {
               window.open('https://mihomo.party')
             }}

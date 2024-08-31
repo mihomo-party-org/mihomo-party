@@ -36,7 +36,7 @@ const BasePage = forwardRef<HTMLDivElement, Props>((props, ref) => {
       <div className="sticky top-0 z-40 h-[49px] w-full bg-background">
         <div className="app-drag p-2 flex justify-between h-[48px]">
           <div className="title h-full text-lg leading-[32px]">{props.title}</div>
-          <div style={{ marginRight: overlayWidth }} className="header h-full">
+          <div style={{ marginRight: overlayWidth }} className="header flex gap-2 h-full">
             {props.header}
           </div>
         </div>

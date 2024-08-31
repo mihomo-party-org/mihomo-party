@@ -1,4 +1,13 @@
-import { Button, Checkbox, Divider, Input } from '@nextui-org/react'
+import {
+  Button,
+  Checkbox,
+  Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Input
+} from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import ProfileItem from '@renderer/components/profiles/profile-item'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
@@ -14,6 +23,7 @@ import {
   DragEndEvent
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
+import { FaPlus } from 'react-icons/fa6'
 
 const Profiles: React.FC = () => {
   const {
@@ -101,27 +111,38 @@ const Profiles: React.FC = () => {
       ref={pageRef}
       title="订阅管理"
       header={
-        <Button
-          size="sm"
-          className="app-nodrag"
-          color="primary"
-          isLoading={updating}
-          onPress={async () => {
-            setUpdating(true)
-            for (const item of items) {
-              if (item.id === current) continue
-              if (item.type !== 'remote') continue
-              await addProfileItem(item)
-            }
-            const currentItem = items.find((item) => item.id === current)
-            if (currentItem && currentItem.type === 'remote') {
-              await addProfileItem(currentItem)
-            }
-            setUpdating(false)
-          }}
-        >
-          更新全部订阅
-        </Button>
+        <>
+          <Button
+            size="sm"
+            className="app-nodrag"
+            onPress={async () => {
+              open('https://mihomo.party/ads/airport/')
+            }}
+          >
+            订阅推荐
+          </Button>
+          <Button
+            size="sm"
+            className="app-nodrag"
+            color="primary"
+            isLoading={updating}
+            onPress={async () => {
+              setUpdating(true)
+              for (const item of items) {
+                if (item.id === current) continue
+                if (item.type !== 'remote') continue
+                await addProfileItem(item)
+              }
+              const currentItem = items.find((item) => item.id === current)
+              if (currentItem && currentItem.type === 'remote') {
+                await addProfileItem(currentItem)
+              }
+              setUpdating(false)
+            }}
+          >
+            更新全部订阅
+          </Button>
+        </>
       }
     >
       <div className="sticky top-0 z-40 bg-background">
@@ -165,25 +186,38 @@ const Profiles: React.FC = () => {
           >
             导入
           </Button>
-          <Button
-            size="sm"
-            color="primary"
-            className="ml-2"
-            onPress={async () => {
-              try {
-                const files = await getFilePath(['yml', 'yaml'])
-                if (files?.length) {
-                  const content = await readTextFile(files[0])
-                  const fileName = files[0].split('/').pop()?.split('\\').pop()
-                  await addProfileItem({ name: fileName, type: 'local', file: content })
+          <Dropdown>
+            <DropdownTrigger>
+              <Button className="ml-2" size="sm" isIconOnly color="primary">
+                <FaPlus />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              onAction={async (key) => {
+                if (key === 'open') {
+                  try {
+                    const files = await getFilePath(['yml', 'yaml'])
+                    if (files?.length) {
+                      const content = await readTextFile(files[0])
+                      const fileName = files[0].split('/').pop()?.split('\\').pop()
+                      await addProfileItem({ name: fileName, type: 'local', file: content })
+                    }
+                  } catch (e) {
+                    alert(e)
+                  }
+                } else if (key === 'new') {
+                  await addProfileItem({
+                    name: '新建订阅',
+                    type: 'local',
+                    file: 'proxies: []\nproxy-groups: []\nrules: []'
+                  })
                 }
-              } catch (e) {
-                alert(e)
-              }
-            }}
-          >
-            打开
-          </Button>
+              }}
+            >
+              <DropdownItem key="open">打开</DropdownItem>
+              <DropdownItem key="new">新建</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
         <Divider />
       </div>
