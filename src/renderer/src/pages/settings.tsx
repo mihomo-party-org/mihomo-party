@@ -18,7 +18,7 @@ const Settings: React.FC = () => {
             isIconOnly
             size="sm"
             title="官方文档"
-            className="mr-2"
+            className="app-nodrag mr-2"
             onPress={() => {
               window.open('https://mihomo.party')
             }}
@@ -28,6 +28,7 @@ const Settings: React.FC = () => {
           <Button
             isIconOnly
             size="sm"
+            className="app-nodrag"
             title="GitHub仓库"
             onPress={() => {
               window.open('https://github.com/pompurin404/mihomo-party')

@@ -30,6 +30,7 @@ const UpdaterButton: React.FC = () => {
         />
       )}
       <Button
+        className="app-nodrag"
         color="danger"
         size="sm"
         onPress={() => {

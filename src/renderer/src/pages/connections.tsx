@@ -102,7 +102,7 @@ const Connections: React.FC = () => {
             </span>
           </div>
           <Button
-            className="ml-1"
+            className="app-nodrag ml-1"
             size="sm"
             color="primary"
             onPress={() => {

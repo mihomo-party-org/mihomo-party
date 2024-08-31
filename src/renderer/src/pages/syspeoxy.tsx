@@ -100,7 +100,7 @@ const Sysproxy: React.FC = () => {
     <BasePage
       title="系统代理设置"
       header={
-        <Button size="sm" color="primary" onPress={onSave}>
+        <Button className="app-nodrag" size="sm" color="primary" onPress={onSave}>
           保存
         </Button>
       }

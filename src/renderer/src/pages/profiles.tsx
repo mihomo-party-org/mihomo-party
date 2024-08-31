@@ -103,6 +103,7 @@ const Profiles: React.FC = () => {
       header={
         <Button
           size="sm"
+          className="app-nodrag"
           color="primary"
           isLoading={updating}
           onPress={async () => {

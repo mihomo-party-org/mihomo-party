@@ -122,6 +122,7 @@ const DNS: React.FC = () => {
       header={
         <Button
           size="sm"
+          className="app-nodrag"
           color="primary"
           onPress={() => {
             const hostsObject = Object.fromEntries(

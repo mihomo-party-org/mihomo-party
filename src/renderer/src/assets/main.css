@@ -7,6 +7,13 @@
   src: url('./NotoColorEmoji.ttf');
 }
 
+.app-nodrag {
+  -webkit-app-region: none;
+}
+.app-drag {
+  -webkit-app-region: drag;
+}
+
 * {
   user-select: none;
 }

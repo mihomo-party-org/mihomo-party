@@ -110,7 +110,7 @@ const Proxies: React.FC = () => {
     <BasePage
       title="代理组"
       header={
-        <div>
+        <div className="app-nodrag">
           <Button
             size="sm"
             isIconOnly

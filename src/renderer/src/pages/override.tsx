@@ -115,7 +115,7 @@ const Override: React.FC = () => {
         <>
           <Button
             size="sm"
-            className="mr-2"
+            className="app-nodrag mr-2"
             onPress={() => {
               open('https://mihomo.party/guides/function/override/yaml/')
             }}
@@ -123,6 +123,7 @@ const Override: React.FC = () => {
             使用文档
           </Button>
           <Button
+            className="app-nodrag"
             size="sm"
             onPress={() => {
               open('https://github.com/pompurin404/override-hub')

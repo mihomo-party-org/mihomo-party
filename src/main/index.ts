@@ -155,6 +155,13 @@ export function createWindow(show = false): void {
     x: mainWindowState.x,
     y: mainWindowState.y,
     show: false,
+    frame: false,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#00000000',
+      symbolColor: '#8D8D8D',
+      height: 48
+    },
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon: icon } : {}),
     webPreferences: {

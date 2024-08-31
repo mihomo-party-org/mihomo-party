@@ -62,6 +62,7 @@ const Tun: React.FC = () => {
         header={
           <Button
             size="sm"
+            className="app-nodrag"
             color="primary"
             onPress={() =>
               onSave({
