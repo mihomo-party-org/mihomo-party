@@ -11,6 +11,7 @@ import { calcTraffic } from '@renderer/utils/calc'
 import ConnectionItem from '@renderer/components/connections/connection-item'
 import { Virtuoso } from 'react-virtuoso'
 import dayjs from 'dayjs'
+import ConnectionDetailModal from '@renderer/components/connections/connection-detail-modal'
 
 let preData: IMihomoConnectionDetail[] = []
 
@@ -18,6 +19,8 @@ const Connections: React.FC = () => {
   const [filter, setFilter] = useState('')
   const [connectionsInfo, setConnectionsInfo] = useState<IMihomoConnectionsInfo>()
   const [connections, setConnections] = useState<IMihomoConnectionDetail[]>([])
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+  const [selected, setSelected] = useState<IMihomoConnectionDetail>()
   const [direction, setDirection] = useState(true)
   const [sortBy, setSortBy] = useState('time')
   const filteredConnections = useMemo(() => {
@@ -117,6 +120,9 @@ const Connections: React.FC = () => {
         </div>
       }
     >
+      {isDetailModalOpen && selected && (
+        <ConnectionDetailModal onClose={() => setIsDetailModalOpen(false)} connection={selected} />
+      )}
       <div className="overflow-x-auto sticky top-[49px] z-40">
         <div className="flex p-2 gap-2">
           <Input
@@ -158,6 +164,9 @@ const Connections: React.FC = () => {
           data={filteredConnections}
           itemContent={(i, connection) => (
             <ConnectionItem
+              setSelected={setSelected}
+              setIsDetailModalOpen={setIsDetailModalOpen}
+              selected={selected}
               close={mihomoCloseConnection}
               index={i}
               key={connection.id}

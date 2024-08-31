@@ -1,28 +1,34 @@
 import { Button, Card, CardFooter, CardHeader, Chip } from '@nextui-org/react'
 import { calcTraffic } from '@renderer/utils/calc'
 import dayjs from 'dayjs'
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { CgClose } from 'react-icons/cg'
-import ConnectionDetailModal from './connection-detail-modal'
 
 interface Props {
   index: number
   info: IMihomoConnectionDetail
+  selected: IMihomoConnectionDetail | undefined
+  setSelected: React.Dispatch<React.SetStateAction<IMihomoConnectionDetail | undefined>>
+  setIsDetailModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   close: (id: string) => Promise<void>
 }
 
 const ConnectionItem: React.FC<Props> = (props) => {
-  const { index, info } = props
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+  const { index, info, close, selected, setSelected, setIsDetailModalOpen } = props
+
+  useEffect(() => {
+    if (selected?.id === info.id) {
+      setSelected(info)
+    }
+  }, [info])
+
   return (
     <div className={`px-2 pb-2 ${index === 0 ? 'pt-2' : ''}`}>
-      {isDetailModalOpen && (
-        <ConnectionDetailModal onClose={() => setIsDetailModalOpen(false)} connection={info} />
-      )}
       <Card
         isPressable
         className="w-full"
         onPress={() => {
+          setSelected(info)
           setIsDetailModalOpen(true)
         }}
       >
@@ -75,7 +81,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
             isIconOnly
             className="mr-2 my-auto"
             onPress={() => {
-              props.close(info.id)
+              close(info.id)
             }}
           >
             <CgClose className="text-lg" />
