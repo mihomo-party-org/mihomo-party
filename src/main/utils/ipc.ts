@@ -182,6 +182,12 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('setTitleBarOverlay', (_e, overlay) => {
     mainWindow?.setTitleBarOverlay(overlay)
   })
+  ipcMain.handle('setAlwaysOnTop', (_e, alwaysOnTop) => {
+    mainWindow?.setAlwaysOnTop(alwaysOnTop)
+  })
+  ipcMain.handle('isAlwaysOnTop', () => {
+    return mainWindow?.isAlwaysOnTop()
+  })
   ipcMain.handle('openFile', (_e, type, id, ext) => openFile(type, id, ext))
   ipcMain.handle('copyEnv', ipcErrorWrapper(copyEnv))
   ipcMain.handle('alert', (_e, msg) => {

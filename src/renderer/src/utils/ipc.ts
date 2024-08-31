@@ -295,6 +295,14 @@ export async function setTitleBarOverlay(overlay: TitleBarOverlayOptions): Promi
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setTitleBarOverlay', overlay))
 }
 
+export async function setAlwaysOnTop(alwaysOnTop: boolean): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setAlwaysOnTop', alwaysOnTop))
+}
+
+export async function isAlwaysOnTop(): Promise<boolean> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('isAlwaysOnTop'))
+}
+
 export async function relaunchApp(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('relaunchApp'))
 }
