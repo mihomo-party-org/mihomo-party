@@ -145,9 +145,14 @@ const ConnCard: React.FC = () => {
       if (platform === 'darwin' && showTraffic) {
         if (drawing) return
         drawing = true
-        await drawSvg(info.up, info.down)
-        hasShowTraffic = true
-        drawing = false
+        try {
+          await drawSvg(info.up, info.down)
+          hasShowTraffic = true
+        } catch {
+          // ignore
+        } finally {
+          drawing = false
+        }
       } else {
         if (!hasShowTraffic) return
         window.electron.ipcRenderer.send('trayIconUpdate', trayIconBase64)
