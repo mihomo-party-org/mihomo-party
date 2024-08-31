@@ -200,11 +200,17 @@ const Proxies: React.FC = () => {
                           />
                         ) : null}
                         <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-                          <div className="inline flag-emoji h-[32px] text-md leading-[32px]">
+                          <div
+                            title={groups[index].name}
+                            className="inline flag-emoji h-[32px] text-md leading-[32px]"
+                          >
                             {groups[index].name}
                           </div>
                           {proxyDisplayMode === 'full' && (
-                            <div className="inline ml-2 text-sm text-default-500">
+                            <div
+                              title={groups[index].type}
+                              className="inline ml-2 text-sm text-default-500"
+                            >
                               {groups[index].type}
                             </div>
                           )}

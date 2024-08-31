@@ -169,6 +169,7 @@ const OverrideItem: React.FC<Props> = (props) => {
               ref={setNodeRef}
               {...attributes}
               {...listeners}
+              title={info?.name}
               className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] text-foreground`}
             >
               {info?.name}

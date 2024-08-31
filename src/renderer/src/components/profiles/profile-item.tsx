@@ -185,6 +185,7 @@ const ProfileItem: React.FC<Props> = (props) => {
               ref={setNodeRef}
               {...attributes}
               {...listeners}
+              title={info?.name}
               className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${isCurrent ? 'text-white' : 'text-foreground'}`}
             >
               {info?.name}

@@ -69,6 +69,7 @@ const ProfileCard: React.FC = () => {
             className="flex justify-between h-[32px]"
           >
             <h3
+              title={info?.name}
               className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
             >
               {info?.name}

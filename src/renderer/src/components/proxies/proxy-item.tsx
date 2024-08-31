@@ -65,12 +65,17 @@ const ProxyItem: React.FC<Props> = (props) => {
       <CardBody className="p-2">
         <div className="flex justify-between items-center">
           <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-            <div className="flag-emoji inline">{proxy.name}</div>
+            <div className="flag-emoji inline" title={proxy.name}>
+              {proxy.name}
+            </div>
             {proxyDisplayMode === 'full' && (
-              <div className="inline ml-2 text-default-500">{proxy.type}</div>
+              <div className="inline ml-2 text-default-500" title={proxy.type}>
+                {proxy.type}
+              </div>
             )}
           </div>
           <Button
+            title={proxy.type}
             isLoading={loading}
             color={delayColor(delay)}
             onPress={onDelay}
