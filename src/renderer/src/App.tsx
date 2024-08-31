@@ -28,7 +28,9 @@ import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
 import ResourceCard from '@renderer/components/sider/resource-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from './hooks/use-app-config'
-import { setNativeTheme } from './utils/ipc'
+import { setNativeTheme, setTitleBarOverlay } from './utils/ipc'
+import { platform } from './utils/init'
+import { TitleBarOverlayOptions } from 'electron'
 
 const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -36,6 +38,7 @@ const App: React.FC = () => {
     appTheme = 'system',
     controlDns = true,
     controlSniff = true,
+    useWindowFrame = true,
     siderOrder = [
       'sysproxy',
       'tun',
@@ -53,7 +56,7 @@ const App: React.FC = () => {
   } = appConfig || {}
   const [order, setOrder] = useState(siderOrder)
   const sensors = useSensors(useSensor(PointerSensor))
-  const { setTheme } = useTheme()
+  const { setTheme, systemTheme } = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
   const page = useRoutes(routes)
@@ -71,6 +74,30 @@ const App: React.FC = () => {
       setNativeTheme('dark')
     }
     setTheme(appTheme)
+    if (!useWindowFrame) {
+      let theme = appTheme as string
+      if (appTheme === 'system') {
+        theme = systemTheme || 'light'
+      }
+      const options = { height: 48 } as TitleBarOverlayOptions
+      try {
+        if (platform !== 'darwin') {
+          if (theme.includes('light')) {
+            options.color = '#FFFFFF'
+            options.symbolColor = '#000000'
+          } else if (theme.includes('dark')) {
+            options.color = '#000000'
+            options.symbolColor = '#FFFFFF'
+          } else {
+            options.color = '#18181b'
+            options.symbolColor = '#FFFFFF'
+          }
+        }
+        setTitleBarOverlay(options)
+      } catch (e) {
+        // ignore
+      }
+    }
   }, [appTheme])
 
   const onDragEnd = async (event: DragEndEvent): Promise<void> => {
@@ -108,7 +135,11 @@ const App: React.FC = () => {
       <div className="side w-[250px] h-full overflow-y-auto no-scrollbar">
         <div className="app-drag sticky top-0 z-40 backdrop-blur bg-background/40 h-[49px]">
           <div className="flex justify-between p-2">
-            <h3 className="text-lg font-bold leading-[32px]">Mihomo Party</h3>
+            <h3
+              className={`text-lg font-bold leading-[32px] ${!useWindowFrame && platform === 'darwin' ? 'invisible' : ''}`}
+            >
+              Mihomo Party
+            </h3>
             <UpdaterButton />
             <Button
               size="sm"

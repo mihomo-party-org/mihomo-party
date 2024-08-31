@@ -1,3 +1,5 @@
+import { TitleBarOverlayOptions } from 'electron'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ipcErrorWrapper(response: any): any {
   if (typeof response === 'object' && 'invokeError' in response) {
@@ -287,6 +289,14 @@ export async function listWebdavBackups(): Promise<string[]> {
 
 export async function webdavDelete(filename: string): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('webdavDelete', filename))
+}
+
+export async function setTitleBarOverlay(overlay: TitleBarOverlayOptions): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setTitleBarOverlay', overlay))
+}
+
+export async function relaunchApp(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('relaunchApp'))
 }
 
 export async function quitApp(): Promise<void> {

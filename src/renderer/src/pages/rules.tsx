@@ -22,7 +22,7 @@ const Rules: React.FC = () => {
 
   return (
     <BasePage title="分流规则">
-      <div className="sticky top-[49px] z-40">
+      <div className="sticky top-0 z-40">
         <div className="flex p-2">
           <Input
             size="sm"

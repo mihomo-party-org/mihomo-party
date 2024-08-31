@@ -1,5 +1,5 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react'
-import { webdavDelete, webdavRestore } from '@renderer/utils/ipc'
+import { relaunchApp, webdavDelete, webdavRestore } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import { MdDeleteForever } from 'react-icons/md'
 interface Props {
@@ -36,6 +36,7 @@ const WebdavRestoreModal: React.FC<Props> = (props) => {
                     setRestoring(true)
                     try {
                       await webdavRestore(filename)
+                      await relaunchApp()
                     } catch (e) {
                       alert(`恢复失败: ${e}`)
                     } finally {

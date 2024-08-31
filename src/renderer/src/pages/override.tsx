@@ -134,7 +134,7 @@ const Override: React.FC = () => {
         </>
       }
     >
-      <div className="sticky top-[49px] z-40 backdrop-blur bg-background/40">
+      <div className="sticky top-0 z-40 bg-background">
         <div className="flex p-2">
           <Input
             size="sm"

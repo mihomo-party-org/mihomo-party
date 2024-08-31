@@ -10,7 +10,6 @@ import {
   profileConfigPath,
   profilesDir
 } from '../utils/dirs'
-import { app } from 'electron'
 
 export async function webdavBackup(): Promise<boolean> {
   const webdav = await import('webdav')
@@ -52,8 +51,6 @@ export async function webdavRestore(filename: string): Promise<void> {
   const zipData = await client.getFileContents(`mihomo-party/${filename}`)
   const zip = new AdmZip(zipData as Buffer)
   zip.extractAllTo(dataDir(), true)
-  app.relaunch()
-  app.quit()
 }
 
 export async function listWebdavBackups(): Promise<string[]> {

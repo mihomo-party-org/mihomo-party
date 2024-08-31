@@ -103,7 +103,7 @@ app.whenReady().then(async () => {
     optimizer.watchWindowShortcuts(window)
   })
   registerIpcMainHandlers()
-  createWindow()
+  await createWindow()
   await createTray()
   await initShortcut()
   app.on('activate', function () {
@@ -140,9 +140,9 @@ async function handleDeepLink(url: string): Promise<void> {
   }
 }
 
-export function createWindow(show = false): void {
+export async function createWindow(): Promise<void> {
   Menu.setApplicationMenu(null)
-  // Create the browser window.
+  const { useWindowFrame = true } = await getAppConfig()
   const mainWindowState = windowStateKeeper({
     defaultWidth: 800,
     defaultHeight: 600
@@ -155,13 +155,13 @@ export function createWindow(show = false): void {
     x: mainWindowState.x,
     y: mainWindowState.y,
     show: false,
-    frame: false,
-    titleBarStyle: 'hidden',
-    titleBarOverlay: {
-      color: '#00000000',
-      symbolColor: '#8D8D8D',
-      height: 48
-    },
+    frame: useWindowFrame,
+    titleBarStyle: useWindowFrame ? 'default' : 'hidden',
+    titleBarOverlay: useWindowFrame
+      ? false
+      : {
+          height: 49
+        },
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon: icon } : {}),
     webPreferences: {
@@ -173,7 +173,7 @@ export function createWindow(show = false): void {
   mainWindowState.manage(mainWindow)
   mainWindow.on('ready-to-show', async () => {
     const { silentStart } = await getAppConfig()
-    if (!silentStart || show) {
+    if (!silentStart) {
       mainWindow?.show()
       mainWindow?.focusOnWebView()
     }
@@ -210,7 +210,5 @@ export function showMainWindow(): void {
   if (mainWindow) {
     mainWindow.show()
     mainWindow.focusOnWebView()
-  } else {
-    createWindow(true)
   }
 }

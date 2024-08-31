@@ -16,8 +16,6 @@ export async function setPortable(portable: boolean): Promise<void> {
   } else {
     await rm(path.join(exeDir(), 'PORTABLE'))
   }
-  app.relaunch()
-  app.quit()
 }
 
 export function dataDir(): string {

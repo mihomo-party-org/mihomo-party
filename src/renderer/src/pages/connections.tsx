@@ -123,7 +123,7 @@ const Connections: React.FC = () => {
       {isDetailModalOpen && selected && (
         <ConnectionDetailModal onClose={() => setIsDetailModalOpen(false)} connection={selected} />
       )}
-      <div className="overflow-x-auto sticky top-[49px] z-40">
+      <div className="overflow-x-auto sticky top-0 z-40">
         <div className="flex p-2 gap-2">
           <Input
             variant="flat"

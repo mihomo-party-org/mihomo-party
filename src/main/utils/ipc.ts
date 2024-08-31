@@ -63,6 +63,7 @@ import { listWebdavBackups, webdavBackup, webdavDelete, webdavRestore } from '..
 import { getInterfaces } from '../sys/interface'
 import { copyEnv } from '../resolve/tray'
 import { registerShortcut } from '../resolve/shortcut'
+import { mainWindow } from '..'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -178,10 +179,17 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('setNativeTheme', (_e, theme) => {
     setNativeTheme(theme)
   })
+  ipcMain.handle('setTitleBarOverlay', (_e, overlay) => {
+    mainWindow?.setTitleBarOverlay(overlay)
+  })
   ipcMain.handle('openFile', (_e, type, id, ext) => openFile(type, id, ext))
   ipcMain.handle('copyEnv', ipcErrorWrapper(copyEnv))
   ipcMain.handle('alert', (_e, msg) => {
     dialog.showErrorBox('Mihomo Party', msg)
+  })
+  ipcMain.handle('relaunchApp', () => {
+    app.relaunch()
+    app.quit()
   })
   ipcMain.handle('quitApp', () => app.quit())
 }
