@@ -23,6 +23,8 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { useOverrideConfig } from '@renderer/hooks/use-override-config'
 import OverrideItem from '@renderer/components/override/override-item'
 import { FaPlus } from 'react-icons/fa6'
+import { HiOutlineDocumentText } from 'react-icons/hi'
+import { RiArchiveLine } from 'react-icons/ri'
 
 const Override: React.FC = () => {
   const {
@@ -124,21 +126,27 @@ const Override: React.FC = () => {
         <>
           <Button
             size="sm"
+            variant="light"
+            title="使用文档"
+            isIconOnly
             className="app-nodrag"
             onPress={() => {
               open('https://mihomo.party/guides/function/override/yaml/')
             }}
           >
-            使用文档
+            <HiOutlineDocumentText className="text-lg" />
           </Button>
           <Button
             className="app-nodrag"
+            title="常用覆写仓库"
+            isIconOnly
+            variant="light"
             size="sm"
             onPress={() => {
               open('https://github.com/pompurin404/override-hub')
             }}
           >
-            常用覆写仓库
+            <RiArchiveLine className="text-lg" />
           </Button>
         </>
       }

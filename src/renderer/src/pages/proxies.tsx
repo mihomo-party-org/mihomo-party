@@ -8,7 +8,6 @@ import {
   mihomoProxyDelay
 } from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
-import { FaBoltLightning } from 'react-icons/fa6'
 import { TbCircleLetterD } from 'react-icons/tb'
 import { FaLocationCrosshairs } from 'react-icons/fa6'
 import { RxLetterCaseCapitalize } from 'react-icons/rx'
@@ -113,6 +112,7 @@ const Proxies: React.FC = () => {
           <Button
             size="sm"
             isIconOnly
+            variant="light"
             className="app-nodrag"
             onPress={() => {
               patchAppConfig({
@@ -126,16 +126,17 @@ const Proxies: React.FC = () => {
             }}
           >
             {proxyDisplayOrder === 'default' ? (
-              <TbCircleLetterD size={20} title="默认" />
+              <TbCircleLetterD className="text-lg" title="默认" />
             ) : proxyDisplayOrder === 'delay' ? (
-              <FaBoltLightning size={20} title="延迟" />
+              <MdOutlineSpeed className="text-lg" title="延迟" />
             ) : (
-              <RxLetterCaseCapitalize size={20} title="名称" />
+              <RxLetterCaseCapitalize className="text-lg" title="名称" />
             )}
           </Button>
           <Button
             size="sm"
             isIconOnly
+            variant="light"
             className="app-nodrag"
             onPress={() => {
               patchAppConfig({
@@ -143,10 +144,10 @@ const Proxies: React.FC = () => {
               })
             }}
           >
-            {proxyDisplayMode === 'simple' ? (
-              <CgDetailsMore size={20} title="详细信息" />
+            {proxyDisplayMode === 'full' ? (
+              <CgDetailsMore className="text-lg" title="详细信息" />
             ) : (
-              <CgDetailsLess size={20} title="简洁信息" />
+              <CgDetailsLess className="text-lg" title="简洁信息" />
             )}
           </Button>
         </>

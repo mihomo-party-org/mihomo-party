@@ -5,7 +5,6 @@ import OutboundModeSwitcher from '@renderer/components/sider/outbound-mode-switc
 import SysproxySwitcher from '@renderer/components/sider/sysproxy-switcher'
 import TunSwitcher from '@renderer/components/sider/tun-switcher'
 import { Button, Divider } from '@nextui-org/react'
-import { BsFillPinFill } from 'react-icons/bs'
 import { IoSettings } from 'react-icons/io5'
 import routes from '@renderer/routes'
 import {
@@ -29,7 +28,7 @@ import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
 import ResourceCard from '@renderer/components/sider/resource-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from './hooks/use-app-config'
-import { isAlwaysOnTop, setAlwaysOnTop, setNativeTheme, setTitleBarOverlay } from './utils/ipc'
+import { setNativeTheme, setTitleBarOverlay } from './utils/ipc'
 import { platform } from './utils/init'
 import { TitleBarOverlayOptions } from 'electron'
 
@@ -57,15 +56,10 @@ const App: React.FC = () => {
   } = appConfig || {}
   const [order, setOrder] = useState(siderOrder)
   const sensors = useSensors(useSensor(PointerSensor))
-  const [onTop, setOnTop] = useState(false)
   const { setTheme, systemTheme } = useTheme()
   const navigate = useNavigate()
   const location = useLocation()
   const page = useRoutes(routes)
-
-  const updateAlwaysOnTop = async (): Promise<void> => {
-    setOnTop(await isAlwaysOnTop())
-  }
 
   useEffect(() => {
     setOrder(siderOrder)
@@ -147,33 +141,18 @@ const App: React.FC = () => {
               Mihomo Party
             </h3>
             <UpdaterButton />
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                className="app-nodrag"
-                isIconOnly
-                color={onTop ? 'primary' : 'default'}
-                variant={onTop ? 'solid' : 'light'}
-                onPress={async () => {
-                  await setAlwaysOnTop(!onTop)
-                  await updateAlwaysOnTop()
-                }}
-                startContent={<BsFillPinFill className="text-[20px]" />}
-              />
-              <Button
-                size="sm"
-                className="app-nodrag"
-                isIconOnly
-                color={location.pathname.includes('/settings') ? 'primary' : 'default'}
-                variant={location.pathname.includes('/settings') ? 'solid' : 'light'}
-                onPress={() => {
-                  navigate('/settings')
-                }}
-                startContent={<IoSettings className="text-[20px]" />}
-              />
-            </div>
+            <Button
+              size="sm"
+              className="app-nodrag"
+              isIconOnly
+              color={location.pathname.includes('/settings') ? 'primary' : 'default'}
+              variant={location.pathname.includes('/settings') ? 'solid' : 'light'}
+              onPress={() => {
+                navigate('/settings')
+              }}
+              startContent={<IoSettings className="text-[20px]" />}
+            />
           </div>
-          {/* <Divider /> */}
         </div>
         <div className="mt-2 mx-2">
           <OutboundModeSwitcher />

@@ -24,6 +24,7 @@ import {
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { FaPlus } from 'react-icons/fa6'
+import { IoMdRefresh } from 'react-icons/io'
 
 const Profiles: React.FC = () => {
   const {
@@ -114,6 +115,7 @@ const Profiles: React.FC = () => {
         <>
           <Button
             size="sm"
+            variant="light"
             className="app-nodrag"
             onPress={async () => {
               open('https://mihomo.party/ads/airport/')
@@ -123,9 +125,10 @@ const Profiles: React.FC = () => {
           </Button>
           <Button
             size="sm"
+            title="更新全部订阅"
             className="app-nodrag"
-            color="primary"
-            isLoading={updating}
+            variant="light"
+            isIconOnly
             onPress={async () => {
               setUpdating(true)
               for (const item of items) {
@@ -140,7 +143,7 @@ const Profiles: React.FC = () => {
               setUpdating(false)
             }}
           >
-            更新全部订阅
+            <IoMdRefresh className={`text-lg ${updating ? 'animate-spin' : ''}`} />
           </Button>
         </>
       }

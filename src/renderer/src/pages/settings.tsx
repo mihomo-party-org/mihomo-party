@@ -17,6 +17,7 @@ const Settings: React.FC = () => {
           <Button
             isIconOnly
             size="sm"
+            variant="light"
             title="官方文档"
             className="app-nodrag"
             onPress={() => {
@@ -28,6 +29,7 @@ const Settings: React.FC = () => {
           <Button
             isIconOnly
             size="sm"
+            variant="light"
             className="app-nodrag"
             title="GitHub仓库"
             onPress={() => {

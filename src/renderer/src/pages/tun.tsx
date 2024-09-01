@@ -23,8 +23,8 @@ const Tun: React.FC = () => {
     'strict-route': strictRoute = false,
     mtu = 1500
   } = tun || {}
-
-  const [values, setValues] = useState({
+  const [changed, setChanged] = useState(false)
+  const [values, originSetValues] = useState({
     device,
     stack,
     autoRoute,
@@ -34,10 +34,15 @@ const Tun: React.FC = () => {
     strictRoute,
     mtu
   })
+  const setValues = (v: typeof values): void => {
+    originSetValues(v)
+    setChanged(true)
+  }
 
   const onSave = async (patch: Partial<IMihomoConfig>): Promise<void> => {
     await patchControledMihomoConfig(patch)
     await restartCore()
+    setChanged(false)
   }
 
   return (
@@ -60,27 +65,29 @@ const Tun: React.FC = () => {
       <BasePage
         title="Tun 设置"
         header={
-          <Button
-            size="sm"
-            className="app-nodrag"
-            color="primary"
-            onPress={() =>
-              onSave({
-                tun: {
-                  device: values.device,
-                  stack: values.stack,
-                  'auto-route': values.autoRoute,
-                  'auto-redirect': values.autoRedirect,
-                  'auto-detect-interface': values.autoDetectInterface,
-                  'dns-hijack': values.dnsHijack,
-                  'strict-route': values.strictRoute,
-                  mtu: values.mtu
-                }
-              })
-            }
-          >
-            保存
-          </Button>
+          changed && (
+            <Button
+              size="sm"
+              className="app-nodrag"
+              color="primary"
+              onPress={() =>
+                onSave({
+                  tun: {
+                    device: values.device,
+                    stack: values.stack,
+                    'auto-route': values.autoRoute,
+                    'auto-redirect': values.autoRedirect,
+                    'auto-detect-interface': values.autoDetectInterface,
+                    'dns-hijack': values.dnsHijack,
+                    'strict-route': values.strictRoute,
+                    mtu: values.mtu
+                  }
+                })
+              }
+            >
+              保存
+            </Button>
+          )
         }
       >
         <SettingCard>

@@ -57,14 +57,19 @@ function FindProxyForURL(url, host) {
 const Sysproxy: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const { sysProxy } = appConfig || ({ sysProxy: { enable: false } } as IAppConfig)
-
-  const [values, setValues] = useState({
+  const [changed, setChanged] = useState(false)
+  const [values, originSetValues] = useState({
     enable: sysProxy.enable,
     host: sysProxy.host ?? '',
     bypass: sysProxy.bypass ?? defaultBypass,
     mode: sysProxy.mode ?? 'manual',
     pacScript: sysProxy.pacScript ?? defaultPacScript
   })
+
+  const setValues = (v: typeof values): void => {
+    originSetValues(v)
+    setChanged(true)
+  }
 
   const [openPacEditor, setOpenPacEditor] = useState(false)
 
@@ -90,6 +95,7 @@ const Sysproxy: React.FC = () => {
     try {
       await triggerSysProxy(true)
       await patchAppConfig({ sysProxy: { enable: true } })
+      setChanged(false)
     } catch (e) {
       alert(e)
       await patchAppConfig({ sysProxy: { enable: false } })
@@ -100,9 +106,11 @@ const Sysproxy: React.FC = () => {
     <BasePage
       title="系统代理设置"
       header={
-        <Button className="app-nodrag" size="sm" color="primary" onPress={onSave}>
-          保存
-        </Button>
+        changed && (
+          <Button color="primary" className="app-nodrag" size="sm" onPress={onSave}>
+            保存
+          </Button>
+        )
       }
     >
       {openPacEditor && (

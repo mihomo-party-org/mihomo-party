@@ -6,12 +6,13 @@ import {
   stopMihomoConnections
 } from '@renderer/utils/ipc'
 import { useEffect, useMemo, useState } from 'react'
-import { Button, Divider, Input, Select, SelectItem } from '@nextui-org/react'
+import { Badge, Button, Divider, Input, Select, SelectItem } from '@nextui-org/react'
 import { calcTraffic } from '@renderer/utils/calc'
 import ConnectionItem from '@renderer/components/connections/connection-item'
 import { Virtuoso } from 'react-virtuoso'
 import dayjs from 'dayjs'
 import ConnectionDetailModal from '@renderer/components/connections/connection-detail-modal'
+import { CgClose } from 'react-icons/cg'
 
 let preData: IMihomoConnectionDetail[] = []
 
@@ -95,28 +96,32 @@ const Connections: React.FC = () => {
         <div className="flex">
           <div className="flex items-center">
             <span className="mx-1 text-gray-400">
-              下载: {calcTraffic(connectionsInfo?.downloadTotal ?? 0)}{' '}
+              ↑ {calcTraffic(connectionsInfo?.downloadTotal ?? 0)}{' '}
             </span>
             <span className="mx-1 text-gray-400">
-              上传: {calcTraffic(connectionsInfo?.uploadTotal ?? 0)}{' '}
+              ↓ {calcTraffic(connectionsInfo?.uploadTotal ?? 0)}{' '}
             </span>
           </div>
-          <Button
-            className="app-nodrag ml-1"
-            size="sm"
-            color="primary"
-            onPress={() => {
-              if (filter === '') {
-                mihomoCloseAllConnections()
-              } else {
-                filteredConnections.forEach((conn) => {
-                  mihomoCloseConnection(conn.id)
-                })
-              }
-            }}
-          >
-            关闭所有连接({filteredConnections.length})
-          </Button>
+          <Badge color="primary" variant="flat" content={`${filteredConnections.length}`}>
+            <Button
+              className="app-nodrag ml-1"
+              title="关闭全部连接"
+              isIconOnly
+              size="sm"
+              variant="light"
+              onPress={() => {
+                if (filter === '') {
+                  mihomoCloseAllConnections()
+                } else {
+                  filteredConnections.forEach((conn) => {
+                    mihomoCloseConnection(conn.id)
+                  })
+                }
+              }}
+            >
+              <CgClose className="text-lg" />
+            </Button>
+          </Badge>
         </div>
       }
     >
