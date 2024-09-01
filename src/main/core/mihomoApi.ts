@@ -71,8 +71,11 @@ export const mihomoRules = async (): Promise<IMihomoRulesInfo> => {
 
 export const mihomoProxies = async (): Promise<IMihomoProxies> => {
   const instance = await getAxios()
-
-  return await instance.get('/proxies')
+  const proxies = (await instance.get('/proxies')) as IMihomoProxies
+  if (!proxies.proxies['GLOBAL']) {
+    throw new Error('GLOBAL proxy not found')
+  }
+  return proxies
 }
 
 export const mihomoGroups = async (): Promise<IMihomoMixedGroup[]> => {

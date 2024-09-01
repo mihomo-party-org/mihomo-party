@@ -60,6 +60,7 @@ export async function startCore(): Promise<void> {
       }
       if (data.toString().includes('RESTful API listening at')) {
         await startMihomoTraffic()
+        mainWindow?.webContents.send('coreRestart')
         retry = 10
         resolve()
       }

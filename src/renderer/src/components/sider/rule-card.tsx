@@ -1,16 +1,15 @@
 import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
-import { mihomoRules } from '@renderer/utils/ipc'
 import { MdOutlineAltRoute } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import useSWR from 'swr'
+import { useRules } from '@renderer/hooks/use-rules'
 
 const RuleCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/rules')
-  const { data: rules } = useSWR<IMihomoRulesInfo>('mihomoRules', mihomoRules)
+  const { rules } = useRules()
   const {
     attributes,
     listeners,

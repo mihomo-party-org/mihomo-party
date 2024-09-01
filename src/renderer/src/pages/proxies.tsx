@@ -5,7 +5,6 @@ import {
   mihomoChangeProxy,
   mihomoCloseAllConnections,
   mihomoGroupDelay,
-  mihomoGroups,
   mihomoProxyDelay
 } from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
@@ -14,14 +13,14 @@ import { TbCircleLetterD } from 'react-icons/tb'
 import { FaLocationCrosshairs } from 'react-icons/fa6'
 import { RxLetterCaseCapitalize } from 'react-icons/rx'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import useSWR from 'swr'
 import { GroupedVirtuoso, GroupedVirtuosoHandle } from 'react-virtuoso'
 import ProxyItem from '@renderer/components/proxies/proxy-item'
 import { IoIosArrowBack } from 'react-icons/io'
 import { MdOutlineSpeed } from 'react-icons/md'
+import { useGroups } from '@renderer/hooks/use-groups'
 
 const Proxies: React.FC = () => {
-  const { data: groups = [], mutate } = useSWR('mihomoGroups', mihomoGroups)
+  const { groups = [], mutate } = useGroups()
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     proxyDisplayMode = 'simple',
@@ -190,7 +189,6 @@ const Proxies: React.FC = () => {
                                 canvas.height = img.height
                                 ctx?.drawImage(img, 0, 0)
                                 const data = canvas.toDataURL('image/png')
-                                console.log('set')
                                 localStorage.setItem(groups[index].icon, data)
                               }
                               img.src = groups[index].icon

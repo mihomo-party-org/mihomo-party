@@ -12,6 +12,8 @@ import { AppConfigProvider } from './hooks/use-app-config'
 import { ControledMihomoConfigProvider } from './hooks/use-controled-mihomo-config'
 import { OverrideConfigProvider } from './hooks/use-override-config'
 import { ProfileConfigProvider } from './hooks/use-profile-config'
+import { RulesProvider } from './hooks/use-rules'
+import { GroupsProvider } from './hooks/use-groups'
 
 init().then(() => {
   document.addEventListener('keydown', (e) => {
@@ -53,7 +55,11 @@ init().then(() => {
                 <ControledMihomoConfigProvider>
                   <ProfileConfigProvider>
                     <OverrideConfigProvider>
-                      <App />
+                      <GroupsProvider>
+                        <RulesProvider>
+                          <App />
+                        </RulesProvider>
+                      </GroupsProvider>
                     </OverrideConfigProvider>
                   </ProfileConfigProvider>
                 </ControledMihomoConfigProvider>

@@ -3,11 +3,10 @@ import RuleItem from '@renderer/components/rules/rule-item'
 import { Virtuoso } from 'react-virtuoso'
 import { useMemo, useState } from 'react'
 import { Divider, Input } from '@nextui-org/react'
-import useSWR from 'swr'
-import { mihomoRules } from '@renderer/utils/ipc'
+import { useRules } from '@renderer/hooks/use-rules'
 
 const Rules: React.FC = () => {
-  const { data: rules } = useSWR<IMihomoRulesInfo>('mihomoRules', mihomoRules)
+  const { rules } = useRules()
   const [filter, setFilter] = useState('')
 
   const filteredRules = useMemo(() => {

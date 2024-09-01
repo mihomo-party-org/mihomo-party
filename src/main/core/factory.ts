@@ -8,17 +8,22 @@ import {
 } from '../config'
 import { mihomoWorkConfigPath, overridePath } from '../utils/dirs'
 import yaml from 'yaml'
-import { readFile, writeFile } from 'fs/promises'
+import { writeFile } from 'fs/promises'
 import { deepMerge } from '../utils/merge'
 import vm from 'vm'
 import { writeFileSync } from 'fs'
+
+let runtimeConfigStr: string
+let runtimeConfig: IMihomoConfig
 
 export async function generateProfile(): Promise<void> {
   const { current } = await getProfileConfig()
   const currentProfile = await overrideProfile(current, await getProfile(current))
   const controledMihomoConfig = await getControledMihomoConfig()
   const profile = deepMerge(currentProfile, controledMihomoConfig)
-  await writeFile(mihomoWorkConfigPath(), yaml.stringify(profile))
+  runtimeConfig = profile
+  runtimeConfigStr = yaml.stringify(profile)
+  await writeFile(mihomoWorkConfigPath(), runtimeConfigStr)
 }
 
 async function overrideProfile(
@@ -87,9 +92,9 @@ function runOverrideScript(
 }
 
 export async function getRuntimeConfigStr(): Promise<string> {
-  return await readFile(mihomoWorkConfigPath(), 'utf8')
+  return runtimeConfigStr
 }
 
 export async function getRuntimeConfig(): Promise<IMihomoConfig> {
-  return yaml.parse(await getRuntimeConfigStr())
+  return runtimeConfig
 }

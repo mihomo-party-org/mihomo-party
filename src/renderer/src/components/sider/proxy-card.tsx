@@ -3,14 +3,13 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { LuGroup } from 'react-icons/lu'
 import { useLocation, useNavigate } from 'react-router-dom'
-import useSWR from 'swr'
-import { mihomoGroups } from '@renderer/utils/ipc'
+import { useGroups } from '@renderer/hooks/use-groups'
 
 const ProxyCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/proxies')
-  const { data: groups = [] } = useSWR('mihomoGroups', mihomoGroups)
+  const { groups = [] } = useGroups()
   const {
     attributes,
     listeners,
