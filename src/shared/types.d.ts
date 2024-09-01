@@ -217,6 +217,8 @@ interface IAppConfig {
   proxyDisplayOrder: 'default' | 'delay' | 'name'
   envType?: 'bash' | 'cmd' | 'powershell'
   proxyCols: 'auto' | '1' | '2' | '3' | '4'
+  autoSetDNS?: boolean
+  originDNS?: string
   useWindowFrame: boolean
   proxyInTray: boolean
   siderOrder: string[]

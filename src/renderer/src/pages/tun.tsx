@@ -7,9 +7,12 @@ import { manualGrantCorePermition, restartCore, setupFirewall } from '@renderer/
 import { platform } from '@renderer/utils/init'
 import React, { Key, useState } from 'react'
 import BasePasswordModal from '@renderer/components/base/base-password-modal'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 
 const Tun: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { appConfig, patchAppConfig } = useAppConfig()
+  const { autoSetDNS = true } = appConfig || {}
   const { tun } = controledMihomoConfig || {}
   const [loading, setLoading] = useState(false)
   const [openPasswordModal, setOpenPasswordModal] = useState(false)
@@ -137,6 +140,18 @@ const Tun: React.FC = () => {
               </Button>
             </SettingItem>
           )}
+          {platform === 'darwin' && (
+            <SettingItem title="自动设置系统DNS" divider>
+              <Switch
+                size="sm"
+                isSelected={autoSetDNS}
+                onValueChange={async (v) => {
+                  await patchAppConfig({ autoSetDNS: v })
+                }}
+              />
+            </SettingItem>
+          )}
+
           <SettingItem title="Tun 模式堆栈" divider>
             <Tabs
               size="sm"

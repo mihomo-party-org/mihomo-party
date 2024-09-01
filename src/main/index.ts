@@ -68,9 +68,9 @@ app.on('window-all-closed', (e) => {
   // }
 })
 
-app.on('before-quit', () => {
+app.on('before-quit', async () => {
   pauseWebsockets()
-  stopCore()
+  await stopCore()
   triggerSysProxy(false)
   app.exit()
 })
