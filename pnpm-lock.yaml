@@ -23,6 +23,9 @@ importers:
       axios:
         specifier: ^1.7.5
         version: 1.7.5
+      chokidar:
+        specifier: ^3.6.0
+        version: 3.6.0
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13

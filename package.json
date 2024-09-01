@@ -26,6 +26,7 @@
     "@mihomo-party/sysproxy": "^2.0.1",
     "adm-zip": "^0.5.15",
     "axios": "^1.7.5",
+    "chokidar": "^3.6.0",
     "dayjs": "^1.11.13",
     "webdav": "^5.7.1",
     "ws": "^8.18.0",

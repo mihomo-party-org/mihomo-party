@@ -1,6 +1,7 @@
 import { ChildProcess, exec, execFile, spawn } from 'child_process'
 import {
   logPath,
+  mihomoCoreDir,
   mihomoCorePath,
   mihomoTestDir,
   mihomoWorkConfigPath,
@@ -15,9 +16,21 @@ import {
 } from '../config'
 import { dialog, safeStorage } from 'electron'
 import { pauseWebsockets, startMihomoTraffic } from './mihomoApi'
+import chokidar from 'chokidar'
 import { writeFile } from 'fs/promises'
 import { promisify } from 'util'
 import { mainWindow } from '..'
+import path from 'path'
+
+chokidar
+  .watch(path.join(mihomoCoreDir(), 'meta-update'))
+  .on('all', (event, path) => {
+    console.log(event, path)
+  })
+  .on('unlinkDir', async () => {
+    await stopCore(true)
+    await startCore()
+  })
 
 let child: ChildProcess
 let retry = 10
@@ -48,10 +61,6 @@ export async function startCore(): Promise<void> {
   })
   return new Promise((resolve, reject) => {
     child.stdout?.on('data', async (data) => {
-      if (data.toString().includes('updater: finished')) {
-        await stopCore()
-        await startCore()
-      }
       if (data.toString().includes('configure tun interface: operation not permitted')) {
         await patchControledMihomoConfig({ tun: { enable: false } })
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
@@ -78,9 +87,11 @@ export async function startCore(): Promise<void> {
   })
 }
 
-export async function stopCore(): Promise<void> {
+export async function stopCore(force = false): Promise<void> {
   try {
-    await recoverDNS()
+    if (!force) {
+      await recoverDNS()
+    }
   } catch (error) {
     // todo
   }

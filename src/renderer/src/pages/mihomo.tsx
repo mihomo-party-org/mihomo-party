@@ -77,7 +77,11 @@ const Mihomo: React.FC = () => {
                       PubSub.publish('mihomo-core-changed')
                     }, 2000)
                   } catch (e) {
-                    alert(e)
+                    if (typeof e === 'string' && e.includes('already using latest version')) {
+                      new Notification('已经是最新版本')
+                    } else {
+                      alert(e)
+                    }
                   } finally {
                     setUpgrading(false)
                   }
