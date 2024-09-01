@@ -26,6 +26,7 @@ const InterfaceModal: React.FC<Props> = (props) => {
   return (
     <Modal
       backdrop="blur"
+      classNames={{ backdrop: 'top-[48px]' }}
       hideCloseButton
       isOpen={true}
       onOpenChange={onClose}
