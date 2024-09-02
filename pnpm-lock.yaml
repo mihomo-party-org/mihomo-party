@@ -15,8 +15,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(electron@32.0.1)
       '@mihomo-party/sysproxy':
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.0.2
+        version: 2.0.2
       adm-zip:
         specifier: ^0.5.16
         version: 0.5.16
@@ -86,7 +86,7 @@ importers:
         version: 3.53.0
       autoprefixer:
         specifier: ^10.4.20
-        version: 10.4.20(postcss@8.4.43)
+        version: 10.4.20(postcss@8.4.44)
       electron:
         specifier: ^32.0.1
         version: 32.0.1
@@ -121,8 +121,8 @@ importers:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       postcss:
-        specifier: ^8.4.43
-        version: 8.4.43
+        specifier: ^8.4.44
+        version: 8.4.44
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -754,50 +754,50 @@ packages:
     resolution: {integrity: sha512-9QOtNffcOF/c1seMCDnjckb3R9WHcG34tky+FHpNKKCW0wc/scYLwMtO+ptyGUfMW0/b/n4qRiALlaFHc9Oj7Q==}
     engines: {node: '>= 10.0.0'}
 
-  '@mihomo-party/sysproxy-darwin-arm64@2.0.1':
-    resolution: {integrity: sha512-w1Alq2bAsG0we+NT2LgzyrQ08uyYFEOGwZ1Be6IXWZ994b1KW2PnCLEil7+SkwjX9WgBSM2ebogYS7HynIM3RA==}
+  '@mihomo-party/sysproxy-darwin-arm64@2.0.2':
+    resolution: {integrity: sha512-/ZxhKlfyM12EpUBj8EvN6n2ddgbIYj/EOD9PrVG2HEByaKtpENUZLi4o6IKFHG8PVBfhxP7tvFQzvIfe+kvqPA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@mihomo-party/sysproxy-darwin-x64@2.0.1':
-    resolution: {integrity: sha512-QSnUhGupDg87NVV2z8sTI1RpIbPuedDhAG7KLL7K6qN5+gfvhbU/uF88uRramEoEdQrPGxKiqII7miNCbIr5ag==}
+  '@mihomo-party/sysproxy-darwin-x64@2.0.2':
+    resolution: {integrity: sha512-PVSfgd6hr3oytIEwN8KkkgstgmXmDf3+y14iCHz7VjOMz3YrsqUtLxMuT5ybSSW6V1EzUE0iIGbOKDketjTVTA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@mihomo-party/sysproxy-linux-arm64-gnu@2.0.1':
-    resolution: {integrity: sha512-tnaZJJvbgg8v5c74kYQVzwOFs61hTFdUmAe5kVq7IuMJ0DcGikYVEXkY/TFA7AnBqI6Oy8Ja2Tm1LWKDsSVooA==}
+  '@mihomo-party/sysproxy-linux-arm64-gnu@2.0.2':
+    resolution: {integrity: sha512-KUz6SC0hxkntIaCfKHd4hYnlYMD7/3sF1gYc+M+3r8i1shSP1zt6wtb1yQcePq3IHCKfmO93mspmiOB7Siv4XQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@mihomo-party/sysproxy-linux-x64-gnu@2.0.1':
-    resolution: {integrity: sha512-zIPJ+UppT/YQdSP+3dNpN8aQeJhbU4C857Mo9eMhARG7Z6afQXsYR96Jw6PRe6YeOmB1LUAzTrpKuSdPJwWOxA==}
+  '@mihomo-party/sysproxy-linux-x64-gnu@2.0.2':
+    resolution: {integrity: sha512-s+zlHoZ/pG2lrLVR5aNYICvo470cKBYnnfnv8K+8YY9Nbw+e/m5WNRGCApElwl2hw1B+fwTyMXClMRHB6AQlDA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@mihomo-party/sysproxy-win32-arm64-msvc@2.0.1':
-    resolution: {integrity: sha512-sPuDb3F7feHux1cFasgCF1+4SQPyntGZCeafdxPCrZvGouHePCplIYE0sMm/h/ikPmeQbDpSe5YNZvHdD+Yw/w==}
+  '@mihomo-party/sysproxy-win32-arm64-msvc@2.0.2':
+    resolution: {integrity: sha512-MrsntgmjPP72g4eahNro6/9TyBSd9H3z6LWxChWk7gKuX4wVJ8bDx+nPrrOQQOo2yk+eWLHFn4pNwQVjyyKtsw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@mihomo-party/sysproxy-win32-ia32-msvc@2.0.1':
-    resolution: {integrity: sha512-RyTsLdwDPbPPfsIFw0NGQmUjQe91SzKaL7E8yT998UYNe/UiZ2+tdY2Yqf70RyQAjbWwMNonc4ozf0XbqJz+qQ==}
+  '@mihomo-party/sysproxy-win32-ia32-msvc@2.0.2':
+    resolution: {integrity: sha512-/YGFu5X7hbnX8VSMFJ06amU//gDRO8qgHqj3H0NzTnhOvMzyPXaL9+o7rLWcfa1MIdX/McjpLA8e1+L8hQPFRg==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
 
-  '@mihomo-party/sysproxy-win32-x64-msvc@2.0.1':
-    resolution: {integrity: sha512-nww1MZGilXSMGDWc8V3ogTI5JMf5AnEY9CSOZZD+EjzPCCbn19IqxnhWcEI9Ozml1EV7JnorfAPAen0ocRbdww==}
+  '@mihomo-party/sysproxy-win32-x64-msvc@2.0.2':
+    resolution: {integrity: sha512-H6H1Sqpyg5JwCwsnpbZ8kNuNo7naDVZ1yq2RS+zp/AHVMvFvnEjQPevf6CnPZ070S25uScGb68NzA0OWuArrMQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
 
-  '@mihomo-party/sysproxy@2.0.1':
-    resolution: {integrity: sha512-JLSuFgyJKXwadcClaSqPeZB5XRkc62SlH84143bfupRxXvCjq1Tz0/YONoqHQF5NJmrNDqYgKqhX3J28WiCtjA==}
+  '@mihomo-party/sysproxy@2.0.2':
+    resolution: {integrity: sha512-VJHGGxFrb7oZRxiJTV5S4UujtwOmnyZ8PUSBrCeaMjiSU9MfTacTaknudcgEPzhsFqurbBCjUrTxV6OP4ZD6Jg==}
     engines: {node: '>= 10'}
 
   '@nextui-org/accordion@2.0.38':
@@ -4052,8 +4052,8 @@ packages:
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
-  postcss@8.4.43:
-    resolution: {integrity: sha512-gJAQVYbh5R3gYm33FijzCZj7CHyQ3hWMgJMprLUlIYqCwTeZhBQ19wp0e9mA25BUbEvY5+EXuuaAjqQsrBxQBQ==}
+  postcss@8.4.44:
+    resolution: {integrity: sha512-Aweb9unOEpQ3ezu4Q00DPvvM2ZTUitJdNKeP/+uQgr1IBIqu574IaZoURId7BKtWMREwzKa9OgzPzezWGPWFQw==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -5507,36 +5507,36 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mihomo-party/sysproxy-darwin-arm64@2.0.1':
+  '@mihomo-party/sysproxy-darwin-arm64@2.0.2':
     optional: true
 
-  '@mihomo-party/sysproxy-darwin-x64@2.0.1':
+  '@mihomo-party/sysproxy-darwin-x64@2.0.2':
     optional: true
 
-  '@mihomo-party/sysproxy-linux-arm64-gnu@2.0.1':
+  '@mihomo-party/sysproxy-linux-arm64-gnu@2.0.2':
     optional: true
 
-  '@mihomo-party/sysproxy-linux-x64-gnu@2.0.1':
+  '@mihomo-party/sysproxy-linux-x64-gnu@2.0.2':
     optional: true
 
-  '@mihomo-party/sysproxy-win32-arm64-msvc@2.0.1':
+  '@mihomo-party/sysproxy-win32-arm64-msvc@2.0.2':
     optional: true
 
-  '@mihomo-party/sysproxy-win32-ia32-msvc@2.0.1':
+  '@mihomo-party/sysproxy-win32-ia32-msvc@2.0.2':
     optional: true
 
-  '@mihomo-party/sysproxy-win32-x64-msvc@2.0.1':
+  '@mihomo-party/sysproxy-win32-x64-msvc@2.0.2':
     optional: true
 
-  '@mihomo-party/sysproxy@2.0.1':
+  '@mihomo-party/sysproxy@2.0.2':
     optionalDependencies:
-      '@mihomo-party/sysproxy-darwin-arm64': 2.0.1
-      '@mihomo-party/sysproxy-darwin-x64': 2.0.1
-      '@mihomo-party/sysproxy-linux-arm64-gnu': 2.0.1
-      '@mihomo-party/sysproxy-linux-x64-gnu': 2.0.1
-      '@mihomo-party/sysproxy-win32-arm64-msvc': 2.0.1
-      '@mihomo-party/sysproxy-win32-ia32-msvc': 2.0.1
-      '@mihomo-party/sysproxy-win32-x64-msvc': 2.0.1
+      '@mihomo-party/sysproxy-darwin-arm64': 2.0.2
+      '@mihomo-party/sysproxy-darwin-x64': 2.0.2
+      '@mihomo-party/sysproxy-linux-arm64-gnu': 2.0.2
+      '@mihomo-party/sysproxy-linux-x64-gnu': 2.0.2
+      '@mihomo-party/sysproxy-win32-arm64-msvc': 2.0.2
+      '@mihomo-party/sysproxy-win32-ia32-msvc': 2.0.2
+      '@mihomo-party/sysproxy-win32-x64-msvc': 2.0.2
 
   '@nextui-org/accordion@2.0.38(@nextui-org/system@2.2.5(@nextui-org/theme@2.2.9(tailwindcss@3.4.10))(framer-motion@11.3.31(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@nextui-org/theme@2.2.9(tailwindcss@3.4.10))(framer-motion@11.3.31(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -7251,7 +7251,7 @@ snapshots:
 
   '@react-stately/toggle@3.7.4(react@18.3.1)':
     dependencies:
-      '@react-stately/utils': 3.10.3(react@18.3.1)
+      '@react-stately/utils': 3.10.1(react@18.3.1)
       '@react-types/checkbox': 3.8.3(react@18.3.1)
       '@swc/helpers': 0.5.12
       react: 18.3.1
@@ -8016,14 +8016,14 @@ snapshots:
 
   at-least-node@1.0.0: {}
 
-  autoprefixer@10.4.20(postcss@8.4.43):
+  autoprefixer@10.4.20(postcss@8.4.44):
     dependencies:
       browserslist: 4.23.3
       caniuse-lite: 1.0.30001655
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.0.1
-      postcss: 8.4.43
+      postcss: 8.4.44
       postcss-value-parser: 4.2.0
 
   available-typed-arrays@1.0.7:
@@ -10102,28 +10102,28 @@ snapshots:
 
   possible-typed-array-names@1.0.0: {}
 
-  postcss-import@15.1.0(postcss@8.4.43):
+  postcss-import@15.1.0(postcss@8.4.44):
     dependencies:
-      postcss: 8.4.43
+      postcss: 8.4.44
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.8
 
-  postcss-js@4.0.1(postcss@8.4.43):
+  postcss-js@4.0.1(postcss@8.4.44):
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.4.43
+      postcss: 8.4.44
 
-  postcss-load-config@4.0.2(postcss@8.4.43):
+  postcss-load-config@4.0.2(postcss@8.4.44):
     dependencies:
       lilconfig: 3.1.2
       yaml: 2.5.0
     optionalDependencies:
-      postcss: 8.4.43
+      postcss: 8.4.44
 
-  postcss-nested@6.2.0(postcss@8.4.43):
+  postcss-nested@6.2.0(postcss@8.4.44):
     dependencies:
-      postcss: 8.4.43
+      postcss: 8.4.44
       postcss-selector-parser: 6.1.2
 
   postcss-selector-parser@6.1.2:
@@ -10133,7 +10133,7 @@ snapshots:
 
   postcss-value-parser@4.2.0: {}
 
-  postcss@8.4.43:
+  postcss@8.4.44:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.0.1
@@ -10756,11 +10756,11 @@ snapshots:
       normalize-path: 3.0.0
       object-hash: 3.0.0
       picocolors: 1.0.1
-      postcss: 8.4.43
-      postcss-import: 15.1.0(postcss@8.4.43)
-      postcss-js: 4.0.1(postcss@8.4.43)
-      postcss-load-config: 4.0.2(postcss@8.4.43)
-      postcss-nested: 6.2.0(postcss@8.4.43)
+      postcss: 8.4.44
+      postcss-import: 15.1.0(postcss@8.4.44)
+      postcss-js: 4.0.1(postcss@8.4.44)
+      postcss-load-config: 4.0.2(postcss@8.4.44)
+      postcss-nested: 6.2.0(postcss@8.4.44)
       postcss-selector-parser: 6.1.2
       resolve: 1.22.8
       sucrase: 3.35.0
@@ -11023,7 +11023,7 @@ snapshots:
   vite@5.4.2(@types/node@22.5.2):
     dependencies:
       esbuild: 0.21.5
-      postcss: 8.4.43
+      postcss: 8.4.44
       rollup: 4.21.2
     optionalDependencies:
       '@types/node': 22.5.2

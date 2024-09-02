@@ -23,7 +23,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
-    "@mihomo-party/sysproxy": "^2.0.1",
+    "@mihomo-party/sysproxy": "^2.0.2",
     "adm-zip": "^0.5.16",
     "axios": "^1.7.7",
     "chokidar": "^3.6.0",
@@ -60,7 +60,7 @@
     "monaco-yaml": "^5.2.2",
     "nanoid": "^5.0.7",
     "next-themes": "^0.3.0",
-    "postcss": "^8.4.43",
+    "postcss": "^8.4.44",
     "prettier": "^3.3.3",
     "pubsub-js": "^1.9.4",
     "react": "^18.3.1",

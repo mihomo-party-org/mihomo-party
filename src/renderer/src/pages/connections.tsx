@@ -96,10 +96,10 @@ const Connections: React.FC = () => {
         <div className="flex">
           <div className="flex items-center">
             <span className="mx-1 text-gray-400">
-              ↑ {calcTraffic(connectionsInfo?.downloadTotal ?? 0)}{' '}
+              ↑ {calcTraffic(connectionsInfo?.uploadTotal ?? 0)}{' '}
             </span>
             <span className="mx-1 text-gray-400">
-              ↓ {calcTraffic(connectionsInfo?.uploadTotal ?? 0)}{' '}
+              ↓ {calcTraffic(connectionsInfo?.downloadTotal ?? 0)}{' '}
             </span>
           </div>
           <Badge color="primary" variant="flat" content={`${filteredConnections.length}`}>
