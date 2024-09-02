@@ -17,6 +17,7 @@ import ProxyItem from '@renderer/components/proxies/proxy-item'
 import { IoIosArrowBack } from 'react-icons/io'
 import { MdOutlineSpeed } from 'react-icons/md'
 import { useGroups } from '@renderer/hooks/use-groups'
+import CollapseInput from '@renderer/components/base/collapse-input'
 
 const Proxies: React.FC = () => {
   const { groups = [], mutate } = useGroups()
@@ -29,17 +30,18 @@ const Proxies: React.FC = () => {
   } = appConfig || {}
   const [cols, setCols] = useState(1)
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
+  const [searchValue, setSearchValue] = useState(Array(groups.length).fill(''))
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const { groupCounts, allProxies } = useMemo(() => {
-    const groupCounts = groups.map((group, index) => {
-      if (!isOpen[index]) return 0
-      const count = Math.floor(group.all.length / cols)
-      return group.all.length % cols === 0 ? count : count + 1
-    })
+    const groupCounts: number[] = []
     const allProxies: (IMihomoProxy | IMihomoGroup)[][] = []
     groups.forEach((group, index) => {
       if (isOpen[index]) {
-        let groupProxies = [...group.all]
+        let groupProxies = group.all.filter((proxy) =>
+          proxy.name.toLowerCase().includes(searchValue[index].toLowerCase())
+        )
+        const count = Math.floor(groupProxies.length / cols)
+        groupCounts.push(groupProxies.length % cols === 0 ? count : count + 1)
         if (proxyDisplayOrder === 'delay') {
           groupProxies = groupProxies.sort((a, b) => {
             if (a.history.length === 0) return -1
@@ -54,12 +56,12 @@ const Proxies: React.FC = () => {
         }
         allProxies.push(groupProxies)
       } else {
+        groupCounts.push(0)
         allProxies.push([])
       }
     })
-
     return { groupCounts, allProxies }
-  }, [groups, isOpen, proxyDisplayOrder, cols])
+  }, [groups, isOpen, proxyDisplayOrder, cols, searchValue])
 
   const onChangeProxy = async (group: string, proxy: string): Promise<void> => {
     await mihomoChangeProxy(group, proxy)
@@ -165,7 +167,7 @@ const Proxies: React.FC = () => {
                 <Card
                   isPressable
                   fullWidth
-                  onPress={() => {
+                  onClick={() => {
                     setIsOpen((prev) => {
                       const newOpen = [...prev]
                       newOpen[index] = !prev[index]
@@ -226,6 +228,17 @@ const Proxies: React.FC = () => {
                             {groups[index].all.length}
                           </Chip>
                         )}
+                        <CollapseInput
+                          title="搜索节点"
+                          value={searchValue[index]}
+                          onValueChange={(v) => {
+                            setSearchValue((prev) => {
+                              const newSearchValue = [...prev]
+                              newSearchValue[index] = v
+                              return newSearchValue
+                            })
+                          }}
+                        />
                         <Button
                           title="定位到当前节点"
                           variant="light"
