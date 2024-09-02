@@ -1,9 +1,9 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import React from 'react'
-import { FaLayerGroup } from 'react-icons/fa6'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { IoLayersOutline } from 'react-icons/io5'
 const ResourceCard: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -43,7 +43,7 @@ const ResourceCard: React.FC = () => {
               variant="flat"
               color="default"
             >
-              <FaLayerGroup
+              <IoLayersOutline
                 color="default"
                 className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
               />

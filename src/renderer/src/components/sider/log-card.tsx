@@ -1,5 +1,5 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
-import { IoJournal } from 'react-icons/io5'
+import { IoJournalOutline } from 'react-icons/io5'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -42,7 +42,7 @@ const LogCard: React.FC = () => {
               variant="flat"
               color="default"
             >
-              <IoJournal
+              <IoJournalOutline
                 color="default"
                 className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
               />
