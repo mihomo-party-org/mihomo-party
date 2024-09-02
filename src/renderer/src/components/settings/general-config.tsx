@@ -9,10 +9,8 @@ import {
   copyEnv,
   disableAutoRun,
   enableAutoRun,
-  isPortable,
   relaunchApp,
-  restartCore,
-  setPortable
+  restartCore
 } from '@renderer/utils/ipc'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
@@ -20,7 +18,6 @@ import { useTheme } from 'next-themes'
 
 const GeneralConfig: React.FC = () => {
   const { data: enable, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
-  const { data: portable, mutate: mutatePortable } = useSWR('isPortable', isPortable)
   const { appConfig, patchAppConfig } = useAppConfig()
   const { setTheme } = useTheme()
   const {
@@ -156,28 +153,6 @@ const GeneralConfig: React.FC = () => {
             />
           </SettingItem>
         </>
-      )}
-      {platform === 'win32' && (
-        <SettingItem title="数据存储路径" divider>
-          <Select
-            className="w-[150px]"
-            size="sm"
-            selectedKeys={new Set([portable ? 'portable' : 'data'])}
-            onSelectionChange={async (v) => {
-              try {
-                await setPortable(v.currentKey === 'portable')
-                await relaunchApp()
-              } catch (e) {
-                alert(e)
-              } finally {
-                mutatePortable()
-              }
-            }}
-          >
-            <SelectItem key="data">AppData</SelectItem>
-            <SelectItem key="portable">安装目录</SelectItem>
-          </Select>
-        </SettingItem>
       )}
       <SettingItem title="使用系统标题栏" divider>
         <Switch

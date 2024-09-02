@@ -44,6 +44,12 @@ jobs:
           npm_config_arch: ${{ matrix.arch }}
           npm_config_target_arch: ${{ matrix.arch }}
         run: pnpm build:win --${{ matrix.arch }}
+      - name: Add Portable Flag
+        run: |
+          New-Item -Path "PORTABLE" -ItemType File
+          Get-ChildItem dist/*portable.7z | ForEach-Object {
+            7z a $_.FullName PORTABLE
+          }
       - name: Generate checksums
         run: pnpm checksum setup.exe portable.7z
       - name: Upload Artifacts

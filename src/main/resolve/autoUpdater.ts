@@ -39,9 +39,9 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
     'darwin-x64': `mihomo-party-macos-${version}-x64.dmg`,
     'darwin-arm64': `mihomo-party-macos-${version}-arm64.dmg`
   }
-  const file = fileMap[`${process.platform}-${process.arch}`]
+  let file = fileMap[`${process.platform}-${process.arch}`]
   if (isPortable()) {
-    throw new Error('便携模式不支持自动更新')
+    file = file.replace('-setup.exe', '-portable.7z')
   }
   if (!file) {
     throw new Error('不支持自动更新，请手动下载更新')

@@ -267,14 +267,6 @@ export async function getInterfaces(): Promise<Record<string, NetworkInterfaceIn
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getInterfaces'))
 }
 
-export async function setPortable(portable: boolean): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setPortable', portable))
-}
-
-export async function isPortable(): Promise<boolean> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('isPortable'))
-}
-
 export async function webdavBackup(): Promise<boolean> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('webdavBackup'))
 }
