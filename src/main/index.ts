@@ -14,7 +14,7 @@ import { initShortcut } from './resolve/shortcut'
 import { execSync } from 'child_process'
 import { createElevateTask } from './sys/misc'
 import { initProfileUpdater } from './core/profileUpdater'
-import { writeFileSync } from 'fs'
+import { existsSync, writeFileSync } from 'fs'
 import { taskDir } from './utils/dirs'
 import path from 'path'
 
@@ -29,7 +29,11 @@ if (process.platform === 'win32' && !is.dev) {
       } else {
         writeFileSync(path.join(taskDir(), 'param.txt'), 'empty')
       }
-      execSync('schtasks /run /tn mihomo-party-run')
+      if (!existsSync(path.join(taskDir(), 'mihomo-party-run.exe'))) {
+        throw new Error('mihomo-party-run.exe not found')
+      } else {
+        execSync('schtasks /run /tn mihomo-party-run')
+      }
     } catch (e) {
       dialog.showErrorBox('首次启动请以管理员权限运行', '首次启动请以管理员权限运行')
     } finally {
