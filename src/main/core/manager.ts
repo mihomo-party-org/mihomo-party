@@ -44,7 +44,13 @@ export async function startCore(): Promise<void> {
   await checkProfile()
   await stopCore()
   if (tun?.enable && autoSetDNS) {
-    await setPublicDNS()
+    try {
+      await setPublicDNS()
+    } catch (error) {
+      await writeFile(logPath(), `[Manager]: set dns failed, ${error}`, {
+        flag: 'a'
+      })
+    }
   }
   child = spawn(corePath, ['-d', mihomoWorkDir()])
   child.on('close', async (code, signal) => {
@@ -93,7 +99,9 @@ export async function stopCore(force = false): Promise<void> {
       await recoverDNS()
     }
   } catch (error) {
-    // todo
+    await writeFile(logPath(), `[Manager]: recover dns failed, ${error}`, {
+      flag: 'a'
+    })
   }
 
   if (child) {
@@ -202,7 +210,7 @@ async function getOriginDNS(password?: string): Promise<void> {
   let sudo = ''
   if (password) sudo = `echo "${password}" | sudo -S `
   const service = await getDefaultService(password)
-  const { stdout: dns } = await execPromise(`${sudo}networksetup -getdnsservers ${service}`)
+  const { stdout: dns } = await execPromise(`${sudo}networksetup -getdnsservers "${service}"`)
   if (dns.startsWith("There aren't any DNS Servers set on")) {
     await patchAppConfig({ originDNS: 'Empty' })
   } else {
@@ -215,8 +223,7 @@ async function setDNS(dns: string, password?: string): Promise<void> {
   let sudo = ''
   if (password) sudo = `echo "${password}" | sudo -S `
   const execPromise = promisify(exec)
-  await execPromise(`${sudo}networksetup -setdnsservers ${service} ${dns}`)
-  // todo
+  await execPromise(`${sudo}networksetup -setdnsservers "${service}" ${dns}`)
 }
 
 async function setPublicDNS(): Promise<void> {
