@@ -192,14 +192,12 @@ async function getDefaultService(password?: string): Promise<string> {
   let device = deviceOut.split('\n').find((s) => s.includes('interface:'))
   device = device?.trim().split(' ').slice(1).join(' ')
   if (!device) throw new Error('Get device failed')
-  const { stdout: hardwareOut } = await execPromise(`${sudo}networksetup -listallhardwareports`)
-  const hardware = hardwareOut
-    .split('Ethernet Address:')
-    .find((s) => s.includes(`Device: ${device}`))
-  if (!hardware) throw new Error('Get hardware failed')
-  for (const line of hardware.split('\n')) {
-    if (line.startsWith('Hardware Port:')) {
-      return line.trim().split(' ').slice(2).join(' ')
+  const { stdout: order } = await execPromise(`${sudo}networksetup -listnetworkserviceorder`)
+  const block = order.split('\n\n').find((s) => s.includes(`Device: ${device}`))
+  if (!block) throw new Error('Get networkservice failed')
+  for (const line of block.split('\n')) {
+    if (line.match(/^\(\d+\).*/)) {
+      return line.trim().split(' ').slice(1).join(' ')
     }
   }
   throw new Error('Get service failed')
