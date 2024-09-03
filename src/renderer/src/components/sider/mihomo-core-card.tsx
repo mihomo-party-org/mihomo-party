@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { IoMdRefresh } from 'react-icons/io'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import PubSub from 'pubsub-js'
 import useSWR from 'swr'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
@@ -15,7 +15,6 @@ const MihomoCoreCard: React.FC = () => {
   const { appConfig } = useAppConfig()
   const { mihomoCoreCardStatus = 'col-span-2' } = appConfig || {}
   const { data: version, mutate } = useSWR('mihomoVersion', mihomoVersion)
-  const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/mihomo')
   const {
@@ -46,6 +45,7 @@ const MihomoCoreCard: React.FC = () => {
 
   return (
     <div
+      ref={setNodeRef} {...attributes} {...listeners}
       style={{
         position: 'relative',
         transform: CSS.Transform.toString(transform),
@@ -57,9 +57,7 @@ const MihomoCoreCard: React.FC = () => {
       {mihomoCoreCardStatus === 'col-span-2' ? (
         <Card
           fullWidth
-          isPressable
-          onPress={() => navigate('/mihomo')}
-          className={`${match ? 'bg-primary' : ''}`}
+          className={`${match ? 'bg-primary' : ''} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
         >
           <CardBody>
             <div
@@ -107,12 +105,10 @@ const MihomoCoreCard: React.FC = () => {
       ) : (
         <Card
           fullWidth
-          className={`${match ? 'bg-primary' : ''}`}
-          isPressable
-          onPress={() => navigate('/mihomo')}
+          className={`${match ? 'bg-primary' : ''} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
         >
           <CardBody className="pb-1 pt-0 px-0">
-            <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+            <div className="flex justify-between">
               <Button
                 isIconOnly
                 className="bg-transparent pointer-events-none"

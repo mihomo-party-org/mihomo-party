@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import BorderSwitch from '@renderer/components/base/border-swtich'
 import { RiScan2Fill } from 'react-icons/ri'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { patchMihomoConfig } from '@renderer/utils/ipc'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { useSortable } from '@dnd-kit/sortable'
@@ -11,7 +11,6 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 const SniffCard: React.FC = () => {
   const { appConfig } = useAppConfig()
   const { sniffCardStatus = 'col-span-1', controlSniff = true } = appConfig || {}
-  const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/sniffer')
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
@@ -35,6 +34,7 @@ const SniffCard: React.FC = () => {
 
   return (
     <div
+      ref={setNodeRef} {...attributes} {...listeners}
       style={{
         position: 'relative',
         transform: CSS.Transform.toString(transform),
@@ -45,12 +45,10 @@ const SniffCard: React.FC = () => {
     >
       <Card
         fullWidth
-        className={`${match ? 'bg-primary' : ''}`}
-        isPressable
-        onPress={() => navigate('/sniffer')}
+        className={`${match ? 'bg-primary' : ''} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
       >
         <CardBody className="pb-1 pt-0 px-0">
-          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+          <div className="flex justify-between">
             <Button
               isIconOnly
               className="bg-transparent pointer-events-none"
