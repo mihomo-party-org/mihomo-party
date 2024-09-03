@@ -22,8 +22,8 @@ const Sniffer: React.FC = () => {
     'skip-domain': skipDomain = ['+.push.apple.com'],
     'force-domain': forceDomain = []
   } = sniffer || {}
-
-  const [values, setValues] = useState({
+  const [changed, setChanged] = useState(false)
+  const [values, originSetValues] = useState({
     parsePureIP,
     forceDNSMapping,
     overrideDestination,
@@ -31,10 +31,19 @@ const Sniffer: React.FC = () => {
     skipDomain,
     forceDomain
   })
+  const setValues = (v: typeof values): void => {
+    originSetValues(v)
+    setChanged(true)
+  }
 
   const onSave = async (patch: Partial<IMihomoConfig>): Promise<void> => {
-    await patchControledMihomoConfig(patch)
-    await restartCore()
+    try {
+      setChanged(false)
+      await patchControledMihomoConfig(patch)
+      await restartCore()
+    } catch (e) {
+      alert(e)
+    }
   }
 
   const handleSniffPortChange = (protocol: keyof typeof sniff, value: string): void => {
@@ -69,25 +78,27 @@ const Sniffer: React.FC = () => {
     <BasePage
       title="域名嗅探设置"
       header={
-        <Button
-          size="sm"
-          className="app-nodrag"
-          color="primary"
-          onPress={() =>
-            onSave({
-              sniffer: {
-                'parse-pure-ip': values.parsePureIP,
-                'force-dns-mapping': values.forceDNSMapping,
-                'override-destination': values.overrideDestination,
-                sniff: values.sniff,
-                'skip-domain': values.skipDomain,
-                'force-domain': values.forceDomain
-              }
-            })
-          }
-        >
-          保存
-        </Button>
+        changed && (
+          <Button
+            size="sm"
+            className="app-nodrag"
+            color="primary"
+            onPress={() =>
+              onSave({
+                sniffer: {
+                  'parse-pure-ip': values.parsePureIP,
+                  'force-dns-mapping': values.forceDNSMapping,
+                  'override-destination': values.overrideDestination,
+                  sniff: values.sniff,
+                  'skip-domain': values.skipDomain,
+                  'force-domain': values.forceDomain
+                }
+              })
+            }
+          >
+            保存
+          </Button>
+        )
       }
     >
       <SettingCard>

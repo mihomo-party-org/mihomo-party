@@ -34,8 +34,8 @@ const DNS: React.FC = () => {
       'https://dns.alidns.com/dns-query'
     ]
   } = dns || {}
-
-  const [values, setValues] = useState({
+  const [changed, setChanged] = useState(false)
+  const [values, originSetValues] = useState({
     ipv6,
     useHosts,
     enhancedMode,
@@ -52,6 +52,11 @@ const DNS: React.FC = () => {
     })),
     hosts: Object.entries(hosts || {}).map(([domain, value]) => ({ domain, value }))
   })
+
+  const setValues = (v: typeof values): void => {
+    originSetValues(v)
+    setChanged(true)
+  }
 
   const handleListChange = (type: string, value: string, index: number): void => {
     const list = [...values[type]]
@@ -112,48 +117,55 @@ const DNS: React.FC = () => {
       ),
       useNameserverPolicy: values.useNameserverPolicy
     })
-    await patchControledMihomoConfig(patch)
-    await restartCore()
+    try {
+      setChanged(false)
+      await patchControledMihomoConfig(patch)
+      await restartCore()
+    } catch (e) {
+      alert(e)
+    }
   }
 
   return (
     <BasePage
       title="DNS 设置"
       header={
-        <Button
-          size="sm"
-          className="app-nodrag"
-          color="primary"
-          onPress={() => {
-            const hostsObject = Object.fromEntries(
-              values.hosts.map(({ domain, value }) => [domain, value])
-            )
-            const dnsConfig = {
-              ipv6: values.ipv6,
-              'fake-ip-range': values.fakeIPRange,
-              'fake-ip-filter': values.fakeIPFilter,
-              'enhanced-mode': values.enhancedMode,
-              'use-hosts': values.useHosts,
-              'use-system-hosts': values.useSystemHosts,
-              'respect-rules': values.respectRules,
-              nameserver: values.nameserver,
-              'proxy-server-nameserver': values.proxyServerNameserver,
-              fallback: [],
-              'fallback-filter': {}
-            }
-            if (values.useNameserverPolicy) {
-              dnsConfig['nameserver-policy'] = Object.fromEntries(
-                values.nameserverPolicy.map(({ domain, value }) => [domain, value])
+        changed && (
+          <Button
+            size="sm"
+            className="app-nodrag"
+            color="primary"
+            onPress={() => {
+              const hostsObject = Object.fromEntries(
+                values.hosts.map(({ domain, value }) => [domain, value])
               )
-            }
-            onSave({
-              dns: dnsConfig,
-              hosts: hostsObject
-            })
-          }}
-        >
-          保存
-        </Button>
+              const dnsConfig = {
+                ipv6: values.ipv6,
+                'fake-ip-range': values.fakeIPRange,
+                'fake-ip-filter': values.fakeIPFilter,
+                'enhanced-mode': values.enhancedMode,
+                'use-hosts': values.useHosts,
+                'use-system-hosts': values.useSystemHosts,
+                'respect-rules': values.respectRules,
+                nameserver: values.nameserver,
+                'proxy-server-nameserver': values.proxyServerNameserver,
+                fallback: [],
+                'fallback-filter': {}
+              }
+              if (values.useNameserverPolicy) {
+                dnsConfig['nameserver-policy'] = Object.fromEntries(
+                  values.nameserverPolicy.map(({ domain, value }) => [domain, value])
+                )
+              }
+              onSave({
+                dns: dnsConfig,
+                hosts: hostsObject
+              })
+            }}
+          >
+            保存
+          </Button>
+        )
       }
     >
       <SettingCard>
