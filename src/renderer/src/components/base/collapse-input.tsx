@@ -17,18 +17,20 @@ const CollapseInput: React.FC<CollapseInputProps> = (props) => {
         {...inputProps}
         style={{ paddingInlineEnd: 0 }}
         classNames={{
-          inputWrapper: 'bg-transparent',
-          input: `w-0 focus:w-[150px] bg-transparent transition-all duration-200`
+          inputWrapper: 'cursor-pointer bg-transparent p-0 data-[hover=true]:bg-content2',
+          input: 'w-0 focus:w-[150px] transition-all duration-200',
+          innerWrapper: 'cursor-pointer p-0'
         }}
         endContent={
-          <FaSearch
-            title={title}
-            className="cursor-pointer text-lg text-default-500"
+          <div
+            className="cursor-pointer p-2 text-lg text-default-500"
             onClick={(e) => {
               e.stopPropagation()
               inputRef.current?.focus()
             }}
-          />
+          >
+            <FaSearch title={title} />
+          </div>
         }
         onClick={(e) => {
           e.stopPropagation()
