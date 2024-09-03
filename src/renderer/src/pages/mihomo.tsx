@@ -22,7 +22,7 @@ const Mihomo: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const {
     ipv6,
-    'external-controller': externalController,
+    'external-controller': externalController = '127.0.0.1:9090',
     secret,
     'log-level': logLevel = 'info',
     'find-process-mode': findProcessMode = 'strict',
@@ -43,7 +43,12 @@ const Mihomo: React.FC = () => {
   const [httpPortInput, setHttpPortInput] = useState(httpPort)
   const [redirPortInput, setRedirPortInput] = useState(redirPort)
   const [tproxyPortInput, setTproxyPortInput] = useState(tproxyPort)
-  const [externalControllerInput, setExternalControllerInput] = useState(externalController)
+  const [externalControllerServerInput, setExternalControllerServerInput] = useState(
+    externalController.split(':')[0]
+  )
+  const [externalControllerPortInput, setExternalControllerPortInput] = useState(
+    externalController.split(':')[1]
+  )
   const [secretInput, setSecretInput] = useState(secret)
 
   const [upgrading, setUpgrading] = useState(false)
@@ -258,15 +263,17 @@ const Mihomo: React.FC = () => {
               </div>
             </SettingItem>
           )}
-          <SettingItem title="外部控制" divider>
+          <SettingItem title="外部控制地址" divider>
             <div className="flex">
-              {externalControllerInput !== externalController && (
+              {externalControllerServerInput !== externalController.split(':')[0] && (
                 <Button
                   size="sm"
                   color="primary"
                   className="mr-2"
                   onPress={() => {
-                    onChangeNeedRestart({ 'external-controller': externalControllerInput })
+                    onChangeNeedRestart({
+                      'external-controller': `${externalControllerServerInput}:${externalControllerPortInput}`
+                    })
                   }}
                 >
                   确认
@@ -275,9 +282,40 @@ const Mihomo: React.FC = () => {
 
               <Input
                 size="sm"
-                value={externalControllerInput}
+                className="w-[200px]"
+                value={externalControllerServerInput}
                 onValueChange={(v) => {
-                  setExternalControllerInput(v)
+                  setExternalControllerServerInput(v)
+                }}
+              />
+            </div>
+          </SettingItem>
+          <SettingItem title="外部控制端口" divider>
+            <div className="flex">
+              {externalControllerPortInput !== externalController.split(':')[1] && (
+                <Button
+                  size="sm"
+                  color="primary"
+                  className="mr-2"
+                  onPress={() => {
+                    onChangeNeedRestart({
+                      'external-controller': `${externalControllerServerInput}:${externalControllerPortInput}`
+                    })
+                  }}
+                >
+                  确认
+                </Button>
+              )}
+
+              <Input
+                size="sm"
+                type="number"
+                max={65535}
+                min={0}
+                className="w-[200px]"
+                value={externalControllerPortInput}
+                onValueChange={(v) => {
+                  setExternalControllerPortInput(v)
                 }}
               />
             </div>
@@ -300,6 +338,7 @@ const Mihomo: React.FC = () => {
               <Input
                 size="sm"
                 type="password"
+                className="w-[200px]"
                 value={secretInput}
                 onValueChange={(v) => {
                   setSecretInput(v)
