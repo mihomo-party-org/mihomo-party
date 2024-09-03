@@ -10,7 +10,8 @@ import {
   disableAutoRun,
   enableAutoRun,
   relaunchApp,
-  restartCore
+  restartCore,
+  startSubStoreServer
 } from '@renderer/utils/ipc'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
@@ -26,6 +27,7 @@ const GeneralConfig: React.FC = () => {
     showTraffic = true,
     proxyInTray = true,
     useWindowFrame = false,
+    useSubStore = true,
     envType = platform === 'win32' ? 'powershell' : 'bash',
     autoCheckUpdate,
     appTheme = 'system'
@@ -154,6 +156,20 @@ const GeneralConfig: React.FC = () => {
           </SettingItem>
         </>
       )}
+      <SettingItem title="启用SubStore" divider>
+        <Switch
+          size="sm"
+          isSelected={useSubStore}
+          onValueChange={async (v) => {
+            try {
+              await patchAppConfig({ useSubStore: v })
+              if (v) await startSubStoreServer()
+            } catch (e) {
+              alert(e)
+            }
+          }}
+        />
+      </SettingItem>
       <SettingItem title="使用系统标题栏" divider>
         <Switch
           size="sm"

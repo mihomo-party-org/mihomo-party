@@ -25,6 +25,10 @@ export function taskDir(): string {
   return dir
 }
 
+export function subStoreDir(): string {
+  return path.join(dataDir(), 'substore')
+}
+
 export function exeDir(): string {
   return path.dirname(exePath())
 }

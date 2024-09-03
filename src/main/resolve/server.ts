@@ -1,8 +1,12 @@
 import { getAppConfig, getControledMihomoConfig } from '../config'
+import { Worker } from 'worker_threads'
+import { subStoreDir } from '../utils/dirs'
 import http from 'http'
 import net from 'net'
+import path from 'path'
 
 export let pacPort: number
+export let subStorePort: number
 
 const defaultPacScript = `
 function FindProxyForURL(url, host) {
@@ -46,4 +50,17 @@ export async function startPacServer(): Promise<void> {
     })
     .listen(pacPort)
   server.unref()
+}
+
+export async function startSubStoreServer(): Promise<void> {
+  const { useSubStore = true } = await getAppConfig()
+  if (!useSubStore) return
+  if (subStorePort) return
+  subStorePort = await findAvailablePort(3000)
+  new Worker(path.join(subStoreDir(), 'sub-store.bundle.js'), {
+    env: {
+      SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
+      SUB_STORE_DATA_BASE_PATH: subStoreDir()
+    }
+  })
 }

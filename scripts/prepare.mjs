@@ -271,6 +271,12 @@ const resolveRunner = () =>
     file: 'mihomo-party-run.exe',
     downloadURL: `https://github.com/pompurin404/mihomo-party-run/releases/download/${arch}/mihomo-party-run.exe`
   })
+const resolveSubstore = () =>
+  resolveResource({
+    file: 'sub-store.bundle.js',
+    downloadURL:
+      'https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store.bundle.js'
+  })
 const resolveFont = async () => {
   const targetPath = path.join(cwd, 'src', 'renderer', 'src', 'assets', 'NotoColorEmoji.ttf')
 
@@ -322,6 +328,11 @@ const tasks = [
     func: resolveRunner,
     retry: 5,
     winOnly: true
+  },
+  {
+    name: 'substore',
+    func: resolveSubstore,
+    retry: 5
   }
 ]
 

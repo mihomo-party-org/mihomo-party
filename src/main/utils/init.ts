@@ -10,7 +10,8 @@ import {
   profileConfigPath,
   profilePath,
   profilesDir,
-  resourcesFilesDir
+  resourcesFilesDir,
+  subStoreDir
 } from './dirs'
 import {
   defaultConfig,
@@ -23,7 +24,7 @@ import yaml from 'yaml'
 import { mkdir, writeFile, copyFile, rm, readdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
-import { startPacServer } from '../resolve/server'
+import { startPacServer, startSubStoreServer } from '../resolve/server'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { getAppConfig } from '../config'
 import { app } from 'electron'
@@ -46,6 +47,9 @@ async function initDirs(): Promise<void> {
   }
   if (!existsSync(mihomoTestDir())) {
     await mkdir(mihomoTestDir())
+  }
+  if (!existsSync(subStoreDir())) {
+    await mkdir(subStoreDir())
   }
 }
 
@@ -79,7 +83,15 @@ async function initFiles(): Promise<void> {
       await copyFile(sourcePath, testTargrtPath)
     }
   }
+  const copySubStore = async (): Promise<void> => {
+    const targetPath = path.join(subStoreDir(), 'sub-store.bundle.js')
+    const sourcePath = path.join(resourcesFilesDir(), 'sub-store.bundle.js')
+    if (existsSync(sourcePath)) {
+      await copyFile(sourcePath, targetPath)
+    }
+  }
   await Promise.all([
+    copySubStore(),
     copy('country.mmdb'),
     copy('geoip.dat'),
     copy('geosite.dat'),
@@ -133,6 +145,7 @@ export async function init(): Promise<void> {
   await initFiles()
   await cleanup()
   await startPacServer()
+  await startSubStoreServer()
   const { sysProxy } = await getAppConfig()
   await triggerSysProxy(sysProxy.enable)
 

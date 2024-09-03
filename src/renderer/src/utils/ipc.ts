@@ -291,6 +291,14 @@ export async function setNativeTheme(theme: 'system' | 'light' | 'dark'): Promis
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setNativeTheme', theme))
 }
 
+export async function startSubStoreServer(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('startSubStoreServer'))
+}
+
+export async function subStorePort(): Promise<number> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('subStorePort'))
+}
+
 export async function openFile(
   type: 'profile' | 'override',
   id: string,

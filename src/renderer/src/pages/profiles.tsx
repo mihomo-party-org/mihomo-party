@@ -11,7 +11,8 @@ import {
 import BasePage from '@renderer/components/base/base-page'
 import ProfileItem from '@renderer/components/profiles/profile-item'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
-import { getFilePath, readTextFile } from '@renderer/utils/ipc'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
+import { getFilePath, readTextFile, subStorePort } from '@renderer/utils/ipc'
 import { useEffect, useRef, useState } from 'react'
 import { MdContentPaste } from 'react-icons/md'
 import {
@@ -25,6 +26,7 @@ import {
 import { SortableContext } from '@dnd-kit/sortable'
 import { FaPlus } from 'react-icons/fa6'
 import { IoMdRefresh } from 'react-icons/io'
+import SubStoreIcon from '@renderer/components/base/substore-icon'
 
 const Profiles: React.FC = () => {
   const {
@@ -36,6 +38,8 @@ const Profiles: React.FC = () => {
     changeCurrentProfile,
     mutateProfileConfig
   } = useProfileConfig()
+  const { appConfig } = useAppConfig()
+  const { useSubStore = true } = appConfig || {}
   const { current, items = [] } = profileConfig || {}
   const [sortedItems, setSortedItems] = useState(items)
   const [useProxy, setUseProxy] = useState(false)
@@ -221,6 +225,21 @@ const Profiles: React.FC = () => {
               <DropdownItem key="new">新建</DropdownItem>
             </DropdownMenu>
           </Dropdown>
+          {useSubStore && (
+            <Button
+              title="SubStore"
+              onPress={async () => {
+                const port = await subStorePort()
+                open(`https://sub-store.vercel.app/subs?api=http://127.0.0.1:${port}`)
+              }}
+              className="ml-2"
+              size="sm"
+              isIconOnly
+              color="primary"
+            >
+              <SubStoreIcon />
+            </Button>
+          )}
         </div>
         <Divider />
       </div>
