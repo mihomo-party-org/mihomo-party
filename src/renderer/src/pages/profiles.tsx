@@ -193,6 +193,21 @@ const Profiles: React.FC = () => {
           >
             导入
           </Button>
+          {useSubStore && (
+            <Button
+              title="SubStore"
+              onPress={async () => {
+                const port = await subStorePort()
+                open(`https://sub-store.vercel.app/subs?api=http://127.0.0.1:${port}`)
+              }}
+              className="ml-2"
+              size="sm"
+              isIconOnly
+              color="primary"
+            >
+              <SubStoreIcon />
+            </Button>
+          )}
           <Dropdown>
             <DropdownTrigger>
               <Button className="ml-2" size="sm" isIconOnly color="primary">
@@ -225,21 +240,6 @@ const Profiles: React.FC = () => {
               <DropdownItem key="new">新建</DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          {useSubStore && (
-            <Button
-              title="SubStore"
-              onPress={async () => {
-                const port = await subStorePort()
-                open(`https://sub-store.vercel.app/subs?api=http://127.0.0.1:${port}`)
-              }}
-              className="ml-2"
-              size="sm"
-              isIconOnly
-              color="primary"
-            >
-              <SubStoreIcon />
-            </Button>
-          )}
         </div>
         <Divider />
       </div>
