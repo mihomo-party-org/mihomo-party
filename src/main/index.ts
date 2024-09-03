@@ -92,10 +92,10 @@ app.whenReady().then(async () => {
     app.quit()
   }
   try {
-    await startCore()
-    setTimeout(() => {
-      initProfileUpdater()
-    }, 0)
+    const [startPromise] = await startCore()
+    startPromise.then(async () => {
+      await initProfileUpdater()
+    })
   } catch (e) {
     dialog.showErrorBox('内核启动出错', `${e}`)
   }

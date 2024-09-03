@@ -34,7 +34,7 @@ chokidar
 let child: ChildProcess
 let retry = 10
 
-export async function startCore(): Promise<void> {
+export async function startCore(): Promise<Promise<void>[]> {
   const { core = 'mihomo', autoSetDNS = true } = await getAppConfig()
   const { tun } = await getControledMihomoConfig()
   const corePath = mihomoCorePath(core)
@@ -64,9 +64,11 @@ export async function startCore(): Promise<void> {
       await stopCore()
     }
   })
+  child.stdout?.on('data', async (data) => {
+    await writeFile(logPath(), data, { flag: 'a' })
+  })
   return new Promise((resolve, reject) => {
     child.stdout?.on('data', async (data) => {
-      await writeFile(logPath(), data, { flag: 'a' })
       if (data.toString().includes('configure tun interface: operation not permitted')) {
         reject('虚拟网卡启动失败, 请尝试手动授予内核权限')
       }
@@ -82,11 +84,19 @@ export async function startCore(): Promise<void> {
           reject('内核连接失败, 请尝试修改外部控制端口或重启电脑')
         }
       }
-      if (data.toString().includes('Start initial Compatible provider default')) {
+      if (data.toString().includes('RESTful API listening at')) {
+        resolve([
+          new Promise((resolve) => {
+            child.stdout?.on('data', async (data) => {
+              if (data.toString().includes('Start initial Compatible provider default')) {
+                mainWindow?.webContents.send('coreRestart')
+                resolve()
+              }
+            })
+          })
+        ])
         await startMihomoTraffic()
-        mainWindow?.webContents.send('coreRestart')
         retry = 10
-        resolve()
       }
     })
   })
