@@ -15,11 +15,7 @@ import {
   mihomoUpgrade,
   mihomoUpgradeGeo,
   mihomoVersion,
-  patchMihomoConfig,
-  startMihomoConnections,
-  startMihomoLogs,
-  stopMihomoConnections,
-  stopMihomoLogs
+  patchMihomoConfig
 } from '../core/mihomoApi'
 import { checkAutoRun, disableAutoRun, enableAutoRun } from '../sys/autoRun'
 import {
@@ -112,10 +108,6 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoGroupDelay', (_e, group, url) =>
     ipcErrorWrapper(mihomoGroupDelay)(group, url)
   )
-  ipcMain.handle('startMihomoLogs', ipcErrorWrapper(startMihomoLogs))
-  ipcMain.handle('stopMihomoLogs', stopMihomoLogs)
-  ipcMain.handle('startMihomoConnections', ipcErrorWrapper(startMihomoConnections))
-  ipcMain.handle('stopMihomoConnections', stopMihomoConnections)
   ipcMain.handle('patchMihomoConfig', (_e, patch) => ipcErrorWrapper(patchMihomoConfig)(patch))
   ipcMain.handle('checkAutoRun', ipcErrorWrapper(checkAutoRun))
   ipcMain.handle('enableAutoRun', ipcErrorWrapper(enableAutoRun))

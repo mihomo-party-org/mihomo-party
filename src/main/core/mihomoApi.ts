@@ -347,24 +347,3 @@ const mihomoConnections = async (): Promise<void> => {
     }
   }
 }
-
-export const pauseWebsockets = () => {
-  const recoverList: (() => void)[] = []
-  // Traffic 内核启动时始终开启
-  stopMihomoTraffic()
-  if (mihomoMemoryWs) {
-    stopMihomoMemory()
-    recoverList.push(startMihomoMemory)
-  }
-  if (mihomoLogsWs) {
-    stopMihomoLogs()
-    recoverList.push(startMihomoLogs)
-  }
-  if (mihomoConnectionsWs) {
-    stopMihomoConnections()
-    recoverList.push(startMihomoConnections)
-  }
-  return (): void => {
-    recoverList.forEach((recover) => recover())
-  }
-}

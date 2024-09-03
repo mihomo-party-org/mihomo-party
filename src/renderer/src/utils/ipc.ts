@@ -75,22 +75,6 @@ export async function mihomoGroupDelay(group: string, url?: string): Promise<IMi
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoGroupDelay', group, url))
 }
 
-export async function startMihomoLogs(): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('startMihomoLogs'))
-}
-
-export async function stopMihomoLogs(): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('stopMihomoLogs'))
-}
-
-export async function startMihomoConnections(): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('startMihomoConnections'))
-}
-
-export async function stopMihomoConnections(): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('stopMihomoConnections'))
-}
-
 export async function patchMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('patchMihomoConfig', patch))
 }

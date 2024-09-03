@@ -1,10 +1,5 @@
 import BasePage from '@renderer/components/base/base-page'
-import {
-  mihomoCloseAllConnections,
-  mihomoCloseConnection,
-  startMihomoConnections,
-  stopMihomoConnections
-} from '@renderer/utils/ipc'
+import { mihomoCloseAllConnections, mihomoCloseConnection } from '@renderer/utils/ipc'
 import { useEffect, useMemo, useState } from 'react'
 import { Badge, Button, Divider, Input, Select, SelectItem } from '@nextui-org/react'
 import { calcTraffic } from '@renderer/utils/calc'
@@ -66,7 +61,6 @@ const Connections: React.FC = () => {
   }, [connections, filter])
 
   useEffect(() => {
-    startMihomoConnections()
     window.electron.ipcRenderer.on('mihomoConnections', (_e, info: IMihomoConnectionsInfo) => {
       setConnectionsInfo(info)
       const newConns: IMihomoConnectionDetail[] = []
@@ -84,7 +78,6 @@ const Connections: React.FC = () => {
     })
 
     return (): void => {
-      stopMihomoConnections()
       window.electron.ipcRenderer.removeAllListeners('mihomoConnections')
     }
   }, [])

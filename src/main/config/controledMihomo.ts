@@ -1,7 +1,7 @@
 import { controledMihomoConfigPath } from '../utils/dirs'
 import { readFile, writeFile } from 'fs/promises'
 import yaml from 'yaml'
-import { getAxios, startMihomoMemory, startMihomoTraffic } from '../core/mihomoApi'
+import { getAxios } from '../core/mihomoApi'
 import { generateProfile } from '../core/factory'
 import { getAppConfig } from './app'
 import { defaultControledMihomoConfig } from '../utils/template'
@@ -50,8 +50,6 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
 
   if (patch['external-controller'] || patch.secret) {
     await getAxios(true)
-    await startMihomoMemory()
-    await startMihomoTraffic()
   }
   await generateProfile()
   await writeFile(controledMihomoConfigPath(), yaml.stringify(controledMihomoConfig), 'utf-8')

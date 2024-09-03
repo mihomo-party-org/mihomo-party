@@ -2,7 +2,6 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcMainHandlers } from './utils/ipc'
 import windowStateKeeper from 'electron-window-state'
 import { app, shell, BrowserWindow, Menu, dialog, Notification } from 'electron'
-import { pauseWebsockets, startMihomoMemory, stopMihomoMemory } from './core/mihomoApi'
 import { addProfileItem, getAppConfig } from './config'
 import { startCore, stopCore } from './core/manager'
 import { triggerSysProxy } from './sys/sysproxy'
@@ -73,7 +72,6 @@ app.on('window-all-closed', (e) => {
 })
 
 app.on('before-quit', async () => {
-  pauseWebsockets()
   await stopCore()
   triggerSysProxy(false)
   app.exit()
@@ -186,13 +184,8 @@ export async function createWindow(): Promise<void> {
     mainWindow?.webContents.reload()
   })
 
-  mainWindow.on('show', () => {
-    startMihomoMemory()
-  })
-
   mainWindow.on('close', (event) => {
     event.preventDefault()
-    stopMihomoMemory()
     mainWindow?.hide()
   })
 

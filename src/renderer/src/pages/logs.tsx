@@ -1,5 +1,4 @@
 import BasePage from '@renderer/components/base/base-page'
-import { startMihomoLogs, stopMihomoLogs } from '@renderer/utils/ipc'
 import LogItem from '@renderer/components/logs/log-item'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Divider, Input } from '@nextui-org/react'
@@ -29,7 +28,6 @@ const Logs: React.FC = () => {
   }, [filteredLogs, trace])
 
   useEffect(() => {
-    startMihomoLogs()
     window.electron.ipcRenderer.on('mihomoLogs', (_e, log: IMihomoLogInfo) => {
       log.time = new Date().toLocaleString()
       setLogs((prevLogs) => {
@@ -38,7 +36,6 @@ const Logs: React.FC = () => {
     })
 
     return (): void => {
-      stopMihomoLogs()
       window.electron.ipcRenderer.removeAllListeners('mihomoLogs')
     }
   }, [])

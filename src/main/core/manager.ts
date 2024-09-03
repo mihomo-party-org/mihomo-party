@@ -10,7 +10,12 @@ import {
 import { generateProfile } from './factory'
 import { getAppConfig, getControledMihomoConfig, patchAppConfig } from '../config'
 import { dialog, safeStorage } from 'electron'
-import { pauseWebsockets, startMihomoTraffic } from './mihomoApi'
+import {
+  startMihomoTraffic,
+  startMihomoConnections,
+  startMihomoLogs,
+  startMihomoMemory
+} from './mihomoApi'
 import chokidar from 'chokidar'
 import { writeFile } from 'fs/promises'
 import { promisify } from 'util'
@@ -96,6 +101,9 @@ export async function startCore(): Promise<Promise<void>[]> {
           })
         ])
         await startMihomoTraffic()
+        await startMihomoConnections()
+        await startMihomoLogs()
+        await startMihomoMemory()
         retry = 10
       }
     })
@@ -121,9 +129,7 @@ export async function stopCore(force = false): Promise<void> {
 
 export async function restartCore(): Promise<void> {
   try {
-    const recover = pauseWebsockets()
     await startCore()
-    recover()
   } catch (e) {
     dialog.showErrorBox('内核启动出错', `${e}`)
   }
