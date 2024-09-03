@@ -31,7 +31,7 @@ const EditFileModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex">
+        <ModalHeader className="flex pb-0">
           <div className="flex justify-start">
             <div className="flex items-center">编辑订阅</div>
             <small className="ml-2 text-default-500">
@@ -53,11 +53,12 @@ const EditFileModal: React.FC<Props> = (props) => {
         <ModalBody className="h-full">
           <BaseEditor language="yaml" value={currData} onChange={(value) => setCurrData(value)} />
         </ModalBody>
-        <ModalFooter>
-          <Button variant="light" onPress={onClose}>
+        <ModalFooter className="pt-0">
+          <Button size="sm" variant="light" onPress={onClose}>
             取消
           </Button>
           <Button
+            size="sm"
             color="primary"
             onPress={async () => {
               await setProfileStr(id, currData)

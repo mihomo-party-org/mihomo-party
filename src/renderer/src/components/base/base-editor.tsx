@@ -39,8 +39,8 @@ const monacoInitialization = (): void => {
 }
 
 export const BaseEditor: React.FC<Props> = (props) => {
-  const { theme } = useTheme()
-
+  const { theme, systemTheme } = useTheme()
+  const trueTheme = theme === 'system' ? systemTheme : theme
   const { value, readOnly = false, language, onChange } = props
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
@@ -73,7 +73,7 @@ export const BaseEditor: React.FC<Props> = (props) => {
       language={language}
       value={value}
       height="100%"
-      theme={theme?.includes('light') ? 'vs' : 'vs-dark'}
+      theme={trueTheme?.includes('light') ? 'vs' : 'vs-dark'}
       options={{
         tabSize: ['yaml', 'javascript', 'json'].includes(language) ? 2 : 4, // 根据语言类型设置缩进大小
         minimap: {

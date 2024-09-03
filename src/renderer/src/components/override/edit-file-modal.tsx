@@ -30,7 +30,7 @@ const EditFileModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex">
+        <ModalHeader className="flex pb-0">
           编辑覆写{language === 'javascript' ? '脚本' : '配置'}
         </ModalHeader>
         <ModalBody className="h-full">
@@ -40,11 +40,12 @@ const EditFileModal: React.FC<Props> = (props) => {
             onChange={(value) => setCurrData(value)}
           />
         </ModalBody>
-        <ModalFooter>
-          <Button variant="light" onPress={onClose}>
+        <ModalFooter className="pt-0">
+          <Button size="sm" variant="light" onPress={onClose}>
             取消
           </Button>
           <Button
+            size="sm"
             color="primary"
             onPress={async () => {
               try {

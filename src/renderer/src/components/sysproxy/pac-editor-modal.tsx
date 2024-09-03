@@ -21,7 +21,7 @@ const PacEditorViewer: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex">编辑PAC脚本</ModalHeader>
+        <ModalHeader className="flex pb-0">编辑PAC脚本</ModalHeader>
         <ModalBody className="h-full">
           <BaseEditor
             language="javascript"
@@ -29,11 +29,11 @@ const PacEditorViewer: React.FC<Props> = (props) => {
             onChange={(value) => setCurrData(value || '')}
           />
         </ModalBody>
-        <ModalFooter>
-          <Button variant="light" onPress={onCancel}>
+        <ModalFooter className="pt-0">
+          <Button size="sm" variant="light" onPress={onCancel}>
             取消
           </Button>
-          <Button color="primary" onPress={() => onConfirm(currData)}>
+          <Button size="sm" color="primary" onPress={() => onConfirm(currData)}>
             确认
           </Button>
         </ModalFooter>
