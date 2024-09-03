@@ -14,7 +14,7 @@ let saveOnTop = false
 
 const BasePage = forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { appConfig } = useAppConfig()
-  const { useWindowFrame = true } = appConfig || {}
+  const { useWindowFrame = false } = appConfig || {}
   const [overlayWidth, setOverlayWidth] = React.useState(0)
   const [onTop, setOnTop] = useState(saveOnTop)
 

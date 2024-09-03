@@ -2,7 +2,7 @@ export const defaultConfig: IAppConfig = {
   core: 'mihomo',
   silentStart: false,
   appTheme: 'system',
-  useWindowFrame: true,
+  useWindowFrame: false,
   proxyInTray: true,
   maxLogDays: 7,
   proxyCols: 'auto',

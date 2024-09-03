@@ -25,7 +25,7 @@ const GeneralConfig: React.FC = () => {
     useDockIcon = true,
     showTraffic = true,
     proxyInTray = true,
-    useWindowFrame = true,
+    useWindowFrame = false,
     envType = platform === 'win32' ? 'powershell' : 'bash',
     autoCheckUpdate,
     appTheme = 'system'

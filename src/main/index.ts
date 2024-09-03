@@ -144,7 +144,7 @@ async function handleDeepLink(url: string): Promise<void> {
 
 export async function createWindow(): Promise<void> {
   Menu.setApplicationMenu(null)
-  const { useWindowFrame = true } = await getAppConfig()
+  const { useWindowFrame = false } = await getAppConfig()
   const mainWindowState = windowStateKeeper({
     defaultWidth: 800,
     defaultHeight: 600

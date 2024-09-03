@@ -38,7 +38,7 @@ const App: React.FC = () => {
     appTheme = 'system',
     controlDns = true,
     controlSniff = true,
-    useWindowFrame = true,
+    useWindowFrame = false,
     siderOrder = [
       'sysproxy',
       'tun',
