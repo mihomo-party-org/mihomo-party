@@ -8,22 +8,25 @@ import { Virtuoso } from 'react-virtuoso'
 import dayjs from 'dayjs'
 import ConnectionDetailModal from '@renderer/components/connections/connection-detail-modal'
 import { CgClose } from 'react-icons/cg'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
+import { HiSortAscending, HiSortDescending } from 'react-icons/hi'
 
 let preData: IMihomoConnectionDetail[] = []
 
 const Connections: React.FC = () => {
   const [filter, setFilter] = useState('')
+  const { appConfig, patchAppConfig } = useAppConfig()
+  const { connectionDirection = 'asc', connectionOrderBy = 'time' } = appConfig || {}
   const [connectionsInfo, setConnectionsInfo] = useState<IMihomoConnectionsInfo>()
   const [connections, setConnections] = useState<IMihomoConnectionDetail[]>([])
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [selected, setSelected] = useState<IMihomoConnectionDetail>()
-  const [direction, setDirection] = useState(true)
-  const [sortBy, setSortBy] = useState('time')
+
   const filteredConnections = useMemo(() => {
-    if (sortBy) {
+    if (connectionOrderBy) {
       connections.sort((a, b) => {
-        if (direction) {
-          switch (sortBy) {
+        if (connectionDirection === 'asc') {
+          switch (connectionOrderBy) {
             case 'time':
               return dayjs(b.start).unix() - dayjs(a.start).unix()
             case 'upload':
@@ -35,9 +38,8 @@ const Connections: React.FC = () => {
             case 'downloadSpeed':
               return (a.downloadSpeed || 0) - (b.downloadSpeed || 0)
           }
-          return 0
         } else {
-          switch (sortBy) {
+          switch (connectionOrderBy) {
             case 'time':
               return dayjs(a.start).unix() - dayjs(b.start).unix()
             case 'upload':
@@ -49,7 +51,6 @@ const Connections: React.FC = () => {
             case 'downloadSpeed':
               return (b.downloadSpeed || 0) - (a.downloadSpeed || 0)
           }
-          return 0
         }
       })
     }
@@ -58,7 +59,7 @@ const Connections: React.FC = () => {
       const raw = JSON.stringify(connection)
       return raw.includes(filter)
     })
-  }, [connections, filter])
+  }, [connections, filter, connectionDirection, connectionOrderBy])
 
   useEffect(() => {
     window.electron.ipcRenderer.on('mihomoConnections', (_e, info: IMihomoConnectionsInfo) => {
@@ -135,9 +136,16 @@ const Connections: React.FC = () => {
           <Select
             size="sm"
             className="w-[180px]"
-            selectedKeys={new Set([sortBy])}
+            selectedKeys={new Set([connectionOrderBy])}
             onSelectionChange={async (v) => {
-              setSortBy(v.currentKey as string)
+              await patchAppConfig({
+                connectionOrderBy: v.currentKey as
+                  | 'time'
+                  | 'upload'
+                  | 'download'
+                  | 'uploadSpeed'
+                  | 'downloadSpeed'
+              })
             }}
           >
             <SelectItem key="upload">上传量</SelectItem>
@@ -148,11 +156,19 @@ const Connections: React.FC = () => {
           </Select>
           <Button
             size="sm"
-            onPress={() => {
-              setDirection((pre) => !pre)
+            isIconOnly
+            className="bg-content2"
+            onPress={async () => {
+              patchAppConfig({
+                connectionDirection: connectionDirection === 'asc' ? 'desc' : 'asc'
+              })
             }}
           >
-            {direction ? '升序' : '降序'}
+            {connectionDirection === 'asc' ? (
+              <HiSortAscending className="text-lg" />
+            ) : (
+              <HiSortDescending className="text-lg" />
+            )}
           </Button>
         </div>
         <Divider />

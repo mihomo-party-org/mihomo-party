@@ -3,6 +3,7 @@ import LogItem from '@renderer/components/logs/log-item'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Divider, Input } from '@nextui-org/react'
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
+import { IoLocationSharp } from 'react-icons/io5'
 
 const Logs: React.FC = () => {
   const [logs, setLogs] = useState<IMihomoLogInfo[]>([])
@@ -53,6 +54,7 @@ const Logs: React.FC = () => {
           />
           <Button
             size="sm"
+            isIconOnly
             className="ml-2"
             color={trace ? 'primary' : 'default'}
             variant={trace ? 'solid' : 'bordered'}
@@ -60,7 +62,7 @@ const Logs: React.FC = () => {
               setTrace((prev) => !prev)
             }}
           >
-            追踪
+            <IoLocationSharp className="text-lg" />
           </Button>
         </div>
         <Divider />
