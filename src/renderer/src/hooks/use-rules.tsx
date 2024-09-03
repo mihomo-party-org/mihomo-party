@@ -8,22 +8,11 @@ interface RulesContextType {
 }
 
 const RulesContext = createContext<RulesContextType | undefined>(undefined)
-let emptyRetry = 10
 
 export const RulesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { data: rules, mutate } = useSWR<IMihomoRulesInfo>('mihomoRules', mihomoRules, {
     errorRetryInterval: 200,
-    errorRetryCount: 10,
-    onSuccess: (data) => {
-      if (data.rules.length === 0 && emptyRetry) {
-        emptyRetry--
-        setTimeout(() => {
-          mutate()
-        }, 200)
-      } else {
-        emptyRetry = 10
-      }
-    }
+    errorRetryCount: 10
   })
 
   React.useEffect(() => {

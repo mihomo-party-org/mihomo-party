@@ -97,7 +97,7 @@ app.whenReady().then(async () => {
       await initProfileUpdater()
     }, 60000)
   } catch (e) {
-    dialog.showErrorBox('内核启动失败', `${e}`)
+    dialog.showErrorBox('内核启动出错', `${e}`)
   }
 
   // Default open or close DevTools by F12 in development

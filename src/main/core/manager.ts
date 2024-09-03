@@ -8,12 +8,7 @@ import {
   mihomoWorkDir
 } from '../utils/dirs'
 import { generateProfile } from './factory'
-import {
-  getAppConfig,
-  getControledMihomoConfig,
-  patchAppConfig,
-  patchControledMihomoConfig
-} from '../config'
+import { getAppConfig, getControledMihomoConfig, patchAppConfig } from '../config'
 import { dialog, safeStorage } from 'electron'
 import { pauseWebsockets, startMihomoTraffic } from './mihomoApi'
 import chokidar from 'chokidar'
@@ -28,8 +23,12 @@ chokidar
     console.log(event, path)
   })
   .on('unlinkDir', async () => {
-    await stopCore(true)
-    await startCore()
+    try {
+      await stopCore(true)
+      await startCore()
+    } catch (e) {
+      dialog.showErrorBox('内核启动出错', `${e}`)
+    }
   })
 
 let child: ChildProcess
@@ -67,28 +66,28 @@ export async function startCore(): Promise<void> {
   })
   return new Promise((resolve, reject) => {
     child.stdout?.on('data', async (data) => {
+      await writeFile(logPath(), data, { flag: 'a' })
       if (data.toString().includes('configure tun interface: operation not permitted')) {
-        await patchControledMihomoConfig({ tun: { enable: false } })
-        mainWindow?.webContents.send('controledMihomoConfigUpdated')
-        dialog.showErrorBox('虚拟网卡启动失败', '请尝试手动授予内核权限')
+        reject('虚拟网卡启动失败, 请尝试手动授予内核权限')
       }
       if (data.toString().includes('External controller listen error')) {
         if (retry) {
           retry--
-          resolve(await startCore())
+          try {
+            resolve(await startCore())
+          } catch (e) {
+            reject(e)
+          }
         } else {
-          dialog.showErrorBox('内核连接失败', '请尝试更改外部控制端口后重启内核')
-          await stopCore()
-          reject('External controller listen error')
+          reject('内核连接失败, 请尝试修改外部控制端口或重启电脑')
         }
       }
-      if (data.toString().includes('RESTful API listening at')) {
+      if (data.toString().includes('Start initial Compatible provider default')) {
         await startMihomoTraffic()
         mainWindow?.webContents.send('coreRestart')
         retry = 10
         resolve()
       }
-      await writeFile(logPath(), data, { flag: 'a' })
     })
   })
 }
@@ -111,9 +110,13 @@ export async function stopCore(force = false): Promise<void> {
 }
 
 export async function restartCore(): Promise<void> {
-  const recover = pauseWebsockets()
-  await startCore()
-  recover()
+  try {
+    const recover = pauseWebsockets()
+    await startCore()
+    recover()
+  } catch (e) {
+    dialog.showErrorBox('内核启动出错', `${e}`)
+  }
 }
 
 async function checkProfile(): Promise<void> {

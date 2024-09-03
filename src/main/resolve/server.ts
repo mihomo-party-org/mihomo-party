@@ -10,7 +10,7 @@ function FindProxyForURL(url, host) {
 }
 `
 
-function findAvailablePort(startPort: number): Promise<number> {
+export function findAvailablePort(startPort: number): Promise<number> {
   return new Promise((resolve, reject) => {
     const server = net.createServer()
     server.unref()
