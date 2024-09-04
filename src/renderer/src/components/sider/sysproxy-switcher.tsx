@@ -48,7 +48,7 @@ const SysproxySwitcher: React.FC = () => {
     >
       <Card
         fullWidth
-        className={`${match ? 'bg-primary' : ''} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
+        className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
       >
         <CardBody className="pb-1 pt-0 px-0">
           <div className="flex justify-between">
