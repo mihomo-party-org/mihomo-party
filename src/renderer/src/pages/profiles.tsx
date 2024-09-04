@@ -34,6 +34,7 @@ import { FaPlus } from 'react-icons/fa6'
 import { IoMdRefresh } from 'react-icons/io'
 import SubStoreIcon from '@renderer/components/base/substore-icon'
 import useSWR from 'swr'
+import { useNavigate } from 'react-router-dom'
 
 const Profiles: React.FC = () => {
   const {
@@ -48,6 +49,7 @@ const Profiles: React.FC = () => {
   const { appConfig } = useAppConfig()
   const { useSubStore = true, useCustomSubStore = false, customSubStoreUrl = '' } = appConfig || {}
   const { current, items = [] } = profileConfig || {}
+  const navigate = useNavigate()
   const [sortedItems, setSortedItems] = useState(items)
   const [useProxy, setUseProxy] = useState(false)
   const [subStoreImporting, setSubStoreImporting] = useState(false)
@@ -65,11 +67,10 @@ const Profiles: React.FC = () => {
     useSubStore ? subStoreCollections : (): undefined => {}
   )
   const subStoreMenuItems = useMemo(() => {
-    console.log(subs, collections)
     const items: { icon?: ReactNode; key: string; name: string; divider: boolean }[] = [
       {
         key: 'open-substore',
-        name: '访问 SubStore',
+        name: '访问 Sub-Store',
         icon: <SubStoreIcon />,
         divider:
           (Boolean(subs) && subs.length > 0) || (Boolean(collections) && collections.length > 0)
@@ -258,18 +259,13 @@ const Profiles: React.FC = () => {
                   isIconOnly
                   color="primary"
                 >
-                  <SubStoreIcon />
+                  <SubStoreIcon className="text-lg" />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
                 onAction={async (key) => {
                   if (key === 'open-substore') {
-                    const port = await subStorePort()
-                    if (useCustomSubStore) {
-                      open(`https://sub-store.vercel.app/subs?api=${customSubStoreUrl}`)
-                    } else {
-                      open(`https://sub-store.vercel.app/subs?api=http://127.0.0.1:${port}`)
-                    }
+                    navigate('/substore')
                   } else if (key.toString().startsWith('sub-')) {
                     setSubStoreImporting(true)
                     try {

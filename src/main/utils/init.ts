@@ -26,7 +26,7 @@ import { existsSync } from 'fs'
 import path from 'path'
 import { startPacServer, startSubStoreServer } from '../resolve/server'
 import { triggerSysProxy } from '../sys/sysproxy'
-import { getAppConfig } from '../config'
+import { getAppConfig, patchAppConfig } from '../config'
 import { app } from 'electron'
 
 async function initDirs(): Promise<void> {
@@ -119,6 +119,31 @@ async function cleanup(): Promise<void> {
   }
 }
 
+async function migration(): Promise<void> {
+  const {
+    siderOrder = [
+      'sysproxy',
+      'tun',
+      'profile',
+      'proxy',
+      'mihomo',
+      'connection',
+      'dns',
+      'sniff',
+      'log',
+      'rule',
+      'resource',
+      'override',
+      'substore'
+    ],
+    useSubStore = true
+  } = await getAppConfig()
+  // add substore sider card
+  if (useSubStore && !siderOrder.includes('substore')) {
+    await patchAppConfig({ siderOrder: [...siderOrder, 'substore'] })
+  }
+}
+
 function initDeeplink(): void {
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
@@ -134,6 +159,7 @@ function initDeeplink(): void {
 export async function init(): Promise<void> {
   await initDirs()
   await initConfig()
+  await migration()
   await initFiles()
   await cleanup()
   await startPacServer()

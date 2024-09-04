@@ -30,7 +30,8 @@ export const defaultConfig: IAppConfig = {
     'log',
     'rule',
     'resource',
-    'override'
+    'override',
+    'substore'
   ],
   sysProxy: { enable: false, mode: 'manual' }
 }

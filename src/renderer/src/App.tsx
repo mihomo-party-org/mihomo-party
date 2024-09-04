@@ -27,10 +27,11 @@ import LogCard from '@renderer/components/sider/log-card'
 import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
 import ResourceCard from '@renderer/components/sider/resource-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
-import { useAppConfig } from './hooks/use-app-config'
-import { setNativeTheme, setTitleBarOverlay } from './utils/ipc'
-import { platform } from './utils/init'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
+import { setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
+import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
+import SubStoreCard from '@renderer/components/sider/substore-card'
 
 const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -38,6 +39,7 @@ const App: React.FC = () => {
     appTheme = 'system',
     controlDns = true,
     controlSniff = true,
+    useSubStore = true,
     useWindowFrame = false,
     siderOrder = [
       'sysproxy',
@@ -51,7 +53,8 @@ const App: React.FC = () => {
       'log',
       'rule',
       'resource',
-      'override'
+      'override',
+      'substore'
     ]
   } = appConfig || {}
   const [order, setOrder] = useState(siderOrder)
@@ -127,7 +130,8 @@ const App: React.FC = () => {
     log: <LogCard key="log" />,
     rule: <RuleCard key="rule" />,
     resource: <ResourceCard key="resource" />,
-    override: <OverrideCard key="override" />
+    override: <OverrideCard key="override" />,
+    substore: <SubStoreCard key="substore" />
   }
 
   return (
@@ -167,6 +171,7 @@ const App: React.FC = () => {
               {order.map((key: string) => {
                 if (key === 'dns' && controlDns === false) return null
                 if (key === 'sniff' && controlSniff === false) return null
+                if (key === 'substore' && useSubStore === false) return null
                 return componentMap[key]
               })}
             </SortableContext>

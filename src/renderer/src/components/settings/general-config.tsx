@@ -163,7 +163,7 @@ const GeneralConfig: React.FC = () => {
           </SettingItem>
         </>
       )}
-      <SettingItem title="启用SubStore" divider>
+      <SettingItem title="启用Sub-Store" divider>
         <Switch
           size="sm"
           isSelected={useSubStore}
@@ -178,7 +178,7 @@ const GeneralConfig: React.FC = () => {
         />
       </SettingItem>
       {useSubStore && (
-        <SettingItem title="使用自建Substore后端" divider>
+        <SettingItem title="使用自建Sub-Store后端" divider>
           <Switch
             size="sm"
             isSelected={useCustomSubStore}
@@ -194,7 +194,7 @@ const GeneralConfig: React.FC = () => {
         </SettingItem>
       )}
       {useCustomSubStore && (
-        <SettingItem title="自建SubStore后端地址" divider>
+        <SettingItem title="自建Sub-Store后端地址" divider>
           <Input
             size="sm"
             className="w-[60%]"
