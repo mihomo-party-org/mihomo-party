@@ -14,7 +14,11 @@ import {
   startMihomoTraffic,
   startMihomoConnections,
   startMihomoLogs,
-  startMihomoMemory
+  startMihomoMemory,
+  stopMihomoConnections,
+  stopMihomoTraffic,
+  stopMihomoLogs,
+  stopMihomoMemory
 } from './mihomoApi'
 import chokidar from 'chokidar'
 import { writeFile } from 'fs/promises'
@@ -22,19 +26,14 @@ import { promisify } from 'util'
 import { mainWindow } from '..'
 import path from 'path'
 
-chokidar
-  .watch(path.join(mihomoCoreDir(), 'meta-update'))
-  .on('all', (event, path) => {
-    console.log(event, path)
-  })
-  .on('unlinkDir', async () => {
-    try {
-      await stopCore(true)
-      await startCore()
-    } catch (e) {
-      dialog.showErrorBox('内核启动出错', `${e}`)
-    }
-  })
+chokidar.watch(path.join(mihomoCoreDir(), 'meta-update')).on('unlinkDir', async () => {
+  try {
+    await stopCore(true)
+    await startCore()
+  } catch (e) {
+    dialog.showErrorBox('内核启动出错', `${e}`)
+  }
+})
 
 let child: ChildProcess
 let retry = 10
@@ -125,6 +124,10 @@ export async function stopCore(force = false): Promise<void> {
     child.removeAllListeners()
     child.kill('SIGINT')
   }
+  stopMihomoTraffic()
+  stopMihomoConnections()
+  stopMihomoLogs()
+  stopMihomoMemory()
 }
 
 export async function restartCore(): Promise<void> {
