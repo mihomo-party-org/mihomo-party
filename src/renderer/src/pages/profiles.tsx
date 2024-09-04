@@ -71,7 +71,7 @@ const Profiles: React.FC = () => {
       {
         key: 'open-substore',
         name: '访问 Sub-Store',
-        icon: <SubStoreIcon />,
+        icon: <SubStoreIcon className="text-lg" />,
         divider:
           (Boolean(subs) && subs.length > 0) || (Boolean(collections) && collections.length > 0)
       }
