@@ -404,7 +404,7 @@ interface IProfileItem {
 
 interface ISubStoreSub {
   name: string
-  displayName: sstring
+  displayName?: string
   icon?: string
   tag?: string[]
 }

@@ -79,7 +79,7 @@ const Profiles: React.FC = () => {
       subs.forEach((sub, index) => {
         items.push({
           key: `sub-${sub.name}`,
-          name: sub.displayName,
+          name: sub.displayName || sub.name,
           icon: sub.icon ? <img src={sub.icon} className="h-[18px] w-[18px]" /> : null,
           divider: index === subs.length - 1 && Boolean(collections) && collections.length > 0
         })
@@ -89,7 +89,7 @@ const Profiles: React.FC = () => {
       collections.forEach((sub) => {
         items.push({
           key: `collection-${sub.name}`,
-          name: sub.displayName,
+          name: sub.displayName || sub.name,
           icon: sub.icon ? <img src={sub.icon} className="h-[18px] w-[18px]" /> : null,
           divider: false
         })
@@ -278,7 +278,7 @@ const Profiles: React.FC = () => {
                         (sub) => sub.name === key.toString().replace('sub-', '')
                       )
                       await addProfileItem({
-                        name: sub?.displayName ?? '',
+                        name: sub?.displayName || sub?.name || '',
                         type: 'remote',
                         url: useCustomSubStore
                           ? `${customSubStoreUrl}/download/${key.toString().replace('sub-', '')}?target=ClashMeta`
@@ -299,7 +299,7 @@ const Profiles: React.FC = () => {
                           collection.name === key.toString().replace('collection-', '')
                       )
                       await addProfileItem({
-                        name: collection?.displayName ?? '',
+                        name: collection?.displayName || collection?.name || '',
                         type: 'remote',
                         url: useCustomSubStore
                           ? `${customSubStoreUrl}/download/collection/${key.toString().replace('collection-', '')}?target=ClashMeta`
