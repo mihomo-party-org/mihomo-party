@@ -53,8 +53,8 @@ export async function startPacServer(): Promise<void> {
 }
 
 export async function startSubStoreServer(): Promise<void> {
-  const { useSubStore = true } = await getAppConfig()
-  if (!useSubStore) return
+  const { useSubStore = true, useCustomSubStore = false } = await getAppConfig()
+  if (!useSubStore || useCustomSubStore) return
   if (subStorePort) return
   subStorePort = await findAvailablePort(3000)
   new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {

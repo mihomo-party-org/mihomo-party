@@ -1,7 +1,7 @@
-import React, { Key } from 'react'
+import React, { Key, useState } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { Button, Select, SelectItem, Switch, Tab, Tabs } from '@nextui-org/react'
+import { Button, Input, Select, SelectItem, Switch, Tab, Tabs } from '@nextui-org/react'
 import { BiCopy } from 'react-icons/bi'
 import useSWR from 'swr'
 import {
@@ -16,6 +16,7 @@ import {
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
 import { useTheme } from 'next-themes'
+import debounce from '@renderer/utils/debounce'
 
 const GeneralConfig: React.FC = () => {
   const { data: enable, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
@@ -28,11 +29,17 @@ const GeneralConfig: React.FC = () => {
     proxyInTray = true,
     useWindowFrame = false,
     useSubStore = true,
+    useCustomSubStore = false,
+    customSubStoreUrl,
     envType = platform === 'win32' ? 'powershell' : 'bash',
     autoCheckUpdate,
     appTheme = 'system'
   } = appConfig || {}
 
+  const [subStoreUrl, setSubStoreUrl] = useState(customSubStoreUrl)
+  const setSubStoreUrlDebounce = debounce((v: string) => {
+    patchAppConfig({ customSubStoreUrl: v })
+  }, 500)
   const onThemeChange = (key: Key, type: 'theme' | 'color'): void => {
     const [theme, color] = appTheme.split('-')
 
@@ -170,6 +177,36 @@ const GeneralConfig: React.FC = () => {
           }}
         />
       </SettingItem>
+      {useSubStore && (
+        <SettingItem title="使用自建Substore后端" divider>
+          <Switch
+            size="sm"
+            isSelected={useCustomSubStore}
+            onValueChange={async (v) => {
+              try {
+                await patchAppConfig({ useCustomSubStore: v })
+                if (!v) await startSubStoreServer()
+              } catch (e) {
+                alert(e)
+              }
+            }}
+          />
+        </SettingItem>
+      )}
+      {useCustomSubStore && (
+        <SettingItem title="自建SubStore后端地址" divider>
+          <Input
+            size="sm"
+            className="w-[60%]"
+            value={subStoreUrl}
+            placeholder="必须包含协议头"
+            onValueChange={(v: string) => {
+              setSubStoreUrl(v)
+              setSubStoreUrlDebounce(v)
+            }}
+          />
+        </SettingItem>
+      )}
       <SettingItem title="使用系统标题栏" divider>
         <Switch
           size="sm"

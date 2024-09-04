@@ -46,7 +46,7 @@ const Profiles: React.FC = () => {
     mutateProfileConfig
   } = useProfileConfig()
   const { appConfig } = useAppConfig()
-  const { useSubStore = true } = appConfig || {}
+  const { useSubStore = true, useCustomSubStore = false, customSubStoreUrl = '' } = appConfig || {}
   const { current, items = [] } = profileConfig || {}
   const [sortedItems, setSortedItems] = useState(items)
   const [useProxy, setUseProxy] = useState(false)
@@ -65,12 +65,14 @@ const Profiles: React.FC = () => {
     useSubStore ? subStoreCollections : (): undefined => {}
   )
   const subStoreMenuItems = useMemo(() => {
+    console.log(subs, collections)
     const items: { icon?: ReactNode; key: string; name: string; divider: boolean }[] = [
       {
         key: 'open-substore',
         name: '访问 SubStore',
         icon: <SubStoreIcon />,
-        divider: Boolean(subs) || Boolean(collections)
+        divider:
+          (Boolean(subs) && subs.length > 0) || (Boolean(collections) && collections.length > 0)
       }
     ]
     if (subs) {
@@ -79,7 +81,7 @@ const Profiles: React.FC = () => {
           key: `sub-${sub.name}`,
           name: sub.displayName,
           icon: sub.icon ? <img src={sub.icon} className="h-[18px] w-[18px]" /> : null,
-          divider: index === subs.length - 1 && Boolean(collections)
+          divider: index === subs.length - 1 && Boolean(collections) && collections.length > 0
         })
       })
     }
@@ -263,7 +265,11 @@ const Profiles: React.FC = () => {
                 onAction={async (key) => {
                   if (key === 'open-substore') {
                     const port = await subStorePort()
-                    open(`https://sub-store.vercel.app/subs?api=http://127.0.0.1:${port}`)
+                    if (useCustomSubStore) {
+                      open(`https://sub-store.vercel.app/subs?api=${customSubStoreUrl}`)
+                    } else {
+                      open(`https://sub-store.vercel.app/subs?api=http://127.0.0.1:${port}`)
+                    }
                   } else if (key.toString().startsWith('sub-')) {
                     setSubStoreImporting(true)
                     try {
@@ -274,7 +280,9 @@ const Profiles: React.FC = () => {
                       await addProfileItem({
                         name: sub?.displayName ?? '',
                         type: 'remote',
-                        url: `http://127.0.0.1:${port}/download/${key.toString().replace('sub-', '')}?target=ClashMeta`,
+                        url: useCustomSubStore
+                          ? `${customSubStoreUrl}/download/${key.toString().replace('sub-', '')}?target=ClashMeta`
+                          : `http://127.0.0.1:${port}/download/${key.toString().replace('sub-', '')}?target=ClashMeta`,
                         useProxy
                       })
                     } catch (e) {
@@ -286,13 +294,16 @@ const Profiles: React.FC = () => {
                     setSubStoreImporting(true)
                     try {
                       const port = await subStorePort()
-                      const sub = collections.find(
-                        (sub) => sub.name === key.toString().replace('sub-', '')
+                      const collection = collections.find(
+                        (collection) =>
+                          collection.name === key.toString().replace('collection-', '')
                       )
                       await addProfileItem({
-                        name: sub?.displayName ?? '',
+                        name: collection?.displayName ?? '',
                         type: 'remote',
-                        url: `http://127.0.0.1:${port}/download/collection/${key.toString().replace('collection-', '')}?target=ClashMeta`,
+                        url: useCustomSubStore
+                          ? `${customSubStoreUrl}/download/collection/${key.toString().replace('collection-', '')}?target=ClashMeta`
+                          : `http://127.0.0.1:${port}/download/collection/${key.toString().replace('collection-', '')}?target=ClashMeta`,
                         useProxy
                       })
                     } catch (e) {

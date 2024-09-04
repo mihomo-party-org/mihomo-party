@@ -220,6 +220,8 @@ interface IAppConfig {
   connectionDirection: 'asc' | 'desc'
   connectionOrderBy: 'time' | 'upload' | 'download' | 'uploadSpeed' | 'downloadSpeed'
   useSubStore: boolean
+  useCustomSubStore?: boolean
+  customSubStoreUrl?: string
   autoSetDNS?: boolean
   originDNS?: string
   useWindowFrame: boolean
