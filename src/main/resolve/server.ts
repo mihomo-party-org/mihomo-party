@@ -1,9 +1,11 @@
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { Worker } from 'worker_threads'
 import { resourcesFilesDir, subStoreDir } from '../utils/dirs'
+import subStoreIcon from '../../../resources/subStoreIcon.png?asset'
 import http from 'http'
 import net from 'net'
 import path from 'path'
+import { nativeImage } from 'electron'
 
 export let pacPort: number
 export let subStorePort: number
@@ -57,10 +59,14 @@ export async function startSubStoreServer(): Promise<void> {
   if (!useSubStore || useCustomSubStore) return
   if (subStorePort) return
   subStorePort = await findAvailablePort(3000)
+  const icon = nativeImage.createFromPath(subStoreIcon)
+  icon.toDataURL()
   new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
     env: {
       SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
-      SUB_STORE_DATA_BASE_PATH: subStoreDir()
+      SUB_STORE_DATA_BASE_PATH: subStoreDir(),
+      SUB_STORE_BACKEND_CUSTOM_ICON: icon.toDataURL(),
+      SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party'
     }
   })
 }
