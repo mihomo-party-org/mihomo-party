@@ -32,7 +32,7 @@ const SubStore: React.FC = () => {
             variant="light"
             onPress={() => {
               open(
-                `https://sub-store.vercel.app/subs?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${port}`}`
+                `https://sub-store.vercel.app?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${port}`}`
               )
             }}
           >
@@ -42,7 +42,7 @@ const SubStore: React.FC = () => {
       >
         <iframe
           className="w-full h-full"
-          src={`https://sub-store.vercel.app/subs?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${port}`}`}
+          src={`https://sub-store.vercel.app?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${port}`}`}
         />
       </BasePage>
     </>

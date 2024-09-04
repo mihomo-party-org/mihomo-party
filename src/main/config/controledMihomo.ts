@@ -47,7 +47,9 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
   if (!useNameserverPolicy) {
     delete controledMihomoConfig?.dns?.['nameserver-policy']
   }
-
+  if (process.platform === 'darwin') {
+    delete controledMihomoConfig?.tun?.device
+  }
   if (patch['external-controller'] || patch.secret) {
     await getAxios(true)
   }

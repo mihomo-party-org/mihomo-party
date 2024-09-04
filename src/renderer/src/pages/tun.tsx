@@ -164,16 +164,19 @@ const Tun: React.FC = () => {
               <Tab key="system" title="系统" />
             </Tabs>
           </SettingItem>
-          <SettingItem title="Tun 网卡名称" divider>
-            <Input
-              size="sm"
-              className="w-[100px]"
-              value={values.device}
-              onValueChange={(v) => {
-                setValues({ ...values, device: v })
-              }}
-            />
-          </SettingItem>
+          {platform !== 'darwin' && (
+            <SettingItem title="Tun 网卡名称" divider>
+              <Input
+                size="sm"
+                className="w-[100px]"
+                value={values.device}
+                onValueChange={(v) => {
+                  setValues({ ...values, device: v })
+                }}
+              />
+            </SettingItem>
+          )}
+
           <SettingItem title="严格路由" divider>
             <Switch
               size="sm"

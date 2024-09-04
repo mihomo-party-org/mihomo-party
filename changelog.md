@@ -4,10 +4,6 @@
 
 ### New Features
 
-- 内置 SubStore 服务
-- 记住连接排列顺序
-- 调整样式细节
-
-### Bug Fixes
-
-- 修复编辑器主题错误
+- 支持使用自建Sub-Store后端
+- 深度集成Sub-Store
+- 优化延迟测试逻辑
