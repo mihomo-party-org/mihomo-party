@@ -42,6 +42,7 @@ const SubStore: React.FC = () => {
       >
         <iframe
           className="w-full h-full"
+          allow="clipboard-write"
           src={`https://sub-store.vercel.app?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${port}`}`}
         />
       </BasePage>

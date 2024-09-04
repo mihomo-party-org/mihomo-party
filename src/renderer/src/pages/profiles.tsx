@@ -1,6 +1,7 @@
 import {
   Button,
   Checkbox,
+  Chip,
   Divider,
   Dropdown,
   DropdownItem,
@@ -67,10 +68,10 @@ const Profiles: React.FC = () => {
     useSubStore ? subStoreCollections : (): undefined => {}
   )
   const subStoreMenuItems = useMemo(() => {
-    const items: { icon?: ReactNode; key: string; name: string; divider: boolean }[] = [
+    const items: { icon?: ReactNode; key: string; children: ReactNode; divider: boolean }[] = [
       {
         key: 'open-substore',
-        name: '访问 Sub-Store',
+        children: '访问 Sub-Store',
         icon: <SubStoreIcon className="text-lg" />,
         divider:
           (Boolean(subs) && subs.length > 0) || (Boolean(collections) && collections.length > 0)
@@ -80,7 +81,20 @@ const Profiles: React.FC = () => {
       subs.forEach((sub, index) => {
         items.push({
           key: `sub-${sub.name}`,
-          name: sub.displayName || sub.name,
+          children: (
+            <div className="flex justify-between">
+              <div>{sub.displayName || sub.name}</div>
+              <div>
+                {sub.tag?.map((tag) => {
+                  return (
+                    <Chip key={tag} size="sm" className="ml-1" radius="sm">
+                      {tag}
+                    </Chip>
+                  )
+                })}
+              </div>
+            </div>
+          ),
           icon: sub.icon ? <img src={sub.icon} className="h-[18px] w-[18px]" /> : null,
           divider: index === subs.length - 1 && Boolean(collections) && collections.length > 0
         })
@@ -90,7 +104,20 @@ const Profiles: React.FC = () => {
       collections.forEach((sub) => {
         items.push({
           key: `collection-${sub.name}`,
-          name: sub.displayName || sub.name,
+          children: (
+            <div className="flex justify-between">
+              <div>{sub.displayName || sub.name}</div>
+              <div>
+                {sub.tag?.map((tag) => {
+                  return (
+                    <Chip key={tag} size="sm" className="ml-1" radius="sm">
+                      {tag}
+                    </Chip>
+                  )
+                })}
+              </div>
+            </div>
+          ),
           icon: sub.icon ? <img src={sub.icon} className="h-[18px] w-[18px]" /> : null,
           divider: false
         })
@@ -313,7 +340,7 @@ const Profiles: React.FC = () => {
               >
                 {subStoreMenuItems.map((item) => (
                   <DropdownItem startContent={item?.icon} key={item.key} showDivider={item.divider}>
-                    {item.name}
+                    {item.children}
                   </DropdownItem>
                 ))}
               </DropdownMenu>
