@@ -60,6 +60,7 @@ import { getInterfaces } from '../sys/interface'
 import { copyEnv } from '../resolve/tray'
 import { registerShortcut } from '../resolve/shortcut'
 import { mainWindow } from '..'
+import { subStoreCollections, subStoreSubs } from '../core/subStoreApi'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -168,6 +169,8 @@ export function registerIpcMainHandlers(): void {
   )
   ipcMain.handle('startSubStoreServer', () => ipcErrorWrapper(startSubStoreServer)())
   ipcMain.handle('subStorePort', () => subStorePort)
+  ipcMain.handle('subStoreSubs', () => ipcErrorWrapper(subStoreSubs)())
+  ipcMain.handle('subStoreCollections', () => ipcErrorWrapper(subStoreCollections)())
   ipcMain.handle('setNativeTheme', (_e, theme) => {
     setNativeTheme(theme)
   })

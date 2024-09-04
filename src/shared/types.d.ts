@@ -399,3 +399,10 @@ interface IProfileItem {
   useProxy?: boolean
   extra?: ISubscriptionUserInfo
 }
+
+interface ISubStoreSub {
+  name: string
+  displayName: sstring
+  icon?: string
+  tag?: string[]
+}

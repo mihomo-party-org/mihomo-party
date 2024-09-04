@@ -299,6 +299,14 @@ export async function subStorePort(): Promise<number> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('subStorePort'))
 }
 
+export async function subStoreSubs(): Promise<ISubStoreSub[]> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('subStoreSubs'))
+}
+
+export async function subStoreCollections(): Promise<ISubStoreSub[]> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('subStoreCollections'))
+}
+
 export async function openFile(
   type: 'profile' | 'override',
   id: string,

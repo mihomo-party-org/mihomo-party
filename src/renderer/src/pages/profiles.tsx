@@ -12,8 +12,14 @@ import BasePage from '@renderer/components/base/base-page'
 import ProfileItem from '@renderer/components/profiles/profile-item'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { getFilePath, readTextFile, subStorePort } from '@renderer/utils/ipc'
-import { useEffect, useRef, useState } from 'react'
+import {
+  getFilePath,
+  readTextFile,
+  subStoreCollections,
+  subStorePort,
+  subStoreSubs
+} from '@renderer/utils/ipc'
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { MdContentPaste } from 'react-icons/md'
 import {
   DndContext,
@@ -27,6 +33,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { FaPlus } from 'react-icons/fa6'
 import { IoMdRefresh } from 'react-icons/io'
 import SubStoreIcon from '@renderer/components/base/substore-icon'
+import useSWR from 'swr'
 
 const Profiles: React.FC = () => {
   const {
@@ -43,11 +50,51 @@ const Profiles: React.FC = () => {
   const { current, items = [] } = profileConfig || {}
   const [sortedItems, setSortedItems] = useState(items)
   const [useProxy, setUseProxy] = useState(false)
+  const [subStoreImporting, setSubStoreImporting] = useState(false)
   const [importing, setImporting] = useState(false)
   const [updating, setUpdating] = useState(false)
   const [fileOver, setFileOver] = useState(false)
   const [url, setUrl] = useState('')
   const sensors = useSensors(useSensor(PointerSensor))
+  const { data: subs = [], mutate: mutateSubs } = useSWR(
+    useSubStore ? 'subStoreSubs' : undefined,
+    useSubStore ? subStoreSubs : (): undefined => {}
+  )
+  const { data: collections = [], mutate: mutateCollections } = useSWR(
+    useSubStore ? 'subStoreCollections' : undefined,
+    useSubStore ? subStoreCollections : (): undefined => {}
+  )
+  const subStoreMenuItems = useMemo(() => {
+    const items: { icon?: ReactNode; key: string; name: string; divider: boolean }[] = [
+      {
+        key: 'open-substore',
+        name: '访问 SubStore',
+        icon: <SubStoreIcon />,
+        divider: Boolean(subs) || Boolean(collections)
+      }
+    ]
+    if (subs) {
+      subs.forEach((sub, index) => {
+        items.push({
+          key: `sub-${sub.name}`,
+          name: sub.displayName,
+          icon: sub.icon ? <img src={sub.icon} className="h-[18px] w-[18px]" /> : null,
+          divider: index === subs.length - 1 && Boolean(collections)
+        })
+      })
+    }
+    if (collections) {
+      collections.forEach((sub) => {
+        items.push({
+          key: `collection-${sub.name}`,
+          name: sub.displayName,
+          icon: sub.icon ? <img src={sub.icon} className="h-[18px] w-[18px]" /> : null,
+          divider: false
+        })
+      })
+    }
+    return items
+  }, [subs, collections])
   const handleImport = async (): Promise<void> => {
     setImporting(true)
     await addProfileItem({ name: '', type: 'remote', url, useProxy })
@@ -194,19 +241,75 @@ const Profiles: React.FC = () => {
             导入
           </Button>
           {useSubStore && (
-            <Button
-              title="SubStore"
-              onPress={async () => {
-                const port = await subStorePort()
-                open(`https://sub-store.vercel.app/subs?api=http://127.0.0.1:${port}`)
+            <Dropdown
+              onOpenChange={() => {
+                mutateSubs()
+                mutateCollections()
               }}
-              className="ml-2"
-              size="sm"
-              isIconOnly
-              color="primary"
             >
-              <SubStoreIcon />
-            </Button>
+              <DropdownTrigger>
+                <Button
+                  isLoading={subStoreImporting}
+                  title="SubStore"
+                  className="ml-2"
+                  size="sm"
+                  isIconOnly
+                  color="primary"
+                >
+                  <SubStoreIcon />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                onAction={async (key) => {
+                  if (key === 'open-substore') {
+                    const port = await subStorePort()
+                    open(`https://sub-store.vercel.app/subs?api=http://127.0.0.1:${port}`)
+                  } else if (key.toString().startsWith('sub-')) {
+                    setSubStoreImporting(true)
+                    try {
+                      const port = await subStorePort()
+                      const sub = subs.find(
+                        (sub) => sub.name === key.toString().replace('sub-', '')
+                      )
+                      await addProfileItem({
+                        name: sub?.displayName ?? '',
+                        type: 'remote',
+                        url: `http://127.0.0.1:${port}/download/${key.toString().replace('sub-', '')}?target=ClashMeta`,
+                        useProxy
+                      })
+                    } catch (e) {
+                      alert(e)
+                    } finally {
+                      setSubStoreImporting(false)
+                    }
+                  } else if (key.toString().startsWith('collection-')) {
+                    setSubStoreImporting(true)
+                    try {
+                      const port = await subStorePort()
+                      const sub = collections.find(
+                        (sub) => sub.name === key.toString().replace('sub-', '')
+                      )
+                      await addProfileItem({
+                        name: sub?.displayName ?? '',
+                        type: 'remote',
+                        url: `http://127.0.0.1:${port}/download/collection/${key.toString().replace('collection-', '')}?target=ClashMeta`,
+                        useProxy
+                      })
+                    } catch (e) {
+                      alert(e)
+                    } finally {
+                      setSubStoreImporting(false)
+                    }
+                  }
+                }}
+              >
+                {subStoreMenuItems.map((item) => (
+                  <DropdownItem startContent={item?.icon} key={item.key} showDivider={item.divider}>
+                    {item.name}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
           )}
           <Dropdown>
             <DropdownTrigger>
