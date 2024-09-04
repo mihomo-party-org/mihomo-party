@@ -83,15 +83,7 @@ async function initFiles(): Promise<void> {
       await copyFile(sourcePath, testTargrtPath)
     }
   }
-  const copySubStore = async (): Promise<void> => {
-    const targetPath = path.join(subStoreDir(), 'sub-store.bundle.js')
-    const sourcePath = path.join(resourcesFilesDir(), 'sub-store.bundle.js')
-    if (existsSync(sourcePath)) {
-      await copyFile(sourcePath, targetPath)
-    }
-  }
   await Promise.all([
-    copySubStore(),
     copy('country.mmdb'),
     copy('geoip.dat'),
     copy('geosite.dat'),

@@ -1,6 +1,6 @@
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { Worker } from 'worker_threads'
-import { subStoreDir } from '../utils/dirs'
+import { resourcesFilesDir, subStoreDir } from '../utils/dirs'
 import http from 'http'
 import net from 'net'
 import path from 'path'
@@ -57,7 +57,7 @@ export async function startSubStoreServer(): Promise<void> {
   if (!useSubStore) return
   if (subStorePort) return
   subStorePort = await findAvailablePort(3000)
-  new Worker(path.join(subStoreDir(), 'sub-store.bundle.js'), {
+  new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
     env: {
       SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
       SUB_STORE_DATA_BASE_PATH: subStoreDir()
