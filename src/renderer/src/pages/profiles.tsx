@@ -263,6 +263,7 @@ const Profiles: React.FC = () => {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
+                className="max-h-[calc(100vh-200px)] overflow-y-auto"
                 onAction={async (key) => {
                   if (key === 'open-substore') {
                     navigate('/substore')
