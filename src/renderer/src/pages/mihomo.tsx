@@ -7,6 +7,7 @@ import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-c
 import { platform } from '@renderer/utils/init'
 import { FaNetworkWired } from 'react-icons/fa'
 import { IoMdCloudDownload } from 'react-icons/io'
+import PubSub from 'pubsub-js'
 import { mihomoUpgrade, restartCore, triggerSysProxy } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import InterfaceModal from '@renderer/components/mihomo/interface-modal'

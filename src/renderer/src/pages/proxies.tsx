@@ -30,6 +30,7 @@ const Proxies: React.FC = () => {
   } = appConfig || {}
   const [cols, setCols] = useState(1)
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
+  const [delaying, setDelaying] = useState(Array(groups.length).fill(false))
   const [searchValue, setSearchValue] = useState(Array(groups.length).fill(''))
   const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const { groupCounts, allProxies } = useMemo(() => {
@@ -76,9 +77,19 @@ const Proxies: React.FC = () => {
     return await mihomoProxyDelay(proxy, url)
   }
 
-  const onGroupDelay = async (group: string, url?: string): Promise<void> => {
-    PubSub.publish(`${group}-delay`)
-    await mihomoGroupDelay(group, url)
+  const onGroupDelay = async (index: number): Promise<void> => {
+    setDelaying((prev) => {
+      const newDelaying = [...prev]
+      newDelaying[index] = true
+      return newDelaying
+    })
+    await mihomoGroupDelay(groups[index].name, groups[index].testUrl)
+    setDelaying((prev) => {
+      const newDelaying = [...prev]
+      newDelaying[index] = false
+      return newDelaying
+    })
+    mutate()
   }
 
   const calcCols = (): number => {
@@ -267,10 +278,11 @@ const Proxies: React.FC = () => {
                         <Button
                           title="延迟测试"
                           variant="light"
+                          isLoading={delaying[index]}
                           size="sm"
                           isIconOnly
                           onPress={() => {
-                            onGroupDelay(groups[index].name, groups[index].testUrl)
+                            onGroupDelay(index)
                           }}
                         >
                           <MdOutlineSpeed className="text-lg text-default-500" />

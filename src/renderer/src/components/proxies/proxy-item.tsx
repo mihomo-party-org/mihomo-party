@@ -1,6 +1,5 @@
 import { Button, Card, CardBody } from '@nextui-org/react'
-import React, { useEffect, useMemo, useState } from 'react'
-import PubSub from 'pubsub-js'
+import React, { useMemo, useState } from 'react'
 
 interface Props {
   mutateProxies: () => void
@@ -45,13 +44,6 @@ const ProxyItem: React.FC<Props> = (props) => {
     })
   }
 
-  useEffect(() => {
-    const token = PubSub.subscribe(`${group.name}-delay`, onDelay)
-
-    return (): void => {
-      PubSub.unsubscribe(token)
-    }
-  }, [])
   const fixed = group.fixed && group.fixed === proxy.name
 
   return (

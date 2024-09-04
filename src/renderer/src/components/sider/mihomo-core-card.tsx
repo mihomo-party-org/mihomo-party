@@ -6,6 +6,7 @@ import { IoMdRefresh } from 'react-icons/io'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useLocation, useNavigate } from 'react-router-dom'
+import PubSub from 'pubsub-js'
 import useSWR from 'swr'
 
 const MihomoCoreCard: React.FC = () => {
