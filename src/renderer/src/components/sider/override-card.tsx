@@ -24,7 +24,6 @@ const OverrideCard: React.FC = () => {
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   return (
     <div
-      ref={setNodeRef} {...attributes} {...listeners}
       style={{
         position: 'relative',
         transform: CSS.Transform.toString(transform),
@@ -35,6 +34,7 @@ const OverrideCard: React.FC = () => {
     >
       <Card
         fullWidth
+        ref={setNodeRef} {...attributes} {...listeners}
         className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
       >
         <CardBody className="pb-1 pt-0 px-0">

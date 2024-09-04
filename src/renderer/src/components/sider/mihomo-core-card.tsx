@@ -45,7 +45,6 @@ const MihomoCoreCard: React.FC = () => {
 
   return (
     <div
-      ref={setNodeRef} {...attributes} {...listeners}
       style={{
         position: 'relative',
         transform: CSS.Transform.toString(transform),
@@ -57,6 +56,7 @@ const MihomoCoreCard: React.FC = () => {
       {mihomoCoreCardStatus === 'col-span-2' ? (
         <Card
           fullWidth
+          ref={setNodeRef} {...attributes} {...listeners}
           className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
         >
           <CardBody>
@@ -105,6 +105,7 @@ const MihomoCoreCard: React.FC = () => {
       ) : (
         <Card
           fullWidth
+          ref={setNodeRef} {...attributes} {...listeners}
           className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
         >
           <CardBody className="pb-1 pt-0 px-0">
