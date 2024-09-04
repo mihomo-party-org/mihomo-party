@@ -167,7 +167,7 @@ export async function autoGrantCorePermition(corePath: string): Promise<void> {
     if (process.platform === 'linux') {
       try {
         await execPromise(
-          `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_sys_ptrace,cap_dac_read_search,cap_dac_override,cap_net_raw=+ep ${corePath}`
+          `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_sys_ptrace,cap_dac_read_search,cap_dac_override,cap_net_raw=+ep "${corePath}"`
         )
       } catch (error) {
         patchAppConfig({ encryptedPassword: undefined })
@@ -176,8 +176,8 @@ export async function autoGrantCorePermition(corePath: string): Promise<void> {
     }
     if (process.platform === 'darwin') {
       try {
-        await execPromise(`echo "${password}" | sudo -S chown root:admin ${corePath}`)
-        await execPromise(`echo "${password}" | sudo -S chmod +sx ${corePath}`)
+        await execPromise(`echo "${password}" | sudo -S chown root:admin "${corePath}"`)
+        await execPromise(`echo "${password}" | sudo -S chmod +sx "${corePath}"`)
       } catch (error) {
         patchAppConfig({ encryptedPassword: undefined })
         throw error
@@ -191,13 +191,13 @@ export async function manualGrantCorePermition(password?: string): Promise<void>
   const corePath = mihomoCorePath(core)
   const execPromise = promisify(exec)
   if (process.platform === 'darwin') {
-    const shell = `chown root:admin ${corePath}\nchmod +sx ${corePath}`
+    const shell = `chown root:admin ${corePath.replace(' ', '\\\\ ')}\nchmod +sx ${corePath.replace(' ', '\\\\ ')}`
     const command = `do shell script "${shell}" with administrator privileges`
     await execPromise(`osascript -e '${command}'`)
   }
   if (process.platform === 'linux') {
     await execPromise(
-      `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_sys_ptrace,cap_dac_read_search,cap_dac_override,cap_net_raw=+ep ${corePath}`
+      `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_sys_ptrace,cap_dac_read_search,cap_dac_override,cap_net_raw=+ep "${corePath}"`
     )
   }
 }
