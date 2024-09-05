@@ -8,8 +8,13 @@ import {
   mihomoWorkDir
 } from '../utils/dirs'
 import { generateProfile } from './factory'
-import { getAppConfig, getControledMihomoConfig, patchAppConfig } from '../config'
-import { dialog, safeStorage } from 'electron'
+import {
+  getAppConfig,
+  getControledMihomoConfig,
+  patchAppConfig,
+  patchControledMihomoConfig
+} from '../config'
+import { dialog, ipcMain, safeStorage } from 'electron'
 import {
   startMihomoTraffic,
   startMihomoConnections,
@@ -74,6 +79,9 @@ export async function startCore(): Promise<Promise<void>[]> {
   return new Promise((resolve, reject) => {
     child.stdout?.on('data', async (data) => {
       if (data.toString().includes('configure tun interface: operation not permitted')) {
+        patchControledMihomoConfig({ tun: { enable: false } })
+        mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        ipcMain.emit('updateTrayMenu')
         reject('虚拟网卡启动失败, 请尝试手动授予内核权限')
       }
       if (data.toString().includes('External controller listen error')) {

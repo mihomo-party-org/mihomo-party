@@ -71,7 +71,9 @@ const TunSwitcher: React.FC = () => {
             try {
               const encrypted = await encryptString(password)
               await patchAppConfig({ encryptedPassword: encrypted })
+              await patchControledMihomoConfig({ tun: { enable: true }, dns: { enable: true } })
               await restartCore()
+              window.electron.ipcRenderer.send('updateTrayMenu')
               setOpenPasswordModal(false)
             } catch (e) {
               alert(e)
