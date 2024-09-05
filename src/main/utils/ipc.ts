@@ -42,7 +42,7 @@ import {
   setOverride,
   updateOverrideItem
 } from '../config'
-import { startSubStoreServer, subStorePort } from '../resolve/server'
+import { startSubStoreServer, subStoreFrontendPort, subStorePort } from '../resolve/server'
 import { isEncryptionAvailable, manualGrantCorePermition, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { checkUpdate, downloadAndInstallUpdate } from '../resolve/autoUpdater'
@@ -169,6 +169,7 @@ export function registerIpcMainHandlers(): void {
   )
   ipcMain.handle('startSubStoreServer', () => ipcErrorWrapper(startSubStoreServer)())
   ipcMain.handle('subStorePort', () => subStorePort)
+  ipcMain.handle('subStoreFrontendPort', () => subStoreFrontendPort)
   ipcMain.handle('subStoreSubs', () => ipcErrorWrapper(subStoreSubs)())
   ipcMain.handle('subStoreCollections', () => ipcErrorWrapper(subStoreCollections)())
   ipcMain.handle('setNativeTheme', (_e, theme) => {

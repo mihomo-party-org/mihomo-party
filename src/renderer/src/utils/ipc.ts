@@ -299,6 +299,10 @@ export async function subStorePort(): Promise<number> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('subStorePort'))
 }
 
+export async function subStoreFrontendPort(): Promise<number> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('subStoreFrontendPort'))
+}
+
 export async function subStoreSubs(): Promise<ISubStoreSub[]> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('subStoreSubs'))
 }

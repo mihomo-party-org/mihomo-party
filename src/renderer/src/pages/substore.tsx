@@ -1,24 +1,25 @@
 import { Button } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { subStorePort } from '@renderer/utils/ipc'
+import { subStoreFrontendPort, subStorePort } from '@renderer/utils/ipc'
 import React, { useEffect, useState } from 'react'
 import { HiExternalLink } from 'react-icons/hi'
 
 const SubStore: React.FC = () => {
   const { appConfig } = useAppConfig()
   const { useCustomSubStore, customSubStoreUrl } = appConfig || {}
-  const [port, setPort] = useState<number | undefined>()
-
+  const [backendPort, setBackendPort] = useState<number | undefined>()
+  const [frontendPort, setFrontendPort] = useState<number | undefined>()
   const getPort = async (): Promise<void> => {
-    setPort(await subStorePort())
+    setBackendPort(await subStorePort())
+    setFrontendPort(await subStoreFrontendPort())
   }
   useEffect(() => {
     if (!useCustomSubStore) {
       getPort()
     }
   }, [useCustomSubStore])
-  if (!useCustomSubStore && !port) return null
+  if (!backendPort || !frontendPort) return null
   return (
     <>
       <BasePage
@@ -32,7 +33,7 @@ const SubStore: React.FC = () => {
             variant="light"
             onPress={() => {
               open(
-                `https://sub-store.vercel.app?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${port}`}`
+                `http://127.0.0.1:${frontendPort}?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${backendPort}`}`
               )
             }}
           >
@@ -43,7 +44,7 @@ const SubStore: React.FC = () => {
         <iframe
           className="w-full h-full"
           allow="clipboard-write"
-          src={`https://sub-store.vercel.app?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${port}`}`}
+          src={`http://127.0.0.1:${frontendPort}?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${backendPort}`}`}
         />
       </BasePage>
     </>

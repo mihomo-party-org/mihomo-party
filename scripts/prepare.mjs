@@ -277,6 +277,27 @@ const resolveSubstore = () =>
     downloadURL:
       'https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store.bundle.js'
   })
+const resolveSubstoreFrontend = async () => {
+  const tempDir = path.join(TEMP_DIR, 'substore-frontend')
+  const tempZip = path.join(tempDir, 'dist.zip')
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true })
+  }
+  await downloadFile(
+    'https://github.com/sub-store-org/Sub-Store-Front-End/releases/latest/download/dist.zip',
+    tempZip
+  )
+  const zip = new AdmZip(tempZip)
+  const resDir = path.join(cwd, 'extra', 'files')
+  const targetPath = path.join(resDir, 'sub-store-frontend')
+  if (fs.existsSync(targetPath)) {
+    fs.rmSync(targetPath, { recursive: true })
+  }
+  zip.extractAllTo(resDir, true)
+  fs.renameSync(path.join(resDir, 'dist'), targetPath)
+
+  console.log(`[INFO]: sub-store-frontend finished`)
+}
 const resolveFont = async () => {
   const targetPath = path.join(cwd, 'src', 'renderer', 'src', 'assets', 'NotoColorEmoji.ttf')
 
@@ -332,6 +353,11 @@ const tasks = [
   {
     name: 'substore',
     func: resolveSubstore,
+    retry: 5
+  },
+  {
+    name: 'substorefrontend',
+    func: resolveSubstoreFrontend,
     retry: 5
   }
 ]

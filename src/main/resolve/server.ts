@@ -6,9 +6,11 @@ import http from 'http'
 import net from 'net'
 import path from 'path'
 import { nativeImage } from 'electron'
+import express from 'express'
 
 export let pacPort: number
 export let subStorePort: number
+export let subStoreFrontendPort: number
 
 const defaultPacScript = `
 function FindProxyForURL(url, host) {
@@ -59,6 +61,7 @@ export async function startSubStoreServer(): Promise<void> {
   if (!useSubStore || useCustomSubStore) return
   if (subStorePort) return
   subStorePort = await findAvailablePort(3000)
+  subStoreFrontendPort = await findAvailablePort(4000)
   const icon = nativeImage.createFromPath(subStoreIcon)
   icon.toDataURL()
   new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
@@ -69,4 +72,7 @@ export async function startSubStoreServer(): Promise<void> {
       SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party'
     }
   })
+  const app = express()
+  app.use(express.static(path.join(resourcesFilesDir(), 'sub-store-frontend')))
+  app.listen(subStoreFrontendPort)
 }
