@@ -122,7 +122,7 @@ const Sniffer: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="对真实IP映射嗅探" divider>
+        <SettingItem title="对真实 IP 映射嗅探" divider>
           <Switch
             size="sm"
             isSelected={values.forceDNSMapping}
@@ -131,7 +131,7 @@ const Sniffer: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="对未映射IP地址嗅探" divider>
+        <SettingItem title="对未映射 IP 地址嗅探" divider>
           <Switch
             size="sm"
             isSelected={values.parsePureIP}

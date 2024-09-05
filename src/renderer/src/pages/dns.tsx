@@ -176,8 +176,8 @@ const DNS: React.FC = () => {
             selectedKey={values.enhancedMode}
             onSelectionChange={(key: Key) => setValues({ ...values, enhancedMode: key as DnsMode })}
           >
-            <Tab key="fake-ip" title="虚假IP" />
-            <Tab key="redir-host" title="真实IP" />
+            <Tab key="fake-ip" title="虚假 IP" />
+            <Tab key="redir-host" title="真实 IP" />
             <Tab key="normal" title="取消映射" />
           </Tabs>
         </SettingItem>
@@ -194,7 +194,7 @@ const DNS: React.FC = () => {
               />
             </SettingItem>
             <div className="flex flex-col items-stretch">
-              <h3>真实IP回应</h3>
+              <h3>真实 IP 回应</h3>
               {renderListInputs('fakeIPFilter', '例: +.lan')}
             </div>
             <Divider className="my-2" />
@@ -225,7 +225,7 @@ const DNS: React.FC = () => {
         </div>
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
-          <h3>DNS服务器</h3>
+          <h3>DNS 服务器</h3>
           {renderListInputs('nameserver', '例: tls://223.5.5.5')}
         </div>
         <Divider className="my-2" />
@@ -266,7 +266,7 @@ const DNS: React.FC = () => {
                       <Input
                         size="sm"
                         fullWidth
-                        placeholder="DNS服务器"
+                        placeholder="DNS 服务器"
                         value={Array.isArray(value) ? value.join(',') : value}
                         onValueChange={(v) =>
                           handleSubkeyChange('nameserverPolicy', domain, v, index)
@@ -290,7 +290,7 @@ const DNS: React.FC = () => {
             </div>
           </div>
         )}
-        <SettingItem title="使用系统hosts" divider>
+        <SettingItem title="使用系统 Hosts" divider>
           <Switch
             size="sm"
             isSelected={values.useSystemHosts}
@@ -299,7 +299,7 @@ const DNS: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="自定义hosts">
+        <SettingItem title="自定义 Hosts">
           <Switch
             size="sm"
             isSelected={values.useHosts}
@@ -334,7 +334,7 @@ const DNS: React.FC = () => {
                   <Input
                     size="sm"
                     fullWidth
-                    placeholder="域名或IP"
+                    placeholder="域名或 IP"
                     value={Array.isArray(value) ? value.join(',') : value}
                     onValueChange={(v) => handleSubkeyChange('hosts', domain, v, index)}
                   />

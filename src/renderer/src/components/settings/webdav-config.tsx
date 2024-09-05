@@ -23,7 +23,7 @@ const WebdavConfig: React.FC = () => {
     setBackuping(true)
     try {
       await webdavBackup()
-      new window.Notification('备份成功', { body: '备份文件已上传至WebDav' })
+      new window.Notification('备份成功', { body: '备份文件已上传至 WebDav' })
     } catch (e) {
       alert(e)
     } finally {
@@ -49,7 +49,7 @@ const WebdavConfig: React.FC = () => {
         <WebdavRestoreModal filenames={filenames} onClose={() => setRestoreOpen(false)} />
       )}
       <SettingCard>
-        <SettingItem title="WebDav地址" divider>
+        <SettingItem title="WebDav 地址" divider>
           <Input
             size="sm"
             className="w-[60%]"
@@ -60,7 +60,7 @@ const WebdavConfig: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="WebDav用户名" divider>
+        <SettingItem title="WebDav 用户名" divider>
           <Input
             size="sm"
             className="w-[60%]"
@@ -71,7 +71,7 @@ const WebdavConfig: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="WebDav密码" divider>
+        <SettingItem title="WebDav 密码" divider>
           <Input
             size="sm"
             className="w-[60%]"

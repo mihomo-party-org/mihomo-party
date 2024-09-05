@@ -129,7 +129,7 @@ const Sysproxy: React.FC = () => {
             size="sm"
             className="w-[50%]"
             value={values.host}
-            placeholder="默认127.0.0.1若无特殊需求请勿修改"
+            placeholder="默认 127.0.0.1 若无特殊需求请勿修改"
             onValueChange={(v) => {
               setValues({ ...values, host: v })
             }}
@@ -162,7 +162,7 @@ const Sysproxy: React.FC = () => {
         {values.mode === 'auto' && (
           <SettingItem title="代理模式">
             <Button size="sm" onPress={() => setOpenPacEditor(true)} variant="bordered">
-              编辑PAC脚本
+              编辑 PAC 脚本
             </Button>
           </SettingItem>
         )}

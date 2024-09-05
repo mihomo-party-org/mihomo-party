@@ -142,7 +142,7 @@ const GeneralConfig: React.FC = () => {
       )}
       {platform === 'darwin' && (
         <>
-          <SettingItem title="显示Dock图标" divider>
+          <SettingItem title="显示 Dock 图标" divider>
             <Switch
               size="sm"
               isSelected={useDockIcon}
@@ -163,7 +163,7 @@ const GeneralConfig: React.FC = () => {
           </SettingItem>
         </>
       )}
-      <SettingItem title="启用Sub-Store" divider>
+      <SettingItem title="启用 Sub-Store" divider>
         <Switch
           size="sm"
           isSelected={useSubStore}
@@ -178,7 +178,7 @@ const GeneralConfig: React.FC = () => {
         />
       </SettingItem>
       {useSubStore && (
-        <SettingItem title="使用自建Sub-Store后端" divider>
+        <SettingItem title="使用自建 Sub-Store 后端" divider>
           <Switch
             size="sm"
             isSelected={useCustomSubStore}
@@ -194,7 +194,7 @@ const GeneralConfig: React.FC = () => {
         </SettingItem>
       )}
       {useCustomSubStore && (
-        <SettingItem title="自建Sub-Store后端地址" divider>
+        <SettingItem title="自建 Sub-Store 后端地址" divider>
           <Input
             size="sm"
             className="w-[60%]"

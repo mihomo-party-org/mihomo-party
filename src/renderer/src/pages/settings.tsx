@@ -32,7 +32,7 @@ const Settings: React.FC = () => {
             size="sm"
             variant="light"
             className="app-nodrag"
-            title="GitHub仓库"
+            title="GitHub 仓库"
             onPress={() => {
               window.open('https://github.com/pompurin404/mihomo-party')
             }}
@@ -44,7 +44,7 @@ const Settings: React.FC = () => {
             size="sm"
             variant="light"
             className="app-nodrag"
-            title="Telegram群组"
+            title="Telegram 群组"
             onPress={() => {
               window.open('https://t.me/mihomo_party')
             }}

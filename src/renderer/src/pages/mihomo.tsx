@@ -148,7 +148,7 @@ const Mihomo: React.FC = () => {
               />
             </div>
           </SettingItem>
-          <SettingItem title="Socks端口" divider>
+          <SettingItem title="Socks 端口" divider>
             <div className="flex">
               {socksPortInput !== socksPort && (
                 <Button
@@ -176,7 +176,7 @@ const Mihomo: React.FC = () => {
               />
             </div>
           </SettingItem>
-          <SettingItem title="Http端口" divider>
+          <SettingItem title="Http 端口" divider>
             <div className="flex">
               {httpPortInput !== httpPort && (
                 <Button
@@ -205,7 +205,7 @@ const Mihomo: React.FC = () => {
             </div>
           </SettingItem>
           {platform !== 'win32' && (
-            <SettingItem title="Redir端口" divider>
+            <SettingItem title="Redir 端口" divider>
               <div className="flex">
                 {redirPortInput !== redirPort && (
                   <Button
@@ -235,7 +235,7 @@ const Mihomo: React.FC = () => {
             </SettingItem>
           )}
           {platform === 'linux' && (
-            <SettingItem title="TProxy端口" divider>
+            <SettingItem title="TProxy 端口" divider>
               <div className="flex">
                 {tproxyPortInput !== tproxyPort && (
                   <Button
@@ -381,7 +381,7 @@ const Mihomo: React.FC = () => {
               }}
             />
           </SettingItem>
-          <SettingItem title="使用RTT延迟测试" divider>
+          <SettingItem title="使用 RTT 延迟测试" divider>
             <Switch
               size="sm"
               isSelected={unifiedDelay}
@@ -390,7 +390,7 @@ const Mihomo: React.FC = () => {
               }}
             />
           </SettingItem>
-          <SettingItem title="TCP并发" divider>
+          <SettingItem title="TCP 并发" divider>
             <Switch
               size="sm"
               isSelected={tcpConcurrent}
@@ -408,7 +408,7 @@ const Mihomo: React.FC = () => {
               }}
             />
           </SettingItem>
-          <SettingItem title="存储FakeIP" divider>
+          <SettingItem title="存储 FakeIP" divider>
             <Switch
               size="sm"
               isSelected={storeFakeIp}

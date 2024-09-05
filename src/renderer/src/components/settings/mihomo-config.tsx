@@ -44,7 +44,7 @@ const MihomoConfig: React.FC = () => {
           size="sm"
           className="w-[60%]"
           value={url}
-          placeholder="默认https://www.gstatic.com/generate_204"
+          placeholder="默认 https://www.gstatic.com/generate_204"
           onValueChange={(v) => {
             setUrl(v)
             setUrlDebounce(v)
@@ -57,7 +57,7 @@ const MihomoConfig: React.FC = () => {
           size="sm"
           className="w-[60%]"
           value={delayTestTimeout?.toString()}
-          placeholder="默认5000"
+          placeholder="默认 5000"
           onValueChange={(v) => {
             patchAppConfig({ delayTestTimeout: parseInt(v) })
           }}
@@ -79,7 +79,7 @@ const MihomoConfig: React.FC = () => {
           <SelectItem key="4">四列</SelectItem>
         </Select>
       </SettingItem>
-      <SettingItem title="接管DNS设置" divider>
+      <SettingItem title="接管 DNS 设置" divider>
         <Switch
           size="sm"
           isSelected={controlDns}

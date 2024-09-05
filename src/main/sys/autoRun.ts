@@ -82,8 +82,7 @@ export async function enableAutoRun(): Promise<void> {
   }
   if (process.platform === 'darwin') {
     app.setLoginItemSettings({
-      openAtLogin: true,
-      path: exePath()
+      openAtLogin: true
     })
   }
   if (process.platform === 'linux') {
