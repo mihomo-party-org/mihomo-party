@@ -15,11 +15,11 @@ const SubStore: React.FC = () => {
     setFrontendPort(await subStoreFrontendPort())
   }
   useEffect(() => {
-    if (!useCustomSubStore) {
-      getPort()
-    }
+    getPort()
   }, [useCustomSubStore])
-  if (!backendPort || !frontendPort) return null
+
+  if (!useCustomSubStore && !backendPort) return null
+  if (!frontendPort) return null
   return (
     <>
       <BasePage
