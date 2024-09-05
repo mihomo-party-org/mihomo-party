@@ -168,7 +168,7 @@ export async function setProfileStr(id: string, content: string): Promise<void> 
 
 export async function getProfile(id: string | undefined): Promise<IMihomoConfig> {
   const profile = await getProfileStr(id)
-  return yaml.parse(profile)
+  return yaml.parse(profile) || {}
 }
 
 // attachment;filename=xxx.yaml; filename*=UTF-8''%xx%xx%xx

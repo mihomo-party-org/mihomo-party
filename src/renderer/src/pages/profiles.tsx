@@ -166,7 +166,8 @@ const Profiles: React.FC = () => {
         const file = event.dataTransfer.files[0]
         if (file.name.endsWith('.yml') || file.name.endsWith('.yaml')) {
           try {
-            const content = await readTextFile(file.path)
+            const path = window.api.webUtils.getPathForFile(file)
+            const content = await readTextFile(path)
             await addProfileItem({ name: file.name, type: 'local', file: content })
           } catch (e) {
             alert(e)

@@ -31,7 +31,7 @@
     "express": "^4.19.2",
     "webdav": "^5.7.1",
     "ws": "^8.18.0",
-    "yaml": "^2.5.0"
+    "yaml": "^2.5.1"
   },
   "devDependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -43,7 +43,7 @@
     "@nextui-org/react": "^2.4.6",
     "@types/adm-zip": "^0.5.5",
     "@types/express": "^4.17.21",
-    "@types/node": "^22.5.2",
+    "@types/node": "^22.5.4",
     "@types/pubsub-js": "^1.8.6",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
@@ -51,18 +51,18 @@
     "@vitejs/plugin-react": "^4.3.1",
     "apexcharts": "^3.53.0",
     "autoprefixer": "^10.4.20",
-    "electron": "^32.0.1",
+    "electron": "^32.0.2",
     "electron-builder": "^25.0.5",
     "electron-vite": "^2.3.0",
     "electron-window-state": "^5.0.3",
     "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.35.0",
-    "framer-motion": "^11.3.31",
+    "eslint-plugin-react": "^7.35.2",
+    "framer-motion": "^11.5.2",
     "meta-json-schema": "^1.18.7",
     "monaco-yaml": "^5.2.2",
     "nanoid": "^5.0.7",
     "next-themes": "^0.3.0",
-    "postcss": "^8.4.44",
+    "postcss": "^8.4.45",
     "prettier": "^3.3.3",
     "pubsub-js": "^1.9.4",
     "react": "^18.3.1",
@@ -80,7 +80,7 @@
     "tsx": "^4.19.0",
     "types-pac": "^1.0.2",
     "typescript": "^5.5.4",
-    "vite": "^5.4.2",
+    "vite": "^5.4.3",
     "vite-plugin-monaco-editor": "^1.1.0"
   }
 }

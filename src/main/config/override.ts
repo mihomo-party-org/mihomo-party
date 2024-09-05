@@ -10,7 +10,7 @@ let overrideConfig: IOverrideConfig // override.yaml
 export async function getOverrideConfig(force = false): Promise<IOverrideConfig> {
   if (force || !overrideConfig) {
     const data = await readFile(overrideConfigPath(), 'utf-8')
-    overrideConfig = yaml.parse(data)
+    overrideConfig = yaml.parse(data) || {}
   }
   return overrideConfig
 }

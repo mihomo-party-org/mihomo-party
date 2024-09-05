@@ -39,7 +39,7 @@ async function overrideProfile(
         profile = runOverrideScript(profile, content, item)
         break
       case 'yaml': {
-        const patch = yaml.parse(content)
+        const patch = yaml.parse(content) || {}
         profile = deepMerge(profile, patch)
         break
       }
