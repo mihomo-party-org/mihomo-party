@@ -1,5 +1,5 @@
 appId: party.mihomo.app
-productName: Mihomo Party
+productName: mihomo-party
 executableName: mihomo-party
 directories:
   buildResources: build
