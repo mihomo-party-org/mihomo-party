@@ -58,21 +58,24 @@ export async function startPacServer(): Promise<void> {
 
 export async function startSubStoreServer(): Promise<void> {
   const { useSubStore = true, useCustomSubStore = false } = await getAppConfig()
-  if (!useSubStore || useCustomSubStore) return
-  if (subStorePort) return
-  subStorePort = await findAvailablePort(3000)
-  subStoreFrontendPort = await findAvailablePort(4000)
-  const icon = nativeImage.createFromPath(subStoreIcon)
-  icon.toDataURL()
-  new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
-    env: {
-      SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
-      SUB_STORE_DATA_BASE_PATH: subStoreDir(),
-      SUB_STORE_BACKEND_CUSTOM_ICON: icon.toDataURL(),
-      SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party'
-    }
-  })
-  const app = express()
-  app.use(express.static(path.join(resourcesFilesDir(), 'sub-store-frontend')))
-  app.listen(subStoreFrontendPort)
+  if (!useSubStore) return
+  if (!subStoreFrontendPort) {
+    subStoreFrontendPort = await findAvailablePort(4000)
+    const app = express()
+    app.use(express.static(path.join(resourcesFilesDir(), 'sub-store-frontend')))
+    app.listen(subStoreFrontendPort)
+  }
+  if (!useCustomSubStore && !subStorePort) {
+    subStorePort = await findAvailablePort(3000)
+    const icon = nativeImage.createFromPath(subStoreIcon)
+    icon.toDataURL()
+    new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
+      env: {
+        SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
+        SUB_STORE_DATA_BASE_PATH: subStoreDir(),
+        SUB_STORE_BACKEND_CUSTOM_ICON: icon.toDataURL(),
+        SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party'
+      }
+    })
+  }
 }
