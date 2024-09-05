@@ -51,6 +51,7 @@ const ProxyItem: React.FC<Props> = (props) => {
       onPress={() => onSelect(group.name, proxy.name)}
       isPressable
       fullWidth
+      shadow="sm"
       className={`${fixed ? 'bg-secondary/30' : selected ? 'bg-primary/30' : 'bg-content2'}`}
       radius="sm"
     >

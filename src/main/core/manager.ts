@@ -174,9 +174,8 @@ export async function autoGrantCorePermition(corePath: string): Promise<void> {
     const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
     if (process.platform === 'linux') {
       try {
-        await execPromise(
-          `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_sys_ptrace,cap_dac_read_search,cap_dac_override,cap_net_raw=+ep "${corePath}"`
-        )
+        await execPromise(`echo "${password}" | sudo -S chown root:root "${corePath}"`)
+        await execPromise(`echo "${password}" | sudo -S chmod +sx "${corePath}"`)
       } catch (error) {
         patchAppConfig({ encryptedPassword: undefined })
         throw error
@@ -204,9 +203,8 @@ export async function manualGrantCorePermition(password?: string): Promise<void>
     await execPromise(`osascript -e '${command}'`)
   }
   if (process.platform === 'linux') {
-    await execPromise(
-      `echo "${password}" | sudo -S setcap cap_net_bind_service,cap_net_admin,cap_sys_ptrace,cap_dac_read_search,cap_dac_override,cap_net_raw=+ep "${corePath}"`
-    )
+    await execPromise(`echo "${password}" | sudo -S chown root:root "${corePath}"`)
+    await execPromise(`echo "${password}" | sudo -S chmod +sx "${corePath}"`)
   }
 }
 
