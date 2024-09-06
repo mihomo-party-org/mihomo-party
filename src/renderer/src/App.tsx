@@ -111,6 +111,7 @@ const App: React.FC = () => {
         newOrder.splice(overIndex, 0, active.id as string)
         setOrder(newOrder)
         await patchAppConfig({ siderOrder: newOrder })
+        return
       }
     }
     navigate(navigateMap[active.id as string])
