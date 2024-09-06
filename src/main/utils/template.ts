@@ -38,7 +38,7 @@ export const defaultConfig: IAppConfig = {
 export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
   'external-controller': '127.0.0.1:9090',
   secret: '',
-  ipv6: false,
+  ipv6: true,
   mode: 'rule',
   'mixed-port': 7890,
   'socks-port': 7891,
