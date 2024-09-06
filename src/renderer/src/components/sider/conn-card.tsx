@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { FaCircleArrowDown, FaCircleArrowUp } from 'react-icons/fa6'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { calcTraffic } from '@renderer/utils/calc'
 import { useEffect, useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
@@ -21,7 +21,6 @@ const ConnCard: React.FC = () => {
   const { theme = 'system', systemTheme = 'dark' } = useTheme()
   const { appConfig } = useAppConfig()
   const { showTraffic, connectionCardStatus = 'col-span-2' } = appConfig || {}
-  const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/connections')
 
@@ -178,12 +177,11 @@ const ConnCard: React.FC = () => {
         <>
           <Card
             fullWidth
-            className={`${match ? 'bg-primary' : ''}`}
-            isPressable
-            onPress={() => navigate('/connections')}
+            ref={setNodeRef} {...attributes} {...listeners}
+            className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
           >
             <CardBody className="pb-1 pt-0 px-0">
-              <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+              <div className="flex justify-between">
                 <Button
                   isIconOnly
                   className="bg-transparent pointer-events-none"
@@ -226,12 +224,11 @@ const ConnCard: React.FC = () => {
       ) : (
         <Card
           fullWidth
-          className={`${match ? 'bg-primary' : ''}`}
-          isPressable
-          onPress={() => navigate('/logs')}
+          ref={setNodeRef} {...attributes} {...listeners}
+          className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
         >
           <CardBody className="pb-1 pt-0 px-0">
-            <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+            <div className="flex justify-between">
               <Button
                 isIconOnly
                 className="bg-transparent pointer-events-none"

@@ -1,13 +1,12 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { IoJournalOutline } from 'react-icons/io5'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 const LogCard: React.FC = () => {
   const { appConfig } = useAppConfig()
   const { logCardStatus = 'col-span-1' } = appConfig || {}
-  const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/logs')
   const {
@@ -33,12 +32,11 @@ const LogCard: React.FC = () => {
     >
       <Card
         fullWidth
-        className={`${match ? 'bg-primary' : ''}`}
-        isPressable
-        onPress={() => navigate('/logs')}
+        ref={setNodeRef} {...attributes} {...listeners}
+        className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
       >
         <CardBody className="pb-1 pt-0 px-0">
-          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+          <div className="flex justify-between">
             <Button
               isIconOnly
               className="bg-transparent pointer-events-none"

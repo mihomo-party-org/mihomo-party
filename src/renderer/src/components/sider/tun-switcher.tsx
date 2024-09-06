@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import BorderSwitch from '@renderer/components/base/border-swtich'
 import { TbDeviceIpadHorizontalBolt } from 'react-icons/tb'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { encryptString, isEncryptionAvailable, restartCore } from '@renderer/utils/ipc'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -12,7 +12,6 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 import BasePasswordModal from '../base/base-password-modal'
 
 const TunSwitcher: React.FC = () => {
-  const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/tun') || false
   const [openPasswordModal, setOpenPasswordModal] = useState(false)
@@ -85,12 +84,11 @@ const TunSwitcher: React.FC = () => {
 
       <Card
         fullWidth
-        className={`${match ? 'bg-primary' : ''}`}
-        isPressable
-        onPress={() => navigate('/tun')}
+        ref={setNodeRef} {...attributes} {...listeners}
+        className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
       >
         <CardBody className="pb-1 pt-0 px-0">
-          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+          <div className="flex justify-between">
             <Button
               isIconOnly
               className="bg-transparent pointer-events-none"

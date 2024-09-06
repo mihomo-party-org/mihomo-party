@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
 import { MdOutlineAltRoute } from 'react-icons/md'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useRules } from '@renderer/hooks/use-rules'
@@ -9,7 +9,6 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 const RuleCard: React.FC = () => {
   const { appConfig } = useAppConfig()
   const { ruleCardStatus = 'col-span-1' } = appConfig || {}
-  const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/rules')
   const { rules } = useRules()
@@ -36,12 +35,11 @@ const RuleCard: React.FC = () => {
     >
       <Card
         fullWidth
-        className={`${match ? 'bg-primary' : ''}`}
-        isPressable
-        onPress={() => navigate('/rules')}
+        ref={setNodeRef} {...attributes} {...listeners}
+        className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
       >
         <CardBody className="pb-1 pt-0 px-0">
-          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+          <div className="flex justify-between">
             <Button
               isIconOnly
               className="bg-transparent pointer-events-none"

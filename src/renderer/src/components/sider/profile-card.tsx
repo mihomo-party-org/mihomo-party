@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardFooter, Chip, Progress } from '@nextui-org/react'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { calcTraffic, calcPercent } from '@renderer/utils/calc'
 import { CgLoadbarDoc } from 'react-icons/cg'
 import { IoMdRefresh } from 'react-icons/io'
@@ -20,7 +20,6 @@ dayjs.locale('zh-cn')
 const ProfileCard: React.FC = () => {
   const { appConfig } = useAppConfig()
   const { profileCardStatus = 'col-span-2' } = appConfig || {}
-  const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/profiles')
   const [updating, setUpdating] = useState(false)
@@ -62,9 +61,8 @@ const ProfileCard: React.FC = () => {
       {profileCardStatus === 'col-span-2' ? (
         <Card
           fullWidth
-          className={`${match ? 'bg-primary' : ''}`}
-          isPressable
-          onPress={() => navigate('/profiles')}
+          ref={setNodeRef} {...attributes} {...listeners}
+          className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
         >
           <CardBody className="pb-1">
             <div
@@ -152,12 +150,11 @@ const ProfileCard: React.FC = () => {
       ) : (
         <Card
           fullWidth
-          className={`${match ? 'bg-primary' : ''}`}
-          isPressable
-          onPress={() => navigate('/profiles')}
+          ref={setNodeRef} {...attributes} {...listeners}
+          className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
         >
           <CardBody className="pb-1 pt-0 px-0">
-            <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+            <div className="flex justify-between">
               <Button
                 isIconOnly
                 className="bg-transparent pointer-events-none"

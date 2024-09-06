@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import BorderSwitch from '@renderer/components/base/border-swtich'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { triggerSysProxy } from '@renderer/utils/ipc'
 import { AiOutlineGlobal } from 'react-icons/ai'
@@ -9,7 +9,6 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 const SysproxySwitcher: React.FC = () => {
-  const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/sysproxy')
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -48,12 +47,11 @@ const SysproxySwitcher: React.FC = () => {
     >
       <Card
         fullWidth
-        className={`${match ? 'bg-primary' : ''}`}
-        isPressable
-        onPress={() => navigate('/sysproxy')}
+        ref={setNodeRef} {...attributes} {...listeners}
+        className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
       >
         <CardBody className="pb-1 pt-0 px-0">
-          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+          <div className="flex justify-between">
             <Button
               isIconOnly
               className="bg-transparent pointer-events-none"

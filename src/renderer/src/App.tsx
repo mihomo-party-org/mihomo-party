@@ -9,7 +9,7 @@ import { IoSettings } from 'react-icons/io5'
 import routes from '@renderer/routes'
 import {
   DndContext,
-  closestCenter,
+  closestCorners,
   PointerSensor,
   useSensor,
   useSensors,
@@ -111,8 +111,25 @@ const App: React.FC = () => {
         newOrder.splice(overIndex, 0, active.id as string)
         setOrder(newOrder)
         await patchAppConfig({ siderOrder: newOrder })
+        return
       }
     }
+    navigate(navigateMap[active.id as string])
+  }
+
+  const navigateMap = {
+    sysproxy: "sysproxy",
+    tun: "tun",
+    profile: "profiles",
+    proxy: "proxies",
+    mihomo: "mihomo",
+    connection: "connections",
+    dns: "dns",
+    sniff: "sniffer",
+    log: "logs",
+    rule: "rules",
+    resource: "resources",
+    override: "override"
   }
 
   const componentMap = {
@@ -158,13 +175,9 @@ const App: React.FC = () => {
         <div className="mt-2 mx-2">
           <OutboundModeSwitcher />
         </div>
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
           <div className="grid grid-cols-2 gap-2 m-2">
-            <SortableContext
-              items={order.map((x) => {
-                return x
-              })}
-            >
+            <SortableContext items={order}>
               {order.map((key: string) => {
                 return componentMap[key]
               })}
