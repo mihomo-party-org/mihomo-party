@@ -177,7 +177,9 @@ const ConnCard: React.FC = () => {
         <>
           <Card
             fullWidth
-            ref={setNodeRef} {...attributes} {...listeners}
+            ref={setNodeRef}
+            {...attributes}
+            {...listeners}
             className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
           >
             <CardBody className="pb-1 pt-0 px-0">
@@ -224,7 +226,9 @@ const ConnCard: React.FC = () => {
       ) : (
         <Card
           fullWidth
-          ref={setNodeRef} {...attributes} {...listeners}
+          ref={setNodeRef}
+          {...attributes}
+          {...listeners}
           className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
         >
           <CardBody className="pb-1 pt-0 px-0">

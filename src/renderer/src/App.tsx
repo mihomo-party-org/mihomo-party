@@ -118,18 +118,19 @@ const App: React.FC = () => {
   }
 
   const navigateMap = {
-    sysproxy: "sysproxy",
-    tun: "tun",
-    profile: "profiles",
-    proxy: "proxies",
-    mihomo: "mihomo",
-    connection: "connections",
-    dns: "dns",
-    sniff: "sniffer",
-    log: "logs",
-    rule: "rules",
-    resource: "resources",
-    override: "override"
+    sysproxy: 'sysproxy',
+    tun: 'tun',
+    profile: 'profiles',
+    proxy: 'proxies',
+    mihomo: 'mihomo',
+    connection: 'connections',
+    dns: 'dns',
+    sniff: 'sniffer',
+    log: 'logs',
+    rule: 'rules',
+    resource: 'resources',
+    override: 'override',
+    substore: 'substore'
   }
 
   const componentMap = {

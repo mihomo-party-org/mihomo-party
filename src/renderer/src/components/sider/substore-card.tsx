@@ -1,5 +1,5 @@
 import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import SubStoreIcon from '../base/substore-icon'
@@ -7,7 +7,6 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 const SubStoreCard: React.FC = () => {
   const { appConfig } = useAppConfig()
   const { substoreCardStatus = 'col-span-1', useSubStore = true } = appConfig || {}
-  const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/substore')
   const {
@@ -32,13 +31,14 @@ const SubStoreCard: React.FC = () => {
       className={`${substoreCardStatus} ${!useSubStore ? 'hidden' : ''}`}
     >
       <Card
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
         fullWidth
-        className={`${match ? 'bg-primary' : ''}`}
-        isPressable
-        onPress={() => navigate('/substore')}
+        className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
       >
         <CardBody className="pb-1 pt-0 px-0">
-          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+          <div className="flex justify-between">
             <Button
               isIconOnly
               className="bg-transparent pointer-events-none"
