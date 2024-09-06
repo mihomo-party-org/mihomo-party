@@ -17,6 +17,7 @@ const TunSwitcher: React.FC = () => {
   const match = location.pathname.includes('/tun') || false
   const [openPasswordModal, setOpenPasswordModal] = useState(false)
   const { appConfig, patchAppConfig } = useAppConfig()
+  const { tunCardStatus = 'col-span-1' } = appConfig || {}
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const { tun } = controledMihomoConfig || {}
   const { enable } = tun || {}
@@ -62,7 +63,7 @@ const TunSwitcher: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-1"
+      className={tunCardStatus}
     >
       {openPasswordModal && (
         <BasePasswordModal

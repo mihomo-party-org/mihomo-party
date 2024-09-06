@@ -37,23 +37,20 @@ const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     appTheme = 'system',
-    controlDns = true,
-    controlSniff = true,
-    useSubStore = true,
     useWindowFrame = false,
     siderOrder = [
       'sysproxy',
       'tun',
       'profile',
       'proxy',
-      'mihomo',
-      'connection',
-      'dns',
-      'sniff',
-      'log',
       'rule',
       'resource',
       'override',
+      'connection',
+      'mihomo',
+      'dns',
+      'sniff',
+      'log',
       'substore'
     ]
   } = appConfig || {}
@@ -169,9 +166,6 @@ const App: React.FC = () => {
               })}
             >
               {order.map((key: string) => {
-                if (key === 'dns' && controlDns === false) return null
-                if (key === 'sniff' && controlSniff === false) return null
-                if (key === 'substore' && useSubStore === false) return null
                 return componentMap[key]
               })}
             </SortableContext>

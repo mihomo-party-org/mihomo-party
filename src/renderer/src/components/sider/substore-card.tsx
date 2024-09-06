@@ -3,7 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import SubStoreIcon from '../base/substore-icon'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 const SubStoreCard: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { substoreCardStatus = 'col-span-1', useSubStore = true } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/substore')
@@ -26,11 +29,11 @@ const SubStoreCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-1"
+      className={`${substoreCardStatus} ${!useSubStore ? 'hidden' : ''}`}
     >
       <Card
         fullWidth
-        className={`col-span-1 ${match ? 'bg-primary' : ''}`}
+        className={`${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/substore')}
       >

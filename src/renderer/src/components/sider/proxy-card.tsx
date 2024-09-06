@@ -4,8 +4,11 @@ import { CSS } from '@dnd-kit/utilities'
 import { LuGroup } from 'react-icons/lu'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useGroups } from '@renderer/hooks/use-groups'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 
 const ProxyCard: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { proxyCardStatus = 'col-span-1' } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/proxies')
@@ -30,7 +33,7 @@ const ProxyCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-2"
+      className={proxyCardStatus}
     >
       <Card
         fullWidth

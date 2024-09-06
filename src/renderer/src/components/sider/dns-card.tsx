@@ -6,7 +6,10 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { patchMihomoConfig } from '@renderer/utils/ipc'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 const DNSCard: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { dnsCardStatus = 'col-span-1', controlDns = true } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/dns')
@@ -37,7 +40,7 @@ const DNSCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-1"
+      className={`${dnsCardStatus} ${!controlDns ? 'hidden' : ''}`}
     >
       <Card
         fullWidth

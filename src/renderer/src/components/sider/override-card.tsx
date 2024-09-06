@@ -4,8 +4,11 @@ import { MdFormatOverline } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 
 const OverrideCard: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { overrideCardStatus = 'col-span-1' } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/override')
@@ -28,11 +31,11 @@ const OverrideCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-1"
+      className={overrideCardStatus}
     >
       <Card
         fullWidth
-        className={`col-span-1 ${match ? 'bg-primary' : ''}`}
+        className={`${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/override')}
       >

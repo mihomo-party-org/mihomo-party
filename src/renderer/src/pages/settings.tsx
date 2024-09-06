@@ -8,6 +8,7 @@ import MihomoConfig from '@renderer/components/settings/mihomo-config'
 import Actions from '@renderer/components/settings/actions'
 import ShortcutConfig from '@renderer/components/settings/shortcut-config'
 import { FaTelegramPlane } from 'react-icons/fa'
+import SiderConfig from '@renderer/components/settings/sider-config'
 
 const Settings: React.FC = () => {
   return (
@@ -55,6 +56,7 @@ const Settings: React.FC = () => {
       }
     >
       <GeneralConfig />
+      <SiderConfig />
       <WebdavConfig />
       <MihomoConfig />
       <ShortcutConfig />

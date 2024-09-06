@@ -96,7 +96,13 @@ const Connections: React.FC = () => {
               ↓ {calcTraffic(connectionsInfo?.downloadTotal ?? 0)}{' '}
             </span>
           </div>
-          <Badge color="primary" variant="flat" content={`${filteredConnections.length}`}>
+          <Badge
+            className="mt-2"
+            color="primary"
+            variant="flat"
+            showOutline={false}
+            content={`${filteredConnections.length}`}
+          >
             <Button
               className="app-nodrag ml-1"
               title="关闭全部连接"

@@ -20,7 +20,7 @@ let drawing = false
 const ConnCard: React.FC = () => {
   const { theme = 'system', systemTheme = 'dark' } = useTheme()
   const { appConfig } = useAppConfig()
-  const { showTraffic } = appConfig || {}
+  const { showTraffic, connectionCardStatus = 'col-span-2' } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/connections')
@@ -172,52 +172,86 @@ const ConnCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-2"
+      className={connectionCardStatus}
     >
-      <Card
-        fullWidth
-        className={`${match ? 'bg-primary' : ''}`}
-        isPressable
-        onPress={() => navigate('/connections')}
-      >
-        <CardBody className="pb-0 pt-0 px-0">
-          <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
-            <Button
-              isIconOnly
-              className="bg-transparent pointer-events-none"
-              variant="flat"
-              color="default"
-            >
-              <IoLink
-                color="default"
-                className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
-              />
-            </Button>
-            <div className={`p-2 w-full ${match ? 'text-white' : 'text-foreground'} `}>
-              <div className="flex justify-between">
-                <div className="w-full text-right mr-2">{calcTraffic(upload)}/s</div>
-                <FaCircleArrowUp className="h-[24px] leading-[24px]" />
+      {connectionCardStatus === 'col-span-2' ? (
+        <>
+          <Card
+            fullWidth
+            className={`${match ? 'bg-primary' : ''}`}
+            isPressable
+            onPress={() => navigate('/connections')}
+          >
+            <CardBody className="pb-1 pt-0 px-0">
+              <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+                <Button
+                  isIconOnly
+                  className="bg-transparent pointer-events-none"
+                  variant="flat"
+                  color="default"
+                >
+                  <IoLink
+                    color="default"
+                    className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+                  />
+                </Button>
+                <div className={`p-2 w-full ${match ? 'text-white' : 'text-foreground'} `}>
+                  <div className="flex justify-between">
+                    <div className="w-full text-right mr-2">{calcTraffic(upload)}/s</div>
+                    <FaCircleArrowUp className="h-[24px] leading-[24px]" />
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="w-full text-right mr-2">{calcTraffic(download)}/s</div>
+                    <FaCircleArrowDown className="h-[24px] leading-[24px]" />
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <div className="w-full text-right mr-2">{calcTraffic(download)}/s</div>
-                <FaCircleArrowDown className="h-[24px] leading-[24px]" />
-              </div>
-            </div>
+            </CardBody>
+            <CardFooter className="pt-1">
+              <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+                连接
+              </h3>
+            </CardFooter>
+          </Card>
+          <div className="w-full h-full absolute top-0 left-0 pointer-events-none rounded-[14px] overflow-hidden">
+            <Chart
+              options={getApexChartOptions()}
+              series={[{ name: 'Total', data: series }]}
+              height={'100%'}
+              width={'100%'}
+              type="area"
+            />
           </div>
-        </CardBody>
-        <CardFooter className="pt-1">
-          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>连接</h3>
-        </CardFooter>
-      </Card>
-      <div className="w-full h-full absolute top-0 left-0 pointer-events-none rounded-[14px] overflow-hidden">
-        <Chart
-          options={getApexChartOptions()}
-          series={[{ name: 'Total', data: series }]}
-          height={'100%'}
-          width={'100%'}
-          type="area"
-        />
-      </div>
+        </>
+      ) : (
+        <Card
+          fullWidth
+          className={`${match ? 'bg-primary' : ''}`}
+          isPressable
+          onPress={() => navigate('/logs')}
+        >
+          <CardBody className="pb-1 pt-0 px-0">
+            <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+              <Button
+                isIconOnly
+                className="bg-transparent pointer-events-none"
+                variant="flat"
+                color="default"
+              >
+                <IoLink
+                  color="default"
+                  className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+                />
+              </Button>
+            </div>
+          </CardBody>
+          <CardFooter className="pt-1">
+            <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+              连接
+            </h3>
+          </CardFooter>
+        </Card>
+      )}
     </div>
   )
 }

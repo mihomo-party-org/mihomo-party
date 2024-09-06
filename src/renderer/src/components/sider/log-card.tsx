@@ -3,7 +3,10 @@ import { IoJournalOutline } from 'react-icons/io5'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 const LogCard: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { logCardStatus = 'col-span-1' } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/logs')
@@ -26,11 +29,11 @@ const LogCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-1"
+      className={logCardStatus}
     >
       <Card
         fullWidth
-        className={`col-span-1 ${match ? 'bg-primary' : ''}`}
+        className={`${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/logs')}
       >

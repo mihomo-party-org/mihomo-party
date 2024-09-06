@@ -11,11 +11,15 @@ import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import ConfigViewer from './config-viewer'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
+import { TiFolder } from 'react-icons/ti'
 
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 
 const ProfileCard: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { profileCardStatus = 'col-span-2' } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/profiles')
@@ -52,98 +56,128 @@ const ProfileCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-2"
+      className={profileCardStatus}
     >
       {showRuntimeConfig && <ConfigViewer onClose={() => setShowRuntimeConfig(false)} />}
-      <Card
-        fullWidth
-        className={`${match ? 'bg-primary' : ''}`}
-        isPressable
-        onPress={() => navigate('/profiles')}
-      >
-        <CardBody className="pb-1">
-          <div
-            ref={setNodeRef}
-            {...attributes}
-            {...listeners}
-            className="flex justify-between h-[32px]"
-          >
-            <h3
-              title={info?.name}
-              className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
+      {profileCardStatus === 'col-span-2' ? (
+        <Card
+          fullWidth
+          className={`${match ? 'bg-primary' : ''}`}
+          isPressable
+          onPress={() => navigate('/profiles')}
+        >
+          <CardBody className="pb-1">
+            <div
+              ref={setNodeRef}
+              {...attributes}
+              {...listeners}
+              className="flex justify-between h-[32px]"
             >
-              {info?.name}
-            </h3>
-            <div className="flex">
-              <Button
-                isIconOnly
-                size="sm"
-                title="查看当前运行时配置"
-                variant="light"
-                color="default"
-                onPress={() => {
-                  setShowRuntimeConfig(true)
-                }}
+              <h3
+                title={info?.name}
+                className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
               >
-                <CgLoadbarDoc
-                  className={`text-[24px] ${match ? 'text-white' : 'text-foreground'}`}
-                />
-              </Button>
-              {info.type === 'remote' && (
+                {info?.name}
+              </h3>
+              <div className="flex">
                 <Button
                   isIconOnly
                   size="sm"
-                  title={dayjs(info.updated).fromNow()}
-                  disabled={updating}
+                  title="查看当前运行时配置"
                   variant="light"
                   color="default"
-                  onPress={async () => {
-                    setUpdating(true)
-                    await addProfileItem(info)
-                    setUpdating(false)
+                  onPress={() => {
+                    setShowRuntimeConfig(true)
                   }}
                 >
-                  <IoMdRefresh
-                    className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
+                  <CgLoadbarDoc
+                    className={`text-[24px] ${match ? 'text-white' : 'text-foreground'}`}
                   />
                 </Button>
-              )}
+                {info.type === 'remote' && (
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    title={dayjs(info.updated).fromNow()}
+                    disabled={updating}
+                    variant="light"
+                    color="default"
+                    onPress={async () => {
+                      setUpdating(true)
+                      await addProfileItem(info)
+                      setUpdating(false)
+                    }}
+                  >
+                    <IoMdRefresh
+                      className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
+                    />
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-          {info.type === 'remote' && extra && (
-            <div
-              className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'} `}
-            >
-              <small>{`${calcTraffic(usage)}/${calcTraffic(total)}`}</small>
-              <small>
-                {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
-              </small>
-            </div>
-          )}
-          {info.type === 'local' && (
-            <div
-              className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'}`}
-            >
-              <Chip
-                size="sm"
-                variant="bordered"
-                className={`${match ? 'text-white border-white' : 'border-primary text-primary'}`}
+            {info.type === 'remote' && extra && (
+              <div
+                className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'} `}
               >
-                本地
-              </Chip>
+                <small>{`${calcTraffic(usage)}/${calcTraffic(total)}`}</small>
+                <small>
+                  {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
+                </small>
+              </div>
+            )}
+            {info.type === 'local' && (
+              <div
+                className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'}`}
+              >
+                <Chip
+                  size="sm"
+                  variant="bordered"
+                  className={`${match ? 'text-white border-white' : 'border-primary text-primary'}`}
+                >
+                  本地
+                </Chip>
+              </div>
+            )}
+          </CardBody>
+          <CardFooter className="pt-0">
+            {extra && (
+              <Progress
+                className="w-full"
+                classNames={{ indicator: match ? 'bg-white' : 'bg-foreground' }}
+                value={calcPercent(extra?.upload, extra?.download, extra?.total)}
+              />
+            )}
+          </CardFooter>
+        </Card>
+      ) : (
+        <Card
+          fullWidth
+          className={`${match ? 'bg-primary' : ''}`}
+          isPressable
+          onPress={() => navigate('/profiles')}
+        >
+          <CardBody className="pb-1 pt-0 px-0">
+            <div ref={setNodeRef} {...attributes} {...listeners} className="flex justify-between">
+              <Button
+                isIconOnly
+                className="bg-transparent pointer-events-none"
+                variant="flat"
+                color="default"
+              >
+                <TiFolder
+                  color="default"
+                  className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+                />
+              </Button>
             </div>
-          )}
-        </CardBody>
-        <CardFooter className="pt-0">
-          {extra && (
-            <Progress
-              className="w-full"
-              classNames={{ indicator: match ? 'bg-white' : 'bg-foreground' }}
-              value={calcPercent(extra?.upload, extra?.download, extra?.total)}
-            />
-          )}
-        </CardFooter>
-      </Card>
+          </CardBody>
+          <CardFooter className="pt-1">
+            <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+              订阅管理
+            </h3>
+          </CardFooter>
+        </Card>
+      )}
     </div>
   )
 }

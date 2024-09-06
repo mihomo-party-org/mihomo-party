@@ -4,7 +4,10 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { IoLayersOutline } from 'react-icons/io5'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 const ResourceCard: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { resourceCardStatus = 'col-span-1' } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/resources')
@@ -27,11 +30,11 @@ const ResourceCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-1"
+      className={resourceCardStatus}
     >
       <Card
         fullWidth
-        className={`col-span-1 ${match ? 'bg-primary' : ''}`}
+        className={`${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/resources')}
       >

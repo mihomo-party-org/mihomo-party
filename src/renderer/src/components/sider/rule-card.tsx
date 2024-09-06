@@ -4,8 +4,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useRules } from '@renderer/hooks/use-rules'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 
 const RuleCard: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { ruleCardStatus = 'col-span-1' } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/rules')
@@ -29,11 +32,11 @@ const RuleCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-1"
+      className={ruleCardStatus}
     >
       <Card
         fullWidth
-        className={`col-span-1 ${match ? 'bg-primary' : ''}`}
+        className={`${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/rules')}
       >

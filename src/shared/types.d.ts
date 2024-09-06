@@ -1,6 +1,7 @@
 type OutboundMode = 'rule' | 'global' | 'direct'
 type LogLevel = 'info' | 'debug' | 'warning' | 'error' | 'silent'
 type SysProxyMode = 'auto' | 'manual'
+type CardStatus = 'col-span-2' | 'col-span-1' | 'hidden'
 type AppTheme =
   | 'system'
   | 'light'
@@ -219,6 +220,19 @@ interface IAppConfig {
   proxyCols: 'auto' | '1' | '2' | '3' | '4'
   connectionDirection: 'asc' | 'desc'
   connectionOrderBy: 'time' | 'upload' | 'download' | 'uploadSpeed' | 'downloadSpeed'
+  connectionCardStatus?: CardStatus
+  dnsCardStatus?: CardStatus
+  logCardStatus?: CardStatus
+  mihomoCoreCardStatus?: CardStatus
+  overrideCardStatus?: CardStatus
+  profileCardStatus?: CardStatus
+  proxyCardStatus?: CardStatus
+  resourceCardStatus?: CardStatus
+  ruleCardStatus?: CardStatus
+  sniffCardStatus?: CardStatus
+  substoreCardStatus?: CardStatus
+  sysproxyCardStatus?: CardStatus
+  tunCardStatus?: CardStatus
   useSubStore: boolean
   useCustomSubStore?: boolean
   customSubStoreUrl?: string

@@ -13,7 +13,7 @@ const SysproxySwitcher: React.FC = () => {
   const location = useLocation()
   const match = location.pathname.includes('/sysproxy')
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { sysProxy } = appConfig || {}
+  const { sysProxy, sysproxyCardStatus = 'col-span-1' } = appConfig || {}
   const { enable } = sysProxy || {}
   const {
     attributes,
@@ -44,7 +44,7 @@ const SysproxySwitcher: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-1 "
+      className={sysproxyCardStatus}
     >
       <Card
         fullWidth

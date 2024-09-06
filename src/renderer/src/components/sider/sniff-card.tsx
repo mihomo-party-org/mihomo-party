@@ -6,8 +6,11 @@ import { patchMihomoConfig } from '@renderer/utils/ipc'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 
 const SniffCard: React.FC = () => {
+  const { appConfig } = useAppConfig()
+  const { sniffCardStatus = 'col-span-1', controlSniff = true } = appConfig || {}
   const navigate = useNavigate()
   const location = useLocation()
   const match = location.pathname.includes('/sniffer')
@@ -38,11 +41,11 @@ const SniffCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className="col-span-1"
+      className={`${sniffCardStatus} ${!controlSniff ? 'hidden' : ''}`}
     >
       <Card
         fullWidth
-        className={`col-span-1 ${match ? 'bg-primary' : ''}`}
+        className={`${match ? 'bg-primary' : ''}`}
         isPressable
         onPress={() => navigate('/sniffer')}
       >
