@@ -43,7 +43,7 @@ const SubStore: React.FC = () => {
       >
         <iframe
           className="w-full h-full"
-          allow="clipboard-write"
+          allow="clipboard-write; clipboard-read"
           src={`http://127.0.0.1:${frontendPort}?api=${useCustomSubStore ? customSubStoreUrl : `http://127.0.0.1:${backendPort}`}`}
         />
       </BasePage>
