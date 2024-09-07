@@ -48,6 +48,7 @@ const ShortcutConfig: React.FC = () => {
     ruleModeShortcut = '',
     globalModeShortcut = '',
     directModeShortcut = '',
+    quitWithoutCoreShortcut = '',
     restartAppShortcut = ''
   } = appConfig || {}
 
@@ -104,6 +105,15 @@ const ShortcutConfig: React.FC = () => {
             value={directModeShortcut}
             patchAppConfig={patchAppConfig}
             action="directModeShortcut"
+          />
+        </div>
+      </SettingItem>
+      <SettingItem title="轻量模式">
+        <div className="flex justify-end w-[60%]">
+          <ShortcutInput
+            value={quitWithoutCoreShortcut}
+            patchAppConfig={patchAppConfig}
+            action="quitWithoutCoreShortcut"
           />
         </div>
       </SettingItem>

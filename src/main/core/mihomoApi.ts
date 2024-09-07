@@ -186,14 +186,18 @@ const mihomoTraffic = async (): Promise<void> => {
     const data = e.data as string
     const json = JSON.parse(data) as IMihomoTrafficInfo
     trafficRetry = 10
-    mainWindow?.webContents.send('mihomoTraffic', json)
-    if (process.platform !== 'linux') {
-      tray?.setToolTip(
-        '↑' +
-          `${calcTraffic(json.up)}/s`.padStart(9) +
-          '\n↓' +
-          `${calcTraffic(json.down)}/s`.padStart(9)
-      )
+    try {
+      mainWindow?.webContents.send('mihomoTraffic', json)
+      if (process.platform !== 'linux') {
+        tray?.setToolTip(
+          '↑' +
+            `${calcTraffic(json.up)}/s`.padStart(9) +
+            '\n↓' +
+            `${calcTraffic(json.down)}/s`.padStart(9)
+        )
+      }
+    } catch {
+      // ignore
     }
   }
 
@@ -238,7 +242,11 @@ const mihomoMemory = async (): Promise<void> => {
   mihomoMemoryWs.onmessage = (e): void => {
     const data = e.data as string
     memoryRetry = 10
-    mainWindow?.webContents.send('mihomoMemory', JSON.parse(data) as IMihomoMemoryInfo)
+    try {
+      mainWindow?.webContents.send('mihomoMemory', JSON.parse(data) as IMihomoMemoryInfo)
+    } catch {
+      // ignore
+    }
   }
 
   mihomoMemoryWs.onclose = (): void => {
@@ -284,7 +292,11 @@ const mihomoLogs = async (): Promise<void> => {
   mihomoLogsWs.onmessage = (e): void => {
     const data = e.data as string
     logsRetry = 10
-    mainWindow?.webContents.send('mihomoLogs', JSON.parse(data) as IMihomoLogInfo)
+    try {
+      mainWindow?.webContents.send('mihomoLogs', JSON.parse(data) as IMihomoLogInfo)
+    } catch {
+      // ignore
+    }
   }
 
   mihomoLogsWs.onclose = (): void => {
@@ -330,7 +342,11 @@ const mihomoConnections = async (): Promise<void> => {
   mihomoConnectionsWs.onmessage = (e): void => {
     const data = e.data as string
     connectionsRetry = 10
-    mainWindow?.webContents.send('mihomoConnections', JSON.parse(data) as IMihomoConnectionsInfo)
+    try {
+      mainWindow?.webContents.send('mihomoConnections', JSON.parse(data) as IMihomoConnectionsInfo)
+    } catch {
+      // ignore
+    }
   }
 
   mihomoConnectionsWs.onclose = (): void => {

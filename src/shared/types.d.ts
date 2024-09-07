@@ -267,7 +267,7 @@ interface IAppConfig {
   globalModeShortcut?: string
   directModeShortcut?: string
   restartAppShortcut?: string
-  quitAppShortcut?: string
+  quitWithoutCoreShortcut?: string
 }
 
 interface IMihomoTunConfig {

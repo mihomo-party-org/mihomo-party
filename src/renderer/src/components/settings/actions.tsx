@@ -1,10 +1,11 @@
-import { Button } from '@nextui-org/react'
+import { Button, Tooltip } from '@nextui-org/react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { checkUpdate, quitApp } from '@renderer/utils/ipc'
+import { checkUpdate, quitApp, quitWithoutCore } from '@renderer/utils/ipc'
 import { useState } from 'react'
 import UpdaterModal from '../updater/updater-modal'
 import { version } from '@renderer/utils/init'
+import { IoIosHelpCircle } from 'react-icons/io'
 
 const Actions: React.FC = () => {
   const [newVersion, setNewVersion] = useState('')
@@ -45,6 +46,21 @@ const Actions: React.FC = () => {
             }}
           >
             检查更新
+          </Button>
+        </SettingItem>
+        <SettingItem
+          title="轻量模式"
+          actions={
+            <Tooltip content="完全退出软件，只保留内核进程">
+              <Button isIconOnly size="sm" variant="light">
+                <IoIosHelpCircle className="text-lg" />
+              </Button>
+            </Tooltip>
+          }
+          divider
+        >
+          <Button size="sm" onPress={quitWithoutCore}>
+            轻量模式
           </Button>
         </SettingItem>
         <SettingItem title="退出应用" divider>

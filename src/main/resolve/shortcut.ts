@@ -8,6 +8,7 @@ import {
 } from '../config'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { patchMihomoConfig } from '../core/mihomoApi'
+import { quitWithoutCore } from '../core/manager'
 
 export async function registerShortcut(
   oldShortcut: string,
@@ -80,6 +81,11 @@ export async function registerShortcut(
         ipcMain.emit('updateTrayMenu')
       })
     }
+    case 'quitWithoutCoreShortcut': {
+      return globalShortcut.register(newShortcut, async () => {
+        await quitWithoutCore()
+      })
+    }
     case 'restartAppShortcut': {
       return globalShortcut.register(newShortcut, () => {
         app.relaunch()
@@ -98,6 +104,7 @@ export async function initShortcut(): Promise<void> {
     ruleModeShortcut,
     globalModeShortcut,
     directModeShortcut,
+    quitWithoutCoreShortcut,
     restartAppShortcut
   } = await getAppConfig()
   if (showWindowShortcut) {
@@ -138,6 +145,13 @@ export async function initShortcut(): Promise<void> {
   if (directModeShortcut) {
     try {
       await registerShortcut('', directModeShortcut, 'directModeShortcut')
+    } catch {
+      // ignore
+    }
+  }
+  if (quitWithoutCoreShortcut) {
+    try {
+      await registerShortcut('', quitWithoutCoreShortcut, 'quitWithoutCoreShortcut')
     } catch {
       // ignore
     }

@@ -283,6 +283,10 @@ export async function relaunchApp(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('relaunchApp'))
 }
 
+export async function quitWithoutCore(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('quitWithoutCore'))
+}
+
 export async function quitApp(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('quitApp'))
 }

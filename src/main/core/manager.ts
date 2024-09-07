@@ -1,5 +1,6 @@
 import { ChildProcess, exec, execFile, spawn } from 'child_process'
 import {
+  dataDir,
   logPath,
   mihomoCoreDir,
   mihomoCorePath,
@@ -14,7 +15,7 @@ import {
   patchAppConfig,
   patchControledMihomoConfig
 } from '../config'
-import { dialog, ipcMain, safeStorage } from 'electron'
+import { app, dialog, ipcMain, safeStorage } from 'electron'
 import {
   startMihomoTraffic,
   startMihomoConnections,
@@ -26,10 +27,11 @@ import {
   stopMihomoMemory
 } from './mihomoApi'
 import chokidar from 'chokidar'
-import { writeFile } from 'fs/promises'
+import { readFile, rm, writeFile } from 'fs/promises'
 import { promisify } from 'util'
 import { mainWindow } from '..'
 import path from 'path'
+import { existsSync } from 'fs'
 
 chokidar.watch(path.join(mihomoCoreDir(), 'meta-update')).on('unlinkDir', async () => {
   try {
@@ -43,8 +45,27 @@ chokidar.watch(path.join(mihomoCoreDir(), 'meta-update')).on('unlinkDir', async 
 let child: ChildProcess
 let retry = 10
 
-export async function startCore(): Promise<Promise<void>[]> {
-  const { core = 'mihomo', autoSetDNS = true } = await getAppConfig()
+export async function startCore(detached = false): Promise<Promise<void>[]> {
+  const { core = 'mihomo', autoSetDNS = true, encryptedPassword } = await getAppConfig()
+  if (existsSync(path.join(dataDir(), 'core.pid'))) {
+    const pid = parseInt(await readFile(path.join(dataDir(), 'core.pid'), 'utf-8'))
+    try {
+      process.kill(pid, 'SIGINT')
+    } catch {
+      if (process.platform !== 'win32' && encryptedPassword && isEncryptionAvailable()) {
+        const execPromise = promisify(exec)
+        const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
+        try {
+          await execPromise(`echo "${password}" | sudo -S kill ${pid}`)
+        } catch {
+          // ignore
+        }
+      }
+    } finally {
+      await rm(path.join(dataDir(), 'core.pid'))
+    }
+  }
+
   const { tun } = await getControledMihomoConfig()
   const corePath = mihomoCorePath(core)
   await autoGrantCorePermition(corePath)
@@ -60,7 +81,9 @@ export async function startCore(): Promise<Promise<void>[]> {
       })
     }
   }
-  child = spawn(corePath, ['-d', mihomoWorkDir()])
+  child = spawn(corePath, ['-d', mihomoWorkDir()], {
+    detached: detached
+  })
   child.on('close', async (code, signal) => {
     await writeFile(logPath(), `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`, {
       flag: 'a'
@@ -101,7 +124,11 @@ export async function startCore(): Promise<Promise<void>[]> {
           new Promise((resolve) => {
             child.stdout?.on('data', async (data) => {
               if (data.toString().includes('Start initial Compatible provider default')) {
-                mainWindow?.webContents.send('coreRestart')
+                try {
+                  mainWindow?.webContents.send('coreRestart')
+                } catch {
+                  // ignore
+                }
                 resolve()
               }
             })
@@ -144,6 +171,27 @@ export async function restartCore(): Promise<void> {
   } catch (e) {
     dialog.showErrorBox('内核启动出错', `${e}`)
   }
+}
+
+export async function keepCoreAlive(): Promise<void> {
+  try {
+    await startCore(true)
+    stopMihomoTraffic()
+    stopMihomoConnections()
+    stopMihomoLogs()
+    stopMihomoMemory()
+    if (child && child.pid) {
+      await writeFile(path.join(dataDir(), 'core.pid'), child.pid.toString())
+      child.unref()
+    }
+  } catch (e) {
+    dialog.showErrorBox('内核启动出错', `${e}`)
+  }
+}
+
+export async function quitWithoutCore(): Promise<void> {
+  await keepCoreAlive()
+  app.exit()
 }
 
 async function checkProfile(): Promise<void> {

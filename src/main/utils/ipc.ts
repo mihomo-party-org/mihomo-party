@@ -43,7 +43,12 @@ import {
   updateOverrideItem
 } from '../config'
 import { startSubStoreServer, subStoreFrontendPort, subStorePort } from '../resolve/server'
-import { isEncryptionAvailable, manualGrantCorePermition, restartCore } from '../core/manager'
+import {
+  isEncryptionAvailable,
+  manualGrantCorePermition,
+  quitWithoutCore,
+  restartCore
+} from '../core/manager'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { checkUpdate, downloadAndInstallUpdate } from '../resolve/autoUpdater'
 import {
@@ -193,6 +198,7 @@ export function registerIpcMainHandlers(): void {
     app.relaunch()
     app.quit()
   })
+  ipcMain.handle('quitWithoutCore', ipcErrorWrapper(quitWithoutCore))
   ipcMain.handle('quitApp', () => app.quit())
 }
 
