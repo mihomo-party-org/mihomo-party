@@ -43,8 +43,8 @@ const ConnectionItem: React.FC<Props> = (props) => {
                 {' -> '}
                 {info.metadata.host ||
                   info.metadata.sniffHost ||
-                  info.metadata.remoteDestination ||
-                  info.metadata.destinationIP}
+                  info.metadata.destinationIP ||
+                  info.metadata.remoteDestination}
               </div>
               <small className="whitespace-nowrap text-default-500">
                 {dayjs(info.start).fromNow()}
