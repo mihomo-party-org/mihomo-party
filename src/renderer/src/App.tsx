@@ -32,6 +32,7 @@ import { setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
 import SubStoreCard from '@renderer/components/sider/substore-card'
+import MihomoIcon from './components/base/mihomo-icon'
 
 const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -153,12 +154,13 @@ const App: React.FC = () => {
     <div className="w-full h-[100vh] flex">
       <div className="side w-[250px] h-full overflow-y-auto no-scrollbar">
         <div className="app-drag sticky top-0 z-40 backdrop-blur bg-background/40 h-[49px]">
-          <div className="flex justify-between p-2">
-            <h3
-              className={`text-lg font-bold leading-[32px] ${!useWindowFrame && platform === 'darwin' ? 'invisible' : ''}`}
-            >
-              Mihomo Party
-            </h3>
+          <div
+            className={`flex justify-between p-2 ${!useWindowFrame && platform === 'darwin' ? 'ml-[60px]' : ''}`}
+          >
+            <div className="flex ml-1">
+              <MihomoIcon className="h-[32px] leading-[32px] text-lg mx-[1px]" />
+              <h3 className="text-lg font-bold leading-[32px]">ihomo Party</h3>
+            </div>
             <UpdaterButton />
             <Button
               size="sm"

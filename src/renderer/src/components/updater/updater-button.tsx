@@ -4,10 +4,11 @@ import { checkUpdate } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import useSWR from 'swr'
 import UpdaterModal from './updater-modal'
+import { platform } from '@renderer/utils/init'
 
 const UpdaterButton: React.FC = () => {
   const { appConfig } = useAppConfig()
-  const { autoCheckUpdate } = appConfig || {}
+  const { autoCheckUpdate, useWindowFrame = false } = appConfig || {}
   const [openModal, setOpenModal] = useState(false)
   const { data: latest } = useSWR(
     autoCheckUpdate ? 'checkUpdate' : undefined,
@@ -30,7 +31,7 @@ const UpdaterButton: React.FC = () => {
         />
       )}
       <Button
-        className="fixed left-[90px] app-nodrag"
+        className={`fixed left-[85px] app-nodrag ${!useWindowFrame && platform === 'darwin' ? 'ml-[60px]' : ''}`}
         color="danger"
         size="sm"
         onPress={() => {
