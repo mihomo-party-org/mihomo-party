@@ -82,8 +82,15 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
     }
   }
   child = spawn(corePath, ['-d', mihomoWorkDir()], {
-    detached: detached
+    detached: detached,
+    stdio: detached ? 'ignore' : undefined
   })
+  if (detached) {
+    child.unref()
+    return new Promise((resolve) => {
+      resolve([new Promise(() => {})])
+    })
+  }
   child.on('close', async (code, signal) => {
     await writeFile(logPath(), `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`, {
       flag: 'a'
@@ -176,13 +183,8 @@ export async function restartCore(): Promise<void> {
 export async function keepCoreAlive(): Promise<void> {
   try {
     await startCore(true)
-    stopMihomoTraffic()
-    stopMihomoConnections()
-    stopMihomoLogs()
-    stopMihomoMemory()
     if (child && child.pid) {
       await writeFile(path.join(dataDir(), 'core.pid'), child.pid.toString())
-      child.unref()
     }
   } catch (e) {
     dialog.showErrorBox('内核启动出错', `${e}`)
