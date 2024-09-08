@@ -43,7 +43,7 @@ const SysproxySwitcher: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={sysproxyCardStatus}
+      className={`${sysproxyCardStatus} sysproxy-card`}
     >
       <Card
         fullWidth

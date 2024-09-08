@@ -33,6 +33,8 @@ import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
 import SubStoreCard from '@renderer/components/sider/substore-card'
 import MihomoIcon from './components/base/mihomo-icon'
+import { driver } from 'driver.js'
+import 'driver.js/dist/driver.css'
 
 const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -65,6 +67,14 @@ const App: React.FC = () => {
   useEffect(() => {
     setOrder(siderOrder)
   }, [siderOrder])
+
+  useEffect(() => {
+    const tourShown = window.localStorage.getItem('tourShown')
+    if (!tourShown) {
+      window.localStorage.setItem('tourShown', 'true')
+      firstDriver.drive()
+    }
+  }, [])
 
   useEffect(() => {
     if (appTheme.includes('light')) {
@@ -195,3 +205,52 @@ const App: React.FC = () => {
 }
 
 export default App
+
+export const firstDriver = driver({
+  showProgress: true,
+  nextBtnText: '下一步',
+  prevBtnText: '上一步',
+  doneBtnText: '完成',
+  progressText: '{{current}} / {{total}}',
+  overlayOpacity: 0.9,
+  steps: [
+    {
+      element: '.side',
+      popover: {
+        title: '导航栏',
+        description:
+          '左侧是应用的导航栏，兼顾仪表盘功能，在这里可以切换不同页面，也可以概览常用的状态信息',
+        side: 'left',
+        align: 'start'
+      }
+    },
+    {
+      element: '.sysproxy-card',
+      popover: {
+        title: '卡片',
+        description: '点击导航栏卡片可以跳转到对应页面，拖动导航栏卡片可以自由排列卡片顺序',
+        side: 'bottom',
+        align: 'start'
+      }
+    },
+    {
+      element: '.main',
+      popover: {
+        title: '主要区域',
+        description: '右侧是应用的主要区域，展示了导航栏所选页面的内容',
+        side: 'right',
+        align: 'start'
+      }
+    },
+    {
+      element: '.profile-card',
+      popover: {
+        title: '订阅管理',
+        description:
+          '订阅管理卡片展示当前运行的订阅配置信息，点击进入订阅管理页面可以在这里管理订阅配置\n更多功能请查阅 <a href="https://mihomo.party" target="_blank">官方文档</a>',
+        side: 'bottom',
+        align: 'start'
+      }
+    }
+  ]
+})

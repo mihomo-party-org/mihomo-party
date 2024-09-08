@@ -55,7 +55,7 @@ const ProfileCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={profileCardStatus}
+      className={`${profileCardStatus} profile-card`}
     >
       {showRuntimeConfig && <ConfigViewer onClose={() => setShowRuntimeConfig(false)} />}
       {profileCardStatus === 'col-span-2' ? (
