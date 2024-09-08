@@ -158,6 +158,7 @@ export async function createWindow(): Promise<void> {
     y: mainWindowState.y,
     show: false,
     frame: useWindowFrame,
+    fullscreenable: false,
     titleBarStyle: useWindowFrame ? 'default' : 'hidden',
     titleBarOverlay: useWindowFrame
       ? false
