@@ -22,23 +22,23 @@ axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMe
     inline_keyboard: [
       [
         {
-          text: '官方群组',
+          text: '👥官方群组',
           url: 'https://t.me/mihomo_party'
         },
         {
-          text: '官方频道',
-          url: 'https://t.me/mihomo_party_channel'
-        }
-      ],
-      [
-        {
-          text: '官方文档',
+          text: '📄官方文档',
           url: 'https://mihomo.party'
         }
       ],
       [
         {
-          text: '前往下载',
+          text: '✈️推荐机场',
+          url: 'https://party.dg7.top/#/register?code=ARdo0mXx'
+        }
+      ],
+      [
+        {
+          text: '🚀前往下载',
           url: `https://github.com/pompurin404/mihomo-party/releases/tag/v${version}`
         }
       ]
