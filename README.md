@@ -9,8 +9,8 @@
   <a href="https://github.com/pompurin404/mihomo-party/releases">
     <img src="https://img.shields.io/github/release/pompurin404/mihomo-party/all.svg">
   </a>
-  <a href="https://t.me/mihomo_party">
-    <img src="https://img.shields.io/badge/Telegram-group-blue?logo=telegram">
+  <a href="https://t.me/mihomo_party_channel">
+    <img src="https://img.shields.io/badge/Telegram-Channel-blue?logo=telegram">
   </a>
 </p>
 <div align='center'>

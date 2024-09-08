@@ -14,6 +14,7 @@
     "prepare": "node scripts/prepare.mjs",
     "updater": "node scripts/updater.mjs",
     "checksum": "node scripts/checksum.mjs",
+    "telegram": "node scripts/telegram.mjs",
     "dev": "electron-vite dev",
     "postinstall": "electron-builder install-app-deps",
     "build:win": "electron-vite build && electron-builder --publish never --win",
