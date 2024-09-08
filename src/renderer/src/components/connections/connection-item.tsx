@@ -2,7 +2,7 @@ import { Button, Card, CardFooter, CardHeader, Chip } from '@nextui-org/react'
 import { calcTraffic } from '@renderer/utils/calc'
 import dayjs from 'dayjs'
 import React, { useEffect } from 'react'
-import { CgClose } from 'react-icons/cg'
+import { CgClose, CgTrash } from 'react-icons/cg'
 
 interface Props {
   index: number
@@ -10,7 +10,7 @@ interface Props {
   selected: IMihomoConnectionDetail | undefined
   setSelected: React.Dispatch<React.SetStateAction<IMihomoConnectionDetail | undefined>>
   setIsDetailModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-  close: (id: string) => Promise<void>
+  close: (id: string) => void
 }
 
 const ConnectionItem: React.FC<Props> = (props) => {
@@ -35,7 +35,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
         <div className="w-full flex justify-between">
           <div className="w-[calc(100%-48px)]">
             <CardHeader className="pb-0 gap-1">
-              <Chip color="primary" size="sm" radius="sm" variant="light">
+              <Chip color={`${info.isActive ? "primary": "danger"}`} size="sm" radius="sm" variant="dot">
                 {info.metadata.type}({info.metadata.network.toUpperCase()})
               </Chip>
               <div className="text-ellipsis whitespace-nowrap overflow-hidden">
@@ -54,7 +54,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
               onWheel={(e) => {
                 e.currentTarget.scrollLeft += e.deltaY
               }}
-              className="overscroll-contain pt-1 flex justify-start gap-1 overflow-x-auto no-scrollbar"
+              className="overscroll-contain pt-2 flex justify-start gap-1 overflow-x-auto no-scrollbar"
             >
               <Chip
                 className="flag-emoji text-ellipsis whitespace-nowrap overflow-hidden"
@@ -76,7 +76,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
             </CardFooter>
           </div>
           <Button
-            color="warning"
+            color={`${info.isActive ? "warning" : "danger"}`}
             variant="light"
             isIconOnly
             className="mr-2 my-auto"
@@ -84,7 +84,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
               close(info.id)
             }}
           >
-            <CgClose className="text-lg" />
+            {info.isActive ? (<CgClose className="text-lg"/>) : (<CgTrash className="text-lg"/>)}
           </Button>
         </div>
       </Card>
