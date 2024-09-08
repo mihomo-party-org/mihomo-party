@@ -194,40 +194,28 @@ const Profiles: React.FC = () => {
       ref={pageRef}
       title="订阅管理"
       header={
-        <>
-          <Button
-            size="sm"
-            variant="light"
-            className="app-nodrag"
-            onPress={async () => {
-              open('https://mihomo.party/ads/airport/')
-            }}
-          >
-            订阅推荐
-          </Button>
-          <Button
-            size="sm"
-            title="更新全部订阅"
-            className="app-nodrag"
-            variant="light"
-            isIconOnly
-            onPress={async () => {
-              setUpdating(true)
-              for (const item of items) {
-                if (item.id === current) continue
-                if (item.type !== 'remote') continue
-                await addProfileItem(item)
-              }
-              const currentItem = items.find((item) => item.id === current)
-              if (currentItem && currentItem.type === 'remote') {
-                await addProfileItem(currentItem)
-              }
-              setUpdating(false)
-            }}
-          >
-            <IoMdRefresh className={`text-lg ${updating ? 'animate-spin' : ''}`} />
-          </Button>
-        </>
+        <Button
+          size="sm"
+          title="更新全部订阅"
+          className="app-nodrag"
+          variant="light"
+          isIconOnly
+          onPress={async () => {
+            setUpdating(true)
+            for (const item of items) {
+              if (item.id === current) continue
+              if (item.type !== 'remote') continue
+              await addProfileItem(item)
+            }
+            const currentItem = items.find((item) => item.id === current)
+            if (currentItem && currentItem.type === 'remote') {
+              await addProfileItem(currentItem)
+            }
+            setUpdating(false)
+          }}
+        >
+          <IoMdRefresh className={`text-lg ${updating ? 'animate-spin' : ''}`} />
+        </Button>
       }
     >
       <div className="sticky top-0 z-40 bg-background">
