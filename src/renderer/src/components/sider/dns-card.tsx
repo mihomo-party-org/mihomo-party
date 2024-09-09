@@ -39,7 +39,7 @@ const DNSCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={`${dnsCardStatus} ${!controlDns ? 'hidden' : ''}`}
+      className={`${dnsCardStatus} ${!controlDns ? 'hidden' : ''} dns-card`}
     >
       <Card
         fullWidth

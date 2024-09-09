@@ -4,15 +4,16 @@ import { Accordion, AccordionItem, Card, CardBody } from '@nextui-org/react'
 interface Props {
   title?: string
   children?: React.ReactNode
+  className?: string
 }
 
 const SettingCard: React.FC<Props> = (props) => {
   return !props.title ? (
-    <Card className="m-2">
+    <Card className={`${props.className} m-2`}>
       <CardBody>{props.children}</CardBody>
     </Card>
   ) : (
-    <Accordion isCompact className="my-2" variant="splitted">
+    <Accordion isCompact className={`${props.className} my-2`} variant="splitted" {...props}>
       <AccordionItem hideIndicator keepContentMounted title={props.title}>
         {props.children}
       </AccordionItem>

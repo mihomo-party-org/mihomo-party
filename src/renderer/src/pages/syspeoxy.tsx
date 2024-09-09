@@ -123,7 +123,7 @@ const Sysproxy: React.FC = () => {
           }}
         />
       )}
-      <SettingCard>
+      <SettingCard className="sysproxy-settings">
         <SettingItem title="代理主机" divider>
           <Input
             size="sm"

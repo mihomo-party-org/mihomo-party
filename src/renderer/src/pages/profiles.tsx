@@ -218,7 +218,7 @@ const Profiles: React.FC = () => {
         </Button>
       }
     >
-      <div className="sticky top-0 z-40 bg-background">
+      <div className="sticky profiles-sticky top-0 z-40 bg-background">
         <div className="flex p-2">
           <Input
             size="sm"
@@ -269,8 +269,8 @@ const Profiles: React.FC = () => {
               <DropdownTrigger>
                 <Button
                   isLoading={subStoreImporting}
-                  title="SubStore"
-                  className="ml-2"
+                  title="Sub-Store"
+                  className="ml-2 substore-import"
                   size="sm"
                   isIconOnly
                   color="primary"
@@ -337,7 +337,7 @@ const Profiles: React.FC = () => {
           )}
           <Dropdown>
             <DropdownTrigger>
-              <Button className="ml-2" size="sm" isIconOnly color="primary">
+              <Button className="ml-2 new-profile" size="sm" isIconOnly color="primary">
                 <FaPlus />
               </Button>
             </DropdownTrigger>
