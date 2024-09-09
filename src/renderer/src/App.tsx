@@ -219,7 +219,7 @@ export const firstDriver = driver({
     {
       element: 'none',
       popover: {
-        title: '欢迎使用Mihomo Party',
+        title: '欢迎使用 Mihomo Party',
         description:
           '这是一份交互式使用教程，如果您已经完全熟悉本软件的操作，可以直接点击右上角关闭按钮，后续您可以随时从设置中打开本教程',
         side: 'over',
@@ -275,7 +275,7 @@ export const firstDriver = driver({
       popover: {
         title: '订阅导入',
         description:
-          'Mihomo Party支持多种订阅导入方式，在此输入订阅链接，点击导入即可导入您的订阅配置，如果您的订阅需要代理才能更新，请勾选“代理”再点击导入，当然这需要已经有一个可以正常使用的订阅才可以',
+          'Mihomo Party 支持多种订阅导入方式，在此输入订阅链接，点击导入即可导入您的订阅配置，如果您的订阅需要代理才能更新，请勾选“代理”再点击导入，当然这需要已经有一个可以正常使用的订阅才可以',
         side: 'bottom',
         align: 'start'
       }
@@ -285,7 +285,7 @@ export const firstDriver = driver({
       popover: {
         title: 'Sub-Store',
         description:
-          'Mihomo Party深度集成了Sub-Store，您可以点击该按钮进入Sub-Store或直接导入您通过Sub-Store管理的订阅，Mihomo Party默认使用内置的Sub-Store后端，如果您有自建的Sub-Store后端，可以在设置页面中配置，如果您不使用Sub-Store，也可以在设置页面中关闭',
+          'Mihomo Party 深度集成了 Sub-Store，您可以点击该按钮进入 Sub-Store 或直接导入您通过 Sub-Store 管理的订阅，Mihomo Party 默认使用内置的 Sub-Store 后端，如果您有自建的 Sub-Store 后端，可以在设置页面中配置，如果您不使用 Sub-Store 也可以在设置页面中关闭',
         side: 'bottom',
         align: 'start'
       }
@@ -320,7 +320,7 @@ export const firstDriver = driver({
       popover: {
         title: '系统代理设置',
         description:
-          '再次您可以进行系统代理相关设置，选择代理模式，如果某些Windows应用不遵循系统代理，还可以使用UWP工具解除本地回环限制，对于手动代理模式和PAC代理模式的区别，请自行百度',
+          '在此您可以进行系统代理相关设置，选择代理模式，如果某些 Windows 应用不遵循系统代理，还可以使用“UWP 工具”解除本地回环限制，对于“手动代理模式”和“PAC 代理模式”的区别，请自行百度',
         side: 'top',
         align: 'start'
       }
@@ -330,7 +330,7 @@ export const firstDriver = driver({
       popover: {
         title: '虚拟网卡',
         description:
-          '虚拟网卡，即同类软件中常见的“Tun模式”，对于某些不遵循系统代理的应用，您可以打开虚拟网卡以让内核接管所有流量',
+          '虚拟网卡，即同类软件中常见的“Tun 模式”，对于某些不遵循系统代理的应用，您可以打开虚拟网卡以让内核接管所有流量',
         side: 'right',
         align: 'start',
         onNextClick: async (): Promise<void> => {
@@ -346,7 +346,7 @@ export const firstDriver = driver({
       popover: {
         title: '虚拟网卡设置',
         description:
-          '这里可以更改虚拟网卡相关设置，Mihomo Party理论上已经完全解决权限问题，如果您的虚拟网卡仍然不可用，可以尝试重设防火墙（Windows）或手动授权内核（MacOS/Linux）后重启内核',
+          '这里可以更改虚拟网卡相关设置，Mihomo Party 理论上已经完全解决权限问题，如果您的虚拟网卡仍然不可用，可以尝试重设防火墙（Windows）或手动授权内核（MacOS/Linux）后重启内核',
         side: 'bottom',
         align: 'start'
       }
@@ -356,7 +356,7 @@ export const firstDriver = driver({
       popover: {
         title: '覆写',
         description:
-          'Mihomo Party提供强大的覆写功能，可以对您导入的订阅配置进行个性化修改，如添加规则、自定义代理组等，您可以直接导入别人写好的覆写文件，也可以自己动手编写，<b>编辑好覆写文件一定要记得在需要覆写的订阅上启用</b>，覆写文件的语法请参考 <a href="https://mihomo.party/guides/function/override/overview" target="_blank">官方文档</a>',
+          'Mihomo Party 提供强大的覆写功能，可以对您导入的订阅配置进行个性化修改，如添加规则、自定义代理组等，您可以直接导入别人写好的覆写文件，也可以自己动手编写，<b>编辑好覆写文件一定要记得在需要覆写的订阅上启用</b>，覆写文件的语法请参考 <a href="https://mihomo.party/guides/function/override/overview" target="_blank">官方文档</a>',
         side: 'right',
         align: 'center'
       }
