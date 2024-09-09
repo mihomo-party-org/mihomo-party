@@ -62,7 +62,7 @@ const TunSwitcher: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={tunCardStatus}
+      className={`${tunCardStatus} tun-card`}
     >
       {openPasswordModal && (
         <BasePasswordModal

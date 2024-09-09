@@ -66,7 +66,7 @@ const Tun: React.FC = () => {
         />
       )}
       <BasePage
-        title="Tun 设置"
+        title="虚拟网卡设置"
         header={
           changed && (
             <Button
@@ -93,7 +93,7 @@ const Tun: React.FC = () => {
           )
         }
       >
-        <SettingCard>
+        <SettingCard className="tun-settings">
           {platform === 'win32' && (
             <SettingItem title="重设防火墙" divider>
               <Button

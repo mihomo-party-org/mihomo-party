@@ -30,7 +30,7 @@ const OverrideCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={overrideCardStatus}
+      className={`${overrideCardStatus} override-card`}
     >
       <Card
         fullWidth
