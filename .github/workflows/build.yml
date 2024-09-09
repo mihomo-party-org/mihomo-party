@@ -205,7 +205,7 @@ jobs:
       - name: Telegram Notification
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        run: pnpm temegram
+        run: pnpm telegram
       - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
