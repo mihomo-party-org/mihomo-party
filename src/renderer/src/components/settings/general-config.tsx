@@ -1,7 +1,7 @@
 import React, { Key, useState } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { Button, Input, Select, SelectItem, Switch, Tab, Tabs } from '@nextui-org/react'
+import { Button, Input, Select, SelectItem, Switch, Tab, Tabs, Tooltip } from '@nextui-org/react'
 import { BiCopy } from 'react-icons/bi'
 import useSWR from 'swr'
 import {
@@ -17,6 +17,7 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
 import { useTheme } from 'next-themes'
 import debounce from '@renderer/utils/debounce'
+import { IoIosHelpCircle } from 'react-icons/io'
 
 const GeneralConfig: React.FC = () => {
   const { data: enable, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
@@ -29,6 +30,8 @@ const GeneralConfig: React.FC = () => {
     proxyInTray = true,
     useWindowFrame = false,
     useSubStore = true,
+    autoQuitWithoutCore = false,
+    autoQuitWithoutCoreDelay = 60,
     useCustomSubStore = false,
     customSubStoreUrl,
     envType = platform === 'win32' ? 'powershell' : 'bash',
@@ -103,6 +106,42 @@ const GeneralConfig: React.FC = () => {
           }}
         />
       </SettingItem>
+      <SettingItem
+        title="自动开启轻量模式"
+        actions={
+          <Tooltip content="关闭窗口指定时间后自动进入轻量模式">
+            <Button isIconOnly size="sm" variant="light">
+              <IoIosHelpCircle className="text-lg" />
+            </Button>
+          </Tooltip>
+        }
+        divider
+      >
+        <Switch
+          size="sm"
+          isSelected={autoQuitWithoutCore}
+          onValueChange={(v) => {
+            patchAppConfig({ autoQuitWithoutCore: v })
+          }}
+        />
+      </SettingItem>
+      {autoQuitWithoutCore && (
+        <SettingItem title="自动开启轻量模式延时" divider>
+          <Input
+            size="sm"
+            className="w-[100px]"
+            type="number"
+            endContent="秒"
+            value={autoQuitWithoutCoreDelay.toString()}
+            onValueChange={async (v: string) => {
+              let num = parseInt(v)
+              if (isNaN(num)) num = 5
+              if (num < 5) num = 5
+              await patchAppConfig({ autoQuitWithoutCoreDelay: num })
+            }}
+          />
+        </SettingItem>
+      )}
       <SettingItem
         title="复制环境变量类型"
         actions={

@@ -3,7 +3,7 @@ import { registerIpcMainHandlers } from './utils/ipc'
 import windowStateKeeper from 'electron-window-state'
 import { app, shell, BrowserWindow, Menu, dialog, Notification } from 'electron'
 import { addProfileItem, getAppConfig } from './config'
-import { startCore, stopCore } from './core/manager'
+import { quitWithoutCore, startCore, stopCore } from './core/manager'
 import { triggerSysProxy } from './sys/sysproxy'
 import icon from '../../resources/icon.png?asset'
 import { createTray } from './resolve/tray'
@@ -17,6 +17,7 @@ import { existsSync, writeFileSync } from 'fs'
 import { taskDir } from './utils/dirs'
 import path from 'path'
 
+let quitTimeout: NodeJS.Timeout | null = null
 export let mainWindow: BrowserWindow | null = null
 if (process.platform === 'win32' && !is.dev) {
   try {
@@ -97,7 +98,6 @@ app.whenReady().then(async () => {
   } catch (e) {
     dialog.showErrorBox('内核启动出错', `${e}`)
   }
-
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
@@ -175,8 +175,23 @@ export async function createWindow(): Promise<void> {
   })
   mainWindowState.manage(mainWindow)
   mainWindow.on('ready-to-show', async () => {
-    const { silentStart } = await getAppConfig()
+    const {
+      silentStart = false,
+      autoQuitWithoutCore = false,
+      autoQuitWithoutCoreDelay = 60
+    } = await getAppConfig()
+    if (autoQuitWithoutCore && !mainWindow?.isVisible()) {
+      if (quitTimeout) {
+        clearTimeout(quitTimeout)
+      }
+      quitTimeout = setTimeout(async () => {
+        await quitWithoutCore()
+      }, autoQuitWithoutCoreDelay * 1000)
+    }
     if (!silentStart) {
+      if (quitTimeout) {
+        clearTimeout(quitTimeout)
+      }
       mainWindow?.show()
       mainWindow?.focusOnWebView()
     }
@@ -185,9 +200,18 @@ export async function createWindow(): Promise<void> {
     mainWindow?.webContents.reload()
   })
 
-  mainWindow.on('close', (event) => {
+  mainWindow.on('close', async (event) => {
     event.preventDefault()
     mainWindow?.hide()
+    const { autoQuitWithoutCore = false, autoQuitWithoutCoreDelay = 60 } = await getAppConfig()
+    if (autoQuitWithoutCore) {
+      if (quitTimeout) {
+        clearTimeout(quitTimeout)
+      }
+      quitTimeout = setTimeout(async () => {
+        await quitWithoutCore()
+      }, autoQuitWithoutCoreDelay * 1000)
+    }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -206,6 +230,9 @@ export async function createWindow(): Promise<void> {
 
 export function showMainWindow(): void {
   if (mainWindow) {
+    if (quitTimeout) {
+      clearTimeout(quitTimeout)
+    }
     mainWindow.show()
     mainWindow.focusOnWebView()
   }

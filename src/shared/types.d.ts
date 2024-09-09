@@ -234,6 +234,8 @@ interface IAppConfig {
   sysproxyCardStatus?: CardStatus
   tunCardStatus?: CardStatus
   useSubStore: boolean
+  autoQuitWithoutCore?: boolean
+  autoQuitWithoutCoreDelay?: number
   useCustomSubStore?: boolean
   customSubStoreUrl?: string
   autoSetDNS?: boolean
