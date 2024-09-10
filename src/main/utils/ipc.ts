@@ -66,6 +66,9 @@ import { copyEnv } from '../resolve/tray'
 import { registerShortcut } from '../resolve/shortcut'
 import { mainWindow } from '..'
 import { subStoreCollections, subStoreSubs } from '../core/subStoreApi'
+import { logDir } from './dirs'
+import path from 'path'
+import v8 from 'v8'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -190,6 +193,12 @@ export function registerIpcMainHandlers(): void {
     return mainWindow?.isAlwaysOnTop()
   })
   ipcMain.handle('openFile', (_e, type, id, ext) => openFile(type, id, ext))
+  ipcMain.handle('openDevTools', () => {
+    mainWindow?.webContents.openDevTools()
+  })
+  ipcMain.handle('createHeapSnapshot', () => {
+    v8.writeHeapSnapshot(path.join(logDir(), `${Date.now()}.heapsnapshot`))
+  })
   ipcMain.handle('copyEnv', ipcErrorWrapper(copyEnv))
   ipcMain.handle('alert', (_e, msg) => {
     dialog.showErrorBox('Mihomo Party', msg)

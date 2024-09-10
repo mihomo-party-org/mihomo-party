@@ -323,6 +323,14 @@ export async function openFile(
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('openFile', type, id, ext))
 }
 
+export async function openDevTools(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('openDevTools'))
+}
+
+export async function createHeapSnapshot(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('createHeapSnapshot'))
+}
+
 export async function registerShortcut(
   oldShortcut: string,
   newShortcut: string,
