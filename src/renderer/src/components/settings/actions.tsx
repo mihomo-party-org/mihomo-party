@@ -1,7 +1,7 @@
 import { Button, Tooltip } from '@nextui-org/react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { checkUpdate, quitApp, quitWithoutCore } from '@renderer/utils/ipc'
+import { checkUpdate, createHeapSnapshot, quitApp, quitWithoutCore } from '@renderer/utils/ipc'
 import { useState } from 'react'
 import UpdaterModal from '../updater/updater-modal'
 import { version } from '@renderer/utils/init'
@@ -52,6 +52,21 @@ const Actions: React.FC = () => {
             }}
           >
             检查更新
+          </Button>
+        </SettingItem>
+        <SettingItem
+          title="创建堆快照"
+          actions={
+            <Tooltip content="创建主进程堆快照，用于排查内存问题">
+              <Button isIconOnly size="sm" variant="light">
+                <IoIosHelpCircle className="text-lg" />
+              </Button>
+            </Tooltip>
+          }
+          divider
+        >
+          <Button size="sm" onPress={createHeapSnapshot}>
+            创建堆快照
           </Button>
         </SettingItem>
         <SettingItem
