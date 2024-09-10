@@ -21,6 +21,8 @@ export async function generateProfile(): Promise<void> {
   const currentProfile = await overrideProfile(current, await getProfile(current))
   const controledMihomoConfig = await getControledMihomoConfig()
   const profile = deepMerge(currentProfile, controledMihomoConfig)
+  // 确保可以拿到基础日志信息
+  profile['log-level'] = 'info'
   runtimeConfig = profile
   runtimeConfigStr = yaml.stringify(profile)
   await writeFile(mihomoWorkConfigPath(), runtimeConfigStr)
