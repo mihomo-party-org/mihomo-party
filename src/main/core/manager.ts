@@ -24,7 +24,8 @@ import {
   stopMihomoConnections,
   stopMihomoTraffic,
   stopMihomoLogs,
-  stopMihomoMemory
+  stopMihomoMemory,
+  patchMihomoConfig
 } from './mihomoApi'
 import chokidar from 'chokidar'
 import { readFile, rm, writeFile } from 'fs/promises'
@@ -47,6 +48,7 @@ let retry = 10
 
 export async function startCore(detached = false): Promise<Promise<void>[]> {
   const { core = 'mihomo', autoSetDNS = true, encryptedPassword } = await getAppConfig()
+  const { 'log-level': logLevel } = await getControledMihomoConfig()
   if (existsSync(path.join(dataDir(), 'core.pid'))) {
     const pid = parseInt(await readFile(path.join(dataDir(), 'core.pid'), 'utf-8'))
     try {
@@ -136,6 +138,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
                 } catch {
                   // ignore
                 }
+                await patchMihomoConfig({ 'log-level': logLevel })
                 resolve()
               }
             })
