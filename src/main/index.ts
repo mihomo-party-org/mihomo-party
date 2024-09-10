@@ -48,6 +48,7 @@ if (!gotTheLock) {
   app.quit()
 }
 
+Menu.setApplicationMenu(null)
 const initPromise = init()
 
 app.on('second-instance', async (_event, commandline) => {
@@ -143,7 +144,6 @@ async function handleDeepLink(url: string): Promise<void> {
 }
 
 export async function createWindow(): Promise<void> {
-  Menu.setApplicationMenu(null)
   const { useWindowFrame = false } = await getAppConfig()
   const mainWindowState = windowStateKeeper({
     defaultWidth: 800,
