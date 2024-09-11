@@ -254,7 +254,7 @@ const resolveGeoIP = () =>
 const resolveASN = () =>
   resolveResource({
     file: 'ASN.mmdb',
-    downloadURL: `https://github.com/xishang0128/geoip/releases/download/latest/GeoLite2-ASN.mmdb`
+    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb`
   })
 const resolveEnableLoopback = () =>
   resolveResource({
