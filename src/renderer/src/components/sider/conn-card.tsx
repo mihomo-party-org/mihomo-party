@@ -2,15 +2,14 @@ import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { FaCircleArrowDown, FaCircleArrowUp } from 'react-icons/fa6'
 import { useLocation } from 'react-router-dom'
 import { calcTraffic } from '@renderer/utils/calc'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { IoLink } from 'react-icons/io5'
-import Chart from 'react-apexcharts'
-import { ApexOptions } from 'apexcharts'
 import { useTheme } from 'next-themes'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
+import { Area, AreaChart, ResponsiveContainer } from 'recharts'
 
 let currentUpload: number | undefined = undefined
 let currentDownload: number | undefined = undefined
@@ -36,102 +35,12 @@ const ConnCard: React.FC = () => {
   } = useSortable({
     id: 'connection'
   })
-  const [series, setSeries] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-  const getApexChartOptions = (): ApexOptions => {
+  const [series, setSeries] = useState(Array(10).fill(0))
+  const chartColor = useMemo(() => {
     const islight = theme === 'system' ? systemTheme === 'light' : theme.includes('light')
-    const primaryColor = match
-      ? 'rgba(255,255,255,0.6)'
-      : islight
-        ? 'rgba(0,0,0,0.6)'
-        : 'rgba(255,255,255,0.6)'
-    const transparentColor = match
-      ? 'rgba(255,255,255,0)'
-      : islight
-        ? 'rgba(0,0,0,0)'
-        : 'rgba(255,255,255,0)'
-    return {
-      chart: {
-        background: 'transparent',
-        stacked: false,
-        toolbar: {
-          show: false
-        },
-        animations: {
-          enabled: false
-        },
-        parentHeightOffset: 0,
-        sparkline: {
-          enabled: false
-        }
-      },
-      colors: [primaryColor],
-      stroke: {
-        show: false,
-        curve: 'smooth',
-        width: 0
-      },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          type: 'vertical',
-          shadeIntensity: 0,
-          gradientToColors: [transparentColor, primaryColor],
-          inverseColors: false,
-          opacityTo: 0,
-          stops: [0, 100]
-        }
-      },
-      dataLabels: {
-        enabled: false
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false
-        }
-      },
+    return match ? 'rgba(255,255,255)' : islight ? 'rgba(0,0,0' : 'rgba(255,255,255)'
+  }, [theme, systemTheme, match])
 
-      xaxis: {
-        labels: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        axisBorder: {
-          show: false
-        }
-      },
-      yaxis: {
-        labels: {
-          show: false
-        },
-        min: 0
-      },
-      tooltip: {
-        enabled: false
-      },
-      legend: {
-        show: false
-      },
-      grid: {
-        show: false,
-        padding: {
-          left: -10,
-          right: 0,
-          bottom: -15,
-          top: 30
-        },
-        column: {
-          opacity: 0
-        },
-        xaxis: {
-          lines: {
-            show: false
-          }
-        }
-      }
-    }
-  }
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   useEffect(() => {
     window.electron.ipcRenderer.on('mihomoTraffic', async (_e, info: IMihomoTrafficInfo) => {
@@ -213,15 +122,30 @@ const ConnCard: React.FC = () => {
               </h3>
             </CardFooter>
           </Card>
-          <div className="w-full h-full absolute top-0 left-0 pointer-events-none rounded-[14px] overflow-hidden">
-            <Chart
-              options={getApexChartOptions()}
-              series={[{ name: 'Total', data: series }]}
-              height={'100%'}
-              width={'100%'}
-              type="area"
-            />
-          </div>
+          <ResponsiveContainer
+            height="100%"
+            width="100%"
+            className="w-full h-full absolute top-0 left-0 pointer-events-none overflow-hidden rounded-[14px]"
+          >
+            <AreaChart
+              data={series.map((v) => ({ traffic: v }))}
+              margin={{ top: 50, right: 0, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={chartColor} stopOpacity={0.6} />
+                  <stop offset="100%" stopColor={chartColor} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <Area
+                isAnimationActive={false}
+                type="monotone"
+                dataKey="traffic"
+                stroke="none"
+                fill="url(#gradient)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         </>
       ) : (
         <Card
