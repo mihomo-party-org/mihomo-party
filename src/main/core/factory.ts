@@ -4,7 +4,8 @@ import {
   getProfile,
   getProfileItem,
   getOverride,
-  getOverrideItem
+  getOverrideItem,
+  getOverrideConfig
 } from '../config'
 import { mihomoWorkConfigPath, overridePath } from '../utils/dirs'
 import yaml from 'yaml'
@@ -32,8 +33,10 @@ async function overrideProfile(
   current: string | undefined,
   profile: IMihomoConfig
 ): Promise<IMihomoConfig> {
+  const { items = [] } = (await getOverrideConfig()) || {}
+  const globalOverride = items.filter((item) => item.global).map((item) => item.id)
   const { override = [] } = (await getProfileItem(current)) || {}
-  for (const ov of override) {
+  for (const ov of globalOverride.concat(override)) {
     const item = await getOverrideItem(ov)
     const content = await getOverride(ov, item?.ext || 'js')
     switch (item?.ext) {

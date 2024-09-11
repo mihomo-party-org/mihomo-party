@@ -10,7 +10,7 @@ import {
 } from '@nextui-org/react'
 import { IoMdMore, IoMdRefresh } from 'react-icons/io'
 import dayjs from 'dayjs'
-import React, { Key, useEffect, useState } from 'react'
+import React, { Key, useEffect, useMemo, useState } from 'react'
 import EditFileModal from './edit-file-modal'
 import EditInfoModal from './edit-info-modal'
 import { useSortable } from '@dnd-kit/sortable'
@@ -34,44 +34,6 @@ interface MenuItem {
   className: string
 }
 
-const menuItems: MenuItem[] = [
-  {
-    key: 'edit-info',
-    label: '编辑信息',
-    showDivider: false,
-    color: 'default',
-    className: ''
-  } as MenuItem,
-  {
-    key: 'edit-file',
-    label: '编辑文件',
-    showDivider: false,
-    color: 'default',
-    className: ''
-  } as MenuItem,
-  {
-    key: 'open-file',
-    label: '打开文件',
-    showDivider: false,
-    color: 'default',
-    className: ''
-  } as MenuItem,
-  {
-    key: 'exec-log',
-    label: '执行日志',
-    showDivider: true,
-    color: 'default',
-    className: ''
-  } as MenuItem,
-  {
-    key: 'delete',
-    label: '删除',
-    showDivider: false,
-    color: 'danger',
-    className: 'text-danger'
-  } as MenuItem
-]
-
 const OverrideItem: React.FC<Props> = (props) => {
   const { info, addOverrideItem, removeOverrideItem, mutateOverrideConfig, updateOverrideItem } =
     props
@@ -91,7 +53,49 @@ const OverrideItem: React.FC<Props> = (props) => {
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const [disableOpen, setDisableOpen] = useState(false)
-
+  const menuItems: MenuItem[] = useMemo(() => {
+    const list = [
+      {
+        key: 'edit-info',
+        label: '编辑信息',
+        showDivider: false,
+        color: 'default',
+        className: ''
+      } as MenuItem,
+      {
+        key: 'edit-file',
+        label: '编辑文件',
+        showDivider: false,
+        color: 'default',
+        className: ''
+      } as MenuItem,
+      {
+        key: 'open-file',
+        label: '打开文件',
+        showDivider: false,
+        color: 'default',
+        className: ''
+      } as MenuItem,
+      {
+        key: 'exec-log',
+        label: '执行日志',
+        showDivider: true,
+        color: 'default',
+        className: ''
+      } as MenuItem,
+      {
+        key: 'delete',
+        label: '删除',
+        showDivider: false,
+        color: 'danger',
+        className: 'text-danger'
+      } as MenuItem
+    ]
+    if (info.ext === 'yaml') {
+      list.splice(3, 1)
+    }
+    return list
+  }, [info])
   const onMenuAction = (key: Key): void => {
     switch (key) {
       case 'edit-info': {
@@ -219,10 +223,15 @@ const OverrideItem: React.FC<Props> = (props) => {
           </div>
           <div className="flex justify-between">
             <div className={`mt-2 flex justify-start`}>
-              <Chip size="sm" variant="bordered">
+              {info.global && (
+                <Chip size="sm" variant="dot" color="primary" className="mr-2">
+                  全局
+                </Chip>
+              )}
+              <Chip size="sm" variant="bordered" className="mr-2">
                 {info.type === 'local' ? '本地' : '远程'}
               </Chip>
-              <Chip size="sm" variant="bordered" className="ml-2">
+              <Chip size="sm" variant="bordered">
                 {info.ext === 'yaml' ? 'YAML' : 'JavaScript'}
               </Chip>
             </div>
