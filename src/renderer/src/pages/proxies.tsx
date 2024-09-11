@@ -195,6 +195,7 @@ const Proxies: React.FC = () => {
                             className="bg-transparent mr-2"
                             size="sm"
                             onLoad={() => {
+                              if (!groups[index].icon.startsWith('http')) return
                               const img = new Image()
                               img.crossOrigin = 'anonymous'
                               img.onload = (): void => {
@@ -209,7 +210,13 @@ const Proxies: React.FC = () => {
                               img.src = groups[index].icon
                             }}
                             radius="sm"
-                            src={localStorage.getItem(groups[index].icon) || groups[index].icon}
+                            src={
+                              groups[index].icon.startsWith('http')
+                                ? localStorage.getItem(groups[index].icon) || groups[index].icon
+                                : groups[index].icon.startsWith('<svg')
+                                  ? `data:image/svg+xml;utf8,${groups[index].icon}`
+                                  : groups[index].icon
+                            }
                           />
                         ) : null}
                         <div className="text-ellipsis overflow-hidden whitespace-nowrap">

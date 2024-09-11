@@ -183,9 +183,11 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('setNativeTheme', (_e, theme) => {
     setNativeTheme(theme)
   })
-  ipcMain.handle('setTitleBarOverlay', (_e, overlay) => {
-    mainWindow?.setTitleBarOverlay(overlay)
-  })
+  ipcMain.handle('setTitleBarOverlay', (_e, overlay) =>
+    ipcErrorWrapper(async (overlay): Promise<void> => {
+      mainWindow?.setTitleBarOverlay(overlay)
+    })(overlay)
+  )
   ipcMain.handle('setAlwaysOnTop', (_e, alwaysOnTop) => {
     mainWindow?.setAlwaysOnTop(alwaysOnTop)
   })
