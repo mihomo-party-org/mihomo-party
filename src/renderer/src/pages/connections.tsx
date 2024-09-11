@@ -13,12 +13,14 @@ import { HiSortAscending, HiSortDescending } from 'react-icons/hi'
 import { includesIgnoreCase } from '@renderer/utils/includes'
 import { differenceWith, unionWith } from 'lodash'
 
+let cachedConnections: IMihomoConnectionDetail[] = []
+
 const Connections: React.FC = () => {
   const [filter, setFilter] = useState('')
   const { appConfig, patchAppConfig } = useAppConfig()
   const { connectionDirection = 'asc', connectionOrderBy = 'time' } = appConfig || {}
   const [connectionsInfo, setConnectionsInfo] = useState<IMihomoConnectionsInfo>()
-  const [allConnections, setAllConnections] = useState<IMihomoConnectionDetail[]>([])
+  const [allConnections, setAllConnections] = useState<IMihomoConnectionDetail[]>(cachedConnections)
   const [activeConnections, setActiveConnections] = useState<IMihomoConnectionDetail[]>([])
   const [closedConnections, setClosedConnections] = useState<IMihomoConnectionDetail[]>([])
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -77,11 +79,15 @@ const Connections: React.FC = () => {
     const trashIds = closedConnections.map((conn) => conn.id)
     setAllConnections((allConns) => allConns.filter((conn) => !trashIds.includes(conn.id)))
     setClosedConnections([])
+
+    cachedConnections = allConnections
   }
 
   const trashClosedConnection = (id: string) => {
     setAllConnections((allConns) => allConns.filter((conn) => conn.id != id))
     setClosedConnections((closedConns) => closedConns.filter((conn) => conn.id != id))
+
+    cachedConnections = allConnections
   }
 
   useEffect(() => {
@@ -114,6 +120,8 @@ const Connections: React.FC = () => {
       setActiveConnections(activeConns)
       setClosedConnections(closedConns)
       setAllConnections(allConns.slice(-(activeConns.length + 200)))
+
+      cachedConnections = allConnections
     })
 
     return (): void => {
