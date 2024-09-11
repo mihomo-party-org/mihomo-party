@@ -31,7 +31,13 @@ const EditInfoModal: React.FC<Props> = (props) => {
 
   const onSave = async (): Promise<void> => {
     try {
-      await updateProfileItem(values)
+      await updateProfileItem({
+        ...values,
+        override: values.override?.filter(
+          (i) =>
+            overrideItems.find((t) => t.id === i) && !overrideItems.find((t) => t.id === i)?.global
+        )
+      })
       await restartCore()
       onClose()
     } catch (e) {
@@ -97,8 +103,20 @@ const EditInfoModal: React.FC<Props> = (props) => {
           )}
           <SettingItem title="覆写">
             <div>
+              {overrideItems
+                .filter((i) => i.global)
+                .map((i) => {
+                  return (
+                    <div className="flex mb-2" key={i.id}>
+                      <Button disabled fullWidth variant="flat" size="sm">
+                        {i.name} (全局)
+                      </Button>
+                    </div>
+                  )
+                })}
               {values.override?.map((i) => {
                 if (!overrideItems.find((t) => t.id === i)) return null
+                if (overrideItems.find((t) => t.id === i)?.global) return null
                 return (
                   <div className="flex mb-2" key={i}>
                     <Button disabled fullWidth variant="flat" size="sm">
@@ -112,9 +130,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
                       onPress={() => {
                         setValues({
                           ...values,
-                          override: values.override
-                            ?.filter((i) => overrideItems.find((t) => t.id === i))
-                            .filter((t) => t !== i)
+                          override: values.override?.filter((t) => t !== i)
                         })
                       }}
                     >
@@ -134,14 +150,12 @@ const EditInfoModal: React.FC<Props> = (props) => {
                   onAction={(key) => {
                     setValues({
                       ...values,
-                      override: Array.from(values.override || [])
-                        .filter((i) => overrideItems.find((t) => t.id === i))
-                        .concat(key.toString())
+                      override: Array.from(values.override || []).concat(key.toString())
                     })
                   }}
                 >
                   {overrideItems
-                    .filter((i) => !values.override?.includes(i.id))
+                    .filter((i) => !values.override?.includes(i.id) && !i.global)
                     .map((i) => (
                       <DropdownItem key={i.id}>{i.name}</DropdownItem>
                     ))}

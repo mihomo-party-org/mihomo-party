@@ -389,6 +389,7 @@ interface IOverrideItem {
   ext: 'js' | 'yaml'
   name: string
   updated: number
+  global?: boolean
   url?: string
   file?: string
 }

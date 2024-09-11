@@ -5,7 +5,8 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Input
+  Input,
+  Switch
 } from '@nextui-org/react'
 import React, { useState } from 'react'
 import SettingItem from '../base/base-setting-item'
@@ -57,6 +58,15 @@ const EditInfoModal: React.FC<Props> = (props) => {
               />
             </SettingItem>
           )}
+          <SettingItem title="全局启用">
+            <Switch
+              size="sm"
+              isSelected={values.global}
+              onValueChange={(v) => {
+                setValues({ ...values, global: v })
+              }}
+            />
+          </SettingItem>
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onClose}>
