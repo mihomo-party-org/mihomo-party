@@ -4,7 +4,7 @@ import { readFileSync } from 'fs'
 const pkg = readFileSync('package.json', 'utf-8')
 const changelog = readFileSync('changelog.md', 'utf-8')
 const { version } = JSON.parse(pkg)
-let content = `<b>🌟Mihomo Party v${version} 正式发布</b>\n\n`
+let content = `<b>🌟 <a href="https://github.com/pompurin404/mihomo-party/releases/tag/v${version}">Mihomo Party v${version}</a> 正式发布</b>\n\n`
 for (const line of changelog.split('\n')) {
   if (line.length === 0) {
     content += '\n'
@@ -17,31 +17,10 @@ for (const line of changelog.split('\n')) {
 axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
   chat_id: '@mihomo_party_channel',
   text: content,
-  parse_mode: 'HTML',
-  reply_markup: {
-    inline_keyboard: [
-      [
-        {
-          text: '👥官方群组',
-          url: 'https://t.me/mihomo_party'
-        },
-        {
-          text: '📄官方文档',
-          url: 'https://mihomo.party'
-        }
-      ],
-      [
-        {
-          text: '✈️推荐机场',
-          url: 'https://party.dg7.top/#/register?code=ARdo0mXx'
-        }
-      ],
-      [
-        {
-          text: '🚀前往下载',
-          url: `https://github.com/pompurin404/mihomo-party/releases/tag/v${version}`
-        }
-      ]
-    ]
-  }
+  link_preview_options: {
+    is_disabled: false,
+    url: 'https://github.com/pompurin404/mihomo-party',
+    prefer_large_media: true
+  },
+  parse_mode: 'HTML'
 })
