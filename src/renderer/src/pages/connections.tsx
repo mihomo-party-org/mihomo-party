@@ -167,13 +167,13 @@ const Connections: React.FC = () => {
         <ConnectionDetailModal onClose={() => setIsDetailModalOpen(false)} connection={selected} />
       )}
       <div className="overflow-x-auto sticky top-0 z-40">
-        <div className="flex p-2 gap-2 items-center">
+        <div className="flex p-2 gap-2">
           <Tabs 
             size="sm"
             color={`${tab === 'active' ? "primary" : "danger" }`}
             selectedKey={tab}
             variant="underlined"
-            className="w-fit"
+            className="w-fit h-[32px]"
             onSelectionChange={(key: Key) => {
               setTab(key as string)
             }}
@@ -220,7 +220,7 @@ const Connections: React.FC = () => {
 
           <Select
             size="sm"
-            className="w-[180px]"
+            className="w-[180px] min-w-[120px]"
             selectedKeys={new Set([connectionOrderBy])}
             onSelectionChange={async (v) => {
               await patchAppConfig({
