@@ -10,6 +10,7 @@ import ConnectionDetailModal from '@renderer/components/connections/connection-d
 import { CgClose } from 'react-icons/cg'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { HiSortAscending, HiSortDescending } from 'react-icons/hi'
+import { includesIgnoreCase } from '@renderer/utils/includes'
 
 let preData: IMihomoConnectionDetail[] = []
 
@@ -57,7 +58,7 @@ const Connections: React.FC = () => {
     if (filter === '') return connections
     return connections?.filter((connection) => {
       const raw = JSON.stringify(connection)
-      return raw.includes(filter)
+      return includesIgnoreCase(raw, filter)
     })
   }, [connections, filter, connectionDirection, connectionOrderBy])
 

@@ -4,6 +4,7 @@ import { Virtuoso } from 'react-virtuoso'
 import { useMemo, useState } from 'react'
 import { Divider, Input } from '@nextui-org/react'
 import { useRules } from '@renderer/hooks/use-rules'
+import { includesIgnoreCase } from '@renderer/utils/includes'
 
 const Rules: React.FC = () => {
   const { rules } = useRules()
@@ -14,7 +15,9 @@ const Rules: React.FC = () => {
     if (filter === '') return rules.rules
     return rules.rules.filter((rule) => {
       return (
-        rule.payload.includes(filter) || rule.type.includes(filter) || rule.proxy.includes(filter)
+        includesIgnoreCase(rule.payload, filter) ||
+        includesIgnoreCase(rule.type, filter) ||
+        includesIgnoreCase(rule.proxy, filter)
       )
     })
   }, [rules, filter])

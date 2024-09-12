@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Divider, Input } from '@nextui-org/react'
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
 import { IoLocationSharp } from 'react-icons/io5'
+import { includesIgnoreCase } from '@renderer/utils/includes'
 
 const Logs: React.FC = () => {
   const [logs, setLogs] = useState<IMihomoLogInfo[]>([])
@@ -14,7 +15,7 @@ const Logs: React.FC = () => {
   const filteredLogs = useMemo(() => {
     if (filter === '') return logs
     return logs.filter((log) => {
-      return log.payload.includes(filter) || log.type.includes(filter)
+      return includesIgnoreCase(log.payload, filter) || includesIgnoreCase(log.type, filter)
     })
   }, [logs, filter])
 

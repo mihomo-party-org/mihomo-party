@@ -18,6 +18,7 @@ import { IoIosArrowBack } from 'react-icons/io'
 import { MdOutlineSpeed } from 'react-icons/md'
 import { useGroups } from '@renderer/hooks/use-groups'
 import CollapseInput from '@renderer/components/base/collapse-input'
+import { includesIgnoreCase } from '@renderer/utils/includes'
 
 const Proxies: React.FC = () => {
   const { groups = [], mutate } = useGroups()
@@ -40,7 +41,7 @@ const Proxies: React.FC = () => {
     groups.forEach((group, index) => {
       if (isOpen[index]) {
         let groupProxies = group.all.filter((proxy) =>
-          proxy.name.toLowerCase().includes(searchValue[index].toLowerCase())
+          includesIgnoreCase(proxy.name, searchValue[index])
         )
         const count = Math.floor(groupProxies.length / cols)
         groupCounts.push(groupProxies.length % cols === 0 ? count : count + 1)
