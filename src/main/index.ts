@@ -48,7 +48,6 @@ if (!gotTheLock) {
   app.quit()
 }
 
-Menu.setApplicationMenu(null)
 const initPromise = init()
 
 app.on('second-instance', async (_event, commandline) => {
@@ -149,6 +148,8 @@ export async function createWindow(): Promise<void> {
     defaultWidth: 800,
     defaultHeight: 600
   })
+  // https://github.com/electron/electron/issues/16521#issuecomment-582955104
+  Menu.setApplicationMenu(null)
   mainWindow = new BrowserWindow({
     minWidth: 800,
     minHeight: 600,
