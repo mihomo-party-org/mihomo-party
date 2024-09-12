@@ -16,7 +16,7 @@ import EditInfoModal from './edit-info-modal'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import ExecLogModal from './exec-log-modal'
-import { openFile } from '@renderer/utils/ipc'
+import { openFile, restartCore } from '@renderer/utils/ipc'
 
 interface Props {
   info: IOverrideItem
@@ -186,11 +186,16 @@ const OverrideItem: React.FC<Props> = (props) => {
                   variant="light"
                   color="default"
                   disabled={updating}
-                  onPress={() => {
+                  onPress={async () => {
                     setUpdating(true)
-                    addOverrideItem(info).finally(() => {
+                    try {
+                      await addOverrideItem(info)
+                      await restartCore()
+                    } catch (e) {
+                      alert(e)
+                    } finally {
                       setUpdating(false)
-                    })
+                    }
                   }}
                 >
                   <IoMdRefresh
