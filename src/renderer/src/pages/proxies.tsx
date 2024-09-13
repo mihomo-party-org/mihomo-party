@@ -319,7 +319,7 @@ const Proxies: React.FC = () => {
                     ? { gridTemplateColumns: `repeat(${proxyCols}, minmax(0, 1fr))` }
                     : {}
                 }
-                className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} gap-2 pt-2 mx-2`}
+                className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} ${groupIndex === groupCounts.length - 1 && innerIndex === groupCounts[groupIndex] - 1 ? 'pb-2' : ''} gap-2 pt-2 mx-2`}
               >
                 {Array.from({ length: cols }).map((_, i) => {
                   if (!allProxies[groupIndex][innerIndex * cols + i]) return null
