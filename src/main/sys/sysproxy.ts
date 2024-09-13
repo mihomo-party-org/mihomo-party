@@ -48,10 +48,10 @@ if (process.platform === 'win32')
 
 export async function triggerSysProxy(enable: boolean): Promise<void> {
   if (enable) {
-    disableSysProxy()
+    await disableSysProxy()
     await enableSysProxy()
   } else {
-    disableSysProxy()
+    await disableSysProxy()
   }
 }
 
@@ -97,10 +97,15 @@ export async function enableSysProxy(): Promise<void> {
   }
 }
 
-export function disableSysProxy(): void {
+export async function disableSysProxy(): Promise<void> {
   const execFilePromise = promisify(execFile)
   if (process.platform === 'win32') {
-    execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), ['set', '1'])
+    try {
+      await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), ['set', '1'])
+    } catch {
+      triggerAutoProxy(false, '')
+      triggerManualProxy(false, '', 0, '')
+    }
   } else {
     triggerAutoProxy(false, '')
     triggerManualProxy(false, '', 0, '')
