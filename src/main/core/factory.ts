@@ -36,7 +36,7 @@ async function overrideProfile(
   const { items = [] } = (await getOverrideConfig()) || {}
   const globalOverride = items.filter((item) => item.global).map((item) => item.id)
   const { override = [] } = (await getProfileItem(current)) || {}
-  for (const ov of globalOverride.concat(override)) {
+  for (const ov of new Set(globalOverride.concat(override))) {
     const item = await getOverrideItem(ov)
     const content = await getOverride(ov, item?.ext || 'js')
     switch (item?.ext) {
