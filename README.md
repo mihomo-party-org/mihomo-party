@@ -6,8 +6,8 @@
 <h3 align="center">Another Mihomo GUI</h3>
 
 <p align="center">
-  <a href="https://github.com/pompurin404/mihomo-party/releases">
-    <img src="https://img.shields.io/github/release/pompurin404/mihomo-party/all.svg">
+  <a href="https://github.com/mihomo-party-org/mihomo-party/releases">
+    <img src="https://img.shields.io/github/release/mihomo-party-org/mihomo-party/all.svg">
   </a>
   <a href="https://t.me/mihomo_party_channel">
     <img src="https://img.shields.io/badge/Telegram-Channel-blue?logo=telegram">

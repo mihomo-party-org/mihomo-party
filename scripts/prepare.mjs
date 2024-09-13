@@ -264,12 +264,12 @@ const resolveEnableLoopback = () =>
 const resolveSysproxy = () =>
   resolveResource({
     file: 'sysproxy.exe',
-    downloadURL: `https://github.com/pompurin404/sysproxy/releases/download/${arch}/sysproxy.exe`
+    downloadURL: `https://github.com/mihomo-party-org/sysproxy/releases/download/${arch}/sysproxy.exe`
   })
 const resolveRunner = () =>
   resolveResource({
     file: 'mihomo-party-run.exe',
-    downloadURL: `https://github.com/pompurin404/mihomo-party-run/releases/download/${arch}/mihomo-party-run.exe`
+    downloadURL: `https://github.com/mihomo-party-org/mihomo-party-run/releases/download/${arch}/mihomo-party-run.exe`
   })
 const resolveSubstore = () =>
   resolveResource({

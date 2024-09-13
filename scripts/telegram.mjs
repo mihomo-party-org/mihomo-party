@@ -4,7 +4,7 @@ import { readFileSync } from 'fs'
 const pkg = readFileSync('package.json', 'utf-8')
 const changelog = readFileSync('changelog.md', 'utf-8')
 const { version } = JSON.parse(pkg)
-let content = `<b>🌟 <a href="https://github.com/pompurin404/mihomo-party/releases/tag/v${version}">Mihomo Party v${version}</a> 正式发布</b>\n\n`
+let content = `<b>🌟 <a href="https://github.com/mihomo-party-org/mihomo-party/releases/tag/v${version}">Mihomo Party v${version}</a> 正式发布</b>\n\n`
 for (const line of changelog.split('\n')) {
   if (line.length === 0) {
     content += '\n'
@@ -19,7 +19,7 @@ axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMe
   text: content,
   link_preview_options: {
     is_disabled: false,
-    url: 'https://github.com/pompurin404/mihomo-party',
+    url: 'https://github.com/mihomo-party-org/mihomo-party',
     prefer_large_media: true
   },
   parse_mode: 'HTML'
