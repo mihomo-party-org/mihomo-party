@@ -57,7 +57,13 @@ export async function startPacServer(): Promise<void> {
 }
 
 export async function startSubStoreServer(): Promise<void> {
-  const { useSubStore = true, useCustomSubStore = false } = await getAppConfig()
+  const {
+    useSubStore = true,
+    useCustomSubStore = false,
+    subStoreBackendSyncCron = '',
+    subStoreBackendDownloadCron = '',
+    subStoreBackendUploadCron = ''
+  } = await getAppConfig()
   if (!useSubStore) return
   if (!subStoreFrontendPort) {
     subStoreFrontendPort = await findAvailablePort(4000)
@@ -74,7 +80,10 @@ export async function startSubStoreServer(): Promise<void> {
         SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
         SUB_STORE_DATA_BASE_PATH: subStoreDir(),
         SUB_STORE_BACKEND_CUSTOM_ICON: icon.toDataURL(),
-        SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party'
+        SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party',
+        SUB_STORE_BACKEND_SYNC_CRON: subStoreBackendSyncCron,
+        SUB_STORE_BACKEND_DOWNLOAD_CRON: subStoreBackendDownloadCron,
+        SUB_STORE_BACKEND_UPLOAD_CRON: subStoreBackendUploadCron
       }
     })
   }

@@ -1,4 +1,4 @@
-import React, { Key, useState } from 'react'
+import React, { Key } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
 import { Button, Input, Select, SelectItem, Switch, Tab, Tabs, Tooltip } from '@nextui-org/react'
@@ -10,13 +10,11 @@ import {
   disableAutoRun,
   enableAutoRun,
   relaunchApp,
-  restartCore,
-  startSubStoreServer
+  restartCore
 } from '@renderer/utils/ipc'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
 import { useTheme } from 'next-themes'
-import debounce from '@renderer/utils/debounce'
 import { IoIosHelpCircle } from 'react-icons/io'
 
 const GeneralConfig: React.FC = () => {
@@ -29,20 +27,13 @@ const GeneralConfig: React.FC = () => {
     showTraffic = true,
     proxyInTray = true,
     useWindowFrame = false,
-    useSubStore = true,
     autoQuitWithoutCore = false,
     autoQuitWithoutCoreDelay = 60,
-    useCustomSubStore = false,
-    customSubStoreUrl,
     envType = platform === 'win32' ? 'powershell' : 'bash',
     autoCheckUpdate,
     appTheme = 'system'
   } = appConfig || {}
 
-  const [subStoreUrl, setSubStoreUrl] = useState(customSubStoreUrl)
-  const setSubStoreUrlDebounce = debounce((v: string) => {
-    patchAppConfig({ customSubStoreUrl: v })
-  }, 500)
   const onThemeChange = (key: Key, type: 'theme' | 'color'): void => {
     const [theme, color] = appTheme.split('-')
 
@@ -202,50 +193,7 @@ const GeneralConfig: React.FC = () => {
           </SettingItem>
         </>
       )}
-      <SettingItem title="启用 Sub-Store" divider>
-        <Switch
-          size="sm"
-          isSelected={useSubStore}
-          onValueChange={async (v) => {
-            try {
-              await patchAppConfig({ useSubStore: v })
-              if (v) await startSubStoreServer()
-            } catch (e) {
-              alert(e)
-            }
-          }}
-        />
-      </SettingItem>
-      {useSubStore && (
-        <SettingItem title="使用自建 Sub-Store 后端" divider>
-          <Switch
-            size="sm"
-            isSelected={useCustomSubStore}
-            onValueChange={async (v) => {
-              try {
-                await patchAppConfig({ useCustomSubStore: v })
-                if (!v) await startSubStoreServer()
-              } catch (e) {
-                alert(e)
-              }
-            }}
-          />
-        </SettingItem>
-      )}
-      {useCustomSubStore && (
-        <SettingItem title="自建 Sub-Store 后端地址" divider>
-          <Input
-            size="sm"
-            className="w-[60%]"
-            value={subStoreUrl}
-            placeholder="必须包含协议头"
-            onValueChange={(v: string) => {
-              setSubStoreUrl(v)
-              setSubStoreUrlDebounce(v)
-            }}
-          />
-        </SettingItem>
-      )}
+
       <SettingItem title="使用系统标题栏" divider>
         <Switch
           size="sm"
