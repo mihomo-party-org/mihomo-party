@@ -6,6 +6,7 @@ import { dataDir, isPortable } from '../utils/dirs'
 import { rm, writeFile } from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
+import os from 'os'
 
 export async function checkUpdate(): Promise<IAppVersion | undefined> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
@@ -46,7 +47,9 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
   if (!file) {
     throw new Error('不支持自动更新，请手动下载更新')
   }
-
+  if (process.platform === 'win32' && parseInt(os.release()) < 10) {
+    file = file.replace('windows', 'win7')
+  }
   try {
     if (!existsSync(path.join(dataDir(), file))) {
       const res = await axios.get(`${baseUrl}${file}`, {
