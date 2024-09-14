@@ -27,7 +27,7 @@
     "@mihomo-party/sysproxy": "^2.0.4",
     "adm-zip": "^0.5.16",
     "axios": "^1.7.7",
-    "chokidar": "^3.6.0",
+    "chokidar": "^4.0.0",
     "dayjs": "^1.11.13",
     "express": "^4.21.0",
     "recharts": "^2.12.7",
