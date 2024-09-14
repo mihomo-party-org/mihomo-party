@@ -11,6 +11,7 @@ export async function getAppConfig(force = false): Promise<IAppConfig> {
     const data = await readFile(appConfigPath(), 'utf-8')
     appConfig = yaml.parse(data) || defaultConfig
   }
+  if (typeof appConfig !== 'object') appConfig = defaultConfig
   return appConfig
 }
 

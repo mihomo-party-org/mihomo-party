@@ -14,6 +14,8 @@ export async function getControledMihomoConfig(force = false): Promise<Partial<I
     const data = await readFile(controledMihomoConfigPath(), 'utf-8')
     controledMihomoConfig = yaml.parse(data) || defaultControledMihomoConfig
   }
+  if (typeof controledMihomoConfig !== 'object')
+    controledMihomoConfig = defaultControledMihomoConfig
   return controledMihomoConfig
 }
 
