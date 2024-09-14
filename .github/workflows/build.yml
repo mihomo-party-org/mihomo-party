@@ -21,16 +21,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Nodejs
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        run: npm install -g pnpm
       - name: Install Dependencies
         env:
           npm_config_arch: ${{ matrix.arch }}
@@ -80,21 +72,12 @@ jobs:
         arch:
           - x64
           - ia32
-          - arm64
     runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Nodejs
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        run: npm install -g pnpm
       - name: Install Dependencies
         env:
           npm_config_arch: ${{ matrix.arch }}
@@ -150,16 +133,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Nodejs
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        run: npm install -g pnpm
       - name: Install Dependencies
         env:
           npm_config_arch: ${{ matrix.arch }}
@@ -207,16 +182,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Nodejs
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        run: npm install -g pnpm
       - name: Install Dependencies
         env:
           npm_config_arch: ${{ matrix.arch }}
@@ -253,19 +220,13 @@ jobs:
 
   updater:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [windows, macos]
+    needs: [windows, macos, windows7]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Nodejs
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        run: npm install -g pnpm
       - name: Build Latest
         run: pnpm install && pnpm updater
       - name: Telegram Notification
