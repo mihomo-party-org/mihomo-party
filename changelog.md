@@ -4,9 +4,4 @@
 
 ### New Features
 
-- 支持设置 Sub-Store 定时同步
-
-### Bug Fixes
-
-- 修复全局覆写重复执行的问题
-- 修复系统代理关闭失败的问题
+- 支持 Windows7/8/8.1
