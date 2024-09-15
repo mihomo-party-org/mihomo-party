@@ -5,8 +5,10 @@ import { promisify } from 'util'
 import { execFile } from 'child_process'
 import path from 'path'
 import { resourcesFilesDir } from '../utils/dirs'
+import { net } from 'electron'
 
 let defaultBypass: string[]
+let triggerSysProxyTimer: NodeJS.Timeout | null = null
 
 if (process.platform === 'linux')
   defaultBypass = ['localhost', '127.0.0.1', '192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '::1']
@@ -47,15 +49,20 @@ if (process.platform === 'win32')
   ]
 
 export async function triggerSysProxy(enable: boolean): Promise<void> {
-  if (enable) {
-    await disableSysProxy()
-    await enableSysProxy()
+  if (net.isOnline()) {
+    if (enable) {
+      await disableSysProxy()
+      await enableSysProxy()
+    } else {
+      await disableSysProxy()
+    }
   } else {
-    await disableSysProxy()
+    if (triggerSysProxyTimer) clearTimeout(triggerSysProxyTimer)
+    triggerSysProxyTimer = setTimeout(() => triggerSysProxy(enable), 5000)
   }
 }
 
-export async function enableSysProxy(): Promise<void> {
+async function enableSysProxy(): Promise<void> {
   const { sysProxy } = await getAppConfig()
   const { mode, host, bypass = defaultBypass } = sysProxy
   const { 'mixed-port': port = 7890 } = await getControledMihomoConfig()
@@ -97,7 +104,7 @@ export async function enableSysProxy(): Promise<void> {
   }
 }
 
-export async function disableSysProxy(): Promise<void> {
+async function disableSysProxy(): Promise<void> {
   const execFilePromise = promisify(execFile)
   if (process.platform === 'win32') {
     try {
