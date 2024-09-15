@@ -306,3 +306,38 @@ jobs:
           commit_message: Update AUR package
           ssh_keyscan_types: rsa,ed25519
           allow_empty_commits: false
+
+  winget:
+    if: startsWith(github.ref, 'refs/tags/v')
+    name: Update WinGet Package
+    needs: windows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Tag Name
+        run: echo "VERSION=$(echo ${{ github.ref }} | tr -d 'refs/tags/v')" >> $GITHUB_ENV
+      - name: Submit to Winget
+        uses: vedantmgoyal9/winget-releaser@main
+        with:
+          identifier: Mihomo-Party.Mihomo-Party
+          version: ${{env.VERSION}}
+          release-tag: v${{env.VERSION}}
+          installers-regex: 'mihomo-party-windows-.*setup\.exe$'
+          token: ${{ secrets.POMPURIN404_TOKEN }}
+
+  homebrew:
+    if: startsWith(github.ref, 'refs/tags/v')
+    name: Update Homebrew cask
+    needs: macos
+    runs-on: macos-latest
+    steps:
+      - name: Set up Git
+        run: |
+          git config --global user.email pompurin404@mihomo.party
+          git config --global user.name pompurin404
+      - name: Update Homebrew cask
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.POMPURIN404_TOKEN }}
+        run: |
+          brew tap mihomo-party-org/mihomo-party
+          brew update
+          brew bump-cask-pr mihomo-party --version $(echo ${{ github.ref }} | tr -d 'refs/tags/v') --no-browse

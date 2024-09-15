@@ -4,4 +4,9 @@
 
 ### New Features
 
-- 支持 Windows7/8/8.1
+- 添加 Homebrew 和 Winget
+
+### Bug Fixes
+
+- 修复 MacOS 系统代理开启失败的问题
+- 修复 YAML不合法时内核启动失败的问题
