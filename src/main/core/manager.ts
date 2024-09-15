@@ -15,7 +15,7 @@ import {
   patchAppConfig,
   patchControledMihomoConfig
 } from '../config'
-import { app, dialog, ipcMain, safeStorage } from 'electron'
+import { app, dialog, ipcMain, net, safeStorage } from 'electron'
 import {
   startMihomoTraffic,
   startMihomoConnections,
@@ -34,7 +34,7 @@ import { mainWindow } from '..'
 import path from 'path'
 import { existsSync } from 'fs'
 
-chokidar.watch(path.join(mihomoCoreDir(), 'meta-update')).on('unlinkDir', async () => {
+chokidar.watch(path.join(mihomoCoreDir(), 'meta-update'), {}).on('unlinkDir', async () => {
   try {
     await stopCore(true)
     await startCore()
@@ -43,6 +43,8 @@ chokidar.watch(path.join(mihomoCoreDir(), 'meta-update')).on('unlinkDir', async 
   }
 })
 
+let setPublicDNSTimer: NodeJS.Timeout | null = null
+let recoverDNSTimer: NodeJS.Timeout | null = null
 let child: ChildProcess
 let retry = 10
 
@@ -307,26 +309,36 @@ async function setDNS(dns: string, password?: string): Promise<void> {
 
 async function setPublicDNS(): Promise<void> {
   if (process.platform !== 'darwin') return
-  const { originDNS, encryptedPassword } = await getAppConfig()
-  if (!originDNS) {
-    let password: string | undefined
-    if (encryptedPassword && isEncryptionAvailable()) {
-      password = safeStorage.decryptString(Buffer.from(encryptedPassword))
+  if (net.isOnline()) {
+    const { originDNS, encryptedPassword } = await getAppConfig()
+    if (!originDNS) {
+      let password: string | undefined
+      if (encryptedPassword && isEncryptionAvailable()) {
+        password = safeStorage.decryptString(Buffer.from(encryptedPassword))
+      }
+      await getOriginDNS(password)
+      await setDNS('223.5.5.5', password)
     }
-    await getOriginDNS(password)
-    await setDNS('223.5.5.5', password)
+  } else {
+    if (setPublicDNSTimer) clearTimeout(setPublicDNSTimer)
+    setPublicDNSTimer = setTimeout(() => setPublicDNS(), 5000)
   }
 }
 
 async function recoverDNS(): Promise<void> {
   if (process.platform !== 'darwin') return
-  const { originDNS, encryptedPassword } = await getAppConfig()
-  if (originDNS) {
-    let password: string | undefined
-    if (encryptedPassword && isEncryptionAvailable()) {
-      password = safeStorage.decryptString(Buffer.from(encryptedPassword))
+  if (net.isOnline()) {
+    const { originDNS, encryptedPassword } = await getAppConfig()
+    if (originDNS) {
+      let password: string | undefined
+      if (encryptedPassword && isEncryptionAvailable()) {
+        password = safeStorage.decryptString(Buffer.from(encryptedPassword))
+      }
+      await setDNS(originDNS, password)
+      await patchAppConfig({ originDNS: undefined })
     }
-    await setDNS(originDNS, password)
-    await patchAppConfig({ originDNS: undefined })
+  } else {
+    if (recoverDNSTimer) clearTimeout(recoverDNSTimer)
+    recoverDNSTimer = setTimeout(() => recoverDNS(), 5000)
   }
 }
