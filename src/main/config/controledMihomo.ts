@@ -12,7 +12,7 @@ let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
 export async function getControledMihomoConfig(force = false): Promise<Partial<IMihomoConfig>> {
   if (force || !controledMihomoConfig) {
     const data = await readFile(controledMihomoConfigPath(), 'utf-8')
-    controledMihomoConfig = yaml.parse(data) || defaultControledMihomoConfig
+    controledMihomoConfig = yaml.parse(data, { merge: true }) || defaultControledMihomoConfig
   }
   if (typeof controledMihomoConfig !== 'object')
     controledMihomoConfig = defaultControledMihomoConfig

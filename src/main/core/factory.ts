@@ -44,7 +44,7 @@ async function overrideProfile(
         profile = runOverrideScript(profile, content, item)
         break
       case 'yaml': {
-        let patch = yaml.parse(content) || {}
+        let patch = yaml.parse(content, { merge: true }) || {}
         if (typeof patch !== 'object') patch = {}
         profile = deepMerge(profile, patch)
         break
