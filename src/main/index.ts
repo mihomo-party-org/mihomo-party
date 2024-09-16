@@ -48,6 +48,12 @@ if (!gotTheLock) {
   app.quit()
 }
 
+if (process.platform === 'win32') {
+  // https://github.com/electron/electron/issues/43278
+  // https://github.com/electron/electron/issues/36698
+  app.commandLine.appendSwitch('in-process-gpu')
+}
+
 const initPromise = init()
 
 app.on('second-instance', async (_event, commandline) => {
