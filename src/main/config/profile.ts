@@ -14,7 +14,7 @@ let profileConfig: IProfileConfig // profile.yaml
 export async function getProfileConfig(force = false): Promise<IProfileConfig> {
   if (force || !profileConfig) {
     const data = await readFile(profileConfigPath(), 'utf-8')
-    profileConfig = yaml.parse(data) || { items: [] }
+    profileConfig = yaml.parse(data, { merge: true }) || { items: [] }
   }
   if (typeof profileConfig !== 'object') profileConfig = { items: [] }
   return profileConfig
@@ -169,7 +169,7 @@ export async function setProfileStr(id: string, content: string): Promise<void> 
 
 export async function getProfile(id: string | undefined): Promise<IMihomoConfig> {
   const profile = await getProfileStr(id)
-  let result = yaml.parse(profile) || {}
+  let result = yaml.parse(profile, { merge: true }) || {}
   if (typeof result !== 'object') result = {}
   return result
 }
