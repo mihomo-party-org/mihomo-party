@@ -29,7 +29,53 @@ const monacoInitialization = (): void => {
         uri: 'http://example.com/meta-json-schema.json',
         fileMatch: ['**/*.clash.yaml'],
         // @ts-ignore // type JSONSchema7
-        schema: metaSchema
+        schema: {
+          ...metaSchema,
+          patternProperties: {
+            '\\+rules': {
+              type: 'array',
+              $ref: '#/definitions/rules',
+              description: '“+”开头表示将内容插入到原数组前面'
+            },
+            'rules\\+': {
+              type: 'array',
+              $ref: '#/definitions/rules',
+              description: '“+”结尾表示将内容追加到原数组后面'
+            },
+            '\\+proxies': {
+              type: 'array',
+              $ref: '#/definitions/proxies',
+              description: '“+”开头表示将内容插入到原数组前面'
+            },
+            'proxies\\+': {
+              type: 'array',
+              $ref: '#/definitions/proxies',
+              description: '“+”结尾表示将内容追加到原数组后面'
+            },
+            '\\+proxy-groups': {
+              type: 'array',
+              $ref: '#/definitions/proxy-groups',
+              description: '“+”开头表示将内容插入到原数组前面'
+            },
+            'proxy-groups\\+': {
+              type: 'array',
+              $ref: '#/definitions/proxy-groups',
+              description: '“+”结尾表示将内容追加到原数组后面'
+            },
+            '^\\+': {
+              type: 'array',
+              description: '“+”开头表示将内容插入到原数组前面'
+            },
+            '\\+$': {
+              type: 'array',
+              description: '“+”结尾表示将内容追加到原数组后面'
+            },
+            '!$': {
+              type: 'object',
+              description: '“!”结尾表示强制覆盖该项而不进行递归合并'
+            }
+          }
+        }
       }
     ]
   })
