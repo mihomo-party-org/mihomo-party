@@ -5,6 +5,7 @@
 ### Features
 
 - 支持托盘菜单切换订阅
+- Windows 支持一键更新
 
 ### Bug Fixes
 
