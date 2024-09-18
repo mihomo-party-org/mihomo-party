@@ -10,7 +10,7 @@ body:
       options:
         - label: 我已在标题简短的描述了我所遇到的问题
         - label: 我未在[Issue Tracker](./?q=is%3Aissue)中找到我要提出的问题
-        - label: 我未在[常见问题](https://mihomo.party/guides/issue/general/)中找到我要提出的问题
+        - label: 我未在[常见问题](https://mihomo.party/docs/issues/common)中找到我要提出的问题
         - label: 这是GUI程序的问题,而不是内核程序的问题
         - label: 我已经使用最新的测试版本测试过，问题依旧存在
 

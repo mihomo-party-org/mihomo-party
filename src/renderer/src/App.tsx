@@ -356,7 +356,7 @@ export const firstDriver = driver({
       popover: {
         title: '覆写',
         description:
-          'Mihomo Party 提供强大的覆写功能，可以对您导入的订阅配置进行个性化修改，如添加规则、自定义代理组等，您可以直接导入别人写好的覆写文件，也可以自己动手编写，<b>编辑好覆写文件一定要记得在需要覆写的订阅上启用</b>，覆写文件的语法请参考 <a href="https://mihomo.party/guides/function/override/overview" target="_blank">官方文档</a>',
+          'Mihomo Party 提供强大的覆写功能，可以对您导入的订阅配置进行个性化修改，如添加规则、自定义代理组等，您可以直接导入别人写好的覆写文件，也可以自己动手编写，<b>编辑好覆写文件一定要记得在需要覆写的订阅上启用</b>，覆写文件的语法请参考 <a href="https://mihomo.party/docs/guide/override" target="_blank">官方文档</a>',
         side: 'right',
         align: 'center'
       }
