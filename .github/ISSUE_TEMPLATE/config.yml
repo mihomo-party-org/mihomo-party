@@ -2,4 +2,4 @@ blank_issues_enabled: false
 contact_links:
   - name: '常见问题'
     about: '提出问题前请先查看常见问题'
-    url: 'https://mihomo.party/guides/issue/general/'
+    url: 'https://mihomo.party/docs/issues/common'

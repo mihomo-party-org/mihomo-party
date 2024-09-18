@@ -131,7 +131,7 @@ const Override: React.FC = () => {
             isIconOnly
             className="app-nodrag"
             onPress={() => {
-              open('https://mihomo.party/guides/function/override/yaml/')
+              open('https://mihomo.party/docs/guide/override')
             }}
           >
             <HiOutlineDocumentText className="text-lg" />
@@ -210,14 +210,14 @@ const Override: React.FC = () => {
                   await addOverrideItem({
                     name: '新建YAML',
                     type: 'local',
-                    file: '# https://mihomo.party/guides/function/override/yaml/',
+                    file: '# https://mihomo.party/docs/guide/override/yaml',
                     ext: 'yaml'
                   })
                 } else if (key === 'new-js') {
                   await addOverrideItem({
                     name: '新建JS',
                     type: 'local',
-                    file: '// https://mihomo.party/guides/function/override/js/\nfunction main(config) {\n  return config\n}',
+                    file: '// https://mihomo.party/docs/guide/override/javascript\nfunction main(config) {\n  return config\n}',
                     ext: 'js'
                   })
                 }
