@@ -271,6 +271,11 @@ const resolveRunner = () =>
     file: 'mihomo-party-run.exe',
     downloadURL: `https://github.com/mihomo-party-org/mihomo-party-run/releases/download/${arch}/mihomo-party-run.exe`
   })
+const resolve7zip = () =>
+  resolveResource({
+    file: '7za.exe',
+    downloadURL: `https://github.com/develar/7zip-bin/raw/master/win/${arch}/7za.exe`
+  })
 const resolveSubstore = () =>
   resolveResource({
     file: 'sub-store.bundle.js',
@@ -359,6 +364,12 @@ const tasks = [
     name: 'substorefrontend',
     func: resolveSubstoreFrontend,
     retry: 5
+  },
+  {
+    name: '7zip',
+    func: resolve7zip,
+    retry: 5,
+    winOnly: true
   }
 ]
 

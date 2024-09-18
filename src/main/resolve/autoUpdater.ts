@@ -2,11 +2,12 @@ import axios from 'axios'
 import yaml from 'yaml'
 import { app, shell } from 'electron'
 import { getControledMihomoConfig } from '../config'
-import { dataDir, isPortable } from '../utils/dirs'
+import { dataDir, exeDir, isPortable, resourcesFilesDir } from '../utils/dirs'
 import { rm, writeFile } from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
 import os from 'os'
+import { spawn } from 'child_process'
 
 export async function checkUpdate(): Promise<IAppVersion | undefined> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
@@ -65,8 +66,25 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
       })
       await writeFile(path.join(dataDir(), file), res.data)
     }
-    await shell.openPath(path.join(dataDir(), file))
-    app.quit()
+    if (file.endsWith('.exe')) {
+      spawn(path.join(dataDir(), file), ['/S', '--force-run'], {
+        detached: true,
+        stdio: 'ignore'
+      }).unref()
+    } else if (file.endsWith('.7z')) {
+      spawn(
+        path.join(resourcesFilesDir(), '7za.exe'),
+        ['x', `-o"${exeDir()}"`, '-y', path.join(dataDir(), file)],
+        {
+          shell: true,
+          detached: true
+        }
+      ).unref()
+      app.quit()
+    } else {
+      await shell.openPath(path.join(dataDir(), file))
+      app.quit()
+    }
   } catch (e) {
     rm(path.join(dataDir(), file))
     throw e

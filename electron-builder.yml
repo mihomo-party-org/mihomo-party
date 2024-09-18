@@ -33,7 +33,6 @@ nsis:
   artifactName: ${name}-windows-${version}-${arch}-setup.${ext}
   shortcutName: Mihomo Party
   uninstallDisplayName: ${productName}
-  deleteAppDataOnUninstall: true
   allowToChangeInstallationDirectory: true
   oneClick: false
   perMachine: true
