@@ -33,6 +33,7 @@ export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ child
       alert(e)
     } finally {
       mutateProfileConfig()
+      window.electron.ipcRenderer.send('updateTrayMenu')
     }
   }
 
@@ -43,6 +44,7 @@ export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ child
       alert(e)
     } finally {
       mutateProfileConfig()
+      window.electron.ipcRenderer.send('updateTrayMenu')
     }
   }
 
@@ -53,6 +55,7 @@ export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ child
       alert(e)
     } finally {
       mutateProfileConfig()
+      window.electron.ipcRenderer.send('updateTrayMenu')
     }
   }
 
@@ -63,6 +66,7 @@ export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ child
       alert(e)
     } finally {
       mutateProfileConfig()
+      window.electron.ipcRenderer.send('updateTrayMenu')
     }
   }
 
@@ -73,6 +77,7 @@ export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ child
       alert(e)
     } finally {
       mutateProfileConfig()
+      window.electron.ipcRenderer.send('updateTrayMenu')
     }
   }
 

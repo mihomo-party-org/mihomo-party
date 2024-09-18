@@ -1,6 +1,8 @@
 import {
+  changeCurrentProfile,
   getAppConfig,
   getControledMihomoConfig,
+  getProfileConfig,
   patchAppConfig,
   patchControledMihomoConfig
 } from '../config'
@@ -75,6 +77,7 @@ const buildContextMenu = async (): Promise<Menu> => {
       // 避免出错时无法创建托盘菜单
     }
   }
+  const { current, items = [] } = await getProfileConfig()
 
   const contextMenu = [
     {
@@ -162,6 +165,24 @@ const buildContextMenu = async (): Promise<Menu> => {
       }
     },
     ...groupsMenu,
+    { type: 'separator' },
+    {
+      type: 'submenu',
+      label: '订阅配置',
+      submenu: items.map((item) => {
+        return {
+          type: 'radio',
+          label: item.name,
+          checked: item.id === current,
+          click: async (): Promise<void> => {
+            if (item.id === current) return
+            await changeCurrentProfile(item.id)
+            mainWindow?.webContents.send('profileConfigUpdated')
+            ipcMain.emit('updateTrayMenu')
+          }
+        }
+      })
+    },
     { type: 'separator' },
     {
       type: 'submenu',
