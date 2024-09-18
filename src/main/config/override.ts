@@ -63,6 +63,7 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
     type: item.type,
     ext: item.ext || 'js',
     url: item.url,
+    global: item.global || false,
     updated: new Date().getTime()
   } as IOverrideItem
   switch (newItem.type) {
