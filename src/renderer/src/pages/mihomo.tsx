@@ -1,4 +1,4 @@
-import { Button, Input, Select, SelectItem, Switch } from '@nextui-org/react'
+import { Button, Divider, Input, Select, SelectItem, Switch } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
@@ -11,6 +11,7 @@ import PubSub from 'pubsub-js'
 import { mihomoUpgrade, restartCore, triggerSysProxy } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import InterfaceModal from '@renderer/components/mihomo/interface-modal'
+import { MdDeleteForever } from 'react-icons/md'
 
 const CoreMap = {
   mihomo: '稳定版',
@@ -25,9 +26,13 @@ const Mihomo: React.FC = () => {
     ipv6,
     'external-controller': externalController = '127.0.0.1:9090',
     secret,
+    authentication = [],
+    'skip-auth-prefixes': skipAuthPrefixes = ['127.0.0.1/32'],
     'log-level': logLevel = 'info',
     'find-process-mode': findProcessMode = 'strict',
     'allow-lan': allowLan,
+    'lan-allowed-ips': lanAllowedIps = ['0.0.0.0/0', '::/0'],
+    'lan-disallowed-ips': lanDisallowedIps = [],
     'unified-delay': unifiedDelay,
     'tcp-concurrent': tcpConcurrent,
     'mixed-port': mixedPort = 7890,
@@ -51,7 +56,10 @@ const Mihomo: React.FC = () => {
     externalController.split(':')[1]
   )
   const [secretInput, setSecretInput] = useState(secret)
-
+  const [lanAllowedIpsInput, setLanAllowedIpsInput] = useState(lanAllowedIps)
+  const [lanDisallowedIpsInput, setLanDisallowedIpsInput] = useState(lanDisallowedIps)
+  const [authenticationInput, setAuthenticationInput] = useState(authentication)
+  const [skipAuthPrefixesInput, setSkipAuthPrefixesInput] = useState(skipAuthPrefixes)
   const [upgrading, setUpgrading] = useState(false)
   const [lanOpen, setLanOpen] = useState(false)
 
@@ -381,6 +389,240 @@ const Mihomo: React.FC = () => {
               }}
             />
           </SettingItem>
+          {allowLan && (
+            <>
+              <SettingItem title="允许连接的 IP 段">
+                {lanAllowedIpsInput.join('') !== lanAllowedIps.join('') && (
+                  <Button
+                    size="sm"
+                    color="primary"
+                    onPress={() => {
+                      onChangeNeedRestart({ 'lan-allowed-ips': lanAllowedIpsInput })
+                    }}
+                  >
+                    确认
+                  </Button>
+                )}
+              </SettingItem>
+              <div className="flex flex-col items-stretch mt-2">
+                {[...lanAllowedIpsInput, ''].map((ipcidr, index) => {
+                  return (
+                    <div key={index} className="flex mb-2">
+                      <Input
+                        size="sm"
+                        fullWidth
+                        placeholder="IP 段"
+                        value={ipcidr || ''}
+                        onValueChange={(v) => {
+                          if (index === lanAllowedIpsInput.length) {
+                            setLanAllowedIpsInput([...lanAllowedIpsInput, v])
+                          } else {
+                            setLanAllowedIpsInput(
+                              lanAllowedIpsInput.map((a, i) => (i === index ? v : a))
+                            )
+                          }
+                        }}
+                      />
+                      {index < lanAllowedIpsInput.length && (
+                        <Button
+                          className="ml-2"
+                          size="sm"
+                          variant="flat"
+                          color="warning"
+                          onClick={() =>
+                            setLanAllowedIpsInput(lanAllowedIpsInput.filter((_, i) => i !== index))
+                          }
+                        >
+                          <MdDeleteForever className="text-lg" />
+                        </Button>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+              <Divider className="mb-2" />
+              <SettingItem title="禁止连接的 IP 段">
+                {lanDisallowedIpsInput.join('') !== lanDisallowedIps.join('') && (
+                  <Button
+                    size="sm"
+                    color="primary"
+                    onPress={() => {
+                      onChangeNeedRestart({ 'lan-disallowed-ips': lanDisallowedIpsInput })
+                    }}
+                  >
+                    确认
+                  </Button>
+                )}
+              </SettingItem>
+              <div className="flex flex-col items-stretch mt-2">
+                {[...lanDisallowedIpsInput, ''].map((ipcidr, index) => {
+                  return (
+                    <div key={index} className="flex mb-2">
+                      <Input
+                        size="sm"
+                        fullWidth
+                        placeholder="IP 段"
+                        value={ipcidr || ''}
+                        onValueChange={(v) => {
+                          if (index === lanDisallowedIpsInput.length) {
+                            setLanDisallowedIpsInput([...lanDisallowedIpsInput, v])
+                          } else {
+                            setLanDisallowedIpsInput(
+                              lanDisallowedIpsInput.map((a, i) => (i === index ? v : a))
+                            )
+                          }
+                        }}
+                      />
+                      {index < lanDisallowedIpsInput.length && (
+                        <Button
+                          className="ml-2"
+                          size="sm"
+                          variant="flat"
+                          color="warning"
+                          onClick={() =>
+                            setLanDisallowedIpsInput(
+                              lanDisallowedIpsInput.filter((_, i) => i !== index)
+                            )
+                          }
+                        >
+                          <MdDeleteForever className="text-lg" />
+                        </Button>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+              <Divider className="mb-2" />
+            </>
+          )}
+          <SettingItem title="用户验证">
+            {authenticationInput.join('') !== authentication.join('') && (
+              <Button
+                size="sm"
+                color="primary"
+                onPress={() => {
+                  onChangeNeedRestart({ authentication: authenticationInput })
+                }}
+              >
+                确认
+              </Button>
+            )}
+          </SettingItem>
+          <div className="flex flex-col items-stretch mt-2">
+            {[...authenticationInput, ''].map((auth, index) => {
+              const [user, pass] = auth.split(':')
+              return (
+                <div key={index} className="flex mb-2">
+                  <div className="flex-[4]">
+                    <Input
+                      size="sm"
+                      fullWidth
+                      placeholder="用户名"
+                      value={user || ''}
+                      onValueChange={(v) => {
+                        if (index === authenticationInput.length) {
+                          setAuthenticationInput([...authenticationInput, `${v}:${pass || ''}`])
+                        } else {
+                          setAuthenticationInput(
+                            authenticationInput.map((a, i) =>
+                              i === index ? `${v}:${pass || ''}` : a
+                            )
+                          )
+                        }
+                      }}
+                    />
+                  </div>
+                  <span className="mx-2">:</span>
+                  <div className="flex-[6] flex">
+                    <Input
+                      size="sm"
+                      fullWidth
+                      placeholder="密码"
+                      value={pass || ''}
+                      onValueChange={(v) => {
+                        if (index === authenticationInput.length) {
+                          setAuthenticationInput([...authenticationInput, `${user || ''}:${v}`])
+                        } else {
+                          setAuthenticationInput(
+                            authenticationInput.map((a, i) =>
+                              i === index ? `${user || ''}:${v}` : a
+                            )
+                          )
+                        }
+                      }}
+                    />
+                    {index < authenticationInput.length && (
+                      <Button
+                        className="ml-2"
+                        size="sm"
+                        variant="flat"
+                        color="warning"
+                        onClick={() =>
+                          setAuthenticationInput(authenticationInput.filter((_, i) => i !== index))
+                        }
+                      >
+                        <MdDeleteForever className="text-lg" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <Divider className="mb-2" />
+          <SettingItem title="允许跳过验证的 IP 段">
+            {skipAuthPrefixesInput.join('') !== skipAuthPrefixes.join('') && (
+              <Button
+                size="sm"
+                color="primary"
+                onPress={() => {
+                  onChangeNeedRestart({ 'skip-auth-prefixes': skipAuthPrefixesInput })
+                }}
+              >
+                确认
+              </Button>
+            )}
+          </SettingItem>
+          <div className="flex flex-col items-stretch mt-2">
+            {[...skipAuthPrefixesInput, ''].map((ipcidr, index) => {
+              return (
+                <div key={index} className="flex mb-2">
+                  <Input
+                    disabled={index === 0}
+                    size="sm"
+                    fullWidth
+                    placeholder="IP 段"
+                    value={ipcidr || ''}
+                    onValueChange={(v) => {
+                      if (index === skipAuthPrefixesInput.length) {
+                        setSkipAuthPrefixesInput([...skipAuthPrefixesInput, v])
+                      } else {
+                        setSkipAuthPrefixesInput(
+                          skipAuthPrefixesInput.map((a, i) => (i === index ? v : a))
+                        )
+                      }
+                    }}
+                  />
+                  {index < skipAuthPrefixesInput.length && index !== 0 && (
+                    <Button
+                      className="ml-2"
+                      size="sm"
+                      variant="flat"
+                      color="warning"
+                      onClick={() =>
+                        setSkipAuthPrefixesInput(
+                          skipAuthPrefixesInput.filter((_, i) => i !== index)
+                        )
+                      }
+                    >
+                      <MdDeleteForever className="text-lg" />
+                    </Button>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+          <Divider className="mb-2" />
           <SettingItem title="使用 RTT 延迟测试" divider>
             <Switch
               size="sm"

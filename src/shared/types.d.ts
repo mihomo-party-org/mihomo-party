@@ -362,6 +362,11 @@ interface IMihomoConfig {
   'socks-port'?: number
   'redir-port'?: number
   'tproxy-port'?: number
+  'skip-auth-prefixes'?: string[]
+  'bind-address'?: string
+  'lan-allowed-ips'?: string[]
+  'lan-disallowed-ips'?: string[]
+  authentication: string[]
   port?: number
   proxies?: []
   'proxy-groups'?: []
