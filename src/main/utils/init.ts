@@ -26,7 +26,12 @@ import { existsSync } from 'fs'
 import path from 'path'
 import { startPacServer, startSubStoreServer } from '../resolve/server'
 import { triggerSysProxy } from '../sys/sysproxy'
-import { getAppConfig, patchAppConfig } from '../config'
+import {
+  getAppConfig,
+  getControledMihomoConfig,
+  patchAppConfig,
+  patchControledMihomoConfig
+} from '../config'
 import { app } from 'electron'
 
 async function initDirs(): Promise<void> {
@@ -138,9 +143,36 @@ async function migration(): Promise<void> {
     ],
     useSubStore = true
   } = await getAppConfig()
+  const {
+    'skip-auth-prefixes': skipAuthPrefixes,
+    authentication,
+    'bind-address': bindAddress,
+    'lan-allowed-ips': lanAllowedIps,
+    'lan-disallowed-ips': lanDisallowedIps
+  } = await getControledMihomoConfig()
   // add substore sider card
   if (useSubStore && !siderOrder.includes('substore')) {
     await patchAppConfig({ siderOrder: [...siderOrder, 'substore'] })
+  }
+  // add default skip auth prefix
+  if (!skipAuthPrefixes) {
+    await patchControledMihomoConfig({ 'skip-auth-prefixes': ['127.0.0.1/32'] })
+  }
+  // add default authentication
+  if (!authentication) {
+    await patchControledMihomoConfig({ authentication: [] })
+  }
+  // add default bind address
+  if (!bindAddress) {
+    await patchControledMihomoConfig({ 'bind-address': '*' })
+  }
+  // add default lan allowed ips
+  if (!lanAllowedIps) {
+    await patchControledMihomoConfig({ 'lan-allowed-ips': ['0.0.0.0/0', '::/0'] })
+  }
+  // add default lan disallowed ips
+  if (!lanDisallowedIps) {
+    await patchControledMihomoConfig({ 'lan-disallowed-ips': [] })
   }
 }
 
