@@ -233,6 +233,7 @@ interface IAppConfig {
   substoreCardStatus?: CardStatus
   sysproxyCardStatus?: CardStatus
   tunCardStatus?: CardStatus
+  injectCSS?: string
   useSubStore: boolean
   subStoreBackendSyncCron?: string
   subStoreBackendDownloadCron?: string

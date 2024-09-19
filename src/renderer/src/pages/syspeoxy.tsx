@@ -2,7 +2,7 @@ import { Button, Input, Tab, Tabs } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
-import PacEditorViewer from '@renderer/components/sysproxy/pac-editor-modal'
+import PacEditorModal from '@renderer/components/sysproxy/pac-editor-modal'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
 import { openUWPTool, triggerSysProxy } from '@renderer/utils/ipc'
@@ -114,7 +114,7 @@ const Sysproxy: React.FC = () => {
       }
     >
       {openPacEditor && (
-        <PacEditorViewer
+        <PacEditorModal
           script={values.pacScript || defaultPacScript}
           onCancel={() => setOpenPacEditor(false)}
           onConfirm={(script: string) => {
