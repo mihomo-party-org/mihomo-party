@@ -1,13 +1,14 @@
 import axios from 'axios'
 import yaml from 'yaml'
-import { app, shell } from 'electron'
+import { app } from 'electron'
 import { getControledMihomoConfig } from '../config'
 import { dataDir, exeDir, isPortable, resourcesFilesDir } from '../utils/dirs'
 import { rm, writeFile } from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
 import os from 'os'
-import { spawn } from 'child_process'
+import { exec, spawn } from 'child_process'
+import { promisify } from 'util'
 
 export async function checkUpdate(): Promise<IAppVersion | undefined> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
@@ -38,8 +39,8 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
     'win32-x64': `mihomo-party-windows-${version}-x64-setup.exe`,
     'win32-ia32': `mihomo-party-windows-${version}-ia32-setup.exe`,
     'win32-arm64': `mihomo-party-windows-${version}-arm64-setup.exe`,
-    'darwin-x64': `mihomo-party-macos-${version}-x64.dmg`,
-    'darwin-arm64': `mihomo-party-macos-${version}-arm64.dmg`
+    'darwin-x64': `mihomo-party-macos-${version}-x64.zip`,
+    'darwin-arm64': `mihomo-party-macos-${version}-arm64.zip`
   }
   let file = fileMap[`${process.platform}-${process.arch}`]
   if (isPortable()) {
@@ -71,7 +72,8 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
         detached: true,
         stdio: 'ignore'
       }).unref()
-    } else if (file.endsWith('.7z')) {
+    }
+    if (file.endsWith('.7z')) {
       spawn(
         path.join(resourcesFilesDir(), '7za.exe'),
         ['x', `-o"${exeDir()}"`, '-y', path.join(dataDir(), file)],
@@ -81,8 +83,11 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
         }
       ).unref()
       app.quit()
-    } else {
-      await shell.openPath(path.join(dataDir(), file))
+    }
+    if (file.endsWith('.zip')) {
+      const execPromise = promisify(exec)
+      await execPromise(`unzip -o '${path.join(dataDir(), file)}' -d /Applications`)
+      app.relaunch()
       app.quit()
     }
   } catch (e) {
