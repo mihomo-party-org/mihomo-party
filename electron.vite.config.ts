@@ -30,7 +30,7 @@ export default defineConfig({
     plugins: [
       react(),
       monacoEditorPlugin({
-        languageWorkers: ['editorWorkerService', 'typescript', 'json'],
+        languageWorkers: ['editorWorkerService', 'typescript', 'css'],
         customDistPath: (_, out) => `${out}/monacoeditorwork`,
         customWorkers: [
           {

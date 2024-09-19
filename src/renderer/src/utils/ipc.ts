@@ -331,6 +331,10 @@ export async function createHeapSnapshot(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('createHeapSnapshot'))
 }
 
+export async function insertCSS(css: string): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('insertCSS', css))
+}
+
 export async function registerShortcut(
   oldShortcut: string,
   newShortcut: string,

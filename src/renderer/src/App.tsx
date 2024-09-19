@@ -28,7 +28,7 @@ import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
 import ResourceCard from '@renderer/components/sider/resource-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
+import { insertCSS, setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
 import SubStoreCard from '@renderer/components/sider/substore-card'
@@ -43,6 +43,7 @@ const App: React.FC = () => {
   const {
     appTheme = 'system',
     useWindowFrame = false,
+    injectCSS,
     siderOrder = [
       'sysproxy',
       'tun',
@@ -77,6 +78,13 @@ const App: React.FC = () => {
       firstDriver.drive()
     }
   }, [])
+
+  useEffect(() => {
+    if (!injectCSS) return
+    console.log('injectCSS', injectCSS)
+    // window.electron.webFrame.insertCSS(injectCSS)
+    insertCSS(injectCSS)
+  }, [injectCSS])
 
   useEffect(() => {
     if (appTheme.includes('light')) {

@@ -7,7 +7,7 @@ import pac from 'types-pac/pac.d.ts?raw'
 import { useTheme } from 'next-themes'
 import { nanoid } from 'nanoid'
 import React from 'react'
-type Language = 'yaml' | 'javascript' | 'json'
+type Language = 'yaml' | 'javascript' | 'css'
 
 interface Props {
   value: string

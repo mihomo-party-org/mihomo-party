@@ -2,13 +2,13 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from
 import { BaseEditor } from '@renderer/components/base/base-editor'
 import React, { useState } from 'react'
 interface Props {
-  script: string
+  css: string
   onCancel: () => void
   onConfirm: (script: string) => void
 }
-const PacEditorModal: React.FC<Props> = (props) => {
-  const { script, onCancel, onConfirm } = props
-  const [currData, setCurrData] = useState(script)
+const CSSEditorModal: React.FC<Props> = (props) => {
+  const { css, onCancel, onConfirm } = props
+  const [currData, setCurrData] = useState(css)
 
   return (
     <Modal
@@ -21,10 +21,10 @@ const PacEditorModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex pb-0">编辑PAC脚本</ModalHeader>
+        <ModalHeader className="flex pb-0">编辑 CSS</ModalHeader>
         <ModalBody className="h-full">
           <BaseEditor
-            language="javascript"
+            language="css"
             value={currData}
             onChange={(value) => setCurrData(value || '')}
           />
@@ -42,4 +42,4 @@ const PacEditorModal: React.FC<Props> = (props) => {
   )
 }
 
-export default PacEditorModal
+export default CSSEditorModal

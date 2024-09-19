@@ -70,6 +70,8 @@ import { logDir } from './dirs'
 import path from 'path'
 import v8 from 'v8'
 
+let insertedCSSKey: string | undefined
+
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): (...args: any[]) => Promise<T | { invokeError: unknown }> {
@@ -201,6 +203,14 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('createHeapSnapshot', () => {
     v8.writeHeapSnapshot(path.join(logDir(), `${Date.now()}.heapsnapshot`))
   })
+  ipcMain.handle('insertCSS', (_e, css) =>
+    ipcErrorWrapper(async (css) => {
+      if (insertedCSSKey) {
+        await mainWindow?.webContents.removeInsertedCSS(insertedCSSKey)
+      }
+      insertedCSSKey = await mainWindow?.webContents.insertCSS(css)
+    })(css)
+  )
   ipcMain.handle('copyEnv', ipcErrorWrapper(copyEnv))
   ipcMain.handle('alert', (_e, msg) => {
     dialog.showErrorBox('Mihomo Party', msg)
