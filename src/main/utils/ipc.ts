@@ -205,7 +205,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('resolveThemes', () => ipcErrorWrapper(resolveThemes)())
   ipcMain.handle('fetchThemes', () => ipcErrorWrapper(fetchThemes)())
   ipcMain.handle('applyTheme', (_e, theme) => ipcErrorWrapper(applyTheme)(theme))
-  ipcMain.handle('copyEnv', ipcErrorWrapper(copyEnv))
+  ipcMain.handle('copyEnv', (_e, type) => ipcErrorWrapper(copyEnv)(type))
   ipcMain.handle('alert', (_e, msg) => {
     dialog.showErrorBox('Mihomo Party', msg)
   })

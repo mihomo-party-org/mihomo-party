@@ -84,16 +84,18 @@ const App: React.FC = () => {
     setTheme(appTheme)
     if (customTheme) applyTheme(customTheme)
     if (!useWindowFrame) {
-      const options = { height: 48 } as TitleBarOverlayOptions
-      try {
-        if (platform !== 'darwin') {
-          options.color = window.getComputedStyle(document.documentElement).backgroundColor
-          options.symbolColor = window.getComputedStyle(document.documentElement).color
+      setTimeout(() => {
+        const options = { height: 48 } as TitleBarOverlayOptions
+        try {
+          if (platform !== 'darwin') {
+            options.color = window.getComputedStyle(document.documentElement).backgroundColor
+            options.symbolColor = window.getComputedStyle(document.documentElement).color
+          }
+          setTitleBarOverlay(options)
+        } catch (e) {
+          // ignore
         }
-        setTitleBarOverlay(options)
-      } catch (e) {
-        // ignore
-      }
+      }, 0)
     }
   }, [appTheme, systemTheme, customTheme])
 
