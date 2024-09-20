@@ -86,7 +86,7 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
     }
     if (file.endsWith('.zip')) {
       const execPromise = promisify(exec)
-      await execPromise(`unzip -o '${path.join(dataDir(), file)}' -d /Applications`)
+      await execPromise(`unzip -o -K '${path.join(dataDir(), file)}' -d /Applications`)
       app.relaunch()
       app.quit()
     }
