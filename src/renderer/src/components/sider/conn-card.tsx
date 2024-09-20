@@ -38,7 +38,11 @@ const ConnCard: React.FC = () => {
   const [series, setSeries] = useState(Array(10).fill(0))
   const chartColor = useMemo(() => {
     const islight = theme === 'system' ? systemTheme === 'light' : theme.includes('light')
-    return match ? 'rgba(255,255,255)' : islight ? 'rgba(0,0,0' : 'rgba(255,255,255)'
+    return match
+      ? 'rgba(255,255,255)'
+      : islight
+        ? window.getComputedStyle(document.documentElement).color
+        : 'rgb(255,255,255)'
   }, [theme, systemTheme, match])
 
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null

@@ -43,22 +43,7 @@ init().then(() => {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <NextUIProvider>
-        <NextThemesProvider
-          attribute="class"
-          themes={[
-            'light',
-            'dark',
-            'gray',
-            'light-pink',
-            'dark-pink',
-            'gray-pink',
-            'light-green',
-            'dark-green',
-            'gray-green'
-          ]}
-          enableSystem
-          defaultTheme="dark"
-        >
+        <NextThemesProvider attribute="class" enableSystem defaultTheme="dark">
           <BaseErrorBoundary>
             <HashRouter>
               <AppConfigProvider>

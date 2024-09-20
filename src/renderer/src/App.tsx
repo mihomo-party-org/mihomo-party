@@ -82,18 +82,11 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!injectCSS) return
     console.log('injectCSS', injectCSS)
-    // window.electron.webFrame.insertCSS(injectCSS)
     insertCSS(injectCSS)
   }, [injectCSS])
 
   useEffect(() => {
-    if (appTheme.includes('light')) {
-      setNativeTheme('light')
-    } else if (appTheme === 'system') {
-      setNativeTheme('system')
-    } else {
-      setNativeTheme('dark')
-    }
+    setNativeTheme(appTheme)
     setTheme(appTheme)
     if (!useWindowFrame) {
       const options = { height: 48 } as TitleBarOverlayOptions
