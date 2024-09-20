@@ -11,7 +11,8 @@ import {
   profilePath,
   profilesDir,
   resourcesFilesDir,
-  subStoreDir
+  subStoreDir,
+  themesDir
 } from './dirs'
 import {
   defaultConfig,
@@ -37,6 +38,9 @@ import { app } from 'electron'
 async function initDirs(): Promise<void> {
   if (!existsSync(dataDir())) {
     await mkdir(dataDir())
+  }
+  if (!existsSync(themesDir())) {
+    await mkdir(themesDir())
   }
   if (!existsSync(profilesDir())) {
     await mkdir(profilesDir())

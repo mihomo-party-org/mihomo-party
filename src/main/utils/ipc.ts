@@ -65,12 +65,11 @@ import { getInterfaces } from '../sys/interface'
 import { copyEnv } from '../resolve/tray'
 import { registerShortcut } from '../resolve/shortcut'
 import { mainWindow } from '..'
+import { applyTheme, fetchThemes, resolveThemes } from '../resolve/theme'
 import { subStoreCollections, subStoreSubs } from '../core/subStoreApi'
 import { logDir } from './dirs'
 import path from 'path'
 import v8 from 'v8'
-
-let insertedCSSKey: string | undefined
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -203,14 +202,9 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('createHeapSnapshot', () => {
     v8.writeHeapSnapshot(path.join(logDir(), `${Date.now()}.heapsnapshot`))
   })
-  ipcMain.handle('insertCSS', (_e, css) =>
-    ipcErrorWrapper(async (css) => {
-      if (insertedCSSKey) {
-        await mainWindow?.webContents.removeInsertedCSS(insertedCSSKey)
-      }
-      insertedCSSKey = await mainWindow?.webContents.insertCSS(css)
-    })(css)
-  )
+  ipcMain.handle('resolveThemes', () => ipcErrorWrapper(resolveThemes)())
+  ipcMain.handle('fetchThemes', () => ipcErrorWrapper(fetchThemes)())
+  ipcMain.handle('applyTheme', (_e, theme) => ipcErrorWrapper(applyTheme)(theme))
   ipcMain.handle('copyEnv', ipcErrorWrapper(copyEnv))
   ipcMain.handle('alert', (_e, msg) => {
     dialog.showErrorBox('Mihomo Party', msg)
