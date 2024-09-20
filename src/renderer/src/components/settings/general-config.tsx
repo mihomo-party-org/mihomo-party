@@ -1,4 +1,4 @@
-import React, { Key, useState } from 'react'
+import React, { useState } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
 import { Button, Input, Select, SelectItem, Switch, Tab, Tabs, Tooltip } from '@nextui-org/react'
@@ -36,30 +36,6 @@ const GeneralConfig: React.FC = () => {
     autoCheckUpdate,
     appTheme = 'system'
   } = appConfig || {}
-
-  const onThemeChange = (key: Key, type: 'theme' | 'color'): void => {
-    const [theme, color] = appTheme.split('-')
-
-    if (type === 'theme') {
-      let themeStr = key.toString()
-      if (key !== 'system') {
-        if (color) {
-          themeStr += `-${color}`
-        }
-      }
-      setTheme(themeStr)
-      patchAppConfig({ appTheme: themeStr as AppTheme })
-    } else {
-      let themeStr = theme
-      if (theme !== 'system') {
-        if (key !== 'blue') {
-          themeStr += `-${key}`
-        }
-        setTheme(themeStr)
-        patchAppConfig({ appTheme: themeStr as AppTheme })
-      }
-    }
-  }
 
   return (
     <>
@@ -223,37 +199,21 @@ const GeneralConfig: React.FC = () => {
             编辑 CSS 样式
           </Button>
         </SettingItem>
-        <SettingItem title="背景色" divider={appTheme !== 'system'}>
+        <SettingItem title="背景色">
           <Tabs
             size="sm"
             color="primary"
-            selectedKey={appTheme.split('-')[0]}
+            selectedKey={appTheme}
             onSelectionChange={(key) => {
-              onThemeChange(key, 'theme')
+              setTheme(key.toString())
+              patchAppConfig({ appTheme: key as AppTheme })
             }}
           >
             <Tab key="system" title="自动" />
             <Tab key="dark" title="深色" />
-            <Tab key="gray" title="灰色" />
             <Tab key="light" title="浅色" />
           </Tabs>
         </SettingItem>
-        {appTheme !== 'system' && (
-          <SettingItem title="主题色">
-            <Tabs
-              size="sm"
-              color="primary"
-              selectedKey={appTheme.split('-')[1] || 'blue'}
-              onSelectionChange={(key) => {
-                onThemeChange(key, 'color')
-              }}
-            >
-              <Tab key="blue" title="蓝色" />
-              <Tab key="pink" title="粉色" />
-              <Tab key="green" title="绿色" />
-            </Tabs>
-          </SettingItem>
-        )}
       </SettingCard>
     </>
   )

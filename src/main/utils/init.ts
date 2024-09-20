@@ -141,6 +141,7 @@ async function migration(): Promise<void> {
       'log',
       'substore'
     ],
+    appTheme = 'system',
     useSubStore = true
   } = await getAppConfig()
   const {
@@ -173,6 +174,10 @@ async function migration(): Promise<void> {
   // add default lan disallowed ips
   if (!lanDisallowedIps) {
     await patchControledMihomoConfig({ 'lan-disallowed-ips': [] })
+  }
+  // remove custom app theme
+  if (!['system', 'light', 'dark'].includes(appTheme)) {
+    await patchAppConfig({ appTheme: 'system' })
   }
 }
 
