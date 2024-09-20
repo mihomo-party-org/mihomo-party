@@ -42,7 +42,11 @@ export async function fetchThemes(): Promise<void> {
 
 export async function importThemes(files: string[]): Promise<void> {
   for (const file of files) {
-    if (existsSync(file)) await copyFile(file, path.join(themesDir(), path.basename(file)))
+    if (existsSync(file))
+      await copyFile(
+        file,
+        path.join(themesDir(), `${new Date().getTime().toString(16)}-${path.basename(file)}`)
+      )
   }
 }
 
