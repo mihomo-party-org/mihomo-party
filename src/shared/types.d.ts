@@ -206,7 +206,7 @@ interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha'
   proxyDisplayMode: 'simple' | 'full'
   proxyDisplayOrder: 'default' | 'delay' | 'name'
-  envType?: 'bash' | 'cmd' | 'powershell'
+  envType?: ('bash' | 'cmd' | 'powershell')[]
   proxyCols: 'auto' | '1' | '2' | '3' | '4'
   connectionDirection: 'asc' | 'desc'
   connectionOrderBy: 'time' | 'upload' | 'download' | 'uploadSpeed' | 'downloadSpeed'

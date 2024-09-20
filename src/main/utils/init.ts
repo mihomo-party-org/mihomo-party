@@ -146,6 +146,7 @@ async function migration(): Promise<void> {
       'substore'
     ],
     appTheme = 'system',
+    envType = [process.platform === 'win32' ? 'powershell' : 'bash'],
     useSubStore = true
   } = await getAppConfig()
   const {
@@ -182,6 +183,10 @@ async function migration(): Promise<void> {
   // remove custom app theme
   if (!['system', 'light', 'dark'].includes(appTheme)) {
     await patchAppConfig({ appTheme: 'system' })
+  }
+  // change env type
+  if (typeof envType === 'string') {
+    await patchAppConfig({ envType: [envType] })
   }
 }
 

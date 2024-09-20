@@ -353,8 +353,8 @@ export async function registerShortcut(
   )
 }
 
-export async function copyEnv(): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('copyEnv'))
+export async function copyEnv(type: 'bash' | 'cmd' | 'powershell'): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('copyEnv', type))
 }
 
 async function alert<T>(msg: T): Promise<void> {

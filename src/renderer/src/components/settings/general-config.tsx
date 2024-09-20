@@ -36,7 +36,7 @@ const GeneralConfig: React.FC = () => {
     autoQuitWithoutCore = false,
     autoQuitWithoutCoreDelay = 60,
     customTheme = 'default.css',
-    envType = platform === 'win32' ? 'powershell' : 'bash',
+    envType = [platform === 'win32' ? 'powershell' : 'bash'],
     autoCheckUpdate,
     appTheme = 'system'
   } = appConfig || {}
@@ -125,20 +125,31 @@ const GeneralConfig: React.FC = () => {
         )}
         <SettingItem
           title="复制环境变量类型"
-          actions={
-            <Button isIconOnly size="sm" className="ml-2" variant="light" onPress={copyEnv}>
+          actions={envType.map((type) => (
+            <Button
+              key={type}
+              title={type}
+              isIconOnly
+              size="sm"
+              className="ml-2"
+              variant="light"
+              onPress={() => copyEnv(type)}
+            >
               <BiCopy className="text-lg" />
             </Button>
-          }
+          ))}
           divider
         >
           <Select
             className="w-[150px]"
             size="sm"
-            selectedKeys={new Set([envType])}
+            selectionMode="multiple"
+            selectedKeys={new Set(envType)}
             onSelectionChange={async (v) => {
               try {
-                await patchAppConfig({ envType: v.currentKey as 'bash' | 'cmd' | 'powershell' })
+                await patchAppConfig({
+                  envType: Array.from(v) as ('bash' | 'cmd' | 'powershell')[]
+                })
               } catch (e) {
                 alert(e)
               }

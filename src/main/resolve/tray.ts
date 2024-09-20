@@ -27,6 +27,7 @@ const buildContextMenu = async (): Promise<Menu> => {
   const { mode, tun } = await getControledMihomoConfig()
   const {
     sysProxy,
+    envType = process.platform === 'win32' ? ['powershell'] : ['bash'],
     autoCloseConnection,
     proxyInTray = true,
     triggerSysProxyShortcut = '',
@@ -210,12 +211,29 @@ const buildContextMenu = async (): Promise<Menu> => {
         }
       ]
     },
-    {
-      id: 'copyenv',
-      label: '复制环境变量',
-      type: 'normal',
-      click: copyEnv
-    },
+    envType.length > 1
+      ? {
+          type: 'submenu',
+          label: '复制环境变量',
+          submenu: envType.map((type) => {
+            return {
+              id: type,
+              label: type,
+              type: 'normal',
+              click: async (): Promise<void> => {
+                await copyEnv(type)
+              }
+            }
+          })
+        }
+      : {
+          id: 'copyenv',
+          label: '复制环境变量',
+          type: 'normal',
+          click: async (): Promise<void> => {
+            await copyEnv(envType[0])
+          }
+        },
     { type: 'separator' },
     {
       id: 'quitWithoutCore',
@@ -316,12 +334,11 @@ async function updateTrayMenu(): Promise<void> {
   }
 }
 
-export async function copyEnv(): Promise<void> {
-  const defaultType = process.platform === 'win32' ? 'powershell' : 'bash'
+export async function copyEnv(type: 'bash' | 'cmd' | 'powershell'): Promise<void> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
-  const { envType = defaultType, sysProxy } = await getAppConfig()
+  const { sysProxy } = await getAppConfig()
   const { host } = sysProxy
-  switch (envType) {
+  switch (type) {
     case 'bash': {
       clipboard.writeText(
         `export https_proxy=http://${host || '127.0.0.1'}:${mixedPort} http_proxy=http://${host || '127.0.0.1'}:${mixedPort} all_proxy=http://${host || '127.0.0.1'}:${mixedPort}`
