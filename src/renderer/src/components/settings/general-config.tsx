@@ -47,7 +47,7 @@ const GeneralConfig: React.FC = () => {
     resolveThemes().then((themes) => {
       setCustomThemes(themes)
     })
-  })
+  }, [])
 
   return (
     <>
