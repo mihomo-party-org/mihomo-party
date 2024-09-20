@@ -223,7 +223,6 @@ interface IAppConfig {
   substoreCardStatus?: CardStatus
   sysproxyCardStatus?: CardStatus
   tunCardStatus?: CardStatus
-  injectCSS?: string
   useSubStore: boolean
   subStoreBackendSyncCron?: string
   subStoreBackendDownloadCron?: string
@@ -238,6 +237,7 @@ interface IAppConfig {
   proxyInTray: boolean
   siderOrder: string[]
   appTheme: AppTheme
+  customTheme: string
   autoCheckUpdate: boolean
   silentStart: boolean
   autoCloseConnection: boolean

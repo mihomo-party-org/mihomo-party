@@ -19,7 +19,7 @@ let drawing = false
 const ConnCard: React.FC = () => {
   const { theme = 'system', systemTheme = 'dark' } = useTheme()
   const { appConfig } = useAppConfig()
-  const { showTraffic, connectionCardStatus = 'col-span-2' } = appConfig || {}
+  const { showTraffic, connectionCardStatus = 'col-span-2', customTheme } = appConfig || {}
   const location = useLocation()
   const match = location.pathname.includes('/connections')
 
@@ -43,7 +43,7 @@ const ConnCard: React.FC = () => {
       : islight
         ? window.getComputedStyle(document.documentElement).color
         : 'rgb(255,255,255)'
-  }, [theme, systemTheme, match])
+  }, [theme, systemTheme, match, customTheme])
 
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   useEffect(() => {

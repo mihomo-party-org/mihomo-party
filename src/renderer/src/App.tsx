@@ -28,7 +28,7 @@ import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
 import ResourceCard from '@renderer/components/sider/resource-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { insertCSS, setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
+import { applyTheme, setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
 import SubStoreCard from '@renderer/components/sider/substore-card'
@@ -42,8 +42,8 @@ const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     appTheme = 'system',
+    customTheme,
     useWindowFrame = false,
-    injectCSS,
     siderOrder = [
       'sysproxy',
       'tun',
@@ -80,14 +80,9 @@ const App: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    if (!injectCSS) return
-    console.log('injectCSS', injectCSS)
-    insertCSS(injectCSS)
-  }, [injectCSS])
-
-  useEffect(() => {
     setNativeTheme(appTheme)
     setTheme(appTheme)
+    if (customTheme) applyTheme(customTheme)
     if (!useWindowFrame) {
       const options = { height: 48 } as TitleBarOverlayOptions
       try {
@@ -100,7 +95,7 @@ const App: React.FC = () => {
         // ignore
       }
     }
-  }, [appTheme, systemTheme])
+  }, [appTheme, systemTheme, customTheme])
 
   const onDragEnd = async (event: DragEndEvent): Promise<void> => {
     const { active, over } = event

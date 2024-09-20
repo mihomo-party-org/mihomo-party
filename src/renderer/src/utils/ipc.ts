@@ -331,8 +331,16 @@ export async function createHeapSnapshot(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('createHeapSnapshot'))
 }
 
-export async function insertCSS(css: string): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('insertCSS', css))
+export async function resolveThemes(): Promise<{ key: string; label: string; content: string }[]> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('resolveThemes'))
+}
+
+export async function fetchThemes(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('fetchThemes'))
+}
+
+export async function applyTheme(theme: string): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('applyTheme', theme))
 }
 
 export async function registerShortcut(
