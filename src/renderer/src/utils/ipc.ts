@@ -339,6 +339,10 @@ export async function fetchThemes(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('fetchThemes'))
 }
 
+export async function importThemes(files: string[]): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('importThemes', files))
+}
+
 export async function applyTheme(theme: string): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('applyTheme', theme))
 }
