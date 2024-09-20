@@ -1,4 +1,4 @@
-import { readdir, readFile } from 'fs/promises'
+import { copyFile, readdir, readFile } from 'fs/promises'
 import { themesDir } from '../utils/dirs'
 import path from 'path'
 import axios from 'axios'
@@ -38,6 +38,12 @@ export async function fetchThemes(): Promise<void> {
   })
   const zip = new AdmZip(zipData.data as Buffer)
   zip.extractAllTo(themesDir(), true)
+}
+
+export async function importThemes(files: string[]): Promise<void> {
+  for (const file of files) {
+    if (existsSync(file)) await copyFile(file, path.join(themesDir(), path.basename(file)))
+  }
 }
 
 export async function applyTheme(theme: string): Promise<void> {

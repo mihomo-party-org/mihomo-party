@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
 import { Button, Input, Select, SelectItem, Switch, Tab, Tabs, Tooltip } from '@nextui-org/react'
-import { BiCopy } from 'react-icons/bi'
+import { BiCopy, BiSolidFileImport } from 'react-icons/bi'
 import useSWR from 'swr'
 import {
   checkAutoRun,
@@ -10,6 +10,8 @@ import {
   disableAutoRun,
   enableAutoRun,
   fetchThemes,
+  getFilePath,
+  importThemes,
   relaunchApp,
   resolveThemes,
   restartCore
@@ -223,27 +225,48 @@ const GeneralConfig: React.FC = () => {
         <SettingItem
           title="主题"
           actions={
-            <Button
-              size="sm"
-              isLoading={fetching}
-              isIconOnly
-              title="拉取主题"
-              variant="light"
-              className="ml-2"
-              onPress={async () => {
-                setFetching(true)
-                try {
-                  await fetchThemes()
-                  setCustomThemes(await resolveThemes())
-                } catch (e) {
-                  alert(e)
-                } finally {
-                  setFetching(false)
-                }
-              }}
-            >
-              <IoMdCloudDownload className="text-lg" />
-            </Button>
+            <>
+              <Button
+                size="sm"
+                isLoading={fetching}
+                isIconOnly
+                title="拉取主题"
+                variant="light"
+                className="ml-2"
+                onPress={async () => {
+                  setFetching(true)
+                  try {
+                    await fetchThemes()
+                    setCustomThemes(await resolveThemes())
+                  } catch (e) {
+                    alert(e)
+                  } finally {
+                    setFetching(false)
+                  }
+                }}
+              >
+                <IoMdCloudDownload className="text-lg" />
+              </Button>
+              <Button
+                size="sm"
+                isIconOnly
+                title="导入主题"
+                variant="light"
+                className="ml-2"
+                onPress={async () => {
+                  const files = await getFilePath(['css'])
+                  if (!files) return
+                  try {
+                    await importThemes(files)
+                    setCustomThemes(await resolveThemes())
+                  } catch (e) {
+                    alert(e)
+                  }
+                }}
+              >
+                <BiSolidFileImport className="text-lg" />
+              </Button>
+            </>
           }
         >
           <Select
