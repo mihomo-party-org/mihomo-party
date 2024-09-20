@@ -96,23 +96,11 @@ const App: React.FC = () => {
     }
     setTheme(appTheme)
     if (!useWindowFrame) {
-      let theme = appTheme as string
-      if (appTheme === 'system') {
-        theme = systemTheme || 'light'
-      }
       const options = { height: 48 } as TitleBarOverlayOptions
       try {
         if (platform !== 'darwin') {
-          if (theme.includes('light')) {
-            options.color = '#FFFFFF'
-            options.symbolColor = '#000000'
-          } else if (theme.includes('dark')) {
-            options.color = '#000000'
-            options.symbolColor = '#FFFFFF'
-          } else {
-            options.color = '#18181b'
-            options.symbolColor = '#FFFFFF'
-          }
+          options.color = window.getComputedStyle(document.documentElement).backgroundColor
+          options.symbolColor = window.getComputedStyle(document.documentElement).color
         }
         setTitleBarOverlay(options)
       } catch (e) {
