@@ -14,17 +14,7 @@
   </a>
 </p>
 <div align='center'>
-<img width='30%' src="./images/dark-blue.png">
-<img width='30%' src="./images/gray-blue.png">
-<img width='30%' src="./images/light-blue.png">
-
-<img width='30%' src="./images/dark-pink.png">
-<img width='30%' src="./images/gray-pink.png">
-<img width='30%' src="./images/light-pink.png">
-
-<img width='30%' src="./images/dark-green.png">
-<img width='30%' src="./images/gray-green.png">
-<img width='30%' src="./images/light-green.png">
+<img width='90%' src="./images/preview.jpg">
 </div>
 
 ### 特性
