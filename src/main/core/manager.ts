@@ -226,24 +226,19 @@ export async function autoGrantCorePermition(corePath: string): Promise<void> {
   const { encryptedPassword } = await getAppConfig()
   const execPromise = promisify(exec)
   if (encryptedPassword && isEncryptionAvailable()) {
-    const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
-    if (process.platform === 'linux') {
-      try {
+    try {
+      const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
+      if (process.platform === 'linux') {
         await execPromise(`echo "${password}" | sudo -S chown root:root "${corePath}"`)
         await execPromise(`echo "${password}" | sudo -S chmod +sx "${corePath}"`)
-      } catch (error) {
-        patchAppConfig({ encryptedPassword: undefined })
-        throw error
       }
-    }
-    if (process.platform === 'darwin') {
-      try {
+      if (process.platform === 'darwin') {
         await execPromise(`echo "${password}" | sudo -S chown root:admin "${corePath}"`)
         await execPromise(`echo "${password}" | sudo -S chmod +sx "${corePath}"`)
-      } catch (error) {
-        patchAppConfig({ encryptedPassword: undefined })
-        throw error
       }
+    } catch (error) {
+      patchAppConfig({ encryptedPassword: undefined })
+      throw error
     }
   }
 }
