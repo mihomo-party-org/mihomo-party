@@ -57,8 +57,6 @@ export async function importThemes(files: string[]): Promise<void> {
 export async function applyTheme(theme: string): Promise<void> {
   if (!existsSync(path.join(themesDir(), theme))) return
   const css = await readFile(path.join(themesDir(), theme), 'utf-8')
-  if (insertedCSSKey) {
-    await mainWindow?.webContents.removeInsertedCSS(insertedCSSKey)
-  }
+  await mainWindow?.webContents.removeInsertedCSS(insertedCSSKey || '')
   insertedCSSKey = await mainWindow?.webContents.insertCSS(css)
 }
