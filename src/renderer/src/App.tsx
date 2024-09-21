@@ -67,6 +67,23 @@ const App: React.FC = () => {
   const location = useLocation()
   const page = useRoutes(routes)
 
+  const changeTheme = async (): Promise<void> => {
+    setNativeTheme(appTheme)
+    setTheme(appTheme)
+    if (customTheme) await applyTheme(customTheme)
+    if (!useWindowFrame) {
+      const options = { height: 48 } as TitleBarOverlayOptions
+      try {
+        if (platform !== 'darwin') {
+          options.color = window.getComputedStyle(document.documentElement).backgroundColor
+          options.symbolColor = window.getComputedStyle(document.documentElement).color
+        }
+        setTitleBarOverlay(options)
+      } catch (e) {
+        // ignore
+      }
+    }
+  }
   useEffect(() => {
     setOrder(siderOrder)
   }, [siderOrder])
@@ -80,23 +97,7 @@ const App: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    setNativeTheme(appTheme)
-    setTheme(appTheme)
-    if (customTheme) applyTheme(customTheme)
-    if (!useWindowFrame) {
-      setTimeout(() => {
-        const options = { height: 48 } as TitleBarOverlayOptions
-        try {
-          if (platform !== 'darwin') {
-            options.color = window.getComputedStyle(document.documentElement).backgroundColor
-            options.symbolColor = window.getComputedStyle(document.documentElement).color
-          }
-          setTitleBarOverlay(options)
-        } catch (e) {
-          // ignore
-        }
-      }, 0)
-    }
+    changeTheme()
   }, [appTheme, systemTheme, customTheme])
 
   const onDragEnd = async (event: DragEndEvent): Promise<void> => {

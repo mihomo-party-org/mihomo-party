@@ -24,9 +24,7 @@ import { IoIosHelpCircle, IoMdCloudDownload } from 'react-icons/io'
 const GeneralConfig: React.FC = () => {
   const { data: enable, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
   const { appConfig, patchAppConfig } = useAppConfig()
-  const [customThemes, setCustomThemes] = React.useState([
-    { key: 'default.css', label: '默认', content: '' }
-  ])
+  const [customThemes, setCustomThemes] = useState<{ key: string; label: string }[]>()
   const [fetching, setFetching] = useState(false)
   const { setTheme } = useTheme()
   const {
@@ -269,22 +267,24 @@ const GeneralConfig: React.FC = () => {
             </>
           }
         >
-          <Select
-            className="w-[60%]"
-            size="sm"
-            selectedKeys={new Set([customTheme])}
-            onSelectionChange={async (v) => {
-              try {
-                await patchAppConfig({ customTheme: v.currentKey as string })
-              } catch (e) {
-                alert(e)
-              }
-            }}
-          >
-            {customThemes.map((theme) => (
-              <SelectItem key={theme.key}>{theme.label}</SelectItem>
-            ))}
-          </Select>
+          {customThemes && (
+            <Select
+              className="w-[60%]"
+              size="sm"
+              selectedKeys={new Set([customTheme])}
+              onSelectionChange={async (v) => {
+                try {
+                  await patchAppConfig({ customTheme: v.currentKey as string })
+                } catch (e) {
+                  alert(e)
+                }
+              }}
+            >
+              {customThemes.map((theme) => (
+                <SelectItem key={theme.key}>{theme.label}</SelectItem>
+              ))}
+            </Select>
+          )}
         </SettingItem>
       </SettingCard>
     </>
