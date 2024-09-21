@@ -81,7 +81,6 @@ const Mihomo: React.FC = () => {
                 isIconOnly
                 title="升级内核"
                 variant="light"
-                className="ml-2"
                 isLoading={upgrading}
                 onPress={async () => {
                   try {
@@ -371,7 +370,6 @@ const Mihomo: React.FC = () => {
                 size="sm"
                 isIconOnly
                 variant="light"
-                className="ml-2"
                 onPress={() => {
                   setLanOpen(true)
                 }}
