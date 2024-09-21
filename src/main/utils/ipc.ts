@@ -65,7 +65,14 @@ import { getInterfaces } from '../sys/interface'
 import { copyEnv } from '../resolve/tray'
 import { registerShortcut } from '../resolve/shortcut'
 import { mainWindow } from '..'
-import { applyTheme, fetchThemes, importThemes, resolveThemes } from '../resolve/theme'
+import {
+  applyTheme,
+  fetchThemes,
+  importThemes,
+  readTheme,
+  resolveThemes,
+  writeTheme
+} from '../resolve/theme'
 import { subStoreCollections, subStoreSubs } from '../core/subStoreApi'
 import { logDir } from './dirs'
 import path from 'path'
@@ -205,6 +212,8 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('resolveThemes', () => ipcErrorWrapper(resolveThemes)())
   ipcMain.handle('fetchThemes', () => ipcErrorWrapper(fetchThemes)())
   ipcMain.handle('importThemes', (_e, file) => ipcErrorWrapper(importThemes)(file))
+  ipcMain.handle('readTheme', (_e, theme) => ipcErrorWrapper(readTheme)(theme))
+  ipcMain.handle('writeTheme', (_e, theme, css) => ipcErrorWrapper(writeTheme)(theme, css))
   ipcMain.handle('applyTheme', (_e, theme) => ipcErrorWrapper(applyTheme)(theme))
   ipcMain.handle('copyEnv', (_e, type) => ipcErrorWrapper(copyEnv)(type))
   ipcMain.handle('alert', (_e, msg) => {
