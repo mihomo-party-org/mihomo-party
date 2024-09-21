@@ -13,8 +13,7 @@ import {
 } from '../utils/dirs'
 
 export async function webdavBackup(): Promise<boolean> {
-  const webdav = await import('webdav')
-  const createClient = webdav.createClient
+  const { createClient } = await import('webdav/dist/node/index.js')
   const { webdavUrl = '', webdavUsername = '', webdavPassword = '' } = await getAppConfig()
   const zip = new AdmZip()
 
@@ -43,8 +42,7 @@ export async function webdavBackup(): Promise<boolean> {
 }
 
 export async function webdavRestore(filename: string): Promise<void> {
-  const webdav = await import('webdav')
-  const createClient = webdav.createClient
+  const { createClient } = await import('webdav/dist/node/index.js')
   const { webdavUrl = '', webdavUsername = '', webdavPassword = '' } = await getAppConfig()
 
   const client = createClient(webdavUrl, {
@@ -57,8 +55,7 @@ export async function webdavRestore(filename: string): Promise<void> {
 }
 
 export async function listWebdavBackups(): Promise<string[]> {
-  const webdav = await import('webdav')
-  const createClient = webdav.createClient
+  const { createClient } = await import('webdav/dist/node/index.js')
   const { webdavUrl = '', webdavUsername = '', webdavPassword = '' } = await getAppConfig()
 
   const client = createClient(webdavUrl, {
@@ -74,8 +71,7 @@ export async function listWebdavBackups(): Promise<string[]> {
 }
 
 export async function webdavDelete(filename: string): Promise<void> {
-  const webdav = await import('webdav')
-  const createClient = webdav.createClient
+  const { createClient } = await import('webdav/dist/node/index.js')
   const { webdavUrl = '', webdavUsername = '', webdavPassword = '' } = await getAppConfig()
 
   const client = createClient(webdavUrl, {
