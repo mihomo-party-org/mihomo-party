@@ -12,14 +12,16 @@ let insertedCSSKey: string | undefined = undefined
 export async function resolveThemes(): Promise<{ key: string; label: string }[]> {
   const files = await readdir(themesDir())
   const themes = await Promise.all(
-    files.map(async (file) => {
-      const css = (await readFile(path.join(themesDir(), file), 'utf-8')) || ''
-      let name = file
-      if (css.startsWith('/*')) {
-        name = css.split('\n')[0].replace('/*', '').replace('*/', '').trim() || file
-      }
-      return { key: file, label: name }
-    })
+    files
+      .filter((file) => file.endsWith('.css'))
+      .map(async (file) => {
+        const css = (await readFile(path.join(themesDir(), file), 'utf-8')) || ''
+        let name = file
+        if (css.startsWith('/*')) {
+          name = css.split('\n')[0].replace('/*', '').replace('*/', '').trim() || file
+        }
+        return { key: file, label: name }
+      })
   )
   if (themes.find((theme) => theme.key === 'default.css')) {
     return themes
