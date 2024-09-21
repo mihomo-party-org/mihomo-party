@@ -21,7 +21,11 @@ export async function resolveThemes(): Promise<{ key: string; label: string }[]>
       return { key: file, label: name }
     })
   )
-  return [{ key: 'default.css', label: '默认' }, ...themes]
+  if (themes.find((theme) => theme.key === 'default.css')) {
+    return themes
+  } else {
+    return [{ key: 'default.css', label: '默认' }, ...themes]
+  }
 }
 
 export async function fetchThemes(): Promise<void> {
@@ -51,12 +55,6 @@ export async function importThemes(files: string[]): Promise<void> {
 }
 
 export async function applyTheme(theme: string): Promise<void> {
-  if (theme === 'default.css') {
-    if (insertedCSSKey) {
-      await mainWindow?.webContents.removeInsertedCSS(insertedCSSKey)
-    }
-    return
-  }
   if (!existsSync(path.join(themesDir(), theme))) return
   const css = await readFile(path.join(themesDir(), theme), 'utf-8')
   if (insertedCSSKey) {
