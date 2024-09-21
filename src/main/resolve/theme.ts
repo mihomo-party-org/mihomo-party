@@ -1,4 +1,4 @@
-import { copyFile, readdir, readFile } from 'fs/promises'
+import { copyFile, readdir, readFile, writeFile } from 'fs/promises'
 import { themesDir } from '../utils/dirs'
 import path from 'path'
 import axios from 'axios'
@@ -56,9 +56,17 @@ export async function importThemes(files: string[]): Promise<void> {
   }
 }
 
+export async function readTheme(theme: string): Promise<string> {
+  if (!existsSync(path.join(themesDir(), theme))) return ''
+  return await readFile(path.join(themesDir(), theme), 'utf-8')
+}
+
+export async function writeTheme(theme: string, css: string): Promise<void> {
+  await writeFile(path.join(themesDir(), theme), css)
+}
+
 export async function applyTheme(theme: string): Promise<void> {
-  if (!existsSync(path.join(themesDir(), theme))) return
-  const css = await readFile(path.join(themesDir(), theme), 'utf-8')
+  const css = await readTheme(theme)
   await mainWindow?.webContents.removeInsertedCSS(insertedCSSKey || '')
   insertedCSSKey = await mainWindow?.webContents.insertCSS(css)
 }

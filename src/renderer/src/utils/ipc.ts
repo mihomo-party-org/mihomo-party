@@ -343,6 +343,14 @@ export async function importThemes(files: string[]): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('importThemes', files))
 }
 
+export async function readTheme(theme: string): Promise<string> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('readTheme', theme))
+}
+
+export async function writeTheme(theme: string, css: string): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('writeTheme', theme, css))
+}
+
 let applyThemeRunning = false
 const waitList: string[] = []
 export async function applyTheme(theme: string): Promise<void> {

@@ -5,6 +5,7 @@ import { Button, Input, Select, SelectItem, Switch, Tab, Tabs, Tooltip } from '@
 import { BiCopy, BiSolidFileImport } from 'react-icons/bi'
 import useSWR from 'swr'
 import {
+  applyTheme,
   checkAutoRun,
   copyEnv,
   disableAutoRun,
@@ -14,17 +15,21 @@ import {
   importThemes,
   relaunchApp,
   resolveThemes,
-  restartCore
+  restartCore,
+  writeTheme
 } from '@renderer/utils/ipc'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
 import { useTheme } from 'next-themes'
 import { IoIosHelpCircle, IoMdCloudDownload } from 'react-icons/io'
+import { MdEditDocument } from 'react-icons/md'
+import CSSEditorModal from './css-editor-modal'
 
 const GeneralConfig: React.FC = () => {
   const { data: enable, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
   const { appConfig, patchAppConfig } = useAppConfig()
   const [customThemes, setCustomThemes] = useState<{ key: string; label: string }[]>()
+  const [openCSSEditor, setOpenCSSEditor] = useState(false)
   const [fetching, setFetching] = useState(false)
   const { setTheme } = useTheme()
   const {
@@ -49,6 +54,17 @@ const GeneralConfig: React.FC = () => {
 
   return (
     <>
+      {openCSSEditor && (
+        <CSSEditorModal
+          theme={customTheme}
+          onCancel={() => setOpenCSSEditor(false)}
+          onConfirm={async (css: string) => {
+            await writeTheme(customTheme, css)
+            await applyTheme(customTheme)
+            setOpenCSSEditor(false)
+          }}
+        />
+      )}
       <SettingCard>
         <SettingItem title="开机自启" divider>
           <Switch
@@ -260,6 +276,17 @@ const GeneralConfig: React.FC = () => {
                 }}
               >
                 <BiSolidFileImport className="text-lg" />
+              </Button>
+              <Button
+                size="sm"
+                isIconOnly
+                title="编辑主题"
+                variant="light"
+                onPress={async () => {
+                  setOpenCSSEditor(true)
+                }}
+              >
+                <MdEditDocument className="text-lg" />
               </Button>
             </>
           }
