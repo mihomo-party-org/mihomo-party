@@ -131,7 +131,6 @@ const GeneralConfig: React.FC = () => {
               title={type}
               isIconOnly
               size="sm"
-              className="ml-2"
               variant="light"
               onPress={() => copyEnv(type)}
             >
@@ -230,7 +229,6 @@ const GeneralConfig: React.FC = () => {
                 isIconOnly
                 title="拉取主题"
                 variant="light"
-                className="ml-2"
                 onPress={async () => {
                   setFetching(true)
                   try {
@@ -250,7 +248,6 @@ const GeneralConfig: React.FC = () => {
                 isIconOnly
                 title="导入主题"
                 variant="light"
-                className="ml-2"
                 onPress={async () => {
                   const files = await getFilePath(['css'])
                   if (!files) return
