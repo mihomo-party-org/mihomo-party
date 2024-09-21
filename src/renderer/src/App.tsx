@@ -156,7 +156,7 @@ const App: React.FC = () => {
   return (
     <div className="w-full h-[100vh] flex">
       <div className="side w-[250px] h-full overflow-y-auto no-scrollbar">
-        <div className="app-drag sticky top-0 z-40 backdrop-blur bg-background/40 h-[49px]">
+        <div className="app-drag sticky top-0 z-40 backdrop-blur bg-transparent h-[49px]">
           <div
             className={`flex justify-between p-2 ${!useWindowFrame && platform === 'darwin' ? 'ml-[60px]' : ''}`}
           >
