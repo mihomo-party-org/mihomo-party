@@ -66,11 +66,7 @@ const App: React.FC = () => {
   navigate = useNavigate()
   const location = useLocation()
   const page = useRoutes(routes)
-
-  const changeTheme = async (): Promise<void> => {
-    setNativeTheme(appTheme)
-    setTheme(appTheme)
-    if (customTheme) await applyTheme(customTheme)
+  const setTitlebar = (): void => {
     if (!useWindowFrame) {
       const options = { height: 48 } as TitleBarOverlayOptions
       try {
@@ -97,8 +93,16 @@ const App: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    changeTheme()
-  }, [appTheme, systemTheme, customTheme])
+    setNativeTheme(appTheme)
+    setTheme(appTheme)
+    setTitlebar()
+  }, [appTheme, systemTheme])
+
+  useEffect(() => {
+    applyTheme(customTheme || 'default.css').then(() => {
+      setTitlebar()
+    })
+  }, [customTheme])
 
   const onDragEnd = async (event: DragEndEvent): Promise<void> => {
     const { active, over } = event

@@ -343,8 +343,22 @@ export async function importThemes(files: string[]): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('importThemes', files))
 }
 
+let applyThemeRunning = false
+const waitList: string[] = []
 export async function applyTheme(theme: string): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('applyTheme', theme))
+  if (applyThemeRunning) {
+    waitList.push(theme)
+    return
+  }
+  applyThemeRunning = true
+  try {
+    return await ipcErrorWrapper(window.electron.ipcRenderer.invoke('applyTheme', theme))
+  } finally {
+    applyThemeRunning = false
+    if (waitList.length > 0) {
+      await applyTheme(waitList.shift() || '')
+    }
+  }
 }
 
 export async function registerShortcut(
