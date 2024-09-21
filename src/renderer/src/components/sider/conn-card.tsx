@@ -2,7 +2,7 @@ import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
 import { FaCircleArrowDown, FaCircleArrowUp } from 'react-icons/fa6'
 import { useLocation } from 'react-router-dom'
 import { calcTraffic } from '@renderer/utils/calc'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { IoLink } from 'react-icons/io5'
@@ -36,13 +36,19 @@ const ConnCard: React.FC = () => {
     id: 'connection'
   })
   const [series, setSeries] = useState(Array(10).fill(0))
-  const chartColor = useMemo(() => {
-    const islight = theme === 'system' ? systemTheme === 'light' : theme.includes('light')
-    return match
-      ? 'rgba(255,255,255)'
-      : islight
-        ? window.getComputedStyle(document.documentElement).color
-        : 'rgb(255,255,255)'
+  const [chartColor, setChartColor] = useState('rgba(255,255,255)')
+
+  useEffect(() => {
+    setTimeout(() => {
+      const islight = theme === 'system' ? systemTheme === 'light' : theme.includes('light')
+      setChartColor(
+        match
+          ? 'rgba(255,255,255)'
+          : islight
+            ? window.getComputedStyle(document.documentElement).color
+            : 'rgb(255,255,255)'
+      )
+    }, 1000)
   }, [theme, systemTheme, match, customTheme])
 
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
@@ -137,7 +143,7 @@ const ConnCard: React.FC = () => {
             >
               <defs>
                 <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={chartColor} stopOpacity={0.6} />
+                  <stop offset="0%" stopColor={chartColor} stopOpacity={0.8} />
                   <stop offset="100%" stopColor={chartColor} stopOpacity={0} />
                 </linearGradient>
               </defs>
