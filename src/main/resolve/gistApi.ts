@@ -5,7 +5,7 @@ import { getRuntimeConfigStr } from '../core/factory'
 interface GistInfo {
   id: string
   description: string
-  files: Record<string, { filename: string; raw_url: string }>
+  html_url: string
 }
 
 async function listGists(token: string): Promise<GistInfo[]> {
@@ -78,7 +78,7 @@ export async function getGistUrl(): Promise<string> {
   const gists = await listGists(githubToken)
   const gist = gists.find((gist) => gist.description === 'Auto Synced Mihomo Party Runtime Config')
   if (gist) {
-    return gist.files['mihomo-party.yaml'].raw_url
+    return gist.html_url
   } else {
     throw new Error('Gist not found')
   }
