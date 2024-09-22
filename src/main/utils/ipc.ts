@@ -77,6 +77,7 @@ import { subStoreCollections, subStoreSubs } from '../core/subStoreApi'
 import { logDir } from './dirs'
 import path from 'path'
 import v8 from 'v8'
+import { getGistUrl } from '../resolve/gistApi'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -188,6 +189,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('subStoreFrontendPort', () => subStoreFrontendPort)
   ipcMain.handle('subStoreSubs', () => ipcErrorWrapper(subStoreSubs)())
   ipcMain.handle('subStoreCollections', () => ipcErrorWrapper(subStoreCollections)())
+  ipcMain.handle('getGistUrl', ipcErrorWrapper(getGistUrl))
   ipcMain.handle('setNativeTheme', (_e, theme) => {
     setNativeTheme(theme)
   })
