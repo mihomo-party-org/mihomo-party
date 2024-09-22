@@ -2,7 +2,6 @@ import { taskDir, exePath, homeDir } from '../utils/dirs'
 import { mkdir, readFile, rm, writeFile } from 'fs/promises'
 import { exec } from 'child_process'
 import { existsSync } from 'fs'
-import { app } from 'electron'
 import { promisify } from 'util'
 import path from 'path'
 
@@ -65,7 +64,11 @@ export async function checkAutoRun(): Promise<boolean> {
   }
 
   if (process.platform === 'darwin') {
-    return app.getLoginItemSettings().openAtLogin
+    const execPromise = promisify(exec)
+    const { stdout } = await execPromise(
+      `osascript -e 'tell application "System Events" to get the name of every login item'`
+    )
+    return stdout.includes(exePath().split('.app')[0].replace('/Applications/', ''))
   }
 
   if (process.platform === 'linux') {
@@ -82,9 +85,10 @@ export async function enableAutoRun(): Promise<void> {
     await execPromise(`schtasks /create /tn "${appName}" /xml "${taskFilePath}" /f`)
   }
   if (process.platform === 'darwin') {
-    app.setLoginItemSettings({
-      openAtLogin: true
-    })
+    const execPromise = promisify(exec)
+    await execPromise(
+      `osascript -e 'tell application "System Events" to make login item at end with properties {path:"${exePath().split('.app')[0]}.app", hidden:false}'`
+    )
   }
   if (process.platform === 'linux') {
     let desktop = `
@@ -117,9 +121,10 @@ export async function disableAutoRun(): Promise<void> {
     await execPromise(`schtasks /delete /tn "${appName}" /f`)
   }
   if (process.platform === 'darwin') {
-    app.setLoginItemSettings({
-      openAtLogin: false
-    })
+    const execPromise = promisify(exec)
+    await execPromise(
+      `osascript -e 'tell application "System Events" to delete login item "${exePath().split('.app')[0].replace('/Applications/', '')}"'`
+    )
   }
   if (process.platform === 'linux') {
     const desktopFilePath = path.join(homeDir, '.config', 'autostart', `${appName}.desktop`)
