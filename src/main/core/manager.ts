@@ -262,7 +262,7 @@ export function isEncryptionAvailable(): boolean {
   return safeStorage.isEncryptionAvailable()
 }
 
-async function getDefaultService(password?: string): Promise<string> {
+export async function getDefaultService(password?: string): Promise<string> {
   const execPromise = promisify(exec)
   let sudo = ''
   if (password) sudo = `echo "${password}" | sudo -S `
