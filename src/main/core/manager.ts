@@ -33,6 +33,7 @@ import { promisify } from 'util'
 import { mainWindow } from '..'
 import path from 'path'
 import { existsSync } from 'fs'
+import { uploadRuntimeConfig } from '../resolve/gistApi'
 
 chokidar.watch(path.join(mihomoCoreDir(), 'meta-update'), {}).on('unlinkDir', async () => {
   try {
@@ -137,6 +138,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
               if (data.toString().includes('Start initial Compatible provider default')) {
                 try {
                   mainWindow?.webContents.send('coreRestart')
+                  await uploadRuntimeConfig()
                 } catch {
                   // ignore
                 }

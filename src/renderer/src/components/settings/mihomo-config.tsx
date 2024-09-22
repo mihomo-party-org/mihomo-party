@@ -4,8 +4,9 @@ import SettingItem from '../base/base-setting-item'
 import { Button, Input, Select, SelectItem, Switch } from '@nextui-org/react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import debounce from '@renderer/utils/debounce'
-import { patchControledMihomoConfig, restartCore } from '@renderer/utils/ipc'
+import { getGistUrl, patchControledMihomoConfig, restartCore } from '@renderer/utils/ipc'
 import { MdDeleteForever } from 'react-icons/md'
+import { BiCopy } from 'react-icons/bi'
 
 const MihomoConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -13,6 +14,7 @@ const MihomoConfig: React.FC = () => {
     controlDns = true,
     controlSniff = true,
     delayTestTimeout,
+    githubToken = '',
     autoCloseConnection = true,
     pauseSSID = [],
     delayTestUrl,
@@ -63,6 +65,41 @@ const MihomoConfig: React.FC = () => {
           placeholder="默认 5000"
           onValueChange={(v) => {
             patchAppConfig({ delayTestTimeout: parseInt(v) })
+          }}
+        />
+      </SettingItem>
+      <SettingItem
+        title="同步运行时配置到 Gist"
+        actions={
+          <Button
+            title="复制 Gist URL"
+            isIconOnly
+            size="sm"
+            variant="light"
+            onPress={async () => {
+              try {
+                const url = await getGistUrl()
+                if (url !== '') {
+                  await navigator.clipboard.writeText(url)
+                }
+              } catch (e) {
+                alert(e)
+              }
+            }}
+          >
+            <BiCopy className="text-lg" />
+          </Button>
+        }
+        divider
+      >
+        <Input
+          type="password"
+          size="sm"
+          className="w-[60%]"
+          value={githubToken}
+          placeholder="GitHub Token"
+          onValueChange={(v) => {
+            patchAppConfig({ githubToken: v })
           }}
         />
       </SettingItem>
