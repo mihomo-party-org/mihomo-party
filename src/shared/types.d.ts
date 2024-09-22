@@ -213,6 +213,7 @@ interface IAppConfig {
   connectionCardStatus?: CardStatus
   dnsCardStatus?: CardStatus
   logCardStatus?: CardStatus
+  pauseSSID?: string[]
   mihomoCoreCardStatus?: CardStatus
   overrideCardStatus?: CardStatus
   profileCardStatus?: CardStatus
@@ -237,7 +238,7 @@ interface IAppConfig {
   proxyInTray: boolean
   siderOrder: string[]
   appTheme: AppTheme
-  customTheme: string
+  customTheme?: string
   autoCheckUpdate: boolean
   silentStart: boolean
   autoCloseConnection: boolean

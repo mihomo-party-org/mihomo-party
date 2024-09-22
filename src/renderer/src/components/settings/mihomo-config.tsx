@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { Input, Select, SelectItem, Switch } from '@nextui-org/react'
+import { Button, Input, Select, SelectItem, Switch } from '@nextui-org/react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import debounce from '@renderer/utils/debounce'
 import { patchControledMihomoConfig, restartCore } from '@renderer/utils/ipc'
+import { MdDeleteForever } from 'react-icons/md'
 
 const MihomoConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -13,11 +14,13 @@ const MihomoConfig: React.FC = () => {
     controlSniff = true,
     delayTestTimeout,
     autoCloseConnection = true,
+    pauseSSID = [],
     delayTestUrl,
     userAgent,
     proxyCols = 'auto'
   } = appConfig || {}
   const [url, setUrl] = useState(delayTestUrl)
+  const [pauseSSIDInput, setPauseSSIDInput] = useState(pauseSSID)
   const setUrlDebounce = debounce((v: string) => {
     patchAppConfig({ delayTestUrl: v })
   }, 500)
@@ -109,7 +112,7 @@ const MihomoConfig: React.FC = () => {
           }}
         />
       </SettingItem>
-      <SettingItem title="自动断开连接">
+      <SettingItem title="自动断开连接" divider>
         <Switch
           size="sm"
           isSelected={autoCloseConnection}
@@ -118,6 +121,51 @@ const MihomoConfig: React.FC = () => {
           }}
         />
       </SettingItem>
+      <SettingItem title="在特定的 WiFi SSID 下直连">
+        {pauseSSIDInput.join('') !== pauseSSID.join('') && (
+          <Button
+            size="sm"
+            color="primary"
+            onPress={() => {
+              patchAppConfig({ pauseSSID: pauseSSIDInput })
+            }}
+          >
+            确认
+          </Button>
+        )}
+      </SettingItem>
+      <div className="flex flex-col items-stretch mt-2">
+        {[...pauseSSIDInput, ''].map((ssid, index) => {
+          return (
+            <div key={index} className="flex mb-2">
+              <Input
+                size="sm"
+                fullWidth
+                placeholder="SSID"
+                value={ssid || ''}
+                onValueChange={(v) => {
+                  if (index === pauseSSIDInput.length) {
+                    setPauseSSIDInput([...pauseSSIDInput, v])
+                  } else {
+                    setPauseSSIDInput(pauseSSIDInput.map((a, i) => (i === index ? v : a)))
+                  }
+                }}
+              />
+              {index < pauseSSIDInput.length && (
+                <Button
+                  className="ml-2"
+                  size="sm"
+                  variant="flat"
+                  color="warning"
+                  onClick={() => setPauseSSIDInput(pauseSSIDInput.filter((_, i) => i !== index))}
+                >
+                  <MdDeleteForever className="text-lg" />
+                </Button>
+              )}
+            </div>
+          )
+        })}
+      </div>
     </SettingCard>
   )
 }

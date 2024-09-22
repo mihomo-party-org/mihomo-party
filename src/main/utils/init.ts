@@ -34,6 +34,7 @@ import {
   patchControledMihomoConfig
 } from '../config'
 import { app } from 'electron'
+import { startSSIDCheck } from '../sys/ssid'
 
 async function initDirs(): Promise<void> {
   if (!existsSync(dataDir())) {
@@ -212,6 +213,7 @@ export async function init(): Promise<void> {
   await startSubStoreServer()
   const { sysProxy } = await getAppConfig()
   await triggerSysProxy(sysProxy.enable)
+  await startSSIDCheck()
 
   initDeeplink()
 }
