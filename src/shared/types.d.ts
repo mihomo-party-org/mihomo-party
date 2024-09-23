@@ -75,6 +75,7 @@ interface IMihomoConnectionsInfo {
 
 interface IMihomoConnectionDetail {
   id: string
+  isActive: boolean
   metadata: {
     network: 'tcp' | 'udp'
     type: string
