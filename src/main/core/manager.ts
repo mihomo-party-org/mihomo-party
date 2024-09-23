@@ -264,7 +264,7 @@ export function isEncryptionAvailable(): boolean {
   return safeStorage.isEncryptionAvailable()
 }
 
-export async function getDefaultService(password?: string): Promise<string> {
+export async function getDefaultDevice(password?: string): Promise<string> {
   const execPromise = promisify(exec)
   let sudo = ''
   if (password) sudo = `echo "${password}" | sudo -S `
@@ -272,6 +272,14 @@ export async function getDefaultService(password?: string): Promise<string> {
   let device = deviceOut.split('\n').find((s) => s.includes('interface:'))
   device = device?.trim().split(' ').slice(1).join(' ')
   if (!device) throw new Error('Get device failed')
+  return device
+}
+
+async function getDefaultService(password?: string): Promise<string> {
+  const execPromise = promisify(exec)
+  let sudo = ''
+  if (password) sudo = `echo "${password}" | sudo -S `
+  const device = await getDefaultDevice(password)
   const { stdout: order } = await execPromise(`${sudo}networksetup -listnetworkserviceorder`)
   const block = order.split('\n\n').find((s) => s.includes(`Device: ${device}`))
   if (!block) throw new Error('Get networkservice failed')

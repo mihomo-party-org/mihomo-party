@@ -4,7 +4,7 @@ import { getAppConfig, patchControledMihomoConfig } from '../config'
 import { patchMihomoConfig } from '../core/mihomoApi'
 import { mainWindow } from '..'
 import { ipcMain, net } from 'electron'
-import { getDefaultService } from '../core/manager'
+import { getDefaultDevice } from '../core/manager'
 
 export async function getCurrentSSID(): Promise<string | undefined> {
   if (process.platform === 'win32') {
@@ -79,11 +79,9 @@ async function getSSIDByAirport(): Promise<string | undefined> {
 async function getSSIDByNetworksetup(): Promise<string | undefined> {
   const execPromise = promisify(exec)
   if (net.isOnline()) {
-    const service = await getDefaultService()
+    const service = await getDefaultDevice()
     const { stdout } = await execPromise(`networksetup -listpreferredwirelessnetworks ${service}`)
-    console.log(stdout)
     if (stdout.trim().startsWith('Preferred networks on')) {
-      console.log(stdout.split('\n'))
       if (stdout.split('\n').length > 1) {
         return stdout.split('\n')[1].trim()
       }
