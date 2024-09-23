@@ -1,6 +1,6 @@
 import axios from 'axios'
 import yaml from 'yaml'
-import { app } from 'electron'
+import { app, shell } from 'electron'
 import { getControledMihomoConfig } from '../config'
 import { dataDir, exeDir, exePath, isPortable, resourcesFilesDir } from '../utils/dirs'
 import { rm, writeFile } from 'fs/promises'
@@ -85,23 +85,27 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
       app.quit()
     }
     if (file.endsWith('.dmg')) {
-      const execPromise = promisify(exec)
-      const name = exePath().split('.app')[0].replace('/Applications/', '')
-      await execPromise(
-        `hdiutil attach "${path.join(dataDir(), file)}" -mountpoint "/Volumes/mihomo-party" -nobrowse`
-      )
       try {
-        await execPromise(`mv /Applications/${name}.app /tmp`)
-        await execPromise('cp -R "/Volumes/mihomo-party/mihomo-party.app" /Applications/')
-        await execPromise(`rm -rf /tmp/${name}.app`)
-      } catch (e) {
-        await execPromise(`mv /tmp/${name}.app /Applications`)
-        throw e
-      } finally {
-        await execPromise('hdiutil detach "/Volumes/mihomo-party"')
+        const execPromise = promisify(exec)
+        const name = exePath().split('.app')[0].replace('/Applications/', '')
+        await execPromise(
+          `hdiutil attach "${path.join(dataDir(), file)}" -mountpoint "/Volumes/mihomo-party" -nobrowse`
+        )
+        try {
+          await execPromise(`mv /Applications/${name}.app /tmp`)
+          await execPromise('cp -R "/Volumes/mihomo-party/mihomo-party.app" /Applications/')
+          await execPromise(`rm -rf /tmp/${name}.app`)
+        } catch (e) {
+          await execPromise(`mv /tmp/${name}.app /Applications`)
+          throw e
+        } finally {
+          await execPromise('hdiutil detach "/Volumes/mihomo-party"')
+        }
+        app.relaunch()
+        app.quit()
+      } catch {
+        shell.openPath(path.join(dataDir(), file))
       }
-      app.relaunch()
-      app.quit()
     }
   } catch (e) {
     rm(path.join(dataDir(), file))

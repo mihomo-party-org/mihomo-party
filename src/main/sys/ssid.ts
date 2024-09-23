@@ -3,7 +3,7 @@ import { promisify } from 'util'
 import { getAppConfig, patchControledMihomoConfig } from '../config'
 import { patchMihomoConfig } from '../core/mihomoApi'
 import { mainWindow } from '..'
-import { ipcMain } from 'electron'
+import { ipcMain, net } from 'electron'
 import { getDefaultService } from '../core/manager'
 
 export async function getCurrentSSID(): Promise<string | undefined> {
@@ -26,20 +26,26 @@ export async function getCurrentSSID(): Promise<string | undefined> {
       }
     }
     if (process.platform === 'darwin') {
-      try {
-        const { stdout } = await execPromise(
-          '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I'
-        )
+      const { stdout } = await execPromise(
+        '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I'
+      )
+      if (stdout.trim().startsWith('WARNING')) {
+        if (net.isOnline()) {
+          const service = await getDefaultService()
+          const { stdout } = await execPromise(
+            `networksetup -listpreferredwirelessnetworks ${service}`
+          )
+          if (stdout.trim().startsWith('Preferred networks on')) {
+            if (stdout.split('\n').length > 1) {
+              return stdout.split('\n')[1].trim()
+            }
+          }
+        }
+      } else {
         for (const line of stdout.split('\n')) {
           if (line.trim().startsWith('SSID')) {
             return line.split(': ')[1].trim()
           }
-        }
-      } catch {
-        const service = await getDefaultService()
-        const { stdout } = await execPromise(`networksetup -getairportnetwork ${service}`)
-        if (stdout.split(': ').length > 1) {
-          return stdout.split(': ')[1].trim()
         }
       }
     }
