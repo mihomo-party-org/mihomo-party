@@ -1,12 +1,7 @@
 import { Avatar, Button, Card, CardBody, Chip } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import {
-  mihomoChangeProxy,
-  mihomoCloseAllConnections,
-  mihomoGroupDelay,
-  mihomoProxyDelay
-} from '@renderer/utils/ipc'
+import { mihomoChangeProxy, mihomoCloseAllConnections, mihomoProxyDelay } from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
 import { TbCircleLetterD } from 'react-icons/tb'
 import { FaLocationCrosshairs } from 'react-icons/fa6'
@@ -27,7 +22,8 @@ const Proxies: React.FC = () => {
     proxyDisplayMode = 'simple',
     proxyDisplayOrder = 'default',
     autoCloseConnection = true,
-    proxyCols = 'auto'
+    proxyCols = 'auto',
+    delayTestConcurrency = 50
   } = appConfig || {}
   const [cols, setCols] = useState(1)
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
@@ -79,18 +75,46 @@ const Proxies: React.FC = () => {
   }
 
   const onGroupDelay = async (index: number): Promise<void> => {
+    if (allProxies[index].length === 0) {
+      setIsOpen((prev) => {
+        const newOpen = [...prev]
+        newOpen[index] = true
+        return newOpen
+      })
+    }
     setDelaying((prev) => {
       const newDelaying = [...prev]
       newDelaying[index] = true
       return newDelaying
     })
-    await mihomoGroupDelay(groups[index].name, groups[index].testUrl)
+    // 限制并发数量
+    const result: Promise<void>[] = []
+    const runningList: Promise<void>[] = []
+    for (const proxy of allProxies[index]) {
+      const promise = Promise.resolve().then(async () => {
+        try {
+          await mihomoProxyDelay(proxy.name, groups[index].testUrl)
+        } catch {
+          // ignore
+        } finally {
+          mutate()
+        }
+      })
+      result.push(promise)
+      const running = promise.then(() => {
+        runningList.splice(runningList.indexOf(running), 1)
+      })
+      runningList.push(running)
+      if (runningList.length >= (delayTestConcurrency || 50)) {
+        await Promise.race(runningList)
+      }
+    }
+    await Promise.all(result)
     setDelaying((prev) => {
       const newDelaying = [...prev]
       newDelaying[index] = false
       return newDelaying
     })
-    mutate()
   }
 
   const calcCols = (): number => {
