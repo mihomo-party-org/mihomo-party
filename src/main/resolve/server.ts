@@ -1,6 +1,6 @@
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { Worker } from 'worker_threads'
-import { resourcesFilesDir, subStoreDir } from '../utils/dirs'
+import { mihomoWorkDir, resourcesFilesDir, subStoreDir } from '../utils/dirs'
 import subStoreIcon from '../../../resources/subStoreIcon.png?asset'
 import http from 'http'
 import net from 'net'
@@ -83,7 +83,9 @@ export async function startSubStoreServer(): Promise<void> {
         SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party',
         SUB_STORE_BACKEND_SYNC_CRON: subStoreBackendSyncCron,
         SUB_STORE_BACKEND_DOWNLOAD_CRON: subStoreBackendDownloadCron,
-        SUB_STORE_BACKEND_UPLOAD_CRON: subStoreBackendUploadCron
+        SUB_STORE_BACKEND_UPLOAD_CRON: subStoreBackendUploadCron,
+        SUB_STORE_MMDB_COUNTRY_PATH: path.join(mihomoWorkDir(), 'country.mmdb'),
+        SUB_STORE_MMDB_ASN_PATH: path.join(mihomoWorkDir(), 'ASN.mmdb')
       }
     })
   }
