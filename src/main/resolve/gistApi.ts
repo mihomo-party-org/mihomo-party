@@ -80,7 +80,13 @@ export async function getGistUrl(): Promise<string> {
   if (gist) {
     return gist.html_url
   } else {
-    throw new Error('Gist not found')
+    await uploadRuntimeConfig()
+    const gists = await listGists(githubToken)
+    const gist = gists.find(
+      (gist) => gist.description === 'Auto Synced Mihomo Party Runtime Config'
+    )
+    if (!gist) throw new Error('Gist not found')
+    return gist.html_url
   }
 }
 
@@ -88,7 +94,6 @@ export async function uploadRuntimeConfig(): Promise<void> {
   const { githubToken } = await getAppConfig()
   if (!githubToken) return
   const gists = await listGists(githubToken)
-  console.log(gists)
   const gist = gists.find((gist) => gist.description === 'Auto Synced Mihomo Party Runtime Config')
   const config = await getRuntimeConfigStr()
   if (gist) {
