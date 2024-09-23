@@ -198,7 +198,7 @@ jobs:
           npm_config_target_arch: ${{ matrix.arch }}
         run: pnpm build:mac --${{ matrix.arch }}
       - name: Generate checksums
-        run: pnpm checksum .dmg .zip
+        run: pnpm checksum .dmg
       - name: Upload Artifacts
         if: startsWith(github.ref, 'refs/heads/')
         uses: actions/upload-artifact@v4
@@ -207,7 +207,6 @@ jobs:
           path: |
             dist/*.sha256
             dist/*.dmg
-            dist/*.zip
           if-no-files-found: error
       - name: Publish Release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -216,7 +215,6 @@ jobs:
           files: |
             dist/*.sha256
             dist/*.dmg
-            dist/*.zip
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 

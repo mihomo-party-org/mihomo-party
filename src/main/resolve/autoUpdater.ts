@@ -2,7 +2,7 @@ import axios from 'axios'
 import yaml from 'yaml'
 import { app } from 'electron'
 import { getControledMihomoConfig } from '../config'
-import { dataDir, exeDir, isPortable, resourcesFilesDir } from '../utils/dirs'
+import { dataDir, exeDir, exePath, isPortable, resourcesFilesDir } from '../utils/dirs'
 import { rm, writeFile } from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
@@ -39,8 +39,8 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
     'win32-x64': `mihomo-party-windows-${version}-x64-setup.exe`,
     'win32-ia32': `mihomo-party-windows-${version}-ia32-setup.exe`,
     'win32-arm64': `mihomo-party-windows-${version}-arm64-setup.exe`,
-    'darwin-x64': `mihomo-party-macos-${version}-x64.zip`,
-    'darwin-arm64': `mihomo-party-macos-${version}-arm64.zip`
+    'darwin-x64': `mihomo-party-macos-${version}-x64.dmg`,
+    'darwin-arm64': `mihomo-party-macos-${version}-arm64.dmg`
   }
   let file = fileMap[`${process.platform}-${process.arch}`]
   if (isPortable()) {
@@ -84,9 +84,22 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
       ).unref()
       app.quit()
     }
-    if (file.endsWith('.zip')) {
+    if (file.endsWith('.dmg')) {
       const execPromise = promisify(exec)
-      await execPromise(`unzip -o -K '${path.join(dataDir(), file)}' -d /Applications`)
+      const name = exePath().split('.app')[0].replace('/Applications/', '')
+      await execPromise(
+        `hdiutil attach "${path.join(dataDir(), file)}" -mountpoint "/Volumes/mihomo-party" -nobrowse`
+      )
+      try {
+        await execPromise(`mv /Applications/${name}.app /tmp`)
+        await execPromise('cp -R "/Volumes/mihomo-party/mihomo-party.app" /Applications/')
+        await execPromise(`rm -rf /tmp/${name}.app`)
+      } catch (e) {
+        await execPromise(`mv /tmp/${name}.app /Applications`)
+        throw e
+      } finally {
+        await execPromise('hdiutil detach "/Volumes/mihomo-party"')
+      }
       app.relaunch()
       app.quit()
     }
