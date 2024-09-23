@@ -105,7 +105,7 @@ async function cleanup(): Promise<void> {
   // update cache
   const files = await readdir(dataDir())
   for (const file of files) {
-    if (file.endsWith('.exe') || file.endsWith('.dmg') || file.endsWith('.zip')) {
+    if (file.endsWith('.exe') || file.endsWith('.dmg')) {
       try {
         await rm(path.join(dataDir(), file))
       } catch {
