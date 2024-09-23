@@ -246,6 +246,7 @@ interface IAppConfig {
   sysProxy: ISysProxyConfig
   maxLogDays: number
   userAgent?: string
+  delayTestConcurrency?: number
   delayTestUrl?: string
   delayTestTimeout?: number
   encryptedPassword?: number[]

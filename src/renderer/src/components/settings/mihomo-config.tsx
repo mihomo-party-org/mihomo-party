@@ -13,6 +13,7 @@ const MihomoConfig: React.FC = () => {
   const {
     controlDns = true,
     controlSniff = true,
+    delayTestConcurrency,
     delayTestTimeout,
     githubToken = '',
     autoCloseConnection = true,
@@ -55,6 +56,18 @@ const MihomoConfig: React.FC = () => {
             setUrlDebounce(v)
           }}
         ></Input>
+      </SettingItem>
+      <SettingItem title="延迟测试并发数量" divider>
+        <Input
+          type="number"
+          size="sm"
+          className="w-[60%]"
+          value={delayTestConcurrency?.toString()}
+          placeholder="默认 50"
+          onValueChange={(v) => {
+            patchAppConfig({ delayTestConcurrency: parseInt(v) })
+          }}
+        />
       </SettingItem>
       <SettingItem title="延迟测试超时时间" divider>
         <Input
