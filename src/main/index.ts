@@ -10,7 +10,7 @@ import { createTray } from './resolve/tray'
 import { init } from './utils/init'
 import { join } from 'path'
 import { initShortcut } from './resolve/shortcut'
-import { execSync } from 'child_process'
+import { execSync, spawn } from 'child_process'
 import { createElevateTask } from './sys/misc'
 import { initProfileUpdater } from './core/profileUpdater'
 import { existsSync, writeFileSync } from 'fs'
@@ -46,6 +46,24 @@ const gotTheLock = app.requestSingleInstanceLock()
 
 if (!gotTheLock) {
   app.quit()
+}
+
+export function customRelaunch(): void {
+  const script = `while kill -0 ${process.pid} 2>/dev/null; do
+  sleep 0.1
+done
+${process.argv.join(' ')} & disown
+exit
+`
+  spawn('sh', ['-c', `"${script}"`], {
+    shell: true,
+    detached: true,
+    stdio: 'ignore'
+  })
+}
+
+if (process.platform === 'linux') {
+  app.relaunch = customRelaunch
 }
 
 if (process.platform === 'win32') {
