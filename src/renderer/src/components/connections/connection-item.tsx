@@ -35,7 +35,12 @@ const ConnectionItem: React.FC<Props> = (props) => {
         <div className="w-full flex justify-between">
           <div className="w-[calc(100%-48px)]">
             <CardHeader className="pb-0 gap-1">
-              <Chip color={`${info.isActive ? "primary": "danger"}`} size="sm" radius="sm" variant="dot">
+              <Chip
+                color={`${info.isActive ? 'primary' : 'danger'}`}
+                size="sm"
+                radius="sm"
+                variant="dot"
+              >
                 {info.metadata.type}({info.metadata.network.toUpperCase()})
               </Chip>
               <div className="text-ellipsis whitespace-nowrap overflow-hidden">
@@ -76,7 +81,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
             </CardFooter>
           </div>
           <Button
-            color={`${info.isActive ? "warning" : "danger"}`}
+            color={`${info.isActive ? 'warning' : 'danger'}`}
             variant="light"
             isIconOnly
             className="mr-2 my-auto"
@@ -84,7 +89,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
               close(info.id)
             }}
           >
-            {info.isActive ? (<CgClose className="text-lg"/>) : (<CgTrash className="text-lg"/>)}
+            {info.isActive ? <CgClose className="text-lg" /> : <CgTrash className="text-lg" />}
           </Button>
         </div>
       </Card>
