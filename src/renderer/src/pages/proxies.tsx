@@ -221,6 +221,9 @@ const Proxies: React.FC = () => {
                             size="sm"
                             onLoad={() => {
                               if (!groups[index].icon.startsWith('http')) return
+                              if (localStorage.getItem(groups[index].icon)) return
+                              // canvas 只支持静态图片
+                              if (groups[index].icon.endsWith('gif')) return
                               const img = new Image()
                               img.crossOrigin = 'anonymous'
                               img.onload = (): void => {
