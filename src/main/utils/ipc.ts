@@ -78,6 +78,7 @@ import { logDir } from './dirs'
 import path from 'path'
 import v8 from 'v8'
 import { getGistUrl } from '../resolve/gistApi'
+import { getImageDataURL } from './image'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -211,6 +212,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('createHeapSnapshot', () => {
     v8.writeHeapSnapshot(path.join(logDir(), `${Date.now()}.heapsnapshot`))
   })
+  ipcMain.handle('getImageDataURL', (_e, url) => ipcErrorWrapper(getImageDataURL)(url))
   ipcMain.handle('resolveThemes', () => ipcErrorWrapper(resolveThemes)())
   ipcMain.handle('fetchThemes', () => ipcErrorWrapper(fetchThemes)())
   ipcMain.handle('importThemes', (_e, file) => ipcErrorWrapper(importThemes)(file))

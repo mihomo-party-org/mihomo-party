@@ -335,6 +335,10 @@ export async function createHeapSnapshot(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('createHeapSnapshot'))
 }
 
+export async function getImageDataURL(url: string): Promise<string> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getImageDataURL', url))
+}
+
 export async function resolveThemes(): Promise<{ key: string; label: string; content: string }[]> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('resolveThemes'))
 }

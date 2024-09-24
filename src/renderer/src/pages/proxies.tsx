@@ -1,7 +1,12 @@
 import { Avatar, Button, Card, CardBody, Chip } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { mihomoChangeProxy, mihomoCloseAllConnections, mihomoProxyDelay } from '@renderer/utils/ipc'
+import {
+  getImageDataURL,
+  mihomoChangeProxy,
+  mihomoCloseAllConnections,
+  mihomoProxyDelay
+} from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
 import { TbCircleLetterD } from 'react-icons/tb'
 import { FaLocationCrosshairs } from 'react-icons/fa6'
@@ -197,6 +202,17 @@ const Proxies: React.FC = () => {
           ref={virtuosoRef}
           groupCounts={groupCounts}
           groupContent={(index) => {
+            if (
+              groups[index] &&
+              groups[index].icon &&
+              groups[index].icon.startsWith('http') &&
+              !localStorage.getItem(groups[index].icon)
+            ) {
+              getImageDataURL(groups[index].icon).then((dataURL) => {
+                localStorage.setItem(groups[index].icon, dataURL)
+                mutate()
+              })
+            }
             return groups[index] ? (
               <div
                 className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}
@@ -219,31 +235,11 @@ const Proxies: React.FC = () => {
                           <Avatar
                             className="bg-transparent mr-2"
                             size="sm"
-                            onLoad={() => {
-                              if (!groups[index].icon.startsWith('http')) return
-                              if (localStorage.getItem(groups[index].icon)) return
-                              // canvas 只支持静态图片
-                              if (groups[index].icon.endsWith('gif')) return
-                              const img = new Image()
-                              img.crossOrigin = 'anonymous'
-                              img.onload = (): void => {
-                                const canvas = document.createElement('canvas')
-                                const ctx = canvas.getContext('2d')
-                                canvas.width = img.width
-                                canvas.height = img.height
-                                ctx?.drawImage(img, 0, 0)
-                                const data = canvas.toDataURL('image/png')
-                                localStorage.setItem(groups[index].icon, data)
-                              }
-                              img.src = groups[index].icon
-                            }}
                             radius="sm"
                             src={
-                              groups[index].icon.startsWith('http')
-                                ? localStorage.getItem(groups[index].icon) || groups[index].icon
-                                : groups[index].icon.startsWith('<svg')
-                                  ? `data:image/svg+xml;utf8,${groups[index].icon}`
-                                  : groups[index].icon
+                              groups[index].icon.startsWith('<svg')
+                                ? `data:image/svg+xml;utf8,${groups[index].icon}`
+                                : localStorage.getItem(groups[index].icon) || groups[index].icon
                             }
                           />
                         ) : null}
