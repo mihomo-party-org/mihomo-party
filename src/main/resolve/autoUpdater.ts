@@ -74,14 +74,14 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
       }).unref()
     }
     if (file.endsWith('.7z')) {
-      spawn(
-        path.join(resourcesFilesDir(), '7za.exe'),
-        ['x', `-o"${exeDir()}"`, '-y', path.join(dataDir(), file)],
-        {
-          shell: true,
-          detached: true
-        }
-      ).unref()
+      await writeFile(
+        path.join(exeDir(), 'install.ps1'),
+        `& "${path.join(resourcesFilesDir(), '7za.exe')}" x -o"${exeDir()}" -y "${path.join(dataDir(), file)}"; Start-Process -FilePath "${exePath()}"`
+      )
+      spawn('powershell', ['-File', `"${path.join(exeDir(), 'install.ps1')}"`], {
+        shell: true,
+        detached: true
+      }).unref()
       app.quit()
     }
     if (file.endsWith('.dmg')) {
