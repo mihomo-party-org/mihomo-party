@@ -56,7 +56,7 @@ export async function checkAutoRun(): Promise<boolean> {
   if (process.platform === 'win32') {
     const execPromise = promisify(exec)
     try {
-      const { stdout } = await execPromise(`schtasks /query /tn "${appName}"`)
+      const { stdout } = await execPromise(`chcp 437 && schtasks /query /tn "${appName}"`)
       return stdout.includes(appName)
     } catch (e) {
       return false
