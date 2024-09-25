@@ -15,7 +15,7 @@ for (const line of changelog.split('\n')) {
   }
 }
 axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-  chat_id: '@mihomo_party_channel',
+  chat_id: 2349280849,
   text: content,
   link_preview_options: {
     is_disabled: false,
