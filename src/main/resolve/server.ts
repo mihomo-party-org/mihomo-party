@@ -66,13 +66,13 @@ export async function startSubStoreServer(): Promise<void> {
   } = await getAppConfig()
   if (!useSubStore) return
   if (!subStoreFrontendPort) {
-    subStoreFrontendPort = await findAvailablePort(4000)
+    subStoreFrontendPort = await findAvailablePort(14122)
     const app = express()
     app.use(express.static(path.join(resourcesFilesDir(), 'sub-store-frontend')))
     app.listen(subStoreFrontendPort)
   }
   if (!useCustomSubStore && !subStorePort) {
-    subStorePort = await findAvailablePort(3000)
+    subStorePort = await findAvailablePort(38324)
     const icon = nativeImage.createFromPath(subStoreIcon)
     icon.toDataURL()
     new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
