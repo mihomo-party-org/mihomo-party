@@ -67,15 +67,15 @@ const Connections: React.FC = () => {
     })
   }, [activeConnections, closedConnections, filter, connectionDirection, connectionOrderBy])
 
-  const closeAllConnections = () => {
+  const closeAllConnections = (): void => {
     tab === 'active' ? mihomoCloseAllConnections() : trashAllClosedConnection()
   }
 
-  const closeConnection = (id: string) => {
+  const closeConnection = (id: string): void => {
     tab === 'active' ? mihomoCloseConnection(id) : trashClosedConnection(id)
   }
 
-  const trashAllClosedConnection = () => {
+  const trashAllClosedConnection = (): void => {
     const trashIds = closedConnections.map((conn) => conn.id)
     setAllConnections((allConns) => allConns.filter((conn) => !trashIds.includes(conn.id)))
     setClosedConnections([])
@@ -83,7 +83,7 @@ const Connections: React.FC = () => {
     cachedConnections = allConnections
   }
 
-  const trashClosedConnection = (id: string) => {
+  const trashClosedConnection = (id: string): void => {
     setAllConnections((allConns) => allConns.filter((conn) => conn.id != id))
     setClosedConnections((closedConns) => closedConns.filter((conn) => conn.id != id))
 
@@ -95,7 +95,7 @@ const Connections: React.FC = () => {
       setConnectionsInfo(info)
 
       if (!info.connections) return
-      const allConns = unionWith(allConnections, activeConnections, (a, b) => a.id === b.id)
+      const allConns = unionWith(activeConnections, allConnections, (a, b) => a.id === b.id)
 
       const activeConns = info.connections.map((conn) => {
         const preConn = activeConnections.find((c) => c.id === conn.id)
@@ -105,17 +105,19 @@ const Connections: React.FC = () => {
           ...conn,
           isActive: true,
           downloadSpeed: downloadSpeed,
-          uploadSpeed: uploadSpeed,
+          uploadSpeed: uploadSpeed
         }
       })
-      const closedConns = differenceWith(allConns, activeConns, (a, b) => a.id === b.id).map((conn) => {
-        return {
-          ...conn,
-          isActive: false,
-          downloadSpeed: 0,
-          uploadSpeed: 0,
+      const closedConns = differenceWith(allConns, activeConns, (a, b) => a.id === b.id).map(
+        (conn) => {
+          return {
+            ...conn,
+            isActive: false,
+            downloadSpeed: 0,
+            uploadSpeed: 0
+          }
         }
-      })
+      )
 
       setActiveConnections(activeConns)
       setClosedConnections(closedConns)
@@ -165,7 +167,7 @@ const Connections: React.FC = () => {
                 }
               }}
             >
-              {tab === 'active' ? (<CgClose className="text-lg"/>) : (<CgTrash className="text-lg"/>)}
+              {tab === 'active' ? <CgClose className="text-lg" /> : <CgTrash className="text-lg" />}
             </Button>
           </Badge>
         </div>
@@ -176,9 +178,9 @@ const Connections: React.FC = () => {
       )}
       <div className="overflow-x-auto sticky top-0 z-40">
         <div className="flex p-2 gap-2">
-          <Tabs 
+          <Tabs
             size="sm"
-            color={`${tab === 'active' ? "primary" : "danger" }`}
+            color={`${tab === 'active' ? 'primary' : 'danger'}`}
             selectedKey={tab}
             variant="underlined"
             className="w-fit h-[32px]"
@@ -190,12 +192,12 @@ const Connections: React.FC = () => {
               key="active"
               title={
                 <Badge
-                  color={`${tab === 'active' ? "primary" : "default"}`}
+                  color={`${tab === 'active' ? 'primary' : 'default'}`}
                   size="sm"
                   shape="circle"
                   variant="flat"
                   content={activeConnections.length}
-                  showOutline={false} 
+                  showOutline={false}
                 >
                   <span className="p-1">活动中</span>
                 </Badge>
@@ -205,12 +207,12 @@ const Connections: React.FC = () => {
               key="closed"
               title={
                 <Badge
-                  color={`${tab === 'closed' ? "danger" : "default"}`}
+                  color={`${tab === 'closed' ? 'danger' : 'default'}`}
                   size="sm"
                   shape="circle"
                   variant="flat"
                   content={closedConnections.length}
-                  showOutline={false} 
+                  showOutline={false}
                 >
                   <span className="p-1">已关闭</span>
                 </Badge>
