@@ -1,5 +1,7 @@
 import { Button, Card, CardBody } from '@nextui-org/react'
+import { mihomoGroupDelay } from '@renderer/utils/ipc'
 import React, { useMemo, useState } from 'react'
+import { FaMapPin } from 'react-icons/fa6'
 
 interface Props {
   mutateProxies: () => void
@@ -22,7 +24,7 @@ const ProxyItem: React.FC<Props> = (props) => {
   }, [proxy])
 
   const [loading, setLoading] = useState(false)
-
+  const [unfixing, setUnfixing] = useState(false)
   function delayColor(delay: number): 'primary' | 'success' | 'warning' | 'danger' {
     if (delay === -1) return 'primary'
     if (delay === 0) return 'danger'
@@ -67,16 +69,37 @@ const ProxyItem: React.FC<Props> = (props) => {
               </div>
             )}
           </div>
-          <Button
-            title={proxy.type}
-            isLoading={loading}
-            color={delayColor(delay)}
-            onPress={onDelay}
-            variant="light"
-            className="h-full min-w-[50px] p-0 mx-2 text-sm hover:bg-content"
-          >
-            {delayText(delay)}
-          </Button>
+          <div className="flex justify-end">
+            {fixed && (
+              <Button
+                isIconOnly
+                title="取消固定"
+                isLoading={unfixing}
+                color="danger"
+                onPress={async () => {
+                  setUnfixing(true)
+                  await mihomoGroupDelay(group.name)
+                  mutateProxies()
+                  setUnfixing(false)
+                }}
+                variant="light"
+                className="h-[20px] p-0 text-sm"
+              >
+                <FaMapPin className="text-md le" />
+              </Button>
+            )}
+            <Button
+              isIconOnly
+              title={proxy.type}
+              isLoading={loading}
+              color={delayColor(delay)}
+              onPress={onDelay}
+              variant="light"
+              className="h-full p-0 text-sm"
+            >
+              {delayText(delay)}
+            </Button>
+          </div>
         </div>
       </CardBody>
     </Card>
