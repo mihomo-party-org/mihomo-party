@@ -48,7 +48,7 @@ const Settings: React.FC = () => {
             className="app-nodrag"
             title="Telegram 群组"
             onPress={() => {
-              window.open('https://t.me/mihomo_party')
+              window.open('https://t.me/mihomo_party_group')
             }}
           >
             <FaTelegramPlane className="text-lg" />

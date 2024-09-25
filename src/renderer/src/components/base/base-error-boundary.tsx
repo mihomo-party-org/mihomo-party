@@ -22,7 +22,7 @@ const ErrorFallback = ({ error }: FallbackProps): JSX.Element => {
         color="primary"
         variant="flat"
         className="ml-2"
-        onPress={() => open('https://t.me/mihomo_party')}
+        onPress={() => open('https://t.me/mihomo_party_group')}
       >
         Telegram
       </Button>
