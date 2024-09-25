@@ -9,6 +9,7 @@ import {
   overrideDir,
   profileConfigPath,
   profilesDir,
+  subStoreDir,
   themesDir
 } from '../utils/dirs'
 
@@ -24,7 +25,7 @@ export async function webdavBackup(): Promise<boolean> {
   zip.addLocalFolder(themesDir(), 'themes')
   zip.addLocalFolder(profilesDir(), 'profiles')
   zip.addLocalFolder(overrideDir(), 'override')
-  zip.addLocalFolder(overrideDir(), 'substore')
+  zip.addLocalFolder(subStoreDir(), 'substore')
   const date = new Date()
   const zipFileName = `${process.platform}_${dayjs(date).format('YYYY-MM-DD_HH-mm-ss')}.zip`
 

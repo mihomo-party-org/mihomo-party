@@ -5,3 +5,4 @@
 ### Bug Fixes
 
 - 修复url-test代理组节点无法取消固定的问题
+- 修复WebDAV备份时Sub-Store目录备份失败的问题
