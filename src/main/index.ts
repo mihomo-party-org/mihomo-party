@@ -19,7 +19,7 @@ import path from 'path'
 
 let quitTimeout: NodeJS.Timeout | null = null
 export let mainWindow: BrowserWindow | null = null
-if (process.platform === 'win32' && !is.dev) {
+if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')) {
   try {
     createElevateTask()
   } catch (e) {
