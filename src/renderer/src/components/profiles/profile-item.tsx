@@ -8,7 +8,8 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Progress
+  Progress,
+  Tooltip
 } from '@nextui-org/react'
 import { calcPercent, calcTraffic } from '@renderer/utils/calc'
 import { IoMdMore, IoMdRefresh } from 'react-icons/io'
@@ -192,24 +193,25 @@ const ProfileItem: React.FC<Props> = (props) => {
             </h3>
             <div className="flex">
               {info.type === 'remote' && (
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="light"
-                  color="default"
-                  title={dayjs(info.updated).fromNow()}
-                  disabled={updating}
-                  onPress={async () => {
-                    setUpdating(true)
-                    await addProfileItem(info)
-                    setUpdating(false)
-                  }}
-                >
-                  <IoMdRefresh
+                <Tooltip placement="left" content={dayjs(info.updated).fromNow()}>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
                     color="default"
-                    className={`${isCurrent ? 'text-white' : 'text-foreground'} text-[24px] ${updating ? 'animate-spin' : ''}`}
-                  />
-                </Button>
+                    disabled={updating}
+                    onPress={async () => {
+                      setUpdating(true)
+                      await addProfileItem(info)
+                      setUpdating(false)
+                    }}
+                  >
+                    <IoMdRefresh
+                      color="default"
+                      className={`${isCurrent ? 'text-white' : 'text-foreground'} text-[24px] ${updating ? 'animate-spin' : ''}`}
+                    />
+                  </Button>
+                </Tooltip>
               )}
 
               <Dropdown>
