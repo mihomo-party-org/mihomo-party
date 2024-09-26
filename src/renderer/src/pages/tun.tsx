@@ -159,9 +159,9 @@ const Tun: React.FC = () => {
               selectedKey={values.stack}
               onSelectionChange={(key: Key) => setValues({ ...values, stack: key as TunStack })}
             >
-              <Tab key="gvisor" title="用户" />
-              <Tab key="mixed" title="混合" />
-              <Tab key="system" title="系统" />
+              <Tab key="gvisor" title="gVisor" />
+              <Tab key="mixed" title="Mixed" />
+              <Tab key="system" title="System" />
             </Tabs>
           </SettingItem>
           {platform !== 'darwin' && (
