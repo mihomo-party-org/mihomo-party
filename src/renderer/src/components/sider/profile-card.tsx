@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, Chip, Progress } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, Chip, Progress, Tooltip } from '@nextui-org/react'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useLocation } from 'react-router-dom'
 import { calcTraffic, calcPercent } from '@renderer/utils/calc'
@@ -95,23 +95,24 @@ const ProfileCard: React.FC = () => {
                   />
                 </Button>
                 {info.type === 'remote' && (
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    title={dayjs(info.updated).fromNow()}
-                    disabled={updating}
-                    variant="light"
-                    color="default"
-                    onPress={async () => {
-                      setUpdating(true)
-                      await addProfileItem(info)
-                      setUpdating(false)
-                    }}
-                  >
-                    <IoMdRefresh
-                      className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
-                    />
-                  </Button>
+                  <Tooltip placement="left" content={dayjs(info.updated).fromNow()}>
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      disabled={updating}
+                      variant="light"
+                      color="default"
+                      onPress={async () => {
+                        setUpdating(true)
+                        await addProfileItem(info)
+                        setUpdating(false)
+                      }}
+                    >
+                      <IoMdRefresh
+                        className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
+                      />
+                    </Button>
+                  </Tooltip>
                 )}
               </div>
             </div>
