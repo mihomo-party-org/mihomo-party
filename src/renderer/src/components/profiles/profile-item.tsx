@@ -187,7 +187,7 @@ const ProfileItem: React.FC<Props> = (props) => {
               {...attributes}
               {...listeners}
               title={info?.name}
-              className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${isCurrent ? 'text-white' : 'text-foreground'}`}
+              className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${isCurrent ? 'text-primary-foreground' : 'text-foreground'}`}
             >
               {info?.name}
             </h3>
@@ -208,7 +208,7 @@ const ProfileItem: React.FC<Props> = (props) => {
                   >
                     <IoMdRefresh
                       color="default"
-                      className={`${isCurrent ? 'text-white' : 'text-foreground'} text-[24px] ${updating ? 'animate-spin' : ''}`}
+                      className={`${isCurrent ? 'text-primary-foreground' : 'text-foreground'} text-[24px] ${updating ? 'animate-spin' : ''}`}
                     />
                   </Button>
                 </Tooltip>
@@ -219,7 +219,7 @@ const ProfileItem: React.FC<Props> = (props) => {
                   <Button isIconOnly size="sm" variant="light" color="default">
                     <IoMdMore
                       color="default"
-                      className={`text-[24px] ${isCurrent ? 'text-white' : 'text-foreground'}`}
+                      className={`text-[24px] ${isCurrent ? 'text-primary-foreground' : 'text-foreground'}`}
                     />
                   </Button>
                 </DropdownTrigger>
@@ -240,7 +240,7 @@ const ProfileItem: React.FC<Props> = (props) => {
           </div>
           {info.type === 'remote' && extra && (
             <div
-              className={`mt-2 flex justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
+              className={`mt-2 flex justify-between ${isCurrent ? 'text-primary-foreground' : 'text-foreground'}`}
             >
               <small>{`${calcTraffic(usage)}/${calcTraffic(total)}`}</small>
               <small>
@@ -250,12 +250,12 @@ const ProfileItem: React.FC<Props> = (props) => {
           )}
           {info.type === 'local' && (
             <div
-              className={`mt-2 flex justify-between ${isCurrent ? 'text-white' : 'text-foreground'}`}
+              className={`mt-2 flex justify-between ${isCurrent ? 'text-primary-foreground' : 'text-foreground'}`}
             >
               <Chip
                 size="sm"
                 variant="bordered"
-                className={`${isCurrent ? 'text-white border-white' : 'border-primary text-primary'}`}
+                className={`${isCurrent ? 'text-primary-foreground border-primary-foreground' : 'border-primary text-primary'}`}
               >
                 本地
               </Chip>
@@ -267,7 +267,7 @@ const ProfileItem: React.FC<Props> = (props) => {
             <Progress
               className="w-full"
               classNames={{
-                indicator: isCurrent ? 'bg-white' : 'bg-foreground'
+                indicator: isCurrent ? 'bg-primary-foreground' : 'bg-foreground'
               }}
               value={calcPercent(extra?.upload, extra?.download, extra?.total)}
             />

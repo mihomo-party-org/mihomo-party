@@ -75,7 +75,7 @@ const ProfileCard: React.FC = () => {
             >
               <h3
                 title={info?.name}
-                className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
+                className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] ${match ? 'text-primary-foreground' : 'text-foreground'} `}
               >
                 {info?.name}
               </h3>
@@ -91,7 +91,7 @@ const ProfileCard: React.FC = () => {
                   }}
                 >
                   <CgLoadbarDoc
-                    className={`text-[24px] ${match ? 'text-white' : 'text-foreground'}`}
+                    className={`text-[24px] ${match ? 'text-primary-foreground' : 'text-foreground'}`}
                   />
                 </Button>
                 {info.type === 'remote' && (
@@ -109,7 +109,7 @@ const ProfileCard: React.FC = () => {
                       }}
                     >
                       <IoMdRefresh
-                        className={`text-[24px] ${match ? 'text-white' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
+                        className={`text-[24px] ${match ? 'text-primary-foreground' : 'text-foreground'} ${updating ? 'animate-spin' : ''}`}
                       />
                     </Button>
                   </Tooltip>
@@ -118,7 +118,7 @@ const ProfileCard: React.FC = () => {
             </div>
             {info.type === 'remote' && extra && (
               <div
-                className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'} `}
+                className={`mt-2 flex justify-between ${match ? 'text-primary-foreground' : 'text-foreground'} `}
               >
                 <small>{`${calcTraffic(usage)}/${calcTraffic(total)}`}</small>
                 <small>
@@ -128,12 +128,12 @@ const ProfileCard: React.FC = () => {
             )}
             {info.type === 'local' && (
               <div
-                className={`mt-2 flex justify-between ${match ? 'text-white' : 'text-foreground'}`}
+                className={`mt-2 flex justify-between ${match ? 'text-primary-foreground' : 'text-foreground'}`}
               >
                 <Chip
                   size="sm"
                   variant="bordered"
-                  className={`${match ? 'text-white border-white' : 'border-primary text-primary'}`}
+                  className={`${match ? 'text-primary-foreground border-primary-foreground' : 'border-primary text-primary'}`}
                 >
                   本地
                 </Chip>
@@ -144,7 +144,7 @@ const ProfileCard: React.FC = () => {
             {extra && (
               <Progress
                 className="w-full"
-                classNames={{ indicator: match ? 'bg-white' : 'bg-foreground' }}
+                classNames={{ indicator: match ? 'bg-primary-foreground' : 'bg-foreground' }}
                 value={calcPercent(extra?.upload, extra?.download, extra?.total)}
               />
             )}
@@ -168,13 +168,15 @@ const ProfileCard: React.FC = () => {
               >
                 <TiFolder
                   color="default"
-                  className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+                  className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px]`}
                 />
               </Button>
             </div>
           </CardBody>
           <CardFooter className="pt-1">
-            <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+            <h3
+              className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+            >
               订阅管理
             </h3>
           </CardFooter>

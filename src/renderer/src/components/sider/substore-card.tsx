@@ -46,13 +46,15 @@ const SubStoreCard: React.FC = () => {
               color="default"
             >
               <SubStoreIcon
-                className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+                className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px] font-bold`}
               />
             </Button>
           </div>
         </CardBody>
         <CardFooter className="pt-1">
-          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          <h3
+            className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+          >
             Sub-Store
           </h3>
         </CardFooter>

@@ -50,15 +50,15 @@ const ProxyCard: React.FC = () => {
               color="default"
             >
               <LuGroup
-                className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+                className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px] font-bold`}
               />
             </Button>
             <Chip
               classNames={
                 match
                   ? {
-                      base: 'border-white',
-                      content: 'text-white'
+                      base: 'border-primary-foreground',
+                      content: 'text-primary-foreground'
                     }
                   : {
                       base: 'border-primary',
@@ -74,7 +74,9 @@ const ProxyCard: React.FC = () => {
           </div>
         </CardBody>
         <CardFooter className="pt-1">
-          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          <h3
+            className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+          >
             代理组
           </h3>
         </CardFooter>

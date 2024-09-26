@@ -57,7 +57,7 @@ const DNSCard: React.FC = () => {
               color="default"
             >
               <LuServer
-                className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+                className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px] font-bold`}
               />
             </Button>
             <BorderSwitch
@@ -69,7 +69,11 @@ const DNSCard: React.FC = () => {
           </div>
         </CardBody>
         <CardFooter className="pt-1">
-          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>DNS</h3>
+          <h3
+            className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+          >
+            DNS
+          </h3>
         </CardFooter>
       </Card>
     </div>

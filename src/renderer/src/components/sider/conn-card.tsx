@@ -39,17 +39,22 @@ const ConnCard: React.FC = () => {
   const [chartColor, setChartColor] = useState('rgba(255,255,255)')
 
   useEffect(() => {
+    setChartColor(
+      match
+        ? `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-primary-foreground')})`
+        : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-foreground')})`
+    )
+  }, [theme, systemTheme, match])
+
+  useEffect(() => {
     setTimeout(() => {
-      const islight = theme === 'system' ? systemTheme === 'light' : theme.includes('light')
       setChartColor(
         match
-          ? 'rgba(255,255,255)'
-          : islight
-            ? window.getComputedStyle(document.documentElement).color
-            : 'rgb(255,255,255)'
+          ? `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-primary-foreground')})`
+          : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-foreground')})`
       )
-    }, 1000)
-  }, [theme, systemTheme, match, customTheme])
+    }, 200)
+  }, [customTheme])
 
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   useEffect(() => {
@@ -111,10 +116,12 @@ const ConnCard: React.FC = () => {
                 >
                   <IoLink
                     color="default"
-                    className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+                    className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px]`}
                   />
                 </Button>
-                <div className={`p-2 w-full ${match ? 'text-white' : 'text-foreground'} `}>
+                <div
+                  className={`p-2 w-full ${match ? 'text-primary-foreground' : 'text-foreground'} `}
+                >
                   <div className="flex justify-between">
                     <div className="w-full text-right mr-2">{calcTraffic(upload)}/s</div>
                     <FaCircleArrowUp className="h-[24px] leading-[24px]" />
@@ -127,7 +134,9 @@ const ConnCard: React.FC = () => {
               </div>
             </CardBody>
             <CardFooter className="pt-1">
-              <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+              <h3
+                className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+              >
                 连接
               </h3>
             </CardFooter>
@@ -175,13 +184,15 @@ const ConnCard: React.FC = () => {
               >
                 <IoLink
                   color="default"
-                  className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+                  className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px] font-bold`}
                 />
               </Button>
             </div>
           </CardBody>
           <CardFooter className="pt-1">
-            <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+            <h3
+              className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+            >
               连接
             </h3>
           </CardFooter>

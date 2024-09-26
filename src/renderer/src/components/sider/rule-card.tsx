@@ -50,15 +50,15 @@ const RuleCard: React.FC = () => {
             >
               <MdOutlineAltRoute
                 color="default"
-                className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+                className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px]`}
               />
             </Button>
             <Chip
               classNames={
                 match
                   ? {
-                      base: 'border-white',
-                      content: 'text-white'
+                      base: 'border-primary-foreground',
+                      content: 'text-primary-foreground'
                     }
                   : {
                       base: 'border-primary',
@@ -74,7 +74,11 @@ const RuleCard: React.FC = () => {
           </div>
         </CardBody>
         <CardFooter className="pt-1">
-          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>规则</h3>
+          <h3
+            className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+          >
+            规则
+          </h3>
         </CardFooter>
       </Card>
     </div>

@@ -49,13 +49,17 @@ const OverrideCard: React.FC = () => {
             >
               <MdFormatOverline
                 color="default"
-                className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+                className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px]`}
               />
             </Button>
           </div>
         </CardBody>
         <CardFooter className="pt-1">
-          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>覆写</h3>
+          <h3
+            className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+          >
+            覆写
+          </h3>
         </CardFooter>
       </Card>
     </div>

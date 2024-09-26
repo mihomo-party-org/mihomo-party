@@ -59,7 +59,7 @@ const SniffCard: React.FC = () => {
             >
               <RiScan2Fill
                 color="default"
-                className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+                className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px]`}
               />
             </Button>
             <BorderSwitch
@@ -70,7 +70,9 @@ const SniffCard: React.FC = () => {
           </div>
         </CardBody>
         <CardFooter className="pt-1">
-          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          <h3
+            className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+          >
             域名嗅探
           </h3>
         </CardFooter>
