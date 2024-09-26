@@ -98,7 +98,7 @@ const TunSwitcher: React.FC = () => {
               color="default"
             >
               <TbDeviceIpadHorizontalBolt
-                className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+                className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px] font-bold`}
               />
             </Button>
             <BorderSwitch
@@ -109,7 +109,9 @@ const TunSwitcher: React.FC = () => {
           </div>
         </CardBody>
         <CardFooter className="pt-1">
-          <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+          <h3
+            className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+          >
             虚拟网卡
           </h3>
         </CardFooter>

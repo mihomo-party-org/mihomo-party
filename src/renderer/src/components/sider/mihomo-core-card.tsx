@@ -69,7 +69,7 @@ const MihomoCoreCard: React.FC = () => {
               className="flex justify-between h-[32px]"
             >
               <h3
-                className={`text-md font-bold leading-[32px] ${match ? 'text-white' : 'text-foreground'} `}
+                className={`text-md font-bold leading-[32px] ${match ? 'text-primary-foreground' : 'text-foreground'} `}
               >
                 {version?.version ?? '-'}
               </h3>
@@ -90,14 +90,14 @@ const MihomoCoreCard: React.FC = () => {
                 }}
               >
                 <IoMdRefresh
-                  className={`${match ? 'text-white' : 'text-foreground'} text-[24px]`}
+                  className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px]`}
                 />
               </Button>
             </div>
           </CardBody>
           <CardFooter className="pt-1">
             <div
-              className={`flex justify-between w-full text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}
+              className={`flex justify-between w-full text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
             >
               <h4>内核设置</h4>
               <h4>{calcTraffic(mem)}</h4>
@@ -122,13 +122,15 @@ const MihomoCoreCard: React.FC = () => {
               >
                 <LuCpu
                   color="default"
-                  className={`${match ? 'text-white' : 'text-foreground'} text-[24px] font-bold`}
+                  className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px] font-bold`}
                 />
               </Button>
             </div>
           </CardBody>
           <CardFooter className="pt-1">
-            <h3 className={`text-md font-bold ${match ? 'text-white' : 'text-foreground'}`}>
+            <h3
+              className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+            >
               内核设置
             </h3>
           </CardFooter>
