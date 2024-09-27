@@ -36,11 +36,12 @@ async function mihomoHttp<T>(method: HttpMethod, path: string, data?: object): P
     )
     client.on('data', function (res) {
       try {
-        const data = trimJson(res.toString().split('\r\n\r\n')[1])
+        const data = res.toString().split('\r\n\r\n')[1]
+        const json = trimJson(data)
         if (res.toString().includes('HTTP/1.1 4') || res.toString().includes('HTTP/1.1 5')) {
-          reject(data ? JSON.parse(data) : undefined)
+          reject(json ? JSON.parse(json) : data)
         } else {
-          resolve(data ? JSON.parse(data) : undefined)
+          resolve(json ? JSON.parse(json) : undefined)
         }
       } catch (e) {
         reject(e)
@@ -54,7 +55,7 @@ async function mihomoHttp<T>(method: HttpMethod, path: string, data?: object): P
     if (data) {
       const json = JSON.stringify(data)
       client.write(
-        `${method} ${path} HTTP/1.1\r\nHost: mihomo-party\r\nContent-Type: application/json\r\nContent-Length: ${json.length}\r\n\r\n${json}`
+        `${method} ${path} HTTP/1.1\r\nHost: mihomo-party\r\nContent-Type: application/json\r\nContent-Length: ${Buffer.from(json).length}\r\n\r\n${json}`
       )
     } else {
       client.write(`${method} ${path} HTTP/1.1\r\nHost: mihomo-party\r\n\r\n`)
@@ -86,7 +87,7 @@ export const patchMihomoConfig = async (patch: Partial<IMihomoConfig>): Promise<
 }
 
 export const mihomoCloseConnection = async (id: string): Promise<void> => {
-  return await mihomoHttp('DELETE', `/connection/${id}`)
+  return await mihomoHttp('DELETE', `/connections/${id}`)
 }
 
 export const mihomoCloseAllConnections = async (): Promise<void> => {
