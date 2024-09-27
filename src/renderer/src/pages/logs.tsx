@@ -33,6 +33,9 @@ const Logs: React.FC = () => {
     window.electron.ipcRenderer.on('mihomoLogs', (_e, log: IMihomoLogInfo) => {
       log.time = new Date().toLocaleString()
       setLogs((prevLogs) => {
+        if (prevLogs.length >= 500) {
+          prevLogs.shift()
+        }
         return [...prevLogs, log]
       })
     })
