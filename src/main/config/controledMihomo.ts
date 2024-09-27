@@ -1,7 +1,6 @@
 import { controledMihomoConfigPath } from '../utils/dirs'
 import { readFile, writeFile } from 'fs/promises'
 import yaml from 'yaml'
-import { getAxios } from '../core/mihomoApi'
 import { generateProfile } from '../core/factory'
 import { getAppConfig } from './app'
 import { defaultControledMihomoConfig } from '../utils/template'
@@ -51,9 +50,6 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
   }
   if (process.platform === 'darwin') {
     delete controledMihomoConfig?.tun?.device
-  }
-  if (patch['external-controller'] || patch.secret) {
-    await getAxios(true)
   }
   await generateProfile()
   await writeFile(controledMihomoConfigPath(), yaml.stringify(controledMihomoConfig), 'utf-8')

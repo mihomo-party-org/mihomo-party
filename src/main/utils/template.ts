@@ -36,8 +36,8 @@ export const defaultConfig: IAppConfig = {
 }
 
 export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
-  'external-controller': '127.0.0.1:9090',
-  secret: '',
+  'external-controller-pipe': '\\\\.pipe\\MihomoParty\\mihomo',
+  'external-controller-unix': 'mihomo-party.sock',
   ipv6: true,
   mode: 'rule',
   'mixed-port': 7890,

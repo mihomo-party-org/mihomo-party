@@ -113,25 +113,19 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
   })
   return new Promise((resolve, reject) => {
     child.stdout?.on('data', async (data) => {
-      if (data.toString().includes('configure tun interface: operation not permitted')) {
+      const str = data.toString()
+      if (str.includes('configure tun interface: operation not permitted')) {
         patchControledMihomoConfig({ tun: { enable: false } })
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
         ipcMain.emit('updateTrayMenu')
         reject('虚拟网卡启动失败, 请尝试手动授予内核权限')
       }
-      if (data.toString().includes('External controller listen error')) {
-        if (retry) {
-          retry--
-          try {
-            resolve(await startCore())
-          } catch (e) {
-            reject(e)
-          }
-        } else {
-          reject('内核连接失败, 请尝试修改外部控制端口或重启电脑')
-        }
-      }
-      if (data.toString().includes('RESTful API listening at')) {
+
+      if (
+        (process.platform !== 'win32' && str.includes('RESTful API unix listening at')) ||
+        (process.platform === 'win32' && str.includes('RESTful API pipe listening at'))
+      ) {
+        await autoGrantUnixSocket()
         resolve([
           new Promise((resolve) => {
             child.stdout?.on('data', async (data) => {
@@ -218,6 +212,25 @@ async function checkProfile(): Promise<void> {
         .map((line) => line.split('level=error')[1])
       throw new Error(`Profile Check Failed:\n${errorLines.join('\n')}`)
     } else {
+      throw error
+    }
+  }
+}
+
+async function autoGrantUnixSocket(): Promise<void> {
+  if (process.platform === 'win32') return
+  const { encryptedPassword } = await getAppConfig()
+  const { 'external-controller-unix': mihomoUnix = 'mihomo-party.sock' } =
+    await getControledMihomoConfig()
+  const execPromise = promisify(exec)
+  if (encryptedPassword && isEncryptionAvailable()) {
+    try {
+      const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
+      await execPromise(
+        `echo "${password}" | sudo -S chmod 777 "${path.join(mihomoWorkDir(), mihomoUnix)}"`
+      )
+    } catch (error) {
+      patchAppConfig({ encryptedPassword: undefined })
       throw error
     }
   }
