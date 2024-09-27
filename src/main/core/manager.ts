@@ -125,7 +125,6 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
         (process.platform !== 'win32' && str.includes('RESTful API unix listening at')) ||
         (process.platform === 'win32' && str.includes('RESTful API pipe listening at'))
       ) {
-        await autoGrantUnixSocket()
         resolve([
           new Promise((resolve) => {
             child.stdout?.on('data', async (data) => {
@@ -212,25 +211,6 @@ async function checkProfile(): Promise<void> {
         .map((line) => line.split('level=error')[1])
       throw new Error(`Profile Check Failed:\n${errorLines.join('\n')}`)
     } else {
-      throw error
-    }
-  }
-}
-
-async function autoGrantUnixSocket(): Promise<void> {
-  if (process.platform === 'win32') return
-  const { encryptedPassword } = await getAppConfig()
-  const { 'external-controller-unix': mihomoUnix = 'mihomo-party.sock' } =
-    await getControledMihomoConfig()
-  const execPromise = promisify(exec)
-  if (encryptedPassword && isEncryptionAvailable()) {
-    try {
-      const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
-      await execPromise(
-        `echo "${password}" | sudo -S chmod 777 "${path.join(mihomoWorkDir(), mihomoUnix)}"`
-      )
-    } catch (error) {
-      patchAppConfig({ encryptedPassword: undefined })
       throw error
     }
   }
