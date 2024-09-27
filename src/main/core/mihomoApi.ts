@@ -168,7 +168,7 @@ export const mihomoGroupDelay = async (group: string, url?: string): Promise<IMi
   const { delayTestUrl, delayTestTimeout } = appConfig
   return await mihomoHttp(
     'GET',
-    `/proxies/${encodeURIComponent(group)}/delay?url=${encodeURIComponent(url || delayTestUrl || 'https://www.gstatic.com/generate_204')}&timeout=${delayTestTimeout || 5000}`
+    `/group/${encodeURIComponent(group)}/delay?url=${encodeURIComponent(url || delayTestUrl || 'https://www.gstatic.com/generate_204')}&timeout=${delayTestTimeout || 5000}`
   )
 }
 
