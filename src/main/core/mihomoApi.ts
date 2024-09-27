@@ -1,77 +1,104 @@
-import axios, { AxiosInstance } from 'axios'
+import net from 'net'
+import { getRuntimeConfig } from './factory'
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { mainWindow } from '..'
-import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
-import { getRuntimeConfig } from './factory'
+import { join } from 'path'
+import { mihomoWorkDir } from '../utils/dirs'
 
-let axiosIns: AxiosInstance = null!
-let mihomoTrafficWs: WebSocket | null = null
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+
+let mihomoTrafficWs: net.Socket | null = null
 let trafficRetry = 10
-let mihomoMemoryWs: WebSocket | null = null
+let mihomoMemoryWs: net.Socket | null = null
 let memoryRetry = 10
-let mihomoLogsWs: WebSocket | null = null
+let mihomoLogsWs: net.Socket | null = null
 let logsRetry = 10
-let mihomoConnectionsWs: WebSocket | null = null
+let mihomoConnectionsWs: net.Socket | null = null
 let connectionsRetry = 10
 
-export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
-  if (axiosIns && !force) return axiosIns
-  const controledMihomoConfig = await getControledMihomoConfig()
-  let server = controledMihomoConfig['external-controller']
-  const secret = controledMihomoConfig.secret ?? ''
-  if (server?.startsWith(':')) server = `127.0.0.1${server}`
-
-  axiosIns = axios.create({
-    baseURL: `http://${server}`,
-    proxy: false,
-    headers: secret ? { Authorization: `Bearer ${secret}` } : {},
-    timeout: 15000
-  })
-
-  axiosIns.interceptors.response.use(
-    (response) => {
-      return response.data
-    },
-    (error) => {
-      if (error.response && error.response.data) {
-        return Promise.reject(error.response.data)
-      }
-      return Promise.reject(error)
-    }
-  )
-  return axiosIns
+function trimJson(data: string): string {
+  if (data.trim().length === 0) return ''
+  const start = data.indexOf('{')
+  const end = data.lastIndexOf('}')
+  return data.slice(start, end + 1)
 }
 
-export async function mihomoVersion(): Promise<IMihomoVersion> {
-  const instance = await getAxios()
-  return await instance.get('/version')
+async function mihomoHttp<T>(method: HttpMethod, path: string, data?: object): Promise<T> {
+  const {
+    'external-controller-pipe': mihomoPipe = '\\\\.\\pipe\\MihomoParty\\mihomo',
+    'external-controller-unix': mihomoUnix = 'mihomo-party.sock'
+  } = await getControledMihomoConfig()
+  return new Promise((resolve, reject) => {
+    const client = net.connect(
+      process.platform === 'win32' ? mihomoPipe : join(mihomoWorkDir(), mihomoUnix)
+    )
+    client.on('data', function (res) {
+      try {
+        const data = trimJson(res.toString().split('\r\n\r\n')[1])
+        if (res.toString().includes('HTTP/1.1 4') || res.toString().includes('HTTP/1.1 5')) {
+          reject(data ? JSON.parse(data) : undefined)
+        } else {
+          resolve(data ? JSON.parse(data) : undefined)
+        }
+      } catch (e) {
+        reject(e)
+      } finally {
+        client.end()
+      }
+    })
+    client.on('error', function (error) {
+      reject(error)
+    })
+    if (data) {
+      const json = JSON.stringify(data)
+      client.write(
+        `${method} ${path} HTTP/1.1\r\nHost: mihomo-party\r\nContent-Type: application/json\r\nContent-Length: ${json.length}\r\n\r\n${json}`
+      )
+    } else {
+      client.write(`${method} ${path} HTTP/1.1\r\nHost: mihomo-party\r\n\r\n`)
+    }
+  })
+}
+
+async function mihomoWs(path: string): Promise<net.Socket> {
+  const {
+    'external-controller-pipe': mihomoPipe = '\\\\.\\pipe\\MihomoParty\\mihomo',
+    'external-controller-unix': mihomoUnix = 'mihomo-party.sock'
+  } = await getControledMihomoConfig()
+  const client = net.connect(
+    process.platform === 'win32' ? mihomoPipe : join(mihomoWorkDir(), mihomoUnix)
+  )
+  client.write(
+    `GET ${path} HTTP/1.1\r\nHost: mihomo-party\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: xxxxxxxxxxxxxxxxxxxxxxxx\r\n\r\n`
+  )
+
+  return client
+}
+
+export const mihomoVersion = async (): Promise<IMihomoVersion> => {
+  return await mihomoHttp('GET', '/version')
 }
 
 export const patchMihomoConfig = async (patch: Partial<IMihomoConfig>): Promise<void> => {
-  const instance = await getAxios()
-  return await instance.patch('/configs', patch)
+  return await mihomoHttp('PATCH', '/configs', patch)
 }
 
 export const mihomoCloseConnection = async (id: string): Promise<void> => {
-  const instance = await getAxios()
-  return await instance.delete(`/connections/${encodeURIComponent(id)}`)
+  return await mihomoHttp('DELETE', `/connection/${id}`)
 }
 
 export const mihomoCloseAllConnections = async (): Promise<void> => {
-  const instance = await getAxios()
-  return await instance.delete('/connections')
+  return await mihomoHttp('DELETE', '/connections')
 }
 
 export const mihomoRules = async (): Promise<IMihomoRulesInfo> => {
-  const instance = await getAxios()
-  return await instance.get('/rules')
+  return await mihomoHttp('GET', '/rules')
 }
 
 export const mihomoProxies = async (): Promise<IMihomoProxies> => {
-  const instance = await getAxios()
-  const proxies = (await instance.get('/proxies')) as IMihomoProxies
+  const proxies = (await mihomoHttp('GET', '/proxies')) as IMihomoProxies
   if (!proxies.proxies['GLOBAL']) {
     throw new Error('GLOBAL proxy not found')
   }
@@ -102,265 +129,194 @@ export const mihomoGroups = async (): Promise<IMihomoMixedGroup[]> => {
 }
 
 export const mihomoProxyProviders = async (): Promise<IMihomoProxyProviders> => {
-  const instance = await getAxios()
-  return await instance.get('/providers/proxies')
+  return await mihomoHttp('GET', '/providers/proxies')
 }
 
 export const mihomoUpdateProxyProviders = async (name: string): Promise<void> => {
-  const instance = await getAxios()
-  return await instance.put(`/providers/proxies/${encodeURIComponent(name)}`)
+  return await mihomoHttp('PUT', `/providers/proxies/${encodeURIComponent(name)}`)
 }
 
 export const mihomoRuleProviders = async (): Promise<IMihomoRuleProviders> => {
-  const instance = await getAxios()
-  return await instance.get('/providers/rules')
+  return await mihomoHttp('GET', '/providers/rules')
 }
 
 export const mihomoUpdateRuleProviders = async (name: string): Promise<void> => {
-  const instance = await getAxios()
-  return await instance.put(`/providers/rules/${encodeURIComponent(name)}`)
+  return await mihomoHttp('PUT', `/providers/rules/${encodeURIComponent(name)}`)
 }
 
 export const mihomoChangeProxy = async (group: string, proxy: string): Promise<IMihomoProxy> => {
-  const instance = await getAxios()
-  return await instance.put(`/proxies/${encodeURIComponent(group)}`, { name: proxy })
+  return await mihomoHttp('PUT', `/proxies/${encodeURIComponent(group)}`, { name: proxy })
 }
 
 export const mihomoUpgradeGeo = async (): Promise<void> => {
-  const instance = await getAxios()
-  return await instance.post('/configs/geo')
+  return await mihomoHttp('POST', '/configs/geo')
 }
 
 export const mihomoProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
   const appConfig = await getAppConfig()
   const { delayTestUrl, delayTestTimeout } = appConfig
-  const instance = await getAxios()
-  return await instance.get(`/proxies/${encodeURIComponent(proxy)}/delay`, {
-    params: {
-      url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
-      timeout: delayTestTimeout || 5000
-    }
-  })
+
+  return await mihomoHttp(
+    'GET',
+    `/proxies/${encodeURIComponent(proxy)}/delay?url=${encodeURIComponent(url || delayTestUrl || 'https://www.gstatic.com/generate_204')}&timeout=${delayTestTimeout || 5000}`
+  )
 }
 
 export const mihomoGroupDelay = async (group: string, url?: string): Promise<IMihomoGroupDelay> => {
   const appConfig = await getAppConfig()
   const { delayTestUrl, delayTestTimeout } = appConfig
-  const instance = await getAxios()
-  return await instance.get(`/group/${encodeURIComponent(group)}/delay`, {
-    params: {
-      url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
-      timeout: delayTestTimeout || 5000
-    }
-  })
+  return await mihomoHttp(
+    'GET',
+    `/proxies/${encodeURIComponent(group)}/delay?url=${encodeURIComponent(url || delayTestUrl || 'https://www.gstatic.com/generate_204')}&timeout=${delayTestTimeout || 5000}`
+  )
 }
 
 export const mihomoUpgrade = async (): Promise<void> => {
-  const instance = await getAxios()
-  return await instance.post('/upgrade')
+  return await mihomoHttp('POST', '/upgrade')
 }
 
 export const startMihomoTraffic = async (): Promise<void> => {
   await mihomoTraffic()
 }
 
-export const stopMihomoTraffic = (): void => {
+export const stopMihomoTraffic = async (): Promise<void> => {
   if (mihomoTrafficWs) {
-    mihomoTrafficWs.removeAllListeners()
-    if (mihomoTrafficWs.readyState === WebSocket.OPEN) {
-      mihomoTrafficWs.close()
-    }
+    mihomoTrafficWs.end()
     mihomoTrafficWs = null
   }
 }
 
 const mihomoTraffic = async (): Promise<void> => {
-  const controledMihomoConfig = await getControledMihomoConfig()
-  let server = controledMihomoConfig['external-controller']
-  const secret = controledMihomoConfig.secret ?? ''
-  if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoTraffic()
-
-  mihomoTrafficWs = new WebSocket(`ws://${server}/traffic?token=${encodeURIComponent(secret)}`)
-
-  mihomoTrafficWs.onmessage = async (e): Promise<void> => {
-    const data = e.data as string
-    const json = JSON.parse(data) as IMihomoTrafficInfo
-    trafficRetry = 10
+  mihomoTrafficWs = await mihomoWs('/traffic')
+  mihomoTrafficWs.on('data', (data) => {
     try {
+      const json = JSON.parse(trimJson(data.toString())) as IMihomoTrafficInfo
+      trafficRetry = 10
       mainWindow?.webContents.send('mihomoTraffic', json)
-      if (process.platform !== 'linux') {
-        tray?.setToolTip(
-          '↑' +
-            `${calcTraffic(json.up)}/s`.padStart(9) +
-            '\n↓' +
-            `${calcTraffic(json.down)}/s`.padStart(9)
-        )
-      }
+      tray?.setToolTip(
+        '↑' +
+          `${calcTraffic(json.up)}/s`.padStart(9) +
+          '\n↓' +
+          `${calcTraffic(json.down)}/s`.padStart(9)
+      )
     } catch {
       // ignore
     }
-  }
-
-  mihomoTrafficWs.onclose = (): void => {
+  })
+  mihomoTrafficWs.on('close', () => {
     if (trafficRetry) {
       trafficRetry--
       mihomoTraffic()
     }
-  }
+  })
 
-  mihomoTrafficWs.onerror = (): void => {
-    if (mihomoTrafficWs) {
-      mihomoTrafficWs.close()
-      mihomoTrafficWs = null
-    }
-  }
+  mihomoTrafficWs.on('error', (): void => {
+    stopMihomoTraffic()
+  })
 }
 
 export const startMihomoMemory = async (): Promise<void> => {
   await mihomoMemory()
 }
 
-export const stopMihomoMemory = (): void => {
+export const stopMihomoMemory = async (): Promise<void> => {
   if (mihomoMemoryWs) {
-    mihomoMemoryWs.removeAllListeners()
-    if (mihomoMemoryWs.readyState === WebSocket.OPEN) {
-      mihomoMemoryWs.close()
-    }
+    mihomoMemoryWs.end()
     mihomoMemoryWs = null
   }
 }
 
 const mihomoMemory = async (): Promise<void> => {
-  const controledMihomoConfig = await getControledMihomoConfig()
-  let server = controledMihomoConfig['external-controller']
-  const secret = controledMihomoConfig.secret ?? ''
-  if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoMemory()
-
-  mihomoMemoryWs = new WebSocket(`ws://${server}/memory?token=${encodeURIComponent(secret)}`)
-
-  mihomoMemoryWs.onmessage = (e): void => {
-    const data = e.data as string
-    memoryRetry = 10
+  mihomoMemoryWs = await mihomoWs('/memory')
+  mihomoMemoryWs.on('data', (data) => {
     try {
-      mainWindow?.webContents.send('mihomoMemory', JSON.parse(data) as IMihomoMemoryInfo)
+      const json = JSON.parse(trimJson(data.toString())) as IMihomoMemoryInfo
+      memoryRetry = 10
+      mainWindow?.webContents.send('mihomoMemory', json)
     } catch {
       // ignore
     }
-  }
-
-  mihomoMemoryWs.onclose = (): void => {
+  })
+  mihomoMemoryWs.on('close', () => {
     if (memoryRetry) {
       memoryRetry--
       mihomoMemory()
     }
-  }
+  })
 
-  mihomoMemoryWs.onerror = (): void => {
-    if (mihomoMemoryWs) {
-      mihomoMemoryWs.close()
-      mihomoMemoryWs = null
-    }
-  }
+  mihomoMemoryWs.on('error', (): void => {
+    stopMihomoMemory()
+  })
 }
 
 export const startMihomoLogs = async (): Promise<void> => {
   await mihomoLogs()
 }
 
-export const stopMihomoLogs = (): void => {
+export const stopMihomoLogs = async (): Promise<void> => {
   if (mihomoLogsWs) {
-    mihomoLogsWs.removeAllListeners()
-    if (mihomoLogsWs.readyState === WebSocket.OPEN) {
-      mihomoLogsWs.close()
-    }
+    mihomoLogsWs.end()
     mihomoLogsWs = null
   }
 }
 
 const mihomoLogs = async (): Promise<void> => {
-  const controledMihomoConfig = await getControledMihomoConfig()
-  const { secret = '', 'log-level': level = 'info' } = controledMihomoConfig
-  let { 'external-controller': server } = controledMihomoConfig
-  if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoLogs()
-
-  mihomoLogsWs = new WebSocket(
-    `ws://${server}/logs?token=${encodeURIComponent(secret)}&level=${level}`
-  )
-
-  mihomoLogsWs.onmessage = (e): void => {
-    const data = e.data as string
-    logsRetry = 10
+  mihomoLogsWs = await mihomoWs('/logs')
+  mihomoLogsWs.on('data', (data) => {
     try {
-      mainWindow?.webContents.send('mihomoLogs', JSON.parse(data) as IMihomoLogInfo)
+      const json = JSON.parse(trimJson(data.toString())) as IMihomoLogInfo
+      logsRetry = 10
+      mainWindow?.webContents.send('mihomoLogs', json)
     } catch {
       // ignore
     }
-  }
-
-  mihomoLogsWs.onclose = (): void => {
+  })
+  mihomoLogsWs.on('close', () => {
     if (logsRetry) {
       logsRetry--
       mihomoLogs()
     }
-  }
+  })
 
-  mihomoLogsWs.onerror = (): void => {
-    if (mihomoLogsWs) {
-      mihomoLogsWs.close()
-      mihomoLogsWs = null
-    }
-  }
+  mihomoLogsWs.on('error', (): void => {
+    stopMihomoLogs()
+  })
 }
 
 export const startMihomoConnections = async (): Promise<void> => {
   await mihomoConnections()
 }
 
-export const stopMihomoConnections = (): void => {
+export const stopMihomoConnections = async (): Promise<void> => {
   if (mihomoConnectionsWs) {
-    mihomoConnectionsWs.removeAllListeners()
-    if (mihomoConnectionsWs.readyState === WebSocket.OPEN) {
-      mihomoConnectionsWs.close()
-    }
+    mihomoConnectionsWs.end()
     mihomoConnectionsWs = null
   }
 }
 
 const mihomoConnections = async (): Promise<void> => {
-  const controledMihomoConfig = await getControledMihomoConfig()
-  let server = controledMihomoConfig['external-controller']
-  const secret = controledMihomoConfig.secret ?? ''
-  if (server?.startsWith(':')) server = `127.0.0.1${server}`
   stopMihomoConnections()
-
-  mihomoConnectionsWs = new WebSocket(
-    `ws://${server}/connections?token=${encodeURIComponent(secret)}`
-  )
-
-  mihomoConnectionsWs.onmessage = (e): void => {
-    const data = e.data as string
-    connectionsRetry = 10
+  mihomoConnectionsWs = await mihomoWs('/connections')
+  mihomoConnectionsWs.on('data', (data) => {
     try {
-      mainWindow?.webContents.send('mihomoConnections', JSON.parse(data) as IMihomoConnectionsInfo)
+      const json = JSON.parse(trimJson(data.toString())) as IMihomoConnectionsInfo
+      connectionsRetry = 10
+      mainWindow?.webContents.send('mihomoConnections', json)
     } catch {
       // ignore
     }
-  }
-
-  mihomoConnectionsWs.onclose = (): void => {
+  })
+  mihomoConnectionsWs.on('close', () => {
     if (connectionsRetry) {
       connectionsRetry--
       mihomoConnections()
     }
-  }
+  })
 
-  mihomoConnectionsWs.onerror = (): void => {
-    if (mihomoConnectionsWs) {
-      mihomoConnectionsWs.close()
-      mihomoConnectionsWs = null
-    }
-  }
+  mihomoConnectionsWs.on('error', (): void => {
+    stopMihomoConnections()
+  })
 }

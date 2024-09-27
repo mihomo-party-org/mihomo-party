@@ -343,6 +343,8 @@ interface IMihomoProfileConfig {
 }
 
 interface IMihomoConfig {
+  'external-controller-pipe': string
+  'external-controller-unix': string
   'external-controller': string
   secret?: string
   ipv6: boolean

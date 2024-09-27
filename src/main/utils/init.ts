@@ -151,6 +151,8 @@ async function migration(): Promise<void> {
     useSubStore = true
   } = await getAppConfig()
   const {
+    'external-controller-pipe': externalControllerPipe,
+    'external-controller-unix': externalControllerUnix,
     'skip-auth-prefixes': skipAuthPrefixes,
     authentication,
     'bind-address': bindAddress,
@@ -188,6 +190,16 @@ async function migration(): Promise<void> {
   // change env type
   if (typeof envType === 'string') {
     await patchAppConfig({ envType: [envType] })
+  }
+  // use unix socket
+  if (process.platform !== 'win32' && !externalControllerUnix) {
+    await patchControledMihomoConfig({ 'external-controller-unix': 'mihomo-party.sock' })
+  }
+  // use named pipe
+  if (process.platform === 'win32' && !externalControllerPipe) {
+    await patchControledMihomoConfig({
+      'external-controller-pipe': '\\\\.\\pipe\\MihomoParty\\mihomo'
+    })
   }
 }
 
