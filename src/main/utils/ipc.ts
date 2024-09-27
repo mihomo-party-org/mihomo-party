@@ -10,6 +10,7 @@ import {
   mihomoProxyProviders,
   mihomoRuleProviders,
   mihomoRules,
+  mihomoUnfixedProxy,
   mihomoUpdateProxyProviders,
   mihomoUpdateRuleProviders,
   mihomoUpgrade,
@@ -120,6 +121,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoChangeProxy', (_e, group, proxy) =>
     ipcErrorWrapper(mihomoChangeProxy)(group, proxy)
   )
+  ipcMain.handle('mihomoUnfixedProxy', (_e, group) => ipcErrorWrapper(mihomoUnfixedProxy)(group))
   ipcMain.handle('mihomoUpgradeGeo', ipcErrorWrapper(mihomoUpgradeGeo))
   ipcMain.handle('mihomoUpgrade', ipcErrorWrapper(mihomoUpgrade))
   ipcMain.handle('mihomoProxyDelay', (_e, proxy, url) =>

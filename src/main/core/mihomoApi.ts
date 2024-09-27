@@ -149,6 +149,10 @@ export const mihomoChangeProxy = async (group: string, proxy: string): Promise<I
   return await mihomoHttp('PUT', `/proxies/${encodeURIComponent(group)}`, { name: proxy })
 }
 
+export const mihomoUnfixedProxy = async (group: string): Promise<void> => {
+  return await mihomoHttp('DELETE', `/proxies/${encodeURIComponent(group)}`)
+}
+
 export const mihomoUpgradeGeo = async (): Promise<void> => {
   return await mihomoHttp('POST', '/configs/geo')
 }

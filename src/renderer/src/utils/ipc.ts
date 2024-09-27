@@ -59,6 +59,10 @@ export async function mihomoChangeProxy(group: string, proxy: string): Promise<I
   )
 }
 
+export async function mihomoUnfixedProxy(group: string): Promise<IMihomoProxy> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoUnfixedProxy', group))
+}
+
 export async function mihomoUpgradeGeo(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoUpgradeGeo'))
 }
