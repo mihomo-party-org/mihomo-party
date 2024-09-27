@@ -30,9 +30,7 @@
     "chokidar": "^4.0.1",
     "dayjs": "^1.11.13",
     "express": "^5.0.0",
-    "recharts": "^2.12.7",
     "webdav": "^5.7.1",
-    "ws": "^8.18.0",
     "yaml": "^2.5.1"
   },
   "devDependencies": {
@@ -77,6 +75,7 @@
     "react-monaco-editor": "^0.56.1",
     "react-router-dom": "^6.26.2",
     "react-virtuoso": "^4.10.4",
+    "recharts": "^2.12.7",
     "swr": "^2.2.5",
     "tailwindcss": "^3.4.13",
     "tar": "^7.4.3",
