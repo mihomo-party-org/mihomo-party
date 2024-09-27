@@ -1,5 +1,5 @@
 import { Button, Card, CardBody } from '@nextui-org/react'
-import { mihomoGroupDelay } from '@renderer/utils/ipc'
+import { mihomoUnfixedProxy } from '@renderer/utils/ipc'
 import React, { useMemo, useState } from 'react'
 import { FaMapPin } from 'react-icons/fa6'
 
@@ -24,7 +24,6 @@ const ProxyItem: React.FC<Props> = (props) => {
   }, [proxy])
 
   const [loading, setLoading] = useState(false)
-  const [unfixing, setUnfixing] = useState(false)
   function delayColor(delay: number): 'primary' | 'success' | 'warning' | 'danger' {
     if (delay === -1) return 'primary'
     if (delay === 0) return 'danger'
@@ -74,13 +73,10 @@ const ProxyItem: React.FC<Props> = (props) => {
               <Button
                 isIconOnly
                 title="取消固定"
-                isLoading={unfixing}
                 color="danger"
                 onPress={async () => {
-                  setUnfixing(true)
-                  await mihomoGroupDelay(group.name)
+                  await mihomoUnfixedProxy(group.name)
                   mutateProxies()
-                  setUnfixing(false)
                 }}
                 variant="light"
                 className="h-[20px] p-0 text-sm"
