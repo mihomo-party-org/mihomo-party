@@ -271,6 +271,28 @@ const resolveRunner = () =>
     file: 'mihomo-party-run.exe',
     downloadURL: `https://github.com/mihomo-party-org/mihomo-party-run/releases/download/${arch}/mihomo-party-run.exe`
   })
+
+const resolveMonitor = async () => {
+  const tempDir = path.join(TEMP_DIR, 'TrafficMonitor')
+  const tempZip = path.join(tempDir, `${arch}.zip`)
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true })
+  }
+  await downloadFile(
+    `https://github.com/mihomo-party-org/mihomo-party-run/releases/download/monitor/${arch}.zip`,
+    tempZip
+  )
+  const zip = new AdmZip(tempZip)
+  const resDir = path.join(cwd, 'extra', 'files')
+  const targetPath = path.join(resDir, 'TrafficMonitor')
+  if (fs.existsSync(targetPath)) {
+    fs.rmSync(targetPath, { recursive: true })
+  }
+  zip.extractAllTo(resDir, true)
+
+  console.log(`[INFO]: TrafficMonitor finished`)
+}
+
 const resolve7zip = () =>
   resolveResource({
     file: '7za.exe',
@@ -352,6 +374,12 @@ const tasks = [
   {
     name: 'runner',
     func: resolveRunner,
+    retry: 5,
+    winOnly: true
+  },
+  {
+    name: 'monitor',
+    func: resolveMonitor,
     retry: 5,
     winOnly: true
   },

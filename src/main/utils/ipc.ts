@@ -80,6 +80,7 @@ import path from 'path'
 import v8 from 'v8'
 import { getGistUrl } from '../resolve/gistApi'
 import { getImageDataURL } from './image'
+import { startMonitor } from '../resolve/trafficMonitor'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -161,6 +162,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('getOverride', (_e, id, ext) => ipcErrorWrapper(getOverride)(id, ext))
   ipcMain.handle('setOverride', (_e, id, ext, str) => ipcErrorWrapper(setOverride)(id, ext, str))
   ipcMain.handle('restartCore', ipcErrorWrapper(restartCore))
+  ipcMain.handle('startMonitor', (_e, detached) => ipcErrorWrapper(startMonitor)(detached))
   ipcMain.handle('triggerSysProxy', (_e, enable) => ipcErrorWrapper(triggerSysProxy)(enable))
   ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
   ipcMain.handle('encryptString', (_e, str) => encryptString(str))
