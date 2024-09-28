@@ -35,6 +35,7 @@ import {
 } from '../config'
 import { app } from 'electron'
 import { startSSIDCheck } from '../sys/ssid'
+import { startMonitor } from '../resolve/trafficMonitor'
 
 async function initDirs(): Promise<void> {
   if (!existsSync(dataDir())) {
@@ -223,6 +224,7 @@ export async function init(): Promise<void> {
   await cleanup()
   await startPacServer()
   await startSubStoreServer()
+  await startMonitor()
   const { sysProxy } = await getAppConfig()
   await triggerSysProxy(sysProxy.enable)
   await startSSIDCheck()

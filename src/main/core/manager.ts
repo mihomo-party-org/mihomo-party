@@ -34,6 +34,7 @@ import { mainWindow } from '..'
 import path from 'path'
 import { existsSync } from 'fs'
 import { uploadRuntimeConfig } from '../resolve/gistApi'
+import { startMonitor } from '../resolve/trafficMonitor'
 
 chokidar.watch(path.join(mihomoCoreDir(), 'meta-update'), {}).on('unlinkDir', async () => {
   try {
@@ -193,6 +194,7 @@ export async function keepCoreAlive(): Promise<void> {
 
 export async function quitWithoutCore(): Promise<void> {
   await keepCoreAlive()
+  await startMonitor(true)
   app.exit()
 }
 

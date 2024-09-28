@@ -191,6 +191,10 @@ export async function restartCore(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('restartCore'))
 }
 
+export async function startMonitor(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('startMonitor'))
+}
+
 export async function triggerSysProxy(enable: boolean): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('triggerSysProxy', enable))
 }

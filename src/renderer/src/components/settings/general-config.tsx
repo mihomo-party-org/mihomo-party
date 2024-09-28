@@ -15,7 +15,7 @@ import {
   importThemes,
   relaunchApp,
   resolveThemes,
-  restartCore,
+  startMonitor,
   writeTheme
 } from '@renderer/utils/ipc'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
@@ -176,15 +176,30 @@ const GeneralConfig: React.FC = () => {
           </Select>
         </SettingItem>
         {platform !== 'linux' && (
-          <SettingItem title="托盘菜单显示节点信息" divider>
-            <Switch
-              size="sm"
-              isSelected={proxyInTray}
-              onValueChange={async (v) => {
-                await patchAppConfig({ proxyInTray: v })
-              }}
-            />
-          </SettingItem>
+          <>
+            <SettingItem title="托盘菜单显示节点信息" divider>
+              <Switch
+                size="sm"
+                isSelected={proxyInTray}
+                onValueChange={async (v) => {
+                  await patchAppConfig({ proxyInTray: v })
+                }}
+              />
+            </SettingItem>
+            <SettingItem
+              title={`${platform === 'win32' ? '任务栏' : '状态栏'}显示网速信息`}
+              divider
+            >
+              <Switch
+                size="sm"
+                isSelected={showTraffic}
+                onValueChange={async (v) => {
+                  await patchAppConfig({ showTraffic: v })
+                  await startMonitor()
+                }}
+              />
+            </SettingItem>
+          </>
         )}
         {platform === 'darwin' && (
           <>
@@ -194,16 +209,6 @@ const GeneralConfig: React.FC = () => {
                 isSelected={useDockIcon}
                 onValueChange={async (v) => {
                   await patchAppConfig({ useDockIcon: v })
-                }}
-              />
-            </SettingItem>
-            <SettingItem title="显示网速信息" divider>
-              <Switch
-                size="sm"
-                isSelected={showTraffic}
-                onValueChange={async (v) => {
-                  await patchAppConfig({ showTraffic: v })
-                  await restartCore()
                 }}
               />
             </SettingItem>
