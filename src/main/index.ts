@@ -1,7 +1,7 @@
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcMainHandlers } from './utils/ipc'
 import windowStateKeeper from 'electron-window-state'
-import { app, shell, BrowserWindow, Menu, dialog, Notification } from 'electron'
+import { app, shell, BrowserWindow, Menu, dialog, Notification, powerMonitor } from 'electron'
 import { addProfileItem, getAppConfig } from './config'
 import { quitWithoutCore, startCore, stopCore } from './core/manager'
 import { triggerSysProxy } from './sys/sysproxy'
@@ -96,9 +96,17 @@ app.on('window-all-closed', (e) => {
   // }
 })
 
-app.on('before-quit', async () => {
-  await stopCore()
+app.on('before-quit', async (e) => {
+  e.preventDefault()
   triggerSysProxy(false)
+  await stopCore()
+  app.exit()
+})
+
+powerMonitor.on('shutdown', async (e) => {
+  e.preventDefault()
+  triggerSysProxy(false)
+  await stopCore()
   app.exit()
 })
 
@@ -237,6 +245,11 @@ export async function createWindow(): Promise<void> {
         await quitWithoutCore()
       }, autoQuitWithoutCoreDelay * 1000)
     }
+  })
+
+  mainWindow.on('session-end', async () => {
+    triggerSysProxy(false)
+    await stopCore()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
