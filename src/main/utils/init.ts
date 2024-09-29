@@ -192,11 +192,14 @@ async function migration(): Promise<void> {
     await patchAppConfig({ envType: [envType] })
   }
   // use unix socket
-  if (process.platform !== 'win32' && !externalControllerUnix) {
+  if (process.platform !== 'win32' && externalControllerUnix !== 'mihomo-party.sock') {
     await patchControledMihomoConfig({ 'external-controller-unix': 'mihomo-party.sock' })
   }
   // use named pipe
-  if (process.platform === 'win32' && !externalControllerPipe) {
+  if (
+    process.platform === 'win32' &&
+    externalControllerPipe !== '\\\\.\\pipe\\MihomoParty\\mihomo'
+  ) {
     await patchControledMihomoConfig({
       'external-controller-pipe': '\\\\.\\pipe\\MihomoParty\\mihomo'
     })
