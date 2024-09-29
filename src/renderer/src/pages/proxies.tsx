@@ -288,7 +288,13 @@ const Proxies: React.FC = () => {
                           size="sm"
                           isIconOnly
                           onPress={() => {
-                            if (!isOpen[index]) return
+                            if (!isOpen[index]) {
+                              setIsOpen((prev) => {
+                                const newOpen = [...prev]
+                                newOpen[index] = true
+                                return newOpen
+                              })
+                            }
                             let i = 0
                             for (let j = 0; j < index; j++) {
                               i += groupCounts[j]
