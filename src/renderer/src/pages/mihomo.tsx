@@ -24,7 +24,7 @@ const Mihomo: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const {
     ipv6,
-    'external-controller': externalController = '127.0.0.1:9090',
+    'external-controller': externalController = '',
     secret,
     authentication = [],
     'skip-auth-prefixes': skipAuthPrefixes = ['127.0.0.1/32'],
