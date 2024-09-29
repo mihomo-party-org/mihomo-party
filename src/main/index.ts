@@ -16,6 +16,7 @@ import { initProfileUpdater } from './core/profileUpdater'
 import { existsSync, writeFileSync } from 'fs'
 import { taskDir } from './utils/dirs'
 import path from 'path'
+import { startMonitor } from './resolve/trafficMonitor'
 
 let quitTimeout: NodeJS.Timeout | null = null
 export let mainWindow: BrowserWindow | null = null
@@ -130,6 +131,7 @@ app.whenReady().then(async () => {
   } catch (e) {
     dialog.showErrorBox('内核启动出错', `${e}`)
   }
+  await startMonitor()
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
