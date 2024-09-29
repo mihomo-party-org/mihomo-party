@@ -131,7 +131,12 @@ app.whenReady().then(async () => {
   } catch (e) {
     dialog.showErrorBox('内核启动出错', `${e}`)
   }
-  await startMonitor()
+  try {
+    await startMonitor()
+  } catch {
+    // ignore
+  }
+
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils

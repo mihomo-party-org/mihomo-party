@@ -41,8 +41,8 @@ const Proxies: React.FC = () => {
     if (groups.length !== searchValue.length) setSearchValue(Array(groups.length).fill(''))
     groups.forEach((group, index) => {
       if (isOpen[index]) {
-        let groupProxies = group.all.filter((proxy) =>
-          includesIgnoreCase(proxy.name, searchValue[index])
+        let groupProxies = group.all.filter(
+          (proxy) => proxy && includesIgnoreCase(proxy.name, searchValue[index])
         )
         const count = Math.floor(groupProxies.length / cols)
         groupCounts.push(groupProxies.length % cols === 0 ? count : count + 1)

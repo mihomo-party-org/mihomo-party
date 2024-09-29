@@ -34,11 +34,11 @@ async function mihomoHttp<T>(method: HttpMethod, path: string, data?: object): P
     const client = net.connect(
       process.platform === 'win32' ? mihomoPipe : join(mihomoWorkDir(), mihomoUnix)
     )
-    client.on('data', function (res) {
+    const parseResult = (str: string): void => {
       try {
-        const data = res.toString().split('\r\n\r\n')[1]
+        const data = str.split('\r\n\r\n')[1]
         const json = trimJson(data)
-        if (res.toString().includes('HTTP/1.1 4') || res.toString().includes('HTTP/1.1 5')) {
+        if (str.includes('HTTP/1.1 4') || str.includes('HTTP/1.1 5')) {
           reject(json ? JSON.parse(json) : data)
         } else {
           resolve(json ? JSON.parse(json) : undefined)
@@ -47,6 +47,17 @@ async function mihomoHttp<T>(method: HttpMethod, path: string, data?: object): P
         reject(e)
       } finally {
         client.end()
+      }
+    }
+    let buffer = ''
+    client.on('data', function (res) {
+      if (res.toString().includes('Transfer-Encoding: chunked') || buffer !== '') {
+        buffer += res.toString()
+        if (buffer.endsWith('\r\n\r\n')) {
+          parseResult(buffer)
+        }
+      } else {
+        parseResult(res.toString())
       }
     })
     client.on('error', function (error) {
