@@ -1,5 +1,6 @@
 ### New Features
 
+- 使用 Unix Socket/Windows NamedPipe 通信，提高安全性
 - Windows 允许添加 `noadmin` 参数以普通权限启动程序
 - 支持在 Windows 任务栏显示网速信息
 - 优化 fixed 节点 unfixed 速度
