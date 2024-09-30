@@ -153,6 +153,7 @@ async function migration(): Promise<void> {
   const {
     'external-controller-pipe': externalControllerPipe,
     'external-controller-unix': externalControllerUnix,
+    'external-controller': externalController,
     'skip-auth-prefixes': skipAuthPrefixes,
     authentication,
     'bind-address': bindAddress,
@@ -203,6 +204,9 @@ async function migration(): Promise<void> {
     await patchControledMihomoConfig({
       'external-controller-pipe': '\\\\.\\pipe\\MihomoParty\\mihomo'
     })
+  }
+  if (externalController === undefined) {
+    await patchControledMihomoConfig({ 'external-controller': '' })
   }
 }
 
