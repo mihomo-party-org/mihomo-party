@@ -288,7 +288,7 @@ const resolveMonitor = async () => {
   if (fs.existsSync(targetPath)) {
     fs.rmSync(targetPath, { recursive: true })
   }
-  zip.extractAllTo(resDir, true)
+  zip.extractAllTo(targetPath, true)
 
   console.log(`[INFO]: TrafficMonitor finished`)
 }
