@@ -5,8 +5,6 @@ import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
 import { getRuntimeConfig } from './factory'
-import { join } from 'path'
-import { mihomoWorkDir } from '../utils/dirs'
 
 let axiosIns: AxiosInstance = null!
 let mihomoTrafficWs: WebSocket | null = null
@@ -21,13 +19,13 @@ let connectionsRetry = 10
 export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
   const {
     'external-controller-pipe': mihomoPipe = '\\\\.\\pipe\\MihomoParty\\mihomo',
-    'external-controller-unix': mihomoUnix = 'mihomo-party.sock'
+    'external-controller-unix': mihomoUnix = '/tmp/mihomo-party.sock'
   } = await getControledMihomoConfig()
   if (axiosIns && !force) return axiosIns
 
   axiosIns = axios.create({
     baseURL: `http://localhost`,
-    socketPath: process.platform === 'win32' ? mihomoPipe : join(mihomoWorkDir(), mihomoUnix),
+    socketPath: process.platform === 'win32' ? mihomoPipe : mihomoUnix,
     timeout: 15000
   })
 
@@ -183,11 +181,11 @@ export const stopMihomoTraffic = (): void => {
 const mihomoTraffic = async (): Promise<void> => {
   const {
     'external-controller-pipe': mihomoPipe = '\\\\.\\pipe\\MihomoParty\\mihomo',
-    'external-controller-unix': mihomoUnix = 'mihomo-party.sock'
+    'external-controller-unix': mihomoUnix = '/tmp/mihomo-party.sock'
   } = await getControledMihomoConfig()
 
   mihomoTrafficWs = new WebSocket(
-    `ws+unix:${process.platform === 'win32' ? mihomoPipe : join(mihomoWorkDir(), mihomoUnix)}:/traffic`
+    `ws+unix:${process.platform === 'win32' ? mihomoPipe : mihomoUnix}:/traffic`
   )
 
   mihomoTrafficWs.onmessage = async (e): Promise<void> => {
@@ -241,11 +239,11 @@ export const stopMihomoMemory = (): void => {
 const mihomoMemory = async (): Promise<void> => {
   const {
     'external-controller-pipe': mihomoPipe = '\\\\.\\pipe\\MihomoParty\\mihomo',
-    'external-controller-unix': mihomoUnix = 'mihomo-party.sock'
+    'external-controller-unix': mihomoUnix = '/tmp/mihomo-party.sock'
   } = await getControledMihomoConfig()
 
   mihomoMemoryWs = new WebSocket(
-    `ws+unix:${process.platform === 'win32' ? mihomoPipe : join(mihomoWorkDir(), mihomoUnix)}:/memory`
+    `ws+unix:${process.platform === 'win32' ? mihomoPipe : mihomoUnix}:/memory`
   )
 
   mihomoMemoryWs.onmessage = (e): void => {
@@ -290,12 +288,12 @@ export const stopMihomoLogs = (): void => {
 const mihomoLogs = async (): Promise<void> => {
   const {
     'external-controller-pipe': mihomoPipe = '\\\\.\\pipe\\MihomoParty\\mihomo',
-    'external-controller-unix': mihomoUnix = 'mihomo-party.sock',
+    'external-controller-unix': mihomoUnix = '/tmp/mihomo-party.sock',
     'log-level': logLevel = 'info'
   } = await getControledMihomoConfig()
 
   mihomoLogsWs = new WebSocket(
-    `ws+unix:${process.platform === 'win32' ? mihomoPipe : join(mihomoWorkDir(), mihomoUnix)}:/logs?level=${logLevel}`
+    `ws+unix:${process.platform === 'win32' ? mihomoPipe : mihomoUnix}:/logs?level=${logLevel}`
   )
 
   mihomoLogsWs.onmessage = (e): void => {
@@ -340,11 +338,11 @@ export const stopMihomoConnections = (): void => {
 const mihomoConnections = async (): Promise<void> => {
   const {
     'external-controller-pipe': mihomoPipe = '\\\\.\\pipe\\MihomoParty\\mihomo',
-    'external-controller-unix': mihomoUnix = 'mihomo-party.sock'
+    'external-controller-unix': mihomoUnix = '/tmp/mihomo-party.sock'
   } = await getControledMihomoConfig()
 
   mihomoConnectionsWs = new WebSocket(
-    `ws+unix:${process.platform === 'win32' ? mihomoPipe : join(mihomoWorkDir(), mihomoUnix)}:/connections`
+    `ws+unix:${process.platform === 'win32' ? mihomoPipe : mihomoUnix}:/connections`
   )
 
   mihomoConnectionsWs.onmessage = (e): void => {
