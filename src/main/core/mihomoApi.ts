@@ -280,7 +280,8 @@ export const stopMihomoLogs = async (): Promise<void> => {
 
 const mihomoLogs = async (): Promise<void> => {
   stopMihomoLogs()
-  mihomoLogsWs = await mihomoWs('/logs')
+  const { 'log-level': logLevel } = await getControledMihomoConfig()
+  mihomoLogsWs = await mihomoWs(`/logs?level=${logLevel}`)
   mihomoLogsWs.on('data', (data) => {
     try {
       const json = JSON.parse(trimJson(data.toString())) as IMihomoLogInfo
