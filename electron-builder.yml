@@ -50,6 +50,7 @@ mac:
   artifactName: ${name}-macos-${version}-${arch}.${ext}
 linux:
   desktop:
+    Name: Mihomo Party
     MimeType: 'x-scheme-handler/clash;x-scheme-handler/mihomo'
   target:
     - deb
