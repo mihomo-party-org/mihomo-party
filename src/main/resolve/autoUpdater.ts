@@ -96,7 +96,7 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
         )
         try {
           await execPromise(`mv /Applications/${name}.app /tmp`)
-          await execPromise('cp -R "/Volumes/mihomo-party/mihomo-party.app" /Applications/')
+          await execPromise('cp -R "/Volumes/mihomo-party/Mihomo Party.app" /Applications/')
           await execPromise(`rm -rf /tmp/${name}.app`)
         } catch (e) {
           await execPromise(`mv /tmp/${name}.app /Applications`)
