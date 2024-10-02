@@ -196,7 +196,9 @@ jobs:
         env:
           npm_config_arch: ${{ matrix.arch }}
           npm_config_target_arch: ${{ matrix.arch }}
-        run: pnpm build:mac --${{ matrix.arch }}
+        run: |
+          sed -i "" -e "s/productName: mihomo-party/productName: Mihomo Party/" electron-builder.yml
+          pnpm build:mac --${{ matrix.arch }}
       - name: Generate checksums
         run: pnpm checksum .dmg
       - name: Upload Artifacts
