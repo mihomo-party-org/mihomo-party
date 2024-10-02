@@ -14,7 +14,7 @@ import { execSync, spawn } from 'child_process'
 import { createElevateTask } from './sys/misc'
 import { initProfileUpdater } from './core/profileUpdater'
 import { existsSync, writeFileSync } from 'fs'
-import { taskDir } from './utils/dirs'
+import { exePath, taskDir } from './utils/dirs'
 import path from 'path'
 import { startMonitor } from './resolve/trafficMonitor'
 
@@ -67,7 +67,7 @@ if (process.platform === 'linux') {
   app.relaunch = customRelaunch
 }
 
-if (process.platform === 'win32') {
+if (process.platform === 'win32' && !exePath().startsWith('C')) {
   // https://github.com/electron/electron/issues/43278
   // https://github.com/electron/electron/issues/36698
   app.commandLine.appendSwitch('in-process-gpu')
