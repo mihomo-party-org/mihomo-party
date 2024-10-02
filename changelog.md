@@ -1,15 +1,13 @@
+### Breaking Changes
+
+- 此版本修改了应用的显示名称，macOS用户可能无法自动更新，需要手动删除 `/Applications/mihomo-party.app`
+
 ### New Features
 
-- 使用 Unix Socket/Windows NamedPipe 通信，提高安全性
-- Windows 允许添加 `noadmin` 参数以普通权限启动程序
-- 支持在 Windows 任务栏显示网速信息
-- 优化 fixed 节点 unfixed 速度
-- 支持在关机前自动关闭系统代理
-- 支持禁用外部控制端口
+- 修改应用在 macOS 和 Linux 下的显示名称为 `Mihomo Party`
+- 默认禁用外部控制端口
 
 ### Bug Fixes
 
-- 修复 Windows 网速显示有概率不出现的问题
-- 再次修复便携版自动更新失败的问题
-- 修复 url 在软件窗口内打开的问题
-- 限制实时日志最大行数
+- 修复 TrafficMonitor 勾选内置网速显示后无法取消勾选的问题
+- 修复 TrafficMonitor 显示宽度不正确的问题
