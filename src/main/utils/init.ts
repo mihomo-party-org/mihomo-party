@@ -231,7 +231,11 @@ export async function init(): Promise<void> {
   await startPacServer()
   await startSubStoreServer()
   const { sysProxy } = await getAppConfig()
-  await triggerSysProxy(sysProxy.enable)
+  try {
+    await triggerSysProxy(sysProxy.enable)
+  } catch {
+    // ignore
+  }
   await startSSIDCheck()
 
   initDeeplink()
