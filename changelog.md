@@ -4,10 +4,4 @@
 
 ### New Features
 
-- 修改应用在 macOS 和 Linux 下的显示名称为 `Mihomo Party`
-- 默认禁用外部控制端口
-
-### Bug Fixes
-
-- 修复 TrafficMonitor 勾选内置网速显示后无法取消勾选的问题
-- 修复 TrafficMonitor 显示宽度不正确的问题
+- 允许切换订阅卡片显示过期时间还是更新时间

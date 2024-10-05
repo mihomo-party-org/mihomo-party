@@ -20,6 +20,7 @@ import EditInfoModal from './edit-info-modal'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { openFile } from '@renderer/utils/ipc'
+import { useAppConfig } from '@renderer/hooks/use-app-config'
 
 interface Props {
   info: IProfileItem
@@ -51,6 +52,8 @@ const ProfileItem: React.FC<Props> = (props) => {
   const extra = info?.extra
   const usage = (extra?.upload ?? 0) + (extra?.download ?? 0)
   const total = extra?.total ?? 0
+  const { appConfig, patchAppConfig } = useAppConfig()
+  const { profileDisplayDate = 'expire' } = appConfig || {}
   const [updating, setUpdating] = useState(false)
   const [selecting, setSelecting] = useState(false)
   const [openInfoEditor, setOpenInfoEditor] = useState(false)
@@ -171,7 +174,7 @@ const ProfileItem: React.FC<Props> = (props) => {
       <Card
         fullWidth
         isPressable
-        onPress={() => {
+        onClick={() => {
           if (disableSelect) return
           setSelecting(true)
           onClick().finally(() => {
@@ -240,12 +243,22 @@ const ProfileItem: React.FC<Props> = (props) => {
           </div>
           {info.type === 'remote' && extra && (
             <div
+              onClick={(e) => {
+                e.stopPropagation()
+                patchAppConfig({
+                  profileDisplayDate: profileDisplayDate === 'expire' ? 'update' : 'expire'
+                })
+              }}
               className={`mt-2 flex justify-between ${isCurrent ? 'text-primary-foreground' : 'text-foreground'}`}
             >
               <small>{`${calcTraffic(usage)}/${calcTraffic(total)}`}</small>
-              <small>
-                {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
-              </small>
+              {profileDisplayDate === 'expire' ? (
+                <small>
+                  {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
+                </small>
+              ) : (
+                <small>{dayjs(info.updated).fromNow()}</small>
+              )}
             </div>
           )}
           {info.type === 'local' && (

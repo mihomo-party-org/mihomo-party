@@ -19,7 +19,7 @@ dayjs.locale('zh-cn')
 
 const ProfileCard: React.FC = () => {
   const { appConfig } = useAppConfig()
-  const { profileCardStatus = 'col-span-2' } = appConfig || {}
+  const { profileCardStatus = 'col-span-2', profileDisplayDate = 'expire' } = appConfig || {}
   const location = useLocation()
   const match = location.pathname.includes('/profiles')
   const [updating, setUpdating] = useState(false)
@@ -121,9 +121,13 @@ const ProfileCard: React.FC = () => {
                 className={`mt-2 flex justify-between ${match ? 'text-primary-foreground' : 'text-foreground'} `}
               >
                 <small>{`${calcTraffic(usage)}/${calcTraffic(total)}`}</small>
-                <small>
-                  {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
-                </small>
+                {profileDisplayDate === 'expire' ? (
+                  <small>
+                    {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
+                  </small>
+                ) : (
+                  <small>{dayjs(info.updated).fromNow()}</small>
+                )}
               </div>
             )}
             {info.type === 'local' && (
