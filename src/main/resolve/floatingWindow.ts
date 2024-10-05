@@ -2,7 +2,7 @@ import { is } from '@electron-toolkit/utils'
 import { BrowserWindow, ipcMain } from 'electron'
 import windowStateKeeper from 'electron-window-state'
 import { join } from 'path'
-import { getAppConfig } from '../config'
+import { getAppConfig, patchAppConfig } from '../config'
 import { applyTheme } from './theme'
 import { buildContextMenu } from './tray'
 
@@ -53,11 +53,22 @@ async function createFloatingWindow(): Promise<void> {
     floatingWindow.loadFile(join(__dirname, '../renderer/floating.html'))
   }
 }
+
 export function showFloatingWindow(): void {
   if (floatingWindow) {
     floatingWindow.show()
   } else {
     createFloatingWindow()
+  }
+}
+
+export async function triggerFloatingWindow(): Promise<void> {
+  if (floatingWindow?.isVisible()) {
+    await patchAppConfig({ showFloatingWindow: false })
+    closeFloatingWindow()
+  } else {
+    await patchAppConfig({ showFloatingWindow: true })
+    showFloatingWindow()
   }
 }
 

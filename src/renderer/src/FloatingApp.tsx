@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import MihomoIcon from './components/base/mihomo-icon'
 import { calcTraffic } from './utils/calc'
-import { showContextMenu, showMainWindow } from './utils/ipc'
+import { showContextMenu, triggerMainWindow } from './utils/ipc'
 import { useAppConfig } from './hooks/use-app-config'
 import { useControledMihomoConfig } from './hooks/use-controled-mihomo-config'
 
@@ -34,7 +34,7 @@ const FloatingApp: React.FC = () => {
               showContextMenu()
             }}
             onClick={() => {
-              showMainWindow()
+              triggerMainWindow()
             }}
             className={`app-nodrag cursor-pointer floating-thumb ${tunEnabled ? 'bg-secondary' : sysProxyEnabled ? 'bg-primary' : 'bg-default'} hover:opacity-hover rounded-full h-[calc(100vh-14px)] w-[calc(100vh-14px)]`}
           >
