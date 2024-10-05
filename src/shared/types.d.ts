@@ -212,6 +212,7 @@ interface IAppConfig {
   proxyCols: 'auto' | '1' | '2' | '3' | '4'
   connectionDirection: 'asc' | 'desc'
   connectionOrderBy: 'time' | 'upload' | 'download' | 'uploadSpeed' | 'downloadSpeed'
+  showFloatingWindow?: boolean
   connectionCardStatus?: CardStatus
   dnsCardStatus?: CardStatus
   logCardStatus?: CardStatus
@@ -262,6 +263,7 @@ interface IAppConfig {
   useNameserverPolicy: boolean
   nameserverPolicy: { [key: string]: string | string[] }
   showWindowShortcut?: string
+  showFloatingWindowShortcut?: string
   triggerSysProxyShortcut?: string
   triggerTunShortcut?: string
   ruleModeShortcut?: string

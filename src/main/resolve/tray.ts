@@ -15,15 +15,16 @@ import {
   mihomoGroups,
   patchMihomoConfig
 } from '../core/mihomoApi'
-import { mainWindow, showMainWindow } from '..'
+import { closeMainWindow, mainWindow, showMainWindow } from '..'
 import { app, clipboard, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { quitWithoutCore, restartCore } from '../core/manager'
+import { closeFloatingWindow, floatingWindow, showFloatingWindow } from './floatingWindow'
 
 export let tray: Tray | null = null
 
-const buildContextMenu = async (): Promise<Menu> => {
+export const buildContextMenu = async (): Promise<Menu> => {
   const { mode, tun } = await getControledMihomoConfig()
   const {
     sysProxy,
@@ -31,6 +32,7 @@ const buildContextMenu = async (): Promise<Menu> => {
     autoCloseConnection,
     proxyInTray = true,
     triggerSysProxyShortcut = '',
+    showFloatingWindowShortcut = '',
     showWindowShortcut = '',
     triggerTunShortcut = '',
     ruleModeShortcut = '',
@@ -91,6 +93,21 @@ const buildContextMenu = async (): Promise<Menu> => {
       }
     },
     {
+      id: 'show-floating',
+      accelerator: showFloatingWindowShortcut,
+      label: floatingWindow?.isVisible() ? '关闭悬浮窗' : '显示悬浮窗',
+      type: 'normal',
+      click: async (): Promise<void> => {
+        if (floatingWindow) {
+          await patchAppConfig({ showFloatingWindow: false })
+          closeFloatingWindow()
+        } else {
+          await patchAppConfig({ showFloatingWindow: true })
+          showFloatingWindow()
+        }
+      }
+    },
+    {
       id: 'rule',
       label: '规则模式',
       accelerator: ruleModeShortcut,
@@ -140,10 +157,11 @@ const buildContextMenu = async (): Promise<Menu> => {
         try {
           await triggerSysProxy(enable)
           await patchAppConfig({ sysProxy: { enable } })
+          mainWindow?.webContents.send('appConfigUpdated')
+          floatingWindow?.webContents.send('appConfigUpdated')
         } catch (e) {
           // ignore
         } finally {
-          mainWindow?.webContents.send('appConfigUpdated')
           ipcMain.emit('updateTrayMenu')
         }
       }
@@ -155,14 +173,20 @@ const buildContextMenu = async (): Promise<Menu> => {
       checked: tun?.enable ?? false,
       click: async (item): Promise<void> => {
         const enable = item.checked
-        if (enable) {
-          await patchControledMihomoConfig({ tun: { enable }, dns: { enable: true } })
-        } else {
-          await patchControledMihomoConfig({ tun: { enable } })
+        try {
+          if (enable) {
+            await patchControledMihomoConfig({ tun: { enable }, dns: { enable: true } })
+          } else {
+            await patchControledMihomoConfig({ tun: { enable } })
+          }
+          mainWindow?.webContents.send('controledMihomoConfigUpdated')
+          floatingWindow?.webContents.send('controledMihomoConfigUpdated')
+          await restartCore()
+        } catch {
+          // ignore
+        } finally {
+          ipcMain.emit('updateTrayMenu')
         }
-        mainWindow?.webContents.send('controledMihomoConfigUpdated')
-        await restartCore()
-        ipcMain.emit('updateTrayMenu')
       }
     },
     ...groupsMenu,
@@ -291,7 +315,7 @@ export async function createTray(): Promise<void> {
     })
     tray?.addListener('right-click', async () => {
       if (mainWindow?.isVisible()) {
-        mainWindow?.close()
+        closeMainWindow()
       } else {
         showMainWindow()
       }
@@ -303,7 +327,7 @@ export async function createTray(): Promise<void> {
   if (process.platform === 'win32') {
     tray?.addListener('click', () => {
       if (mainWindow?.isVisible()) {
-        mainWindow?.close()
+        closeMainWindow()
       } else {
         showMainWindow()
       }
@@ -315,7 +339,7 @@ export async function createTray(): Promise<void> {
   if (process.platform === 'linux') {
     tray?.addListener('click', () => {
       if (mainWindow?.isVisible()) {
-        mainWindow?.close()
+        closeMainWindow()
       } else {
         showMainWindow()
       }

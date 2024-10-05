@@ -327,6 +327,26 @@ export async function subStoreCollections(): Promise<ISubStoreSub[]> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('subStoreCollections'))
 }
 
+export async function showMainWindow(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('showMainWindow'))
+}
+
+export async function closeMainWindow(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('closeMainWindow'))
+}
+
+export async function showFloatingWindow(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('showFloatingWindow'))
+}
+
+export async function closeFloatingWindow(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('closeFloatingWindow'))
+}
+
+export async function showContextMenu(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('showContextMenu'))
+}
+
 export async function openFile(
   type: 'profile' | 'override',
   id: string,
