@@ -65,7 +65,7 @@ import { listWebdavBackups, webdavBackup, webdavDelete, webdavRestore } from '..
 import { getInterfaces } from '../sys/interface'
 import { copyEnv } from '../resolve/tray'
 import { registerShortcut } from '../resolve/shortcut'
-import { closeMainWindow, mainWindow, showMainWindow } from '..'
+import { closeMainWindow, mainWindow, showMainWindow, triggerMainWindow } from '..'
 import {
   applyTheme,
   fetchThemes,
@@ -212,6 +212,7 @@ export function registerIpcMainHandlers(): void {
   })
   ipcMain.handle('showMainWindow', showMainWindow)
   ipcMain.handle('closeMainWindow', closeMainWindow)
+  ipcMain.handle('triggerMainWindow', triggerMainWindow)
   ipcMain.handle('showFloatingWindow', showFloatingWindow)
   ipcMain.handle('closeFloatingWindow', closeFloatingWindow)
   ipcMain.handle('showContextMenu', () => ipcErrorWrapper(showContextMenu)())

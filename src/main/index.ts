@@ -284,6 +284,14 @@ export async function createWindow(): Promise<void> {
   }
 }
 
+export function triggerMainWindow(): void {
+  if (mainWindow?.isVisible()) {
+    closeMainWindow()
+  } else {
+    showMainWindow()
+  }
+}
+
 export function showMainWindow(): void {
   if (mainWindow) {
     if (quitTimeout) {

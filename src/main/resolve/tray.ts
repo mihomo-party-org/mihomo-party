@@ -15,12 +15,12 @@ import {
   mihomoGroups,
   patchMihomoConfig
 } from '../core/mihomoApi'
-import { closeMainWindow, mainWindow, showMainWindow } from '..'
+import { mainWindow, showMainWindow, triggerMainWindow } from '..'
 import { app, clipboard, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { quitWithoutCore, restartCore } from '../core/manager'
-import { closeFloatingWindow, floatingWindow, showFloatingWindow } from './floatingWindow'
+import { floatingWindow, triggerFloatingWindow } from './floatingWindow'
 
 export let tray: Tray | null = null
 
@@ -98,13 +98,7 @@ export const buildContextMenu = async (): Promise<Menu> => {
       label: floatingWindow?.isVisible() ? '关闭悬浮窗' : '显示悬浮窗',
       type: 'normal',
       click: async (): Promise<void> => {
-        if (floatingWindow) {
-          await patchAppConfig({ showFloatingWindow: false })
-          closeFloatingWindow()
-        } else {
-          await patchAppConfig({ showFloatingWindow: true })
-          showFloatingWindow()
-        }
+        await triggerFloatingWindow()
       }
     },
     {
@@ -314,11 +308,7 @@ export async function createTray(): Promise<void> {
       tray?.setImage(image)
     })
     tray?.addListener('right-click', async () => {
-      if (mainWindow?.isVisible()) {
-        closeMainWindow()
-      } else {
-        showMainWindow()
-      }
+      triggerMainWindow()
     })
     tray?.addListener('click', async () => {
       await updateTrayMenu()
@@ -326,11 +316,7 @@ export async function createTray(): Promise<void> {
   }
   if (process.platform === 'win32') {
     tray?.addListener('click', () => {
-      if (mainWindow?.isVisible()) {
-        closeMainWindow()
-      } else {
-        showMainWindow()
-      }
+      triggerMainWindow()
     })
     tray?.addListener('right-click', async () => {
       await updateTrayMenu()
@@ -338,11 +324,7 @@ export async function createTray(): Promise<void> {
   }
   if (process.platform === 'linux') {
     tray?.addListener('click', () => {
-      if (mainWindow?.isVisible()) {
-        closeMainWindow()
-      } else {
-        showMainWindow()
-      }
+      triggerMainWindow()
     })
     ipcMain.on('updateTrayMenu', async () => {
       await updateTrayMenu()

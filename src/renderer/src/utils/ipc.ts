@@ -335,6 +335,10 @@ export async function closeMainWindow(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('closeMainWindow'))
 }
 
+export async function triggerMainWindow(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('triggerMainWindow'))
+}
+
 export async function showFloatingWindow(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('showFloatingWindow'))
 }

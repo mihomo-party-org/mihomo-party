@@ -1,5 +1,5 @@
 import { app, globalShortcut, ipcMain, Notification } from 'electron'
-import { mainWindow, showMainWindow } from '..'
+import { mainWindow, triggerMainWindow } from '..'
 import {
   getAppConfig,
   getControledMihomoConfig,
@@ -9,7 +9,7 @@ import {
 import { triggerSysProxy } from '../sys/sysproxy'
 import { patchMihomoConfig } from '../core/mihomoApi'
 import { quitWithoutCore, restartCore } from '../core/manager'
-import { closeFloatingWindow, floatingWindow, showFloatingWindow } from './floatingWindow'
+import { floatingWindow, triggerFloatingWindow } from './floatingWindow'
 
 export async function registerShortcut(
   oldShortcut: string,
@@ -25,22 +25,12 @@ export async function registerShortcut(
   switch (action) {
     case 'showWindowShortcut': {
       return globalShortcut.register(newShortcut, () => {
-        if (mainWindow?.isVisible()) {
-          mainWindow?.close()
-        } else {
-          showMainWindow()
-        }
+        triggerMainWindow()
       })
     }
     case 'showFloatingWindowShortcut': {
       return globalShortcut.register(newShortcut, async () => {
-        if (floatingWindow) {
-          await patchAppConfig({ showFloatingWindow: false })
-          closeFloatingWindow()
-        } else {
-          await patchAppConfig({ showFloatingWindow: true })
-          showFloatingWindow()
-        }
+        await triggerFloatingWindow()
       })
     }
     case 'triggerSysProxyShortcut': {
