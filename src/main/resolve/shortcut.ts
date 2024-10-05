@@ -9,6 +9,7 @@ import {
 import { triggerSysProxy } from '../sys/sysproxy'
 import { patchMihomoConfig } from '../core/mihomoApi'
 import { quitWithoutCore, restartCore } from '../core/manager'
+import { closeFloatingWindow, floatingWindow, showFloatingWindow } from './floatingWindow'
 
 export async function registerShortcut(
   oldShortcut: string,
@@ -31,6 +32,17 @@ export async function registerShortcut(
         }
       })
     }
+    case 'showFloatingWindowShortcut': {
+      return globalShortcut.register(newShortcut, async () => {
+        if (floatingWindow) {
+          await patchAppConfig({ showFloatingWindow: false })
+          closeFloatingWindow()
+        } else {
+          await patchAppConfig({ showFloatingWindow: true })
+          showFloatingWindow()
+        }
+      })
+    }
     case 'triggerSysProxyShortcut': {
       return globalShortcut.register(newShortcut, async () => {
         const {
@@ -42,10 +54,11 @@ export async function registerShortcut(
           new Notification({
             title: `系统代理已${!enable ? '开启' : '关闭'}`
           }).show()
+          mainWindow?.webContents.send('appConfigUpdated')
+          floatingWindow?.webContents.send('appConfigUpdated')
         } catch {
           // ignore
         } finally {
-          mainWindow?.webContents.send('appConfigUpdated')
           ipcMain.emit('updateTrayMenu')
         }
       })
@@ -64,10 +77,11 @@ export async function registerShortcut(
           new Notification({
             title: `虚拟网卡已${!enable ? '开启' : '关闭'}`
           }).show()
+          mainWindow?.webContents.send('controledMihomoConfigUpdated')
+          floatingWindow?.webContents.send('appConfigUpdated')
         } catch {
           // ignore
         } finally {
-          mainWindow?.webContents.send('controledMihomoConfigUpdated')
           ipcMain.emit('updateTrayMenu')
         }
       })
@@ -122,6 +136,7 @@ export async function registerShortcut(
 
 export async function initShortcut(): Promise<void> {
   const {
+    showFloatingWindowShortcut,
     showWindowShortcut,
     triggerSysProxyShortcut,
     triggerTunShortcut,
@@ -134,6 +149,13 @@ export async function initShortcut(): Promise<void> {
   if (showWindowShortcut) {
     try {
       await registerShortcut('', showWindowShortcut, 'showWindowShortcut')
+    } catch {
+      // ignore
+    }
+  }
+  if (showFloatingWindowShortcut) {
+    try {
+      await registerShortcut('', showFloatingWindowShortcut, 'showFloatingWindowShortcut')
     } catch {
       // ignore
     }

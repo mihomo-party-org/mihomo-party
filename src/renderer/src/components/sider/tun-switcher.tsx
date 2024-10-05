@@ -51,6 +51,7 @@ const TunSwitcher: React.FC = () => {
       await patchControledMihomoConfig({ tun: { enable } })
     }
     await restartCore()
+    window.electron.ipcRenderer.send('updateFloatingWindow')
     window.electron.ipcRenderer.send('updateTrayMenu')
   }
 

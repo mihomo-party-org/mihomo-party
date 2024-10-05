@@ -6,8 +6,10 @@ import AdmZip from 'adm-zip'
 import { getControledMihomoConfig } from '../config'
 import { existsSync } from 'fs'
 import { mainWindow } from '..'
+import { floatingWindow } from './floatingWindow'
 
-let insertedCSSKey: string | undefined = undefined
+let insertedCSSKeyMain: string | undefined = undefined
+let insertedCSSKeyFloating: string | undefined = undefined
 
 export async function resolveThemes(): Promise<{ key: string; label: string }[]> {
   const files = await readdir(themesDir())
@@ -67,6 +69,12 @@ export async function writeTheme(theme: string, css: string): Promise<void> {
 
 export async function applyTheme(theme: string): Promise<void> {
   const css = await readTheme(theme)
-  await mainWindow?.webContents.removeInsertedCSS(insertedCSSKey || '')
-  insertedCSSKey = await mainWindow?.webContents.insertCSS(css)
+  await mainWindow?.webContents.removeInsertedCSS(insertedCSSKeyMain || '')
+  insertedCSSKeyMain = await mainWindow?.webContents.insertCSS(css)
+  try {
+    await floatingWindow?.webContents.removeInsertedCSS(insertedCSSKeyFloating || '')
+    insertedCSSKeyFloating = await floatingWindow?.webContents.insertCSS(css)
+  } catch {
+    // ignore
+  }
 }

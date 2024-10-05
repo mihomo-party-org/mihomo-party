@@ -7,6 +7,7 @@ import useSWR from 'swr'
 import {
   applyTheme,
   checkAutoRun,
+  closeFloatingWindow,
   copyEnv,
   disableAutoRun,
   enableAutoRun,
@@ -15,6 +16,7 @@ import {
   importThemes,
   relaunchApp,
   resolveThemes,
+  showFloatingWindow,
   startMonitor,
   writeTheme
 } from '@renderer/utils/ipc'
@@ -37,6 +39,7 @@ const GeneralConfig: React.FC = () => {
     useDockIcon = true,
     showTraffic = true,
     proxyInTray = true,
+    showFloatingWindow: showFloating = false,
     useWindowFrame = false,
     autoQuitWithoutCore = false,
     autoQuitWithoutCoreDelay = 60,
@@ -174,6 +177,20 @@ const GeneralConfig: React.FC = () => {
             <SelectItem key="cmd">CMD</SelectItem>
             <SelectItem key="powershell">PowerShell</SelectItem>
           </Select>
+        </SettingItem>
+        <SettingItem title="显示悬浮窗" divider>
+          <Switch
+            size="sm"
+            isSelected={showFloating}
+            onValueChange={async (v) => {
+              await patchAppConfig({ showFloatingWindow: v })
+              if (v) {
+                showFloatingWindow()
+              } else {
+                closeFloatingWindow()
+              }
+            }}
+          />
         </SettingItem>
         {platform !== 'linux' && (
           <>

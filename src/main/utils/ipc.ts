@@ -65,7 +65,7 @@ import { listWebdavBackups, webdavBackup, webdavDelete, webdavRestore } from '..
 import { getInterfaces } from '../sys/interface'
 import { copyEnv } from '../resolve/tray'
 import { registerShortcut } from '../resolve/shortcut'
-import { mainWindow } from '..'
+import { closeMainWindow, mainWindow, showMainWindow } from '..'
 import {
   applyTheme,
   fetchThemes,
@@ -81,6 +81,7 @@ import v8 from 'v8'
 import { getGistUrl } from '../resolve/gistApi'
 import { getImageDataURL } from './image'
 import { startMonitor } from '../resolve/trafficMonitor'
+import { closeFloatingWindow, showContextMenu, showFloatingWindow } from '../resolve/floatingWindow'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T> // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -209,6 +210,11 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('isAlwaysOnTop', () => {
     return mainWindow?.isAlwaysOnTop()
   })
+  ipcMain.handle('showMainWindow', showMainWindow)
+  ipcMain.handle('closeMainWindow', closeMainWindow)
+  ipcMain.handle('showFloatingWindow', showFloatingWindow)
+  ipcMain.handle('closeFloatingWindow', closeFloatingWindow)
+  ipcMain.handle('showContextMenu', () => ipcErrorWrapper(showContextMenu)())
   ipcMain.handle('openFile', (_e, type, id, ext) => openFile(type, id, ext))
   ipcMain.handle('openDevTools', () => {
     mainWindow?.webContents.openDevTools()
