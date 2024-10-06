@@ -45,6 +45,10 @@ chokidar.watch(path.join(mihomoCoreDir(), 'meta-update'), {}).on('unlinkDir', as
   }
 })
 
+export const mihomoIpcPath =
+  process.platform === 'win32' ? '\\\\.\\pipe\\MihomoParty\\mihomo' : '/tmp/mihomo-party.sock'
+const ctlParam = process.platform === 'win32' ? '-ext-ctl-pipe' : '-ext-ctl-unix'
+
 let setPublicDNSTimer: NodeJS.Timeout | null = null
 let recoverDNSTimer: NodeJS.Timeout | null = null
 let child: ChildProcess
@@ -87,7 +91,8 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
       })
     }
   }
-  child = spawn(corePath, ['-d', mihomoWorkDir()], {
+
+  child = spawn(corePath, ['-d', mihomoWorkDir(), ctlParam, mihomoIpcPath], {
     detached: detached,
     stdio: detached ? 'ignore' : undefined
   })
