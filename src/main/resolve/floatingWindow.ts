@@ -37,6 +37,7 @@ async function createFloatingWindow(): Promise<void> {
   floatingWindow.on('ready-to-show', () => {
     applyTheme(customTheme)
     floatingWindow?.show()
+    floatingWindow?.setAlwaysOnTop(true, 'screen-saver')
   })
   floatingWindow.on('moved', () => {
     if (floatingWindow) floatingWindowState.saveState(floatingWindow)
