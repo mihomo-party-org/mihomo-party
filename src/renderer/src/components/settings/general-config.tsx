@@ -8,6 +8,7 @@ import {
   applyTheme,
   checkAutoRun,
   closeFloatingWindow,
+  closeTrayIcon,
   copyEnv,
   disableAutoRun,
   enableAutoRun,
@@ -17,6 +18,7 @@ import {
   relaunchApp,
   resolveThemes,
   showFloatingWindow,
+  showTrayIcon,
   startMonitor,
   writeTheme
 } from '@renderer/utils/ipc'
@@ -39,6 +41,7 @@ const GeneralConfig: React.FC = () => {
     useDockIcon = true,
     showTraffic = true,
     proxyInTray = true,
+    disableTray = false,
     showFloatingWindow: showFloating = false,
     useWindowFrame = false,
     autoQuitWithoutCore = false,
@@ -192,6 +195,22 @@ const GeneralConfig: React.FC = () => {
             }}
           />
         </SettingItem>
+        {showFloating && (
+          <SettingItem title="禁用托盘图标" divider>
+            <Switch
+              size="sm"
+              isSelected={disableTray}
+              onValueChange={async (v) => {
+                await patchAppConfig({ disableTray: v })
+                if (v) {
+                  closeTrayIcon()
+                } else {
+                  showTrayIcon()
+                }
+              }}
+            />
+          </SettingItem>
+        )}
         {platform !== 'linux' && (
           <>
             <SettingItem title="托盘菜单显示节点信息" divider>

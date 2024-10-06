@@ -63,7 +63,7 @@ import {
 import { getRuntimeConfig, getRuntimeConfigStr } from '../core/factory'
 import { listWebdavBackups, webdavBackup, webdavDelete, webdavRestore } from '../resolve/backup'
 import { getInterfaces } from '../sys/interface'
-import { copyEnv } from '../resolve/tray'
+import { closeTrayIcon, copyEnv, showTrayIcon } from '../resolve/tray'
 import { registerShortcut } from '../resolve/shortcut'
 import { closeMainWindow, mainWindow, showMainWindow, triggerMainWindow } from '..'
 import {
@@ -210,11 +210,13 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('isAlwaysOnTop', () => {
     return mainWindow?.isAlwaysOnTop()
   })
+  ipcMain.handle('showTrayIcon', () => ipcErrorWrapper(showTrayIcon)())
+  ipcMain.handle('closeTrayIcon', () => ipcErrorWrapper(closeTrayIcon)())
   ipcMain.handle('showMainWindow', showMainWindow)
   ipcMain.handle('closeMainWindow', closeMainWindow)
   ipcMain.handle('triggerMainWindow', triggerMainWindow)
-  ipcMain.handle('showFloatingWindow', showFloatingWindow)
-  ipcMain.handle('closeFloatingWindow', closeFloatingWindow)
+  ipcMain.handle('showFloatingWindow', () => ipcErrorWrapper(showFloatingWindow)())
+  ipcMain.handle('closeFloatingWindow', () => ipcErrorWrapper(closeFloatingWindow)())
   ipcMain.handle('showContextMenu', () => ipcErrorWrapper(showContextMenu)())
   ipcMain.handle('openFile', (_e, type, id, ext) => openFile(type, id, ext))
   ipcMain.handle('openDevTools', () => {

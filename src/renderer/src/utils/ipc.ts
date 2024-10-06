@@ -327,6 +327,14 @@ export async function subStoreCollections(): Promise<ISubStoreSub[]> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('subStoreCollections'))
 }
 
+export async function showTrayIcon(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('showTrayIcon'))
+}
+
+export async function closeTrayIcon(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('closeTrayIcon'))
+}
+
 export async function showMainWindow(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('showMainWindow'))
 }
