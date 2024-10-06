@@ -32,7 +32,7 @@ const ProxyCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={proxyCardStatus}
+      className={`${proxyCardStatus} proxy-card`}
     >
       <Card
         fullWidth
