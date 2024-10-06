@@ -243,21 +243,27 @@ const ProfileItem: React.FC<Props> = (props) => {
           </div>
           {info.type === 'remote' && extra && (
             <div
-              onClick={(e) => {
-                e.stopPropagation()
-                patchAppConfig({
-                  profileDisplayDate: profileDisplayDate === 'expire' ? 'update' : 'expire'
-                })
-              }}
               className={`mt-2 flex justify-between ${isCurrent ? 'text-primary-foreground' : 'text-foreground'}`}
             >
               <small>{`${calcTraffic(usage)}/${calcTraffic(total)}`}</small>
               {profileDisplayDate === 'expire' ? (
-                <small>
+                <small
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    patchAppConfig({ profileDisplayDate: 'update' })
+                  }}
+                >
                   {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
                 </small>
               ) : (
-                <small>{dayjs(info.updated).fromNow()}</small>
+                <small
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    patchAppConfig({ profileDisplayDate: 'expire' })
+                  }}
+                >
+                  {dayjs(info.updated).fromNow()}
+                </small>
               )}
             </div>
           )}
