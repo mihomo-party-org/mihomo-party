@@ -148,7 +148,9 @@ async function migration(): Promise<void> {
     ],
     appTheme = 'system',
     envType = [process.platform === 'win32' ? 'powershell' : 'bash'],
-    useSubStore = true
+    useSubStore = true,
+    showFloatingWindow = false,
+    disableTray = false
   } = await getAppConfig()
   const {
     'external-controller-pipe': externalControllerPipe,
@@ -207,6 +209,9 @@ async function migration(): Promise<void> {
   }
   if (externalController === undefined) {
     await patchControledMihomoConfig({ 'external-controller': '' })
+  }
+  if (!showFloatingWindow && disableTray) {
+    await patchAppConfig({ disableTray: false })
   }
 }
 

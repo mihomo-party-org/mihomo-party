@@ -4,7 +4,7 @@ import windowStateKeeper from 'electron-window-state'
 import { join } from 'path'
 import { getAppConfig, patchAppConfig } from '../config'
 import { applyTheme } from './theme'
-import { buildContextMenu } from './tray'
+import { buildContextMenu, showTrayIcon } from './tray'
 
 export let floatingWindow: BrowserWindow | null = null
 
@@ -55,7 +55,7 @@ async function createFloatingWindow(): Promise<void> {
   }
 }
 
-export function showFloatingWindow(): void {
+export async function showFloatingWindow(): Promise<void> {
   if (floatingWindow) {
     floatingWindow.show()
   } else {
@@ -66,19 +66,21 @@ export function showFloatingWindow(): void {
 export async function triggerFloatingWindow(): Promise<void> {
   if (floatingWindow?.isVisible()) {
     await patchAppConfig({ showFloatingWindow: false })
-    closeFloatingWindow()
+    await closeFloatingWindow()
   } else {
     await patchAppConfig({ showFloatingWindow: true })
-    showFloatingWindow()
+    await showFloatingWindow()
   }
 }
 
-export function closeFloatingWindow(): void {
+export async function closeFloatingWindow(): Promise<void> {
   if (floatingWindow) {
     floatingWindow.close()
     floatingWindow.destroy()
     floatingWindow = null
   }
+  await showTrayIcon()
+  await patchAppConfig({ disableTray: false })
 }
 
 export async function showContextMenu(): Promise<void> {

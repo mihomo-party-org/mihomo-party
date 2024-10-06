@@ -365,3 +365,16 @@ export async function copyEnv(type: 'bash' | 'cmd' | 'powershell'): Promise<void
     }
   }
 }
+
+export async function showTrayIcon(): Promise<void> {
+  if (!tray) {
+    await createTray()
+  }
+}
+
+export async function closeTrayIcon(): Promise<void> {
+  if (tray) {
+    tray.destroy()
+  }
+  tray = null
+}

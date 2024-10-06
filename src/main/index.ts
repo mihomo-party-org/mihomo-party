@@ -150,13 +150,15 @@ app.whenReady().then(async () => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-  const { showFloatingWindow: showFloating = false } = await getAppConfig()
+  const { showFloatingWindow: showFloating = false, disableTray = false } = await getAppConfig()
   registerIpcMainHandlers()
   await createWindow()
   if (showFloating) {
     showFloatingWindow()
   }
-  await createTray()
+  if (!disableTray) {
+    await createTray()
+  }
   await initShortcut()
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
