@@ -26,7 +26,7 @@ const FloatingApp: React.FC = () => {
   }, [])
   return (
     <div className="app-drag p-[4px] h-[100vh]">
-      <div className="floating-bg drop-shadow-md flex rounded-[calc(calc(100vh-8px)/2)] bg-content1 h-[calc(100vh-8px)] w-[calc(100vw-8px)]">
+      <div className="floating-bg border-1 border-divider drop-shadow-md flex rounded-[calc(calc(100vh-8px)/2)] bg-content1 h-[calc(100vh-8px)] w-[calc(100vw-8px)]">
         <div className="flex justify-center items-center h-full w-[calc(100vh-8px)]">
           <div
             onContextMenu={(e) => {
