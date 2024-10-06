@@ -51,7 +51,7 @@ const MihomoCoreCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={mihomoCoreCardStatus}
+      className={`${mihomoCoreCardStatus} mihomo-core-card`}
     >
       {mihomoCoreCardStatus === 'col-span-2' ? (
         <Card

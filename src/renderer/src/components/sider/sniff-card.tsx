@@ -40,7 +40,7 @@ const SniffCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={`${sniffCardStatus} ${!controlSniff ? 'hidden' : ''}`}
+      className={`${sniffCardStatus} ${!controlSniff ? 'hidden' : ''} sniff-card`}
     >
       <Card
         fullWidth

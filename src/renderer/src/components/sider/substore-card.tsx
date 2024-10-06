@@ -28,7 +28,7 @@ const SubStoreCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={`${substoreCardStatus} ${!useSubStore ? 'hidden' : ''}`}
+      className={`${substoreCardStatus} ${!useSubStore ? 'hidden' : ''} substore-card`}
     >
       <Card
         ref={setNodeRef}

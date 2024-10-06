@@ -95,7 +95,7 @@ const ConnCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={connectionCardStatus}
+      className={`${connectionCardStatus} conn-card`}
     >
       {connectionCardStatus === 'col-span-2' ? (
         <>

@@ -31,7 +31,7 @@ const RuleCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={ruleCardStatus}
+      className={`${ruleCardStatus} rule-card`}
     >
       <Card
         fullWidth

@@ -29,7 +29,7 @@ const ResourceCard: React.FC = () => {
         transition,
         zIndex: isDragging ? 'calc(infinity)' : undefined
       }}
-      className={resourceCardStatus}
+      className={`${resourceCardStatus} resource-card`}
     >
       <Card
         fullWidth
