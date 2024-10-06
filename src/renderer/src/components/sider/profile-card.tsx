@@ -130,6 +130,22 @@ const ProfileCard: React.FC = () => {
                 )}
               </div>
             )}
+          </CardBody>
+          <CardFooter className="pt-0">
+            {info.type === 'remote' && !extra && (
+              <div
+                className={`w-full mt-2 flex justify-between ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+              >
+                <Chip
+                  size="sm"
+                  variant="bordered"
+                  className={`${match ? 'text-primary-foreground border-primary-foreground' : 'border-primary text-primary'}`}
+                >
+                  远程
+                </Chip>
+                <small>{dayjs(info.updated).fromNow()}</small>
+              </div>
+            )}
             {info.type === 'local' && (
               <div
                 className={`mt-2 flex justify-between ${match ? 'text-primary-foreground' : 'text-foreground'}`}
@@ -143,8 +159,6 @@ const ProfileCard: React.FC = () => {
                 </Chip>
               </div>
             )}
-          </CardBody>
-          <CardFooter className="pt-0">
             {extra && (
               <Progress
                 className="w-full"
