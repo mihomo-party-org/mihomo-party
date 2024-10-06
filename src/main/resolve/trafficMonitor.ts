@@ -1,12 +1,24 @@
 import { ChildProcess, spawn } from 'child_process'
 import { getAppConfig } from '../config'
-import { resourcesFilesDir } from '../utils/dirs'
+import { dataDir, resourcesFilesDir } from '../utils/dirs'
 import path from 'path'
+import { existsSync } from 'fs'
+import { readFile, rm, writeFile } from 'fs/promises'
 
 let child: ChildProcess
 
 export async function startMonitor(detached = false): Promise<void> {
   if (process.platform !== 'win32') return
+  if (existsSync(path.join(dataDir(), 'monitor.pid'))) {
+    const pid = parseInt(await readFile(path.join(dataDir(), 'monitor.pid'), 'utf-8'))
+    try {
+      process.kill(pid, 'SIGINT')
+    } catch {
+      // ignore
+    } finally {
+      await rm(path.join(dataDir(), 'monitor.pid'))
+    }
+  }
   await stopMonitor()
   const { showTraffic = true } = await getAppConfig()
   if (!showTraffic) return
@@ -16,6 +28,9 @@ export async function startMonitor(detached = false): Promise<void> {
     stdio: detached ? 'ignore' : undefined
   })
   if (detached) {
+    if (child && child.pid) {
+      await writeFile(path.join(dataDir(), 'monitor.pid'), child.pid.toString())
+    }
     child.unref()
   }
 }
