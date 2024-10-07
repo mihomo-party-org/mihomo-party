@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+.floating-text {
+  font-family:
+    'Microsoft YaHei',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont;
+}
+
 html {
   background: none !important;
   background-color: transparent !important;

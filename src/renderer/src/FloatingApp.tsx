@@ -25,9 +25,9 @@ const FloatingApp: React.FC = () => {
     }
   }, [])
   return (
-    <div className="app-drag p-[4px] h-[100vh]">
-      <div className="floating-bg border-1 border-divider drop-shadow-md flex rounded-[calc(calc(100vh-8px)/2)] bg-content1 h-[calc(100vh-8px)] w-[calc(100vw-8px)]">
-        <div className="flex justify-center items-center h-full w-[calc(100vh-8px)]">
+    <div className="app-drag h-[100vh] w-[100vw]">
+      <div className="floating-bg border-1 border-divider flex rounded-full bg-content1 h-[calc(100%-2px)] w-[calc(100%-2px)]">
+        <div className="flex justify-center items-center h-[100%] aspect-square">
           <div
             onContextMenu={(e) => {
               e.preventDefault()
@@ -36,21 +36,19 @@ const FloatingApp: React.FC = () => {
             onClick={() => {
               triggerMainWindow()
             }}
-            className={`app-nodrag cursor-pointer floating-thumb ${tunEnabled ? 'bg-secondary' : sysProxyEnabled ? 'bg-primary' : 'bg-default'} hover:opacity-hover rounded-full h-[calc(100vh-14px)] w-[calc(100vh-14px)]`}
+            className={`app-nodrag cursor-pointer floating-thumb ${tunEnabled ? 'bg-secondary' : sysProxyEnabled ? 'bg-primary' : 'bg-default'} hover:opacity-hover rounded-full h-[calc(100%-4px)] aspect-square`}
           >
             <MihomoIcon className="floating-icon text-primary-foreground h-full leading-full text-[22px] mx-auto" />
           </div>
         </div>
-        <div className="flex flex-col justify-center w-[calc(100%-42px)]">
-          <div className="flex justify-end">
-            <div className="floating-text whitespace-nowrap overflow-hidden text-[12px] mr-[10px] font-bold">
+        <div className="w-full overflow-hidden">
+          <div className="flex flex-col justify-center h-full w-full">
+            <h2 className="text-end floating-text whitespace-nowrap text-[12px] mr-2 font-bold">
               {calcTraffic(upload)}/s
-            </div>
-          </div>
-          <div className="w-full flex justify-end">
-            <div className="floating-text whitespace-nowrap overflow-hidden text-[12px] mr-[10px] font-bold">
+            </h2>
+            <h2 className="text-end floating-text whitespace-nowrap text-[12px] mr-2 font-bold">
               {calcTraffic(download)}/s
-            </div>
+            </h2>
           </div>
         </div>
       </div>
