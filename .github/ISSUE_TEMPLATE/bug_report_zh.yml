@@ -12,6 +12,7 @@ body:
         - label: 我未在[Issue Tracker](./?q=is%3Aissue)中找到我要提出的问题
         - label: 我未在[常见问题](https://mihomo.party/docs/issues/common)中找到我要提出的问题
         - label: 这是GUI程序的问题,而不是内核程序的问题
+        - label: 我已经关闭所有杀毒软件/代理软件后测试过，问题依旧存在
         - label: 我已经使用最新的测试版本测试过，问题依旧存在
 
   - type: dropdown
