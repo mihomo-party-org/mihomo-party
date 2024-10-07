@@ -43,6 +43,7 @@ const GeneralConfig: React.FC = () => {
     proxyInTray = true,
     disableTray = false,
     showFloatingWindow: showFloating = false,
+    spinFloatingIcon = true,
     useWindowFrame = false,
     autoQuitWithoutCore = false,
     autoQuitWithoutCoreDelay = 60,
@@ -192,6 +193,16 @@ const GeneralConfig: React.FC = () => {
               } else {
                 closeFloatingWindow()
               }
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="根据网速旋转悬浮窗图标" divider>
+          <Switch
+            size="sm"
+            isSelected={spinFloatingIcon}
+            onValueChange={async (v) => {
+              await patchAppConfig({ spinFloatingIcon: v })
+              window.electron.ipcRenderer.send('updateFloatingWindow')
             }}
           />
         </SettingItem>
