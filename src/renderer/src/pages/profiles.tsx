@@ -13,13 +13,7 @@ import BasePage from '@renderer/components/base/base-page'
 import ProfileItem from '@renderer/components/profiles/profile-item'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import {
-  getFilePath,
-  readTextFile,
-  subStoreCollections,
-  subStorePort,
-  subStoreSubs
-} from '@renderer/utils/ipc'
+import { getFilePath, readTextFile, subStoreCollections, subStoreSubs } from '@renderer/utils/ipc'
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { MdContentPaste } from 'react-icons/md'
 import {
@@ -286,16 +280,16 @@ const Profiles: React.FC = () => {
                   } else if (key.toString().startsWith('sub-')) {
                     setSubStoreImporting(true)
                     try {
-                      const port = await subStorePort()
                       const sub = subs.find(
                         (sub) => sub.name === key.toString().replace('sub-', '')
                       )
                       await addProfileItem({
                         name: sub?.displayName || sub?.name || '',
+                        substore: !useCustomSubStore,
                         type: 'remote',
                         url: useCustomSubStore
                           ? `${customSubStoreUrl}/download/${key.toString().replace('sub-', '')}?target=ClashMeta`
-                          : `http://127.0.0.1:${port}/download/${key.toString().replace('sub-', '')}?target=ClashMeta`,
+                          : `/download/${key.toString().replace('sub-', '')}`,
                         useProxy
                       })
                     } catch (e) {
@@ -306,7 +300,6 @@ const Profiles: React.FC = () => {
                   } else if (key.toString().startsWith('collection-')) {
                     setSubStoreImporting(true)
                     try {
-                      const port = await subStorePort()
                       const collection = collections.find(
                         (collection) =>
                           collection.name === key.toString().replace('collection-', '')
@@ -314,9 +307,10 @@ const Profiles: React.FC = () => {
                       await addProfileItem({
                         name: collection?.displayName || collection?.name || '',
                         type: 'remote',
+                        substore: !useCustomSubStore,
                         url: useCustomSubStore
                           ? `${customSubStoreUrl}/download/collection/${key.toString().replace('collection-', '')}?target=ClashMeta`
-                          : `http://127.0.0.1:${port}/download/collection/${key.toString().replace('collection-', '')}?target=ClashMeta`,
+                          : `/download/collection/${key.toString().replace('collection-', '')}`,
                         useProxy
                       })
                     } catch (e) {

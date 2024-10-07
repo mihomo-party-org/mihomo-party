@@ -5,9 +5,10 @@ import { readFile, rm, writeFile } from 'fs/promises'
 import { restartCore } from '../core/manager'
 import { getAppConfig } from './app'
 import { existsSync } from 'fs'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import yaml from 'yaml'
 import { defaultProfile } from '../utils/template'
+import { subStorePort } from '../resolve/server'
 
 let profileConfig: IProfileConfig // profile.yaml
 
@@ -105,6 +106,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
     name: item.name || (item.type === 'remote' ? 'Remote File' : 'Local File'),
     type: item.type,
     url: item.url,
+    substore: item.substore || false,
     interval: item.interval || 0,
     override: item.override || [],
     useProxy: item.useProxy || false,
@@ -115,18 +117,35 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
       const { userAgent } = await getAppConfig()
       const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
       if (!item.url) throw new Error('Empty URL')
-      const res = await axios.get(item.url, {
-        proxy: newItem.useProxy
-          ? {
-              protocol: 'http',
-              host: '127.0.0.1',
-              port: mixedPort
-            }
-          : false,
-        headers: {
-          'User-Agent': userAgent || 'clash.meta'
+      let res: AxiosResponse
+      if (newItem.substore) {
+        const urlObj = new URL(`http://127.0.0.1:${subStorePort}${item.url}`)
+        urlObj.searchParams.set('target', 'ClashMeta')
+        if (newItem.useProxy) {
+          urlObj.searchParams.set('proxy', `http://127.0.0.1:${mixedPort}`)
+        } else {
+          urlObj.searchParams.delete('proxy')
         }
-      })
+        res = await axios.get(urlObj.toString(), {
+          headers: {
+            'User-Agent': userAgent || 'clash.meta'
+          }
+        })
+      } else {
+        res = await axios.get(item.url, {
+          proxy: newItem.useProxy
+            ? {
+                protocol: 'http',
+                host: '127.0.0.1',
+                port: mixedPort
+              }
+            : false,
+          headers: {
+            'User-Agent': userAgent || 'clash.meta'
+          }
+        })
+      }
+
       const data = res.data
       const headers = res.headers
       if (headers['content-disposition'] && newItem.name === 'Remote File') {

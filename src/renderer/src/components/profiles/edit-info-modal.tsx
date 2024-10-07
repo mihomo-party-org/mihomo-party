@@ -18,6 +18,7 @@ import { useOverrideConfig } from '@renderer/hooks/use-override-config'
 import { restartCore } from '@renderer/utils/ipc'
 import { MdDeleteForever } from 'react-icons/md'
 import { FaPlus } from 'react-icons/fa6'
+
 interface Props {
   item: IProfileItem
   updateProfileItem: (item: IProfileItem) => Promise<void>

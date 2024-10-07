@@ -426,6 +426,7 @@ interface IProfileItem {
   override?: string[]
   useProxy?: boolean
   extra?: ISubscriptionUserInfo
+  substore?: boolean
 }
 
 interface ISubStoreSub {
