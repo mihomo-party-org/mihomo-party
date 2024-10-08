@@ -105,10 +105,6 @@ const elevateTaskXml = `<?xml version="1.0" encoding="UTF-16"?>
 </Task>
 `
 
-export function isElvated(): void {
-  execSync('net session')
-}
-
 export function createElevateTask(): void {
   const taskFilePath = path.join(taskDir(), `mihomo-party-run.xml`)
   writeFileSync(taskFilePath, Buffer.from(`\ufeff${elevateTaskXml}`, 'utf-16le'))

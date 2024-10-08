@@ -11,7 +11,7 @@ import { init } from './utils/init'
 import { join } from 'path'
 import { initShortcut } from './resolve/shortcut'
 import { execSync, spawn } from 'child_process'
-import { createElevateTask, isElvated } from './sys/misc'
+import { createElevateTask } from './sys/misc'
 import { initProfileUpdater } from './core/profileUpdater'
 import { existsSync, writeFileSync } from 'fs'
 import { exePath, taskDir } from './utils/dirs'
@@ -24,12 +24,7 @@ export let mainWindow: BrowserWindow | null = null
 
 if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')) {
   try {
-    isElvated()
-    try {
-      createElevateTask()
-    } catch {
-      // ignore
-    }
+    createElevateTask()
   } catch (e) {
     try {
       if (process.argv.slice(1).length > 0) {
