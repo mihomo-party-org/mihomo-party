@@ -95,11 +95,11 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
           `hdiutil attach "${path.join(dataDir(), file)}" -mountpoint "/Volumes/mihomo-party" -nobrowse`
         )
         try {
-          await execPromise(`mv /Applications/${name}.app /tmp`)
+          await execPromise(`mv "/Applications/${name}.app" /tmp`)
           await execPromise('cp -R "/Volumes/mihomo-party/Mihomo Party.app" /Applications/')
-          await execPromise(`rm -rf /tmp/${name}.app`)
+          await execPromise(`rm -rf "/tmp/${name}.app"`)
         } catch (e) {
-          await execPromise(`mv /tmp/${name}.app /Applications`)
+          await execPromise(`mv "/tmp/${name}.app" /Applications`)
           throw e
         } finally {
           await execPromise('hdiutil detach "/Volumes/mihomo-party"')
