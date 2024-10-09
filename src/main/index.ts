@@ -25,7 +25,7 @@ export let mainWindow: BrowserWindow | null = null
 if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')) {
   try {
     createElevateTask()
-  } catch (e) {
+  } catch (createError) {
     try {
       if (process.argv.slice(1).length > 0) {
         writeFileSync(path.join(taskDir(), 'param.txt'), process.argv.slice(1).join(' '))
@@ -35,10 +35,13 @@ if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')
       if (!existsSync(path.join(taskDir(), 'mihomo-party-run.exe'))) {
         throw new Error('mihomo-party-run.exe not found')
       } else {
-        execSync('schtasks /run /tn mihomo-party-run')
+        execSync('C:\\\\Windows\\System32\\schtasks.exe /run /tn mihomo-party-run')
       }
     } catch (e) {
-      dialog.showErrorBox('首次启动请以管理员权限运行', '首次启动请以管理员权限运行')
+      dialog.showErrorBox(
+        '首次启动请以管理员权限运行',
+        `首次启动请以管理员权限运行\n${createError}\n${e}`
+      )
     } finally {
       app.exit()
     }

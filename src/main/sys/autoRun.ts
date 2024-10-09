@@ -56,7 +56,9 @@ export async function checkAutoRun(): Promise<boolean> {
   if (process.platform === 'win32') {
     const execPromise = promisify(exec)
     try {
-      const { stdout } = await execPromise(`chcp 437 && schtasks /query /tn "${appName}"`)
+      const { stdout } = await execPromise(
+        `chcp 437 && C:\\\\Windows\\System32\\schtasks.exe /query /tn "${appName}"`
+      )
       return stdout.includes(appName)
     } catch (e) {
       return false
@@ -82,7 +84,9 @@ export async function enableAutoRun(): Promise<void> {
     const execPromise = promisify(exec)
     const taskFilePath = path.join(taskDir(), `${appName}.xml`)
     await writeFile(taskFilePath, Buffer.from(`\ufeff${taskXml}`, 'utf-16le'))
-    await execPromise(`schtasks /create /tn "${appName}" /xml "${taskFilePath}" /f`)
+    await execPromise(
+      `C:\\\\Windows\\System32\\schtasks.exe /create /tn "${appName}" /xml "${taskFilePath}" /f`
+    )
   }
   if (process.platform === 'darwin') {
     const execPromise = promisify(exec)
@@ -118,7 +122,7 @@ Categories=Utility;
 export async function disableAutoRun(): Promise<void> {
   if (process.platform === 'win32') {
     const execPromise = promisify(exec)
-    await execPromise(`schtasks /delete /tn "${appName}" /f`)
+    await execPromise(`C:\\\\Windows\\System32\\schtasks.exe /delete /tn "${appName}" /f`)
   }
   if (process.platform === 'darwin') {
     const execPromise = promisify(exec)

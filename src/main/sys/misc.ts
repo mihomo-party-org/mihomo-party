@@ -108,9 +108,11 @@ const elevateTaskXml = `<?xml version="1.0" encoding="UTF-16"?>
 export function createElevateTask(): void {
   const taskFilePath = path.join(taskDir(), `mihomo-party-run.xml`)
   writeFileSync(taskFilePath, Buffer.from(`\ufeff${elevateTaskXml}`, 'utf-16le'))
-  execSync(`schtasks /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`)
   copyFileSync(
     path.join(resourcesFilesDir(), 'mihomo-party-run.exe'),
     path.join(taskDir(), 'mihomo-party-run.exe')
+  )
+  execSync(
+    `C:\\\\Windows\\System32\\schtasks.exe /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`
   )
 }
