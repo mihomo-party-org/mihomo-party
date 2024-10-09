@@ -196,31 +196,34 @@ const GeneralConfig: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="根据网速旋转悬浮窗图标" divider>
-          <Switch
-            size="sm"
-            isSelected={spinFloatingIcon}
-            onValueChange={async (v) => {
-              await patchAppConfig({ spinFloatingIcon: v })
-              window.electron.ipcRenderer.send('updateFloatingWindow')
-            }}
-          />
-        </SettingItem>
+
         {showFloating && (
-          <SettingItem title="禁用托盘图标" divider>
-            <Switch
-              size="sm"
-              isSelected={disableTray}
-              onValueChange={async (v) => {
-                await patchAppConfig({ disableTray: v })
-                if (v) {
-                  closeTrayIcon()
-                } else {
-                  showTrayIcon()
-                }
-              }}
-            />
-          </SettingItem>
+          <>
+            <SettingItem title="根据网速旋转悬浮窗图标" divider>
+              <Switch
+                size="sm"
+                isSelected={spinFloatingIcon}
+                onValueChange={async (v) => {
+                  await patchAppConfig({ spinFloatingIcon: v })
+                  window.electron.ipcRenderer.send('updateFloatingWindow')
+                }}
+              />
+            </SettingItem>
+            <SettingItem title="禁用托盘图标" divider>
+              <Switch
+                size="sm"
+                isSelected={disableTray}
+                onValueChange={async (v) => {
+                  await patchAppConfig({ disableTray: v })
+                  if (v) {
+                    closeTrayIcon()
+                  } else {
+                    showTrayIcon()
+                  }
+                }}
+              />
+            </SettingItem>
+          </>
         )}
         {platform !== 'linux' && (
           <>
