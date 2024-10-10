@@ -18,7 +18,7 @@ dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 
 const ProfileCard: React.FC = () => {
-  const { appConfig } = useAppConfig()
+  const { appConfig, patchAppConfig } = useAppConfig()
   const { profileCardStatus = 'col-span-2', profileDisplayDate = 'expire' } = appConfig || {}
   const location = useLocation()
   const match = location.pathname.includes('/profiles')
@@ -122,11 +122,27 @@ const ProfileCard: React.FC = () => {
               >
                 <small>{`${calcTraffic(usage)}/${calcTraffic(total)}`}</small>
                 {profileDisplayDate === 'expire' ? (
-                  <small>
+                  <Button
+                    size="sm"
+                    variant="light"
+                    className="h-[20px] p-1 m-0"
+                    onPress={async () => {
+                      await patchAppConfig({ profileDisplayDate: 'update' })
+                    }}
+                  >
                     {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
-                  </small>
+                  </Button>
                 ) : (
-                  <small>{dayjs(info.updated).fromNow()}</small>
+                  <Button
+                    size="sm"
+                    variant="light"
+                    className="h-[20px] p-1 m-0"
+                    onPress={async () => {
+                      await patchAppConfig({ profileDisplayDate: 'expire' })
+                    }}
+                  >
+                    {dayjs(info.updated).fromNow()}
+                  </Button>
                 )}
               </div>
             )}

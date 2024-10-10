@@ -167,86 +167,85 @@ const OverrideItem: React.FC<Props> = (props) => {
           setOpenFileEditor(true)
         }}
       >
-        <CardBody>
-          <div className="flex justify-between h-[32px]">
-            <h3
-              ref={setNodeRef}
-              {...attributes}
-              {...listeners}
-              title={info?.name}
-              className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] text-foreground`}
-            >
-              {info?.name}
-            </h3>
-            <div className="flex">
-              {info.type === 'remote' && (
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="light"
-                  color="default"
-                  disabled={updating}
-                  onPress={async () => {
-                    setUpdating(true)
-                    try {
-                      await addOverrideItem(info)
-                      await restartCore()
-                    } catch (e) {
-                      alert(e)
-                    } finally {
-                      setUpdating(false)
-                    }
-                  }}
-                >
-                  <IoMdRefresh
+        <div ref={setNodeRef} {...attributes} {...listeners} className="h-full w-full">
+          <CardBody>
+            <div className="flex justify-between h-[32px]">
+              <h3
+                title={info?.name}
+                className={`text-ellipsis whitespace-nowrap overflow-hidden text-md font-bold leading-[32px] text-foreground`}
+              >
+                {info?.name}
+              </h3>
+              <div className="flex">
+                {info.type === 'remote' && (
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    variant="light"
                     color="default"
-                    className={`text-[24px] ${updating ? 'animate-spin' : ''}`}
-                  />
-                </Button>
-              )}
-
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button isIconOnly size="sm" variant="light" color="default">
-                    <IoMdMore color="default" className={`text-[24px]`} />
+                    disabled={updating}
+                    onPress={async () => {
+                      setUpdating(true)
+                      try {
+                        await addOverrideItem(info)
+                        await restartCore()
+                      } catch (e) {
+                        alert(e)
+                      } finally {
+                        setUpdating(false)
+                      }
+                    }}
+                  >
+                    <IoMdRefresh
+                      color="default"
+                      className={`text-[24px] ${updating ? 'animate-spin' : ''}`}
+                    />
                   </Button>
-                </DropdownTrigger>
-                <DropdownMenu onAction={onMenuAction}>
-                  {menuItems.map((item) => (
-                    <DropdownItem
-                      showDivider={item.showDivider}
-                      key={item.key}
-                      color={item.color}
-                      className={item.className}
-                    >
-                      {item.label}
-                    </DropdownItem>
-                  ))}
-                </DropdownMenu>
-              </Dropdown>
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <div className={`mt-2 flex justify-start`}>
-              {info.global && (
-                <Chip size="sm" variant="dot" color="primary" className="mr-2">
-                  全局
-                </Chip>
-              )}
-              <Chip size="sm" variant="bordered" className="mr-2">
-                {info.type === 'local' ? '本地' : '远程'}
-              </Chip>
-              <Chip size="sm" variant="bordered">
-                {info.ext === 'yaml' ? 'YAML' : 'JavaScript'}
-              </Chip>
-            </div>
-            {info.type === 'remote' && (
-              <div className={`mt-2 flex justify-end`}>
-                <small>{dayjs(info.updated).fromNow()}</small>
+                )}
+
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Button isIconOnly size="sm" variant="light" color="default">
+                      <IoMdMore color="default" className={`text-[24px]`} />
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu onAction={onMenuAction}>
+                    {menuItems.map((item) => (
+                      <DropdownItem
+                        showDivider={item.showDivider}
+                        key={item.key}
+                        color={item.color}
+                        className={item.className}
+                      >
+                        {item.label}
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
               </div>
-            )}
-          </div>
-        </CardBody>
+            </div>
+            <div className="flex justify-between">
+              <div className={`mt-2 flex justify-start`}>
+                {info.global && (
+                  <Chip size="sm" variant="dot" color="primary" className="mr-2">
+                    全局
+                  </Chip>
+                )}
+                <Chip size="sm" variant="bordered" className="mr-2">
+                  {info.type === 'local' ? '本地' : '远程'}
+                </Chip>
+                <Chip size="sm" variant="bordered">
+                  {info.ext === 'yaml' ? 'YAML' : 'JavaScript'}
+                </Chip>
+              </div>
+              {info.type === 'remote' && (
+                <div className={`mt-2 flex justify-end`}>
+                  <small>{dayjs(info.updated).fromNow()}</small>
+                </div>
+              )}
+            </div>
+          </CardBody>
+        </div>
       </Card>
     </div>
   )
