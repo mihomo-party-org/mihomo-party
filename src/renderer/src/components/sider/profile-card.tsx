@@ -125,7 +125,7 @@ const ProfileCard: React.FC = () => {
                   <Button
                     size="sm"
                     variant="light"
-                    className="h-[20px] p-1 m-0"
+                    className={`h-[20px] p-1 m-0 ${match ? 'text-primary-foreground' : 'text-foreground'}`}
                     onPress={async () => {
                       await patchAppConfig({ profileDisplayDate: 'update' })
                     }}
@@ -136,7 +136,7 @@ const ProfileCard: React.FC = () => {
                   <Button
                     size="sm"
                     variant="light"
-                    className="h-[20px] p-1 m-0"
+                    className={`h-[20px] p-1 m-0 ${match ? 'text-primary-foreground' : 'text-foreground'}`}
                     onPress={async () => {
                       await patchAppConfig({ profileDisplayDate: 'expire' })
                     }}
