@@ -96,7 +96,7 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
           )}
         </ModalBody>
         <ModalFooter>
-          <Button variant="light" onPress={onClose}>
+          <Button size="sm" variant="light" onPress={onClose}>
             关闭
           </Button>
         </ModalFooter>

@@ -166,10 +166,10 @@ const EditInfoModal: React.FC<Props> = (props) => {
           </SettingItem>
         </ModalBody>
         <ModalFooter>
-          <Button variant="light" onPress={onClose}>
+          <Button size="sm" variant="light" onPress={onClose}>
             取消
           </Button>
-          <Button color="primary" onPress={onSave}>
+          <Button size="sm" color="primary" onPress={onSave}>
             保存
           </Button>
         </ModalFooter>

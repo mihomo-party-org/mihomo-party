@@ -64,10 +64,11 @@ const UpdaterModal: React.FC<Props> = (props) => {
           </ReactMarkdown>
         </ModalBody>
         <ModalFooter>
-          <Button variant="light" onPress={onClose}>
+          <Button size="sm" variant="light" onPress={onClose}>
             取消
           </Button>
           <Button
+            size="sm"
             color="primary"
             isLoading={downloading}
             onPress={async () => {

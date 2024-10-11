@@ -26,10 +26,10 @@ const BasePasswordModal: React.FC<Props> = (props) => {
           <Input fullWidth type="password" value={password} onValueChange={setPassword} />
         </ModalBody>
         <ModalFooter>
-          <Button variant="light" onPress={onCancel}>
+          <Button size="sm" variant="light" onPress={onCancel}>
             取消
           </Button>
-          <Button color="primary" onPress={() => onConfirm(password)}>
+          <Button size="sm" color="primary" onPress={() => onConfirm(password)}>
             确认
           </Button>
         </ModalFooter>
