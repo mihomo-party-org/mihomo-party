@@ -260,6 +260,7 @@ interface IAppConfig {
   useDockIcon?: boolean
   showTraffic?: boolean
   webdavUrl?: string
+  webdavDir?: string
   webdavUsername?: string
   webdavPassword?: string
   useNameserverPolicy: boolean

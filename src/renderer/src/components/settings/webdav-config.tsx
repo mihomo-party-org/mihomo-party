@@ -9,15 +9,15 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 
 const WebdavConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { webdavUrl, webdavUsername, webdavPassword } = appConfig || {}
+  const { webdavUrl, webdavUsername, webdavPassword, webdavDir = 'mihomo-party' } = appConfig || {}
   const [backuping, setBackuping] = useState(false)
   const [restoring, setRestoring] = useState(false)
   const [filenames, setFilenames] = useState<string[]>([])
   const [restoreOpen, setRestoreOpen] = useState(false)
 
-  const [webdav, setWebdav] = useState({ webdavUrl, webdavUsername, webdavPassword })
-  const setWebdavDebounce = debounce(({ webdavUrl, webdavUsername, webdavPassword }) => {
-    patchAppConfig({ webdavUrl, webdavUsername, webdavPassword })
+  const [webdav, setWebdav] = useState({ webdavUrl, webdavUsername, webdavPassword, webdavDir })
+  const setWebdavDebounce = debounce(({ webdavUrl, webdavUsername, webdavPassword, webdavDir }) => {
+    patchAppConfig({ webdavUrl, webdavUsername, webdavPassword, webdavDir })
   }, 500)
   const handleBackup = async (): Promise<void> => {
     setBackuping(true)
@@ -57,6 +57,17 @@ const WebdavConfig: React.FC = () => {
             onValueChange={(v) => {
               setWebdav({ ...webdav, webdavUrl: v })
               setWebdavDebounce({ ...webdav, webdavUrl: v })
+            }}
+          />
+        </SettingItem>
+        <SettingItem title="WebDAV 备份目录" divider>
+          <Input
+            size="sm"
+            className="w-[60%]"
+            value={webdav.webdavDir}
+            onValueChange={(v) => {
+              setWebdav({ ...webdav, webdavDir: v })
+              setWebdavDebounce({ ...webdav, webdavDir: v })
             }}
           />
         </SettingItem>
