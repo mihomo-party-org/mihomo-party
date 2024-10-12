@@ -56,7 +56,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent>
-        <ModalHeader className="flex">编辑信息</ModalHeader>
+        <ModalHeader className="flex app-drag">编辑信息</ModalHeader>
         <ModalBody>
           <SettingItem title="名称">
             <Input

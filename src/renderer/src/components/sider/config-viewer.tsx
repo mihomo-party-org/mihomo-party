@@ -28,7 +28,7 @@ const ConfigViewer: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex pb-0">当前运行时配置</ModalHeader>
+        <ModalHeader className="flex pb-0 app-drag">当前运行时配置</ModalHeader>
         <ModalBody className="h-full">
           <BaseEditor language="yaml" value={currData} readOnly={true} />
         </ModalBody>

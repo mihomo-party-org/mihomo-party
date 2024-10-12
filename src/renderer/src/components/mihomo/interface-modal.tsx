@@ -33,7 +33,7 @@ const InterfaceModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent>
-        <ModalHeader className="flex">网络信息</ModalHeader>
+        <ModalHeader className="flex app-drag">网络信息</ModalHeader>
         <ModalBody>
           {Object.entries(info).map(([key, value]) => {
             return (

@@ -31,7 +31,7 @@ const EditFileModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex pb-0">
+        <ModalHeader className="flex pb-0 app-drag">
           <div className="flex justify-start">
             <div className="flex items-center">编辑订阅</div>
             <small className="ml-2 text-default-500">
@@ -40,6 +40,7 @@ const EditFileModal: React.FC<Props> = (props) => {
                 size="sm"
                 color="primary"
                 variant="light"
+                className="app-nodrag"
                 onPress={() => {
                   navigate('/override')
                 }}

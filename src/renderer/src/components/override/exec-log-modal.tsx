@@ -35,7 +35,7 @@ const ExecLogModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent>
-        <ModalHeader className="flex">执行日志</ModalHeader>
+        <ModalHeader className="flex app-drag">执行日志</ModalHeader>
         <ModalBody>
           {logs.map((log) => {
             return (

@@ -30,7 +30,7 @@ const EditFileModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex pb-0">
+        <ModalHeader className="flex pb-0 app-drag">
           编辑覆写{language === 'javascript' ? '脚本' : '配置'}
         </ModalHeader>
         <ModalBody className="h-full">

@@ -21,7 +21,7 @@ const WebdavRestoreModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent>
-        <ModalHeader className="flex">恢复备份</ModalHeader>
+        <ModalHeader className="flex app-drag">恢复备份</ModalHeader>
         <ModalBody>
           {filenames.length === 0 ? (
             <div className="flex justify-center">还没有备份</div>

@@ -21,7 +21,7 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="flag-emoji break-all">
-        <ModalHeader className="flex">连接详情</ModalHeader>
+        <ModalHeader className="flex app-drag">连接详情</ModalHeader>
         <ModalBody>
           <SettingItem title="连接类型">
             {connection.metadata.type}({connection.metadata.network})
