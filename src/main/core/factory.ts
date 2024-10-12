@@ -7,12 +7,18 @@ import {
   getOverrideItem,
   getOverrideConfig
 } from '../config'
-import { mihomoWorkConfigPath, overridePath } from '../utils/dirs'
+import {
+  mihomoProfileWorkDir,
+  mihomoWorkConfigPath,
+  overridePath,
+  resourcesFilesDir
+} from '../utils/dirs'
 import yaml from 'yaml'
-import { writeFile } from 'fs/promises'
+import { link, mkdir, writeFile } from 'fs/promises'
 import { deepMerge } from '../utils/merge'
 import vm from 'vm'
-import { writeFileSync } from 'fs'
+import { existsSync, writeFileSync } from 'fs'
+import path from 'path'
 
 let runtimeConfigStr: string
 let runtimeConfig: IMihomoConfig
@@ -26,7 +32,23 @@ export async function generateProfile(): Promise<void> {
   profile['log-level'] = 'info'
   runtimeConfig = profile
   runtimeConfigStr = yaml.stringify(profile)
-  await writeFile(mihomoWorkConfigPath(), runtimeConfigStr)
+  await prepareProfileWorkDir(current)
+  await writeFile(mihomoWorkConfigPath(current), runtimeConfigStr)
+}
+
+async function prepareProfileWorkDir(current: string | undefined): Promise<void> {
+  if (!existsSync(mihomoProfileWorkDir(current))) {
+    await mkdir(mihomoProfileWorkDir(current), { recursive: true })
+  }
+  const ln = async (file: string): Promise<void> => {
+    const targetPath = path.join(mihomoProfileWorkDir(current), file)
+
+    const sourcePath = path.join(resourcesFilesDir(), file)
+    if (!existsSync(targetPath) && existsSync(sourcePath)) {
+      await link(sourcePath, targetPath)
+    }
+  }
+  await Promise.all([ln('country.mmdb'), ln('geoip.dat'), ln('geosite.dat'), ln('ASN.mmdb')])
 }
 
 async function overrideProfile(

@@ -4,14 +4,15 @@ import {
   logPath,
   mihomoCoreDir,
   mihomoCorePath,
+  mihomoProfileWorkDir,
   mihomoTestDir,
-  mihomoWorkConfigPath,
-  mihomoWorkDir
+  mihomoWorkConfigPath
 } from '../utils/dirs'
 import { generateProfile } from './factory'
 import {
   getAppConfig,
   getControledMihomoConfig,
+  getProfileConfig,
   patchAppConfig,
   patchControledMihomoConfig
 } from '../config'
@@ -75,7 +76,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
       await rm(path.join(dataDir(), 'core.pid'))
     }
   }
-
+  const { current } = await getProfileConfig()
   const { tun } = await getControledMihomoConfig()
   const corePath = mihomoCorePath(core)
   await autoGrantCorePermition(corePath)
@@ -92,7 +93,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
     }
   }
 
-  child = spawn(corePath, ['-d', mihomoWorkDir(), ctlParam, mihomoIpcPath], {
+  child = spawn(corePath, ['-d', mihomoProfileWorkDir(current), ctlParam, mihomoIpcPath], {
     detached: detached,
     stdio: detached ? 'ignore' : undefined
   })
@@ -205,10 +206,17 @@ export async function quitWithoutCore(): Promise<void> {
 
 async function checkProfile(): Promise<void> {
   const { core = 'mihomo' } = await getAppConfig()
+  const { current } = await getProfileConfig()
   const corePath = mihomoCorePath(core)
   const execFilePromise = promisify(execFile)
   try {
-    await execFilePromise(corePath, ['-t', '-f', mihomoWorkConfigPath(), '-d', mihomoTestDir()])
+    await execFilePromise(corePath, [
+      '-t',
+      '-f',
+      mihomoWorkConfigPath(current),
+      '-d',
+      mihomoTestDir()
+    ])
   } catch (error) {
     if (error instanceof Error && 'stdout' in error) {
       const { stdout } = error as { stdout: string }

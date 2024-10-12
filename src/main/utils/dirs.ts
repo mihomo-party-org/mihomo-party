@@ -102,12 +102,16 @@ export function mihomoWorkDir(): string {
   return path.join(dataDir(), 'work')
 }
 
+export function mihomoProfileWorkDir(id: string | undefined): string {
+  return path.join(mihomoWorkDir(), id || 'default')
+}
+
 export function mihomoTestDir(): string {
   return path.join(dataDir(), 'test')
 }
 
-export function mihomoWorkConfigPath(): string {
-  return path.join(mihomoWorkDir(), 'config.yaml')
+export function mihomoWorkConfigPath(id: string | undefined): string {
+  return path.join(mihomoProfileWorkDir(id), 'config.yaml')
 }
 
 export function logDir(): string {

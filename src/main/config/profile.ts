@@ -1,12 +1,13 @@
 import { getControledMihomoConfig } from './controledMihomo'
-import { profileConfigPath, profilePath } from '../utils/dirs'
+import { mihomoProfileWorkDir, profileConfigPath, profilePath } from '../utils/dirs'
 import { addProfileUpdater } from '../core/profileUpdater'
-import { readFile, rm, writeFile } from 'fs/promises'
+import { readFile, rm, unlink, writeFile } from 'fs/promises'
 import { restartCore } from '../core/manager'
 import { getAppConfig } from './app'
 import { existsSync } from 'fs'
 import axios, { AxiosResponse } from 'axios'
 import yaml from 'yaml'
+import path from 'path'
 import { defaultProfile } from '../utils/template'
 import { subStorePort } from '../resolve/server'
 
@@ -91,6 +92,21 @@ export async function removeProfileItem(id: string): Promise<void> {
   }
   if (shouldRestart) {
     await restartCore()
+  }
+  if (existsSync(mihomoProfileWorkDir(id))) {
+    const unln = async (file: string): Promise<void> => {
+      const targetPath = path.join(mihomoProfileWorkDir(id), file)
+      if (existsSync(targetPath)) {
+        await unlink(targetPath)
+      }
+    }
+    await Promise.all([
+      unln('country.mmdb'),
+      unln('geoip.dat'),
+      unln('geosite.dat'),
+      unln('ASN.mmdb')
+    ])
+    await rm(mihomoProfileWorkDir(id), { recursive: true })
   }
 }
 
