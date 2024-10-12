@@ -15,7 +15,7 @@ import {
   overridePath
 } from '../utils/dirs'
 import yaml from 'yaml'
-import { link, mkdir, writeFile } from 'fs/promises'
+import { copyFile, mkdir, writeFile } from 'fs/promises'
 import { deepMerge } from '../utils/merge'
 import vm from 'vm'
 import { existsSync, writeFileSync } from 'fs'
@@ -47,15 +47,19 @@ async function prepareProfileWorkDir(current: string | undefined): Promise<void>
   if (!existsSync(mihomoProfileWorkDir(current))) {
     await mkdir(mihomoProfileWorkDir(current), { recursive: true })
   }
-  const ln = async (file: string): Promise<void> => {
+  const copy = async (file: string): Promise<void> => {
     const targetPath = path.join(mihomoProfileWorkDir(current), file)
-
     const sourcePath = path.join(mihomoWorkDir(), file)
     if (!existsSync(targetPath) && existsSync(sourcePath)) {
-      await link(sourcePath, targetPath)
+      await copyFile(sourcePath, targetPath)
     }
   }
-  await Promise.all([ln('country.mmdb'), ln('geoip.dat'), ln('geosite.dat'), ln('ASN.mmdb')])
+  await Promise.all([
+    copy('country.mmdb'),
+    copy('geoip.dat'),
+    copy('geosite.dat'),
+    copy('ASN.mmdb')
+  ])
 }
 
 async function overrideProfile(
