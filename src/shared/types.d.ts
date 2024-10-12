@@ -238,6 +238,7 @@ interface IAppConfig {
   autoQuitWithoutCoreDelay?: number
   useCustomSubStore?: boolean
   customSubStoreUrl?: string
+  diffWorkDir?: boolean
   autoSetDNS?: boolean
   originDNS?: string
   useWindowFrame: boolean

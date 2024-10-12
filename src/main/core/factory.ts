@@ -5,13 +5,14 @@ import {
   getProfileItem,
   getOverride,
   getOverrideItem,
-  getOverrideConfig
+  getOverrideConfig,
+  getAppConfig
 } from '../config'
 import {
   mihomoProfileWorkDir,
   mihomoWorkConfigPath,
-  overridePath,
-  resourcesFilesDir
+  mihomoWorkDir,
+  overridePath
 } from '../utils/dirs'
 import yaml from 'yaml'
 import { link, mkdir, writeFile } from 'fs/promises'
@@ -25,6 +26,7 @@ let runtimeConfig: IMihomoConfig
 
 export async function generateProfile(): Promise<void> {
   const { current } = await getProfileConfig()
+  const { diffWorkDir = false } = await getAppConfig()
   const currentProfile = await overrideProfile(current, await getProfile(current))
   const controledMihomoConfig = await getControledMihomoConfig()
   const profile = deepMerge(currentProfile, controledMihomoConfig)
@@ -32,8 +34,13 @@ export async function generateProfile(): Promise<void> {
   profile['log-level'] = 'info'
   runtimeConfig = profile
   runtimeConfigStr = yaml.stringify(profile)
-  await prepareProfileWorkDir(current)
-  await writeFile(mihomoWorkConfigPath(current), runtimeConfigStr)
+  if (diffWorkDir) {
+    await prepareProfileWorkDir(current)
+  }
+  await writeFile(
+    diffWorkDir ? mihomoWorkConfigPath(current) : mihomoWorkConfigPath('work'),
+    runtimeConfigStr
+  )
 }
 
 async function prepareProfileWorkDir(current: string | undefined): Promise<void> {
@@ -43,7 +50,7 @@ async function prepareProfileWorkDir(current: string | undefined): Promise<void>
   const ln = async (file: string): Promise<void> => {
     const targetPath = path.join(mihomoProfileWorkDir(current), file)
 
-    const sourcePath = path.join(resourcesFilesDir(), file)
+    const sourcePath = path.join(mihomoWorkDir(), file)
     if (!existsSync(targetPath) && existsSync(sourcePath)) {
       await link(sourcePath, targetPath)
     }

@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { Button, Input, Select, SelectItem, Switch } from '@nextui-org/react'
+import { Button, Input, Select, SelectItem, Switch, Tooltip } from '@nextui-org/react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import debounce from '@renderer/utils/debounce'
 import { getGistUrl, patchControledMihomoConfig, restartCore } from '@renderer/utils/ipc'
 import { MdDeleteForever } from 'react-icons/md'
 import { BiCopy } from 'react-icons/bi'
+import { IoIosHelpCircle } from 'react-icons/io'
 
 const MihomoConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
+    diffWorkDir = false,
     controlDns = true,
     controlSniff = true,
     delayTestConcurrency,
@@ -131,6 +133,30 @@ const MihomoConfig: React.FC = () => {
           <SelectItem key="3">三列</SelectItem>
           <SelectItem key="4">四列</SelectItem>
         </Select>
+      </SettingItem>
+      <SettingItem
+        title="为不同订阅分别指定工作目录"
+        actions={
+          <Tooltip content="开启后可以避免不同订阅中存在相同代理组名时无法分别保存选择的节点">
+            <Button isIconOnly size="sm" variant="light">
+              <IoIosHelpCircle className="text-lg" />
+            </Button>
+          </Tooltip>
+        }
+        divider
+      >
+        <Switch
+          size="sm"
+          isSelected={diffWorkDir}
+          onValueChange={async (v) => {
+            try {
+              await patchAppConfig({ diffWorkDir: v })
+              await restartCore()
+            } catch (e) {
+              alert(e)
+            }
+          }}
+        />
       </SettingItem>
       <SettingItem title="接管 DNS 设置" divider>
         <Switch

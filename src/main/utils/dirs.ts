@@ -111,7 +111,11 @@ export function mihomoTestDir(): string {
 }
 
 export function mihomoWorkConfigPath(id: string | undefined): string {
-  return path.join(mihomoProfileWorkDir(id), 'config.yaml')
+  if (id === 'work') {
+    return path.join(mihomoWorkDir(), 'config.yaml')
+  } else {
+    return path.join(mihomoProfileWorkDir(id), 'config.yaml')
+  }
 }
 
 export function logDir(): string {

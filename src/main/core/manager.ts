@@ -6,7 +6,8 @@ import {
   mihomoCorePath,
   mihomoProfileWorkDir,
   mihomoTestDir,
-  mihomoWorkConfigPath
+  mihomoWorkConfigPath,
+  mihomoWorkDir
 } from '../utils/dirs'
 import { generateProfile } from './factory'
 import {
@@ -56,7 +57,12 @@ let child: ChildProcess
 let retry = 10
 
 export async function startCore(detached = false): Promise<Promise<void>[]> {
-  const { core = 'mihomo', autoSetDNS = true, encryptedPassword } = await getAppConfig()
+  const {
+    core = 'mihomo',
+    autoSetDNS = true,
+    encryptedPassword,
+    diffWorkDir = false
+  } = await getAppConfig()
   const { 'log-level': logLevel } = await getControledMihomoConfig()
   if (existsSync(path.join(dataDir(), 'core.pid'))) {
     const pid = parseInt(await readFile(path.join(dataDir(), 'core.pid'), 'utf-8'))
@@ -93,10 +99,14 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
     }
   }
 
-  child = spawn(corePath, ['-d', mihomoProfileWorkDir(current), ctlParam, mihomoIpcPath], {
-    detached: detached,
-    stdio: detached ? 'ignore' : undefined
-  })
+  child = spawn(
+    corePath,
+    ['-d', diffWorkDir ? mihomoProfileWorkDir(current) : mihomoWorkDir(), ctlParam, mihomoIpcPath],
+    {
+      detached: detached,
+      stdio: detached ? 'ignore' : undefined
+    }
+  )
   if (detached) {
     child.unref()
     return new Promise((resolve) => {
@@ -205,7 +215,7 @@ export async function quitWithoutCore(): Promise<void> {
 }
 
 async function checkProfile(): Promise<void> {
-  const { core = 'mihomo' } = await getAppConfig()
+  const { core = 'mihomo', diffWorkDir = false } = await getAppConfig()
   const { current } = await getProfileConfig()
   const corePath = mihomoCorePath(core)
   const execFilePromise = promisify(execFile)
@@ -213,7 +223,7 @@ async function checkProfile(): Promise<void> {
     await execFilePromise(corePath, [
       '-t',
       '-f',
-      mihomoWorkConfigPath(current),
+      diffWorkDir ? mihomoWorkConfigPath(current) : mihomoWorkConfigPath('work'),
       '-d',
       mihomoTestDir()
     ])
