@@ -229,12 +229,14 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup pnpm
         run: npm install -g pnpm
-      - name: Build Latest
-        run: pnpm install && pnpm updater
+      - name: Install Dependencies
+        run: pnpm install
       - name: Telegram Notification
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: pnpm telegram
+      - name: Generate latest.yml
+        run: pnpm updater
       - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
