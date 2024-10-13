@@ -9,6 +9,7 @@ const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE
 const pkg = fs.readFileSync('package.json', 'utf-8')
 const { version } = JSON.parse(pkg)
 const hash = execSync('git rev-parse --short HEAD').toString().trim()
+const message = execSync('git log -1 --pretty=%B').toString().trim()
 
 const linuxFiles = [
   path.join(GITHUB_WORKSPACE, `mihomo-party-linux-${version}-aarch64.rpm`),
@@ -42,7 +43,7 @@ const windowsMedia = windowsFiles.map((file, index) => ({
   type: 'document',
   media: `attach://file${index}`
 }))
-windowsMedia[windowsMedia.length - 1].caption = `#${hash} #Windows10 #Windows11`
+windowsMedia[windowsMedia.length - 1].caption = `#${hash} #Windows10 #Windows11\n${message}`
 const windowsForm = new FormData()
 windowsForm.append('chat_id', CHAT_ID)
 windowsForm.append('media', JSON.stringify(windowsMedia))
@@ -54,7 +55,7 @@ const windows7Media = windows7Files.map((file, index) => ({
   type: 'document',
   media: `attach://file${index}`
 }))
-windows7Media[windows7Media.length - 1].caption = `#${hash} #Windows7 #Windows8`
+windows7Media[windows7Media.length - 1].caption = `#${hash} #Windows7 #Windows8\n${message}`
 const windows7Form = new FormData()
 windows7Form.append('chat_id', CHAT_ID)
 windows7Form.append('media', JSON.stringify(windows7Media))
@@ -66,7 +67,7 @@ const linuxMedia = linuxFiles.map((file, index) => ({
   type: 'document',
   media: `attach://file${index}`
 }))
-linuxMedia[linuxMedia.length - 1].caption = `#${hash} #Linux`
+linuxMedia[linuxMedia.length - 1].caption = `#${hash} #Linux\n${message}`
 const linuxForm = new FormData()
 linuxForm.append('chat_id', CHAT_ID)
 linuxForm.append('media', JSON.stringify(linuxMedia))
@@ -78,7 +79,7 @@ const macosMedia = macosFiles.map((file, index) => ({
   type: 'document',
   media: `attach://file${index}`
 }))
-macosMedia[macosMedia.length - 1].caption = `#${hash} #macOS`
+macosMedia[macosMedia.length - 1].caption = `#${hash} #macOS\n${message}`
 const macosForm = new FormData()
 macosForm.append('chat_id', CHAT_ID)
 macosForm.append('media', JSON.stringify(macosMedia))
