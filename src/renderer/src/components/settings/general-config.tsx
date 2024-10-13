@@ -163,6 +163,7 @@ const GeneralConfig: React.FC = () => {
           divider
         >
           <Select
+            classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
             className="w-[150px]"
             size="sm"
             selectionMode="multiple"
@@ -348,6 +349,7 @@ const GeneralConfig: React.FC = () => {
         >
           {customThemes && (
             <Select
+              classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
               className="w-[60%]"
               size="sm"
               selectedKeys={new Set([customTheme])}

@@ -229,6 +229,7 @@ const Connections: React.FC = () => {
           />
 
           <Select
+            classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
             size="sm"
             className="w-[180px] min-w-[120px]"
             selectedKeys={new Set([connectionOrderBy])}

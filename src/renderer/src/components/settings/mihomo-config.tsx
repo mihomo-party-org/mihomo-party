@@ -120,6 +120,7 @@ const MihomoConfig: React.FC = () => {
       </SettingItem>
       <SettingItem title="代理节点展示列数" divider>
         <Select
+          classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
           className="w-[150px]"
           size="sm"
           selectedKeys={new Set([proxyCols])}

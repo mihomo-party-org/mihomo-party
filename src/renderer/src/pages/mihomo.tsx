@@ -101,6 +101,7 @@ const Mihomo: React.FC = () => {
             divider
           >
             <Select
+              classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
               className="w-[100px]"
               size="sm"
               selectedKeys={new Set([core])}
@@ -635,6 +636,7 @@ const Mihomo: React.FC = () => {
           </SettingItem>
           <SettingItem title="日志等级" divider>
             <Select
+              classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
               className="w-[100px]"
               size="sm"
               selectedKeys={new Set([logLevel])}
@@ -651,6 +653,7 @@ const Mihomo: React.FC = () => {
           </SettingItem>
           <SettingItem title="查找进程">
             <Select
+              classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
               className="w-[100px]"
               size="sm"
               selectedKeys={new Set([findProcessMode])}
