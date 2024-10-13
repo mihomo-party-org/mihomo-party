@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { readFileSync } from 'fs'
 
-const chat_id = '@mihomo_party_group'
+const chat_id = '@MihomoPartyChannel'
 const pkg = readFileSync('package.json', 'utf-8')
 const changelog = readFileSync('changelog.md', 'utf-8')
 const { version } = JSON.parse(pkg)

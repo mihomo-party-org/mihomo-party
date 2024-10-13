@@ -220,6 +220,31 @@ jobs:
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  artifact:
+    if: startsWith(github.ref, 'refs/heads/')
+    needs: [windows, macos, linux, windows7]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        run: npm install -g pnpm
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - name: Telegram Bot Server
+        uses: zjns/telegram-bot-server@v1
+        with:
+          api_id: ${{ secrets.TELEGRAM_BOT_API_ID }}
+          api_hash: ${{ secrets.TELEGRAM_BOT_API_HASH }}
+      - name: Upload Artifacts
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: pnpm artifact
+
   updater:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: [windows, macos, windows7]
