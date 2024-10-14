@@ -71,7 +71,7 @@ const ProxyProvider: React.FC = () => {
               divider={!provider.subscriptionInfo && index !== providers.length - 1}
             >
               {
-                <div className="flex h-[32px] leading-[32px] text-default-500">
+                <div className="flex h-[32px] leading-[32px] text-foreground-500">
                   <div>{dayjs(provider.updatedAt).fromNow()}</div>
                   <Button
                     isIconOnly
@@ -90,14 +90,14 @@ const ProxyProvider: React.FC = () => {
               <SettingItem
                 divider={index !== providers.length - 1}
                 title={
-                  <div className="text-default-500">{`${calcTraffic(
+                  <div className="text-foreground-500">{`${calcTraffic(
                     provider.subscriptionInfo.Upload + provider.subscriptionInfo.Download
                   )}
                     /${calcTraffic(provider.subscriptionInfo.Total)}`}</div>
                 }
               >
                 {provider.subscriptionInfo && (
-                  <div className="h-[32px] leading-[32px] text-default-500">
+                  <div className="h-[32px] leading-[32px] text-foreground-500">
                     {provider.subscriptionInfo.Expire
                       ? dayjs.unix(provider.subscriptionInfo.Expire).format('YYYY-MM-DD')
                       : '长期有效'}

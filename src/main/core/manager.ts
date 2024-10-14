@@ -147,7 +147,8 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
             child.stdout?.on('data', async (data) => {
               if (data.toString().includes('Start initial Compatible provider default')) {
                 try {
-                  mainWindow?.webContents.send('coreRestart')
+                  mainWindow?.webContents.send('groupsUpdated')
+                  mainWindow?.webContents.send('rulesUpdated')
                   await uploadRuntimeConfig()
                 } catch {
                   // ignore

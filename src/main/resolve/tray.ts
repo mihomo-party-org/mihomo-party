@@ -111,6 +111,7 @@ export const buildContextMenu = async (): Promise<Menu> => {
         await patchControledMihomoConfig({ mode: 'rule' })
         await patchMihomoConfig({ mode: 'rule' })
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        mainWindow?.webContents.send('groupsUpdated')
         ipcMain.emit('updateTrayMenu')
       }
     },
@@ -124,6 +125,7 @@ export const buildContextMenu = async (): Promise<Menu> => {
         await patchControledMihomoConfig({ mode: 'global' })
         await patchMihomoConfig({ mode: 'global' })
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        mainWindow?.webContents.send('groupsUpdated')
         ipcMain.emit('updateTrayMenu')
       }
     },
@@ -137,6 +139,7 @@ export const buildContextMenu = async (): Promise<Menu> => {
         await patchControledMihomoConfig({ mode: 'direct' })
         await patchMihomoConfig({ mode: 'direct' })
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
+        mainWindow?.webContents.send('groupsUpdated')
         ipcMain.emit('updateTrayMenu')
       }
     },

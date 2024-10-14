@@ -16,7 +16,7 @@ const LogItem: React.FC<IMihomoLogInfo & { index: number }> = (props) => {
           <div className={`mr-2 text-lg font-bold text-${colorMap[type]}`}>
             {props.type.toUpperCase()}
           </div>
-          <small className="text-default-500">{time}</small>
+          <small className="text-foreground-500">{time}</small>
         </CardHeader>
         <CardBody className="pt-0 text-sm">{payload}</CardBody>
       </Card>

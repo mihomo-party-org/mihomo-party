@@ -51,7 +51,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
                   info.metadata.destinationIP ||
                   info.metadata.remoteDestination}
               </div>
-              <small className="whitespace-nowrap text-default-500">
+              <small className="whitespace-nowrap text-foreground-500">
                 {dayjs(info.start).fromNow()}
               </small>
             </CardHeader>

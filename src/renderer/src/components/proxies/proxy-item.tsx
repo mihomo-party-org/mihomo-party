@@ -63,7 +63,7 @@ const ProxyItem: React.FC<Props> = (props) => {
               {proxy.name}
             </div>
             {proxyDisplayMode === 'full' && (
-              <div className="inline ml-2 text-default-500" title={proxy.type}>
+              <div className="inline ml-2 text-foreground-500" title={proxy.type}>
                 {proxy.type}
               </div>
             )}

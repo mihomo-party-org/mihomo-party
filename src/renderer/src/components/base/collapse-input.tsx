@@ -22,7 +22,7 @@ const CollapseInput: React.FC<CollapseInputProps> = (props) => {
         }}
         endContent={
           <div
-            className="cursor-pointer p-2 text-lg text-default-500"
+            className="cursor-pointer p-2 text-lg text-foreground-500"
             onClick={(e) => {
               e.stopPropagation()
               inputRef.current?.focus()

@@ -1,11 +1,13 @@
 import { Tabs, Tab } from '@nextui-org/react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
+import { useGroups } from '@renderer/hooks/use-groups'
 import { mihomoCloseAllConnections, patchMihomoConfig } from '@renderer/utils/ipc'
 import { Key } from 'react'
 
 const OutboundModeSwitcher: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { mutate: mutateGroups } = useGroups()
   const { appConfig } = useAppConfig()
   const { autoCloseConnection = true } = appConfig || {}
   const { mode } = controledMihomoConfig || {}
@@ -16,6 +18,7 @@ const OutboundModeSwitcher: React.FC = () => {
     if (autoCloseConnection) {
       await mihomoCloseAllConnections()
     }
+    mutateGroups()
     window.electron.ipcRenderer.send('updateTrayMenu')
   }
   if (!mode) return null

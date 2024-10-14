@@ -34,7 +34,7 @@ const EditFileModal: React.FC<Props> = (props) => {
         <ModalHeader className="flex pb-0 app-drag">
           <div className="flex justify-start">
             <div className="flex items-center">编辑订阅</div>
-            <small className="ml-2 text-default-500">
+            <small className="ml-2 text-foreground-500">
               注意：此处编辑配置更新订阅后会还原，如需要自定义配置请使用
               <Button
                 size="sm"

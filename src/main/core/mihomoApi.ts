@@ -76,6 +76,8 @@ export const mihomoProxies = async (): Promise<IMihomoProxies> => {
 }
 
 export const mihomoGroups = async (): Promise<IMihomoMixedGroup[]> => {
+  const { mode = 'rule' } = await getControledMihomoConfig()
+  if (mode === 'direct') return []
   const proxies = await mihomoProxies()
   const runtime = await getRuntimeConfig()
   const groups: IMihomoMixedGroup[] = []
@@ -94,6 +96,10 @@ export const mihomoGroups = async (): Promise<IMihomoMixedGroup[]> => {
       const newAll = newGlobal.all.map((name) => proxies.proxies[name])
       groups.push({ ...newGlobal, all: newAll })
     }
+  }
+  if (mode === 'global') {
+    const global = groups.findIndex((group) => group.name === 'GLOBAL')
+    groups.unshift(groups.splice(global, 1)[0])
   }
   return groups
 }

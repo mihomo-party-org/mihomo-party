@@ -15,12 +15,15 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { GroupedVirtuoso, GroupedVirtuosoHandle } from 'react-virtuoso'
 import ProxyItem from '@renderer/components/proxies/proxy-item'
 import { IoIosArrowBack } from 'react-icons/io'
-import { MdOutlineSpeed } from 'react-icons/md'
+import { MdDoubleArrow, MdOutlineSpeed } from 'react-icons/md'
 import { useGroups } from '@renderer/hooks/use-groups'
 import CollapseInput from '@renderer/components/base/collapse-input'
 import { includesIgnoreCase } from '@renderer/utils/includes'
+import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 
 const Proxies: React.FC = () => {
+  const { controledMihomoConfig } = useControledMihomoConfig()
+  const { mode = 'rule' } = controledMihomoConfig || {}
   const { groups = [], mutate } = useGroups()
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
@@ -197,184 +200,193 @@ const Proxies: React.FC = () => {
         </>
       }
     >
-      <div className="h-[calc(100vh-50px)]">
-        <GroupedVirtuoso
-          ref={virtuosoRef}
-          groupCounts={groupCounts}
-          groupContent={(index) => {
-            if (
-              groups[index] &&
-              groups[index].icon &&
-              groups[index].icon.startsWith('http') &&
-              !localStorage.getItem(groups[index].icon)
-            ) {
-              getImageDataURL(groups[index].icon).then((dataURL) => {
-                localStorage.setItem(groups[index].icon, dataURL)
-                mutate()
-              })
-            }
-            return groups[index] ? (
-              <div
-                className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}
-              >
-                <Card
-                  isPressable
-                  fullWidth
-                  onClick={() => {
-                    setIsOpen((prev) => {
-                      const newOpen = [...prev]
-                      newOpen[index] = !prev[index]
-                      return newOpen
-                    })
-                  }}
+      {mode === 'direct' ? (
+        <div className="h-full w-full flex justify-center items-center">
+          <div className="flex flex-col items-center">
+            <MdDoubleArrow className="text-foreground-500 text-[100px]" />
+            <h2 className="text-foreground-500 text-[20px]">直连模式</h2>
+          </div>
+        </div>
+      ) : (
+        <div className="h-[calc(100vh-50px)]">
+          <GroupedVirtuoso
+            ref={virtuosoRef}
+            groupCounts={groupCounts}
+            groupContent={(index) => {
+              if (
+                groups[index] &&
+                groups[index].icon &&
+                groups[index].icon.startsWith('http') &&
+                !localStorage.getItem(groups[index].icon)
+              ) {
+                getImageDataURL(groups[index].icon).then((dataURL) => {
+                  localStorage.setItem(groups[index].icon, dataURL)
+                  mutate()
+                })
+              }
+              return groups[index] ? (
+                <div
+                  className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}
                 >
-                  <CardBody className="w-full">
-                    <div className="flex justify-between">
-                      <div className="flex text-ellipsis overflow-hidden whitespace-nowrap">
-                        {groups[index].icon ? (
-                          <Avatar
-                            className="bg-transparent mr-2"
-                            size="sm"
-                            radius="sm"
-                            src={
-                              groups[index].icon.startsWith('<svg')
-                                ? `data:image/svg+xml;utf8,${groups[index].icon}`
-                                : localStorage.getItem(groups[index].icon) || groups[index].icon
-                            }
-                          />
-                        ) : null}
-                        <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-                          <div
-                            title={groups[index].name}
-                            className="inline flag-emoji h-[32px] text-md leading-[32px]"
-                          >
-                            {groups[index].name}
-                          </div>
-                          {proxyDisplayMode === 'full' && (
+                  <Card
+                    isPressable
+                    fullWidth
+                    onClick={() => {
+                      setIsOpen((prev) => {
+                        const newOpen = [...prev]
+                        newOpen[index] = !prev[index]
+                        return newOpen
+                      })
+                    }}
+                  >
+                    <CardBody className="w-full">
+                      <div className="flex justify-between">
+                        <div className="flex text-ellipsis overflow-hidden whitespace-nowrap">
+                          {groups[index].icon ? (
+                            <Avatar
+                              className="bg-transparent mr-2"
+                              size="sm"
+                              radius="sm"
+                              src={
+                                groups[index].icon.startsWith('<svg')
+                                  ? `data:image/svg+xml;utf8,${groups[index].icon}`
+                                  : localStorage.getItem(groups[index].icon) || groups[index].icon
+                              }
+                            />
+                          ) : null}
+                          <div className="text-ellipsis overflow-hidden whitespace-nowrap">
                             <div
-                              title={groups[index].type}
-                              className="inline ml-2 text-sm text-default-500"
+                              title={groups[index].name}
+                              className="inline flag-emoji h-[32px] text-md leading-[32px]"
                             >
-                              {groups[index].type}
+                              {groups[index].name}
                             </div>
-                          )}
+                            {proxyDisplayMode === 'full' && (
+                              <div
+                                title={groups[index].type}
+                                className="inline ml-2 text-sm text-foreground-500"
+                              >
+                                {groups[index].type}
+                              </div>
+                            )}
+                            {proxyDisplayMode === 'full' && (
+                              <div className="inline flag-emoji ml-2 text-sm text-foreground-500">
+                                {groups[index].now}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex">
                           {proxyDisplayMode === 'full' && (
-                            <div className="inline flag-emoji ml-2 text-sm text-default-500">
-                              {groups[index].now}
-                            </div>
+                            <Chip size="sm" className="my-1 mr-2">
+                              {groups[index].all.length}
+                            </Chip>
                           )}
+                          <CollapseInput
+                            title="搜索节点"
+                            value={searchValue[index]}
+                            onValueChange={(v) => {
+                              setSearchValue((prev) => {
+                                const newSearchValue = [...prev]
+                                newSearchValue[index] = v
+                                return newSearchValue
+                              })
+                            }}
+                          />
+                          <Button
+                            title="定位到当前节点"
+                            variant="light"
+                            size="sm"
+                            isIconOnly
+                            onPress={() => {
+                              if (!isOpen[index]) {
+                                setIsOpen((prev) => {
+                                  const newOpen = [...prev]
+                                  newOpen[index] = true
+                                  return newOpen
+                                })
+                              }
+                              let i = 0
+                              for (let j = 0; j < index; j++) {
+                                i += groupCounts[j]
+                              }
+                              i += Math.floor(
+                                allProxies[index].findIndex(
+                                  (proxy) => proxy.name === groups[index].now
+                                ) / cols
+                              )
+                              virtuosoRef.current?.scrollToIndex({
+                                index: Math.floor(i),
+                                align: 'start'
+                              })
+                            }}
+                          >
+                            <FaLocationCrosshairs className="text-lg text-foreground-500" />
+                          </Button>
+                          <Button
+                            title="延迟测试"
+                            variant="light"
+                            isLoading={delaying[index]}
+                            size="sm"
+                            isIconOnly
+                            onPress={() => {
+                              onGroupDelay(index)
+                            }}
+                          >
+                            <MdOutlineSpeed className="text-lg text-foreground-500" />
+                          </Button>
+                          <IoIosArrowBack
+                            className={`transition duration-200 ml-2 h-[32px] text-lg text-foreground-500 ${isOpen[index] ? '-rotate-90' : ''}`}
+                          />
                         </div>
                       </div>
-                      <div className="flex">
-                        {proxyDisplayMode === 'full' && (
-                          <Chip size="sm" className="my-1 mr-2">
-                            {groups[index].all.length}
-                          </Chip>
-                        )}
-                        <CollapseInput
-                          title="搜索节点"
-                          value={searchValue[index]}
-                          onValueChange={(v) => {
-                            setSearchValue((prev) => {
-                              const newSearchValue = [...prev]
-                              newSearchValue[index] = v
-                              return newSearchValue
-                            })
-                          }}
-                        />
-                        <Button
-                          title="定位到当前节点"
-                          variant="light"
-                          size="sm"
-                          isIconOnly
-                          onPress={() => {
-                            if (!isOpen[index]) {
-                              setIsOpen((prev) => {
-                                const newOpen = [...prev]
-                                newOpen[index] = true
-                                return newOpen
-                              })
-                            }
-                            let i = 0
-                            for (let j = 0; j < index; j++) {
-                              i += groupCounts[j]
-                            }
-                            i += Math.floor(
-                              allProxies[index].findIndex(
-                                (proxy) => proxy.name === groups[index].now
-                              ) / cols
-                            )
-                            virtuosoRef.current?.scrollToIndex({
-                              index: Math.floor(i),
-                              align: 'start'
-                            })
-                          }}
-                        >
-                          <FaLocationCrosshairs className="text-lg text-default-500" />
-                        </Button>
-                        <Button
-                          title="延迟测试"
-                          variant="light"
-                          isLoading={delaying[index]}
-                          size="sm"
-                          isIconOnly
-                          onPress={() => {
-                            onGroupDelay(index)
-                          }}
-                        >
-                          <MdOutlineSpeed className="text-lg text-default-500" />
-                        </Button>
-                        <IoIosArrowBack
-                          className={`transition duration-200 ml-2 h-[32px] text-lg text-default-500 ${isOpen[index] ? '-rotate-90' : ''}`}
-                        />
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-              </div>
-            ) : (
-              <div>Never See This</div>
-            )
-          }}
-          itemContent={(index, groupIndex) => {
-            let innerIndex = index
-            groupCounts.slice(0, groupIndex).forEach((count) => {
-              innerIndex -= count
-            })
-            return allProxies[groupIndex] ? (
-              <div
-                style={
-                  proxyCols !== 'auto'
-                    ? { gridTemplateColumns: `repeat(${proxyCols}, minmax(0, 1fr))` }
-                    : {}
-                }
-                className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} ${groupIndex === groupCounts.length - 1 && innerIndex === groupCounts[groupIndex] - 1 ? 'pb-2' : ''} gap-2 pt-2 mx-2`}
-              >
-                {Array.from({ length: cols }).map((_, i) => {
-                  if (!allProxies[groupIndex][innerIndex * cols + i]) return null
-                  return (
-                    <ProxyItem
-                      key={allProxies[groupIndex][innerIndex * cols + i].name}
-                      mutateProxies={mutate}
-                      onProxyDelay={onProxyDelay}
-                      onSelect={onChangeProxy}
-                      proxy={allProxies[groupIndex][innerIndex * cols + i]}
-                      group={groups[groupIndex]}
-                      proxyDisplayMode={proxyDisplayMode}
-                      selected={
-                        allProxies[groupIndex][innerIndex * cols + i]?.name ===
-                        groups[groupIndex].now
-                      }
-                    />
-                  )
-                })}
-              </div>
-            ) : (
-              <div>Never See This</div>
-            )
-          }}
-        />
-      </div>
+                    </CardBody>
+                  </Card>
+                </div>
+              ) : (
+                <div>Never See This</div>
+              )
+            }}
+            itemContent={(index, groupIndex) => {
+              let innerIndex = index
+              groupCounts.slice(0, groupIndex).forEach((count) => {
+                innerIndex -= count
+              })
+              return allProxies[groupIndex] ? (
+                <div
+                  style={
+                    proxyCols !== 'auto'
+                      ? { gridTemplateColumns: `repeat(${proxyCols}, minmax(0, 1fr))` }
+                      : {}
+                  }
+                  className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} ${groupIndex === groupCounts.length - 1 && innerIndex === groupCounts[groupIndex] - 1 ? 'pb-2' : ''} gap-2 pt-2 mx-2`}
+                >
+                  {Array.from({ length: cols }).map((_, i) => {
+                    if (!allProxies[groupIndex][innerIndex * cols + i]) return null
+                    return (
+                      <ProxyItem
+                        key={allProxies[groupIndex][innerIndex * cols + i].name}
+                        mutateProxies={mutate}
+                        onProxyDelay={onProxyDelay}
+                        onSelect={onChangeProxy}
+                        proxy={allProxies[groupIndex][innerIndex * cols + i]}
+                        group={groups[groupIndex]}
+                        proxyDisplayMode={proxyDisplayMode}
+                        selected={
+                          allProxies[groupIndex][innerIndex * cols + i]?.name ===
+                          groups[groupIndex].now
+                        }
+                      />
+                    )
+                  })}
+                </div>
+              ) : (
+                <div>Never See This</div>
+              )
+            }}
+          />
+        </div>
+      )}
     </BasePage>
   )
 }
