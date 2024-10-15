@@ -3,7 +3,7 @@ import yaml from 'yaml'
 import { app, shell } from 'electron'
 import { getControledMihomoConfig } from '../config'
 import { dataDir, exeDir, exePath, isPortable, resourcesFilesDir } from '../utils/dirs'
-import { rm, writeFile } from 'fs/promises'
+import { copyFile, rm, writeFile } from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
 import os from 'os'
@@ -74,11 +74,12 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
       }).unref()
     }
     if (file.endsWith('.7z')) {
+      await copyFile(path.join(resourcesFilesDir(), '7za.exe'), path.join(dataDir(), '7za.exe'))
       spawn(
         'cmd',
         [
           '/C',
-          `""${path.join(resourcesFilesDir(), '7za.exe')}" x -o"${exeDir()}" -y "${path.join(dataDir(), file)}" & start "" "${exePath()}""`
+          `"timeout /t 2 /nobreak >nul && "${path.join(dataDir(), '7za.exe')}" x -o"${exeDir()}" -y "${path.join(dataDir(), file)}" & start "" "${exePath()}""`
         ],
         {
           shell: true,
