@@ -224,6 +224,14 @@ jobs:
     if: startsWith(github.ref, 'refs/heads/')
     needs: [windows, macos, linux, windows7]
     runs-on: ubuntu-latest
+    services:
+      telegram-bot-api:
+        image: aiogram/telegram-bot-api:latest
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_BOT_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_BOT_API_HASH }}
+        ports:
+          - 8081:8081
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -235,11 +243,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           merge-multiple: true
-      - name: Telegram Bot Server
-        uses: zjns/telegram-bot-server@v1
-        with:
-          api_id: ${{ secrets.TELEGRAM_BOT_API_ID }}
-          api_hash: ${{ secrets.TELEGRAM_BOT_API_HASH }}
       - name: Upload Artifacts
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

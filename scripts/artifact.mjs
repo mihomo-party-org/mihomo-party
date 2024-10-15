@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import fs from 'fs'
 import axios from 'axios'
 import path from 'path'
@@ -87,32 +88,42 @@ macosFiles.forEach((file, index) => {
   macosForm.append(`file${index}`, fs.createReadStream(file))
 })
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 await axios.post(
-  `http://127.0.0.1:8088/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
+  `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
   windowsForm,
   {
     headers: windowsForm.getHeaders()
   }
 )
 
+await sleep(10000)
+
 await axios.post(
-  `http://127.0.0.1:8088/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
+  `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
   windows7Form,
   {
     headers: windows7Form.getHeaders()
   }
 )
 
+await sleep(10000)
+
 await axios.post(
-  `http://127.0.0.1:8088/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
+  `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
   macosForm,
   {
     headers: macosForm.getHeaders()
   }
 )
 
+await sleep(10000)
+
 await axios.post(
-  `http://127.0.0.1:8088/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
+  `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
   linuxForm,
   {
     headers: linuxForm.getHeaders()

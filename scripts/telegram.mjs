@@ -31,38 +31,13 @@ content += `DEB：<a href="${downloadUrl}/mihomo-party-linux-${version}-amd64.de
 ">64位</a> | <a href="${downloadUrl}/mihomo-party-linux-${version}-arm64.deb">ARM64</a>\n`
 content += `RPM：<a href="${downloadUrl}/mihomo-party-linux-${version}-x86_64.rpm">64位</a> | <a href="${downloadUrl}/mihomo-party-linux-${version}-aarch64.rpm">ARM64</a>`
 
-const { data: messageData } = await axios.post(
-  `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-  {
-    chat_id,
-    text: content,
-    link_preview_options: {
-      is_disabled: false,
-      url: 'https://github.com/mihomo-party-org/mihomo-party',
-      prefer_large_media: true
-    },
-    parse_mode: 'HTML'
-  }
-)
-
-const { data: chatData } = await axios.post(
-  `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getChat`,
-  {
-    chat_id
-  }
-)
-
-if (chatData.result.pinned_message.from.is_bot) {
-  await axios.post(
-    `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/unpinChatMessage`,
-    {
-      chat_id,
-      message_id: chatData.result.pinned_message.message_id
-    }
-  )
-}
-
-await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/pinChatMessage`, {
+await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
   chat_id,
-  message_id: messageData.result.message_id
+  text: content,
+  link_preview_options: {
+    is_disabled: false,
+    url: 'https://github.com/mihomo-party-org/mihomo-party',
+    prefer_large_media: true
+  },
+  parse_mode: 'HTML'
 })
