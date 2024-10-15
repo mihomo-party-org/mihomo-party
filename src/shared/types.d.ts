@@ -231,6 +231,7 @@ interface IAppConfig {
   tunCardStatus?: CardStatus
   githubToken?: string
   useSubStore: boolean
+  subStoreHost?: string
   subStoreBackendSyncCron?: string
   subStoreBackendDownloadCron?: string
   subStoreBackendUploadCron?: string

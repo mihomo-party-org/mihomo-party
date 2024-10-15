@@ -25,7 +25,11 @@ import yaml from 'yaml'
 import { mkdir, writeFile, copyFile, rm, readdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
-import { startPacServer, startSubStoreServer } from '../resolve/server'
+import {
+  startPacServer,
+  startSubStoreBackendServer,
+  startSubStoreFrontendServer
+} from '../resolve/server'
 import { triggerSysProxy } from '../sys/sysproxy'
 import {
   getAppConfig,
@@ -231,7 +235,8 @@ export async function init(): Promise<void> {
   await initFiles()
   await cleanup()
   await startPacServer()
-  await startSubStoreServer()
+  await startSubStoreFrontendServer()
+  await startSubStoreBackendServer()
   const { sysProxy } = await getAppConfig()
   try {
     await triggerSysProxy(sysProxy.enable)

@@ -8,7 +8,12 @@ import { platform } from '@renderer/utils/init'
 import { FaNetworkWired } from 'react-icons/fa'
 import { IoMdCloudDownload } from 'react-icons/io'
 import PubSub from 'pubsub-js'
-import { mihomoUpgrade, restartCore, triggerSysProxy } from '@renderer/utils/ipc'
+import {
+  mihomoUpgrade,
+  restartCore,
+  startSubStoreBackendServer,
+  triggerSysProxy
+} from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import InterfaceModal from '@renderer/components/mihomo/interface-modal'
 import { MdDeleteForever } from 'react-icons/md'
@@ -129,6 +134,7 @@ const Mihomo: React.FC = () => {
                   className="mr-2"
                   onPress={async () => {
                     await onChangeNeedRestart({ 'mixed-port': mixedPortInput })
+                    await startSubStoreBackendServer()
                     if (sysProxy?.enable) {
                       triggerSysProxy(true)
                     }

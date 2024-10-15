@@ -11,6 +11,8 @@ import express from 'express'
 export let pacPort: number
 export let subStorePort: number
 export let subStoreFrontendPort: number
+let subStoreFrontendServer: http.Server
+let subStoreBackendWorker: Worker
 
 const defaultPacScript = `
 function FindProxyForURL(url, host) {
@@ -56,28 +58,42 @@ export async function startPacServer(): Promise<void> {
   server.unref()
 }
 
-export async function startSubStoreServer(): Promise<void> {
+export async function startSubStoreFrontendServer(): Promise<void> {
+  const { useSubStore = true, subStoreHost = '127.0.0.1' } = await getAppConfig()
+  if (!useSubStore) return
+  await stopSubStoreFrontendServer()
+  subStoreFrontendPort = await findAvailablePort(14122)
+  const app = express()
+  app.use(express.static(path.join(resourcesFilesDir(), 'sub-store-frontend')))
+  subStoreFrontendServer = app.listen(subStoreFrontendPort, subStoreHost)
+}
+
+export async function stopSubStoreFrontendServer(): Promise<void> {
+  if (subStoreFrontendServer) {
+    subStoreFrontendServer.close()
+  }
+}
+
+export async function startSubStoreBackendServer(): Promise<void> {
   const {
     useSubStore = true,
     useCustomSubStore = false,
+    subStoreHost = '127.0.0.1',
     subStoreBackendSyncCron = '',
     subStoreBackendDownloadCron = '',
     subStoreBackendUploadCron = ''
   } = await getAppConfig()
+  const { 'mixed-port': port = 7890 } = await getControledMihomoConfig()
   if (!useSubStore) return
-  if (!subStoreFrontendPort) {
-    subStoreFrontendPort = await findAvailablePort(14122)
-    const app = express()
-    app.use(express.static(path.join(resourcesFilesDir(), 'sub-store-frontend')))
-    app.listen(subStoreFrontendPort)
-  }
-  if (!useCustomSubStore && !subStorePort) {
+  if (!useCustomSubStore) {
+    await stopSubStoreBackendServer()
     subStorePort = await findAvailablePort(38324)
     const icon = nativeImage.createFromPath(subStoreIcon)
     icon.toDataURL()
-    new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
+    subStoreBackendWorker = new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
       env: {
         SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
+        SUB_STORE_BACKEND_API_HOST: subStoreHost,
         SUB_STORE_DATA_BASE_PATH: subStoreDir(),
         SUB_STORE_BACKEND_CUSTOM_ICON: icon.toDataURL(),
         SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party',
@@ -85,8 +101,17 @@ export async function startSubStoreServer(): Promise<void> {
         SUB_STORE_BACKEND_DOWNLOAD_CRON: subStoreBackendDownloadCron,
         SUB_STORE_BACKEND_UPLOAD_CRON: subStoreBackendUploadCron,
         SUB_STORE_MMDB_COUNTRY_PATH: path.join(mihomoWorkDir(), 'country.mmdb'),
-        SUB_STORE_MMDB_ASN_PATH: path.join(mihomoWorkDir(), 'ASN.mmdb')
+        SUB_STORE_MMDB_ASN_PATH: path.join(mihomoWorkDir(), 'ASN.mmdb'),
+        HTTP_PROXY: `http://127.0.0.1:${port}`,
+        HTTPS_PROXY: `http://127.0.0.1:${port}`,
+        ALL_PROXY: `http://127.0.0.1:${port}`
       }
     })
+  }
+}
+
+export async function stopSubStoreBackendServer(): Promise<void> {
+  if (subStoreBackendWorker) {
+    subStoreBackendWorker.terminate()
   }
 }

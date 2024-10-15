@@ -307,8 +307,20 @@ export async function getGistUrl(): Promise<string> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getGistUrl'))
 }
 
-export async function startSubStoreServer(): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('startSubStoreServer'))
+export async function startSubStoreFrontendServer(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('startSubStoreFrontendServer'))
+}
+
+export async function stopSubStoreFrontendServer(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('stopSubStoreFrontendServer'))
+}
+
+export async function startSubStoreBackendServer(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('startSubStoreBackendServer'))
+}
+
+export async function stopSubStoreBackendServer(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('stopSubStoreBackendServer'))
 }
 
 export async function subStorePort(): Promise<number> {

@@ -43,7 +43,14 @@ import {
   setOverride,
   updateOverrideItem
 } from '../config'
-import { startSubStoreServer, subStoreFrontendPort, subStorePort } from '../resolve/server'
+import {
+  startSubStoreFrontendServer,
+  startSubStoreBackendServer,
+  stopSubStoreFrontendServer,
+  stopSubStoreBackendServer,
+  subStoreFrontendPort,
+  subStorePort
+} from '../resolve/server'
 import {
   isEncryptionAvailable,
   manualGrantCorePermition,
@@ -190,7 +197,13 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('registerShortcut', (_e, oldShortcut, newShortcut, action) =>
     ipcErrorWrapper(registerShortcut)(oldShortcut, newShortcut, action)
   )
-  ipcMain.handle('startSubStoreServer', () => ipcErrorWrapper(startSubStoreServer)())
+  ipcMain.handle('startSubStoreFrontendServer', () =>
+    ipcErrorWrapper(startSubStoreFrontendServer)()
+  )
+  ipcMain.handle('stopSubStoreFrontendServer', () => ipcErrorWrapper(stopSubStoreFrontendServer)())
+  ipcMain.handle('startSubStoreBackendServer', () => ipcErrorWrapper(startSubStoreBackendServer)())
+  ipcMain.handle('stopSubStoreBackendServer', () => ipcErrorWrapper(stopSubStoreBackendServer)())
+
   ipcMain.handle('subStorePort', () => subStorePort)
   ipcMain.handle('subStoreFrontendPort', () => subStoreFrontendPort)
   ipcMain.handle('subStoreSubs', () => ipcErrorWrapper(subStoreSubs)())
