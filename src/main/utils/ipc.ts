@@ -1,4 +1,4 @@
-import { app, dialog, ipcMain, safeStorage } from 'electron'
+import { app, dialog, ipcMain } from 'electron'
 import {
   mihomoChangeProxy,
   mihomoCloseAllConnections,
@@ -51,12 +51,7 @@ import {
   subStoreFrontendPort,
   subStorePort
 } from '../resolve/server'
-import {
-  isEncryptionAvailable,
-  manualGrantCorePermition,
-  quitWithoutCore,
-  restartCore
-} from '../core/manager'
+import { manualGrantCorePermition, quitWithoutCore, restartCore } from '../core/manager'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { checkUpdate, downloadAndInstallUpdate } from '../resolve/autoUpdater'
 import {
@@ -172,8 +167,6 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('restartCore', ipcErrorWrapper(restartCore))
   ipcMain.handle('startMonitor', (_e, detached) => ipcErrorWrapper(startMonitor)(detached))
   ipcMain.handle('triggerSysProxy', (_e, enable) => ipcErrorWrapper(triggerSysProxy)(enable))
-  ipcMain.handle('isEncryptionAvailable', isEncryptionAvailable)
-  ipcMain.handle('encryptString', (_e, str) => encryptString(str))
   ipcMain.handle('manualGrantCorePermition', (_e, password) =>
     ipcErrorWrapper(manualGrantCorePermition)(password)
   )
@@ -255,8 +248,4 @@ export function registerIpcMainHandlers(): void {
   })
   ipcMain.handle('quitWithoutCore', ipcErrorWrapper(quitWithoutCore))
   ipcMain.handle('quitApp', () => app.quit())
-}
-
-function encryptString(str: string): number[] {
-  return safeStorage.encryptString(str).toJSON().data
 }

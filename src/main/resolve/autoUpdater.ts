@@ -91,20 +91,9 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
     if (file.endsWith('.pkg')) {
       try {
         const execPromise = promisify(exec)
-        const name = exePath().split('.app')[0].replace('/Applications/', '')
-        await execPromise(
-          `hdiutil attach "${path.join(dataDir(), file)}" -mountpoint "/Volumes/mihomo-party" -nobrowse`
-        )
-        try {
-          await execPromise(`mv "/Applications/${name}.app" /tmp`)
-          await execPromise('cp -R "/Volumes/mihomo-party/Mihomo Party.app" /Applications/')
-          await execPromise(`rm -rf "/tmp/${name}.app"`)
-        } catch (e) {
-          await execPromise(`mv "/tmp/${name}.app" /Applications`)
-          throw e
-        } finally {
-          await execPromise('hdiutil detach "/Volumes/mihomo-party"')
-        }
+        const shell = `installer -pkg ${path.join(dataDir(), file).replace(' ', '\\\\ ')} -target /`
+        const command = `do shell script "${shell}" with administrator privileges`
+        await execPromise(`osascript -e '${command}'`)
         app.relaunch()
         app.quit()
       } catch {

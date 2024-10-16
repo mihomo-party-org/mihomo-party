@@ -199,6 +199,7 @@ jobs:
           npm_config_target_arch: ${{ matrix.arch }}
         run: |
           sed -i "" -e "s/productName: mihomo-party/productName: Mihomo Party/" electron-builder.yml
+          chmod +x build/pkg-scripts/postinstall
           pnpm build:mac --${{ matrix.arch }}
       - name: Generate checksums
         run: pnpm checksum .pkg

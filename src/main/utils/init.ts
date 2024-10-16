@@ -216,7 +216,7 @@ async function migration(): Promise<void> {
     await patchAppConfig({ disableTray: false })
   }
   // remove password
-  if (process.platform === 'linux' && encryptedPassword) {
+  if (encryptedPassword) {
     await patchAppConfig({ encryptedPassword: undefined })
   }
 }

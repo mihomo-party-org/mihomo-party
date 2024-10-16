@@ -17,7 +17,7 @@ import {
   patchAppConfig,
   patchControledMihomoConfig
 } from '../config'
-import { app, dialog, ipcMain, net, safeStorage } from 'electron'
+import { app, dialog, ipcMain, net } from 'electron'
 import {
   startMihomoTraffic,
   startMihomoConnections,
@@ -57,27 +57,12 @@ let child: ChildProcess
 let retry = 10
 
 export async function startCore(detached = false): Promise<Promise<void>[]> {
-  const {
-    core = 'mihomo',
-    autoSetDNS = true,
-    encryptedPassword,
-    diffWorkDir = false
-  } = await getAppConfig()
+  const { core = 'mihomo', autoSetDNS = true, diffWorkDir = false } = await getAppConfig()
   const { 'log-level': logLevel } = await getControledMihomoConfig()
   if (existsSync(path.join(dataDir(), 'core.pid'))) {
     const pid = parseInt(await readFile(path.join(dataDir(), 'core.pid'), 'utf-8'))
     try {
       process.kill(pid, 'SIGINT')
-    } catch {
-      if (process.platform === 'darwin' && encryptedPassword && isEncryptionAvailable()) {
-        const execPromise = promisify(exec)
-        const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
-        try {
-          await execPromise(`echo "${password}" | sudo -S kill ${pid}`)
-        } catch {
-          // ignore
-        }
-      }
     } finally {
       await rm(path.join(dataDir(), 'core.pid'))
     }
@@ -85,7 +70,6 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
   const { current } = await getProfileConfig()
   const { tun } = await getControledMihomoConfig()
   const corePath = mihomoCorePath(core)
-  await autoGrantCorePermition(corePath)
   await generateProfile()
   await checkProfile()
   await stopCore()
@@ -242,24 +226,6 @@ async function checkProfile(): Promise<void> {
   }
 }
 
-export async function autoGrantCorePermition(corePath: string): Promise<void> {
-  if (process.platform !== 'darwin') return
-  const { encryptedPassword } = await getAppConfig()
-  const execPromise = promisify(exec)
-  if (encryptedPassword && isEncryptionAvailable()) {
-    try {
-      const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
-      if (process.platform === 'darwin') {
-        await execPromise(`echo "${password}" | sudo -S chown root:admin "${corePath}"`)
-        await execPromise(`echo "${password}" | sudo -S chmod +sx "${corePath}"`)
-      }
-    } catch (error) {
-      patchAppConfig({ encryptedPassword: undefined })
-      throw error
-    }
-  }
-}
-
 export async function manualGrantCorePermition(password?: string): Promise<void> {
   const { core = 'mihomo' } = await getAppConfig()
   const corePath = mihomoCorePath(core)
@@ -275,27 +241,19 @@ export async function manualGrantCorePermition(password?: string): Promise<void>
   }
 }
 
-export function isEncryptionAvailable(): boolean {
-  return safeStorage.isEncryptionAvailable()
-}
-
-export async function getDefaultDevice(password?: string): Promise<string> {
+export async function getDefaultDevice(): Promise<string> {
   const execPromise = promisify(exec)
-  let sudo = ''
-  if (password) sudo = `echo "${password}" | sudo -S `
-  const { stdout: deviceOut } = await execPromise(`${sudo}route -n get default`)
+  const { stdout: deviceOut } = await execPromise(`route -n get default`)
   let device = deviceOut.split('\n').find((s) => s.includes('interface:'))
   device = device?.trim().split(' ').slice(1).join(' ')
   if (!device) throw new Error('Get device failed')
   return device
 }
 
-async function getDefaultService(password?: string): Promise<string> {
+async function getDefaultService(): Promise<string> {
   const execPromise = promisify(exec)
-  let sudo = ''
-  if (password) sudo = `echo "${password}" | sudo -S `
-  const device = await getDefaultDevice(password)
-  const { stdout: order } = await execPromise(`${sudo}networksetup -listnetworkserviceorder`)
+  const device = await getDefaultDevice()
+  const { stdout: order } = await execPromise(`networksetup -listnetworkserviceorder`)
   const block = order.split('\n\n').find((s) => s.includes(`Device: ${device}`))
   if (!block) throw new Error('Get networkservice failed')
   for (const line of block.split('\n')) {
@@ -306,12 +264,10 @@ async function getDefaultService(password?: string): Promise<string> {
   throw new Error('Get service failed')
 }
 
-async function getOriginDNS(password?: string): Promise<void> {
+async function getOriginDNS(): Promise<void> {
   const execPromise = promisify(exec)
-  let sudo = ''
-  if (password) sudo = `echo "${password}" | sudo -S `
-  const service = await getDefaultService(password)
-  const { stdout: dns } = await execPromise(`${sudo}networksetup -getdnsservers "${service}"`)
+  const service = await getDefaultService()
+  const { stdout: dns } = await execPromise(`networksetup -getdnsservers "${service}"`)
   if (dns.startsWith("There aren't any DNS Servers set on")) {
     await patchAppConfig({ originDNS: 'Empty' })
   } else {
@@ -319,25 +275,19 @@ async function getOriginDNS(password?: string): Promise<void> {
   }
 }
 
-async function setDNS(dns: string, password?: string): Promise<void> {
-  const service = await getDefaultService(password)
-  let sudo = ''
-  if (password) sudo = `echo "${password}" | sudo -S `
+async function setDNS(dns: string): Promise<void> {
+  const service = await getDefaultService()
   const execPromise = promisify(exec)
-  await execPromise(`${sudo}networksetup -setdnsservers "${service}" ${dns}`)
+  await execPromise(`networksetup -setdnsservers "${service}" ${dns}`)
 }
 
 async function setPublicDNS(): Promise<void> {
   if (process.platform !== 'darwin') return
   if (net.isOnline()) {
-    const { originDNS, encryptedPassword } = await getAppConfig()
+    const { originDNS } = await getAppConfig()
     if (!originDNS) {
-      let password: string | undefined
-      if (encryptedPassword && isEncryptionAvailable()) {
-        password = safeStorage.decryptString(Buffer.from(encryptedPassword))
-      }
-      await getOriginDNS(password)
-      await setDNS('223.5.5.5', password)
+      await getOriginDNS()
+      await setDNS('223.5.5.5')
     }
   } else {
     if (setPublicDNSTimer) clearTimeout(setPublicDNSTimer)
@@ -348,13 +298,9 @@ async function setPublicDNS(): Promise<void> {
 async function recoverDNS(): Promise<void> {
   if (process.platform !== 'darwin') return
   if (net.isOnline()) {
-    const { originDNS, encryptedPassword } = await getAppConfig()
+    const { originDNS } = await getAppConfig()
     if (originDNS) {
-      let password: string | undefined
-      if (encryptedPassword && isEncryptionAvailable()) {
-        password = safeStorage.decryptString(Buffer.from(encryptedPassword))
-      }
-      await setDNS(originDNS, password)
+      await setDNS(originDNS)
       await patchAppConfig({ originDNS: undefined })
     }
   } else {

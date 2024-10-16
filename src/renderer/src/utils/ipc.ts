@@ -199,14 +199,6 @@ export async function triggerSysProxy(enable: boolean): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('triggerSysProxy', enable))
 }
 
-export async function isEncryptionAvailable(): Promise<boolean> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('isEncryptionAvailable'))
-}
-
-export async function encryptString(str: string): Promise<number[]> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('encryptString', str))
-}
-
 export async function manualGrantCorePermition(password?: string): Promise<void> {
   return ipcErrorWrapper(
     await window.electron.ipcRenderer.invoke('manualGrantCorePermition', password)

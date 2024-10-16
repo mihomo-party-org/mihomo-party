@@ -1,0 +1,6 @@
+#!/bin/sh
+chown root:admin $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo
+chown root:admin $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo-alpha
+chmod +s $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo
+chmod +s $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo-alpha
+exit 0
