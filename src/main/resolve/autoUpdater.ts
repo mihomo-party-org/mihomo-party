@@ -39,8 +39,8 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
     'win32-x64': `mihomo-party-windows-${version}-x64-setup.exe`,
     'win32-ia32': `mihomo-party-windows-${version}-ia32-setup.exe`,
     'win32-arm64': `mihomo-party-windows-${version}-arm64-setup.exe`,
-    'darwin-x64': `mihomo-party-macos-${version}-x64.dmg`,
-    'darwin-arm64': `mihomo-party-macos-${version}-arm64.dmg`
+    'darwin-x64': `mihomo-party-macos-${version}-x64.pkg`,
+    'darwin-arm64': `mihomo-party-macos-${version}-arm64.pkg`
   }
   let file = fileMap[`${process.platform}-${process.arch}`]
   if (isPortable()) {
@@ -88,7 +88,7 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
       ).unref()
       app.quit()
     }
-    if (file.endsWith('.dmg')) {
+    if (file.endsWith('.pkg')) {
       try {
         const execPromise = promisify(exec)
         const name = exePath().split('.app')[0].replace('/Applications/', '')

@@ -200,7 +200,7 @@ jobs:
           sed -i "" -e "s/productName: mihomo-party/productName: Mihomo Party/" electron-builder.yml
           pnpm build:mac --${{ matrix.arch }}
       - name: Generate checksums
-        run: pnpm checksum .dmg
+        run: pnpm checksum .pkg
       - name: Upload Artifacts
         if: startsWith(github.ref, 'refs/heads/')
         uses: actions/upload-artifact@v4
@@ -208,7 +208,7 @@ jobs:
           name: MacOS ${{ matrix.arch }}
           path: |
             dist/*.sha256
-            dist/*.dmg
+            dist/*.pkg
           if-no-files-found: error
       - name: Publish Release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -216,7 +216,7 @@ jobs:
         with:
           files: |
             dist/*.sha256
-            dist/*.dmg
+            dist/*.pkg
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 

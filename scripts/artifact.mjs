@@ -20,8 +20,8 @@ const linuxFiles = [
 ]
 
 const macosFiles = [
-  path.join(GITHUB_WORKSPACE, `mihomo-party-macos-${version}-arm64.dmg`),
-  path.join(GITHUB_WORKSPACE, `mihomo-party-macos-${version}-x64.dmg`)
+  path.join(GITHUB_WORKSPACE, `mihomo-party-macos-${version}-arm64.pkg`),
+  path.join(GITHUB_WORKSPACE, `mihomo-party-macos-${version}-x64.pkg`)
 ]
 
 const windowsFiles = [

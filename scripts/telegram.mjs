@@ -24,8 +24,8 @@ content += '\n<b>Windows7/8：</b>\n'
 content += `安装版：<a href="${downloadUrl}/mihomo-party-win7-${version}-x64-setup.exe">64位</a> | <a href="${downloadUrl}/mihomo-party-win7-${version}-ia32-setup.exe">32位</a>\n`
 content += `便携版：<a href="${downloadUrl}/mihomo-party-win7-${version}-x64-portable.7z">64位</a> | <a href="${downloadUrl}/mihomo-party-win7-${version}-ia32-portable.7z">32位</a>\n`
 content += '\n<b>macOS：</b>\n'
-content += `DMG：<a href="${downloadUrl}/mihomo-party-macos-${version}-x64.dmg
-">Intel</a> | <a href="${downloadUrl}/mihomo-party-macos-${version}-arm64.dmg">Apple Silicon</a>\n`
+content += `DMG：<a href="${downloadUrl}/mihomo-party-macos-${version}-x64.pkg
+">Intel</a> | <a href="${downloadUrl}/mihomo-party-macos-${version}-arm64.pkg">Apple Silicon</a>\n`
 content += '\n<b>Linux：</b>\n'
 content += `DEB：<a href="${downloadUrl}/mihomo-party-linux-${version}-amd64.deb
 ">64位</a> | <a href="${downloadUrl}/mihomo-party-linux-${version}-arm64.deb">ARM64</a>\n`

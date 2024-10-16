@@ -109,7 +109,7 @@ async function cleanup(): Promise<void> {
   // update cache
   const files = await readdir(dataDir())
   for (const file of files) {
-    if (file.endsWith('.exe') || file.endsWith('.dmg') || file.endsWith('.7z')) {
+    if (file.endsWith('.exe') || file.endsWith('.pkg') || file.endsWith('.7z')) {
       try {
         await rm(path.join(dataDir(), file))
       } catch {
