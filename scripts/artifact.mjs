@@ -85,7 +85,7 @@ const macosMedia = macosFiles.map((file, index) => ({
   type: 'document',
   media: `attach://file${index}`
 }))
-macosMedia[macosMedia.length - 1].caption = `#${hash} #macOS 11+\n${message}`
+macosMedia[macosMedia.length - 1].caption = `#${hash} #macOS11+\n${message}`
 const macosForm = new FormData()
 macosForm.append('chat_id', CHAT_ID)
 macosForm.append('media', JSON.stringify(macosMedia))
@@ -97,7 +97,7 @@ const macos10Media = macos10Files.map((file, index) => ({
   type: 'document',
   media: `attach://file${index}`
 }))
-macos10Media[macos10Media.length - 1].caption = `#${hash} #macOS 10.15+\n${message}`
+macos10Media[macos10Media.length - 1].caption = `#${hash} #macOS10+\n${message}`
 const macos10Form = new FormData()
 macos10Form.append('chat_id', CHAT_ID)
 macos10Form.append('media', JSON.stringify(macos10Media))
