@@ -154,7 +154,8 @@ async function migration(): Promise<void> {
     envType = [process.platform === 'win32' ? 'powershell' : 'bash'],
     useSubStore = true,
     showFloatingWindow = false,
-    disableTray = false
+    disableTray = false,
+    encryptedPassword
   } = await getAppConfig()
   const {
     'external-controller-pipe': externalControllerPipe,
@@ -213,6 +214,10 @@ async function migration(): Promise<void> {
   }
   if (!showFloatingWindow && disableTray) {
     await patchAppConfig({ disableTray: false })
+  }
+  // remove password
+  if (process.platform === 'linux' && encryptedPassword) {
+    await patchAppConfig({ encryptedPassword: undefined })
   }
 }
 

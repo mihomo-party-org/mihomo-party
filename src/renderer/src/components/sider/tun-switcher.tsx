@@ -32,7 +32,7 @@ const TunSwitcher: React.FC = () => {
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const onChange = async (enable: boolean): Promise<void> => {
-    if (enable && platform !== 'win32') {
+    if (enable && platform === 'darwin') {
       const encryptionAvailable = await isEncryptionAvailable()
       if (!appConfig?.encryptedPassword && encryptionAvailable) {
         setOpenPasswordModal(true)

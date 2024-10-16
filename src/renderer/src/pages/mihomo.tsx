@@ -89,6 +89,11 @@ const Mihomo: React.FC = () => {
                     setTimeout(() => {
                       PubSub.publish('mihomo-core-changed')
                     }, 2000)
+                    if (platform === 'linux') {
+                      new Notification('内核权限丢失', {
+                        body: '内核升级成功，若要使用虚拟网卡（Tun），请到虚拟网卡页面重新手动授权内核'
+                      })
+                    }
                   } catch (e) {
                     if (typeof e === 'string' && e.includes('already using latest version')) {
                       new Notification('已经是最新版本')

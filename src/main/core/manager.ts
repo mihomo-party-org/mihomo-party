@@ -69,7 +69,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
     try {
       process.kill(pid, 'SIGINT')
     } catch {
-      if (process.platform !== 'win32' && encryptedPassword && isEncryptionAvailable()) {
+      if (process.platform === 'darwin' && encryptedPassword && isEncryptionAvailable()) {
         const execPromise = promisify(exec)
         const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
         try {
@@ -243,16 +243,12 @@ async function checkProfile(): Promise<void> {
 }
 
 export async function autoGrantCorePermition(corePath: string): Promise<void> {
-  if (process.platform === 'win32') return
+  if (process.platform !== 'darwin') return
   const { encryptedPassword } = await getAppConfig()
   const execPromise = promisify(exec)
   if (encryptedPassword && isEncryptionAvailable()) {
     try {
       const password = safeStorage.decryptString(Buffer.from(encryptedPassword))
-      if (process.platform === 'linux') {
-        await execPromise(`echo "${password}" | sudo -S chown root:root "${corePath}"`)
-        await execPromise(`echo "${password}" | sudo -S chmod +sx "${corePath}"`)
-      }
       if (process.platform === 'darwin') {
         await execPromise(`echo "${password}" | sudo -S chown root:admin "${corePath}"`)
         await execPromise(`echo "${password}" | sudo -S chmod +sx "${corePath}"`)

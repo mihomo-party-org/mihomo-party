@@ -11,6 +11,8 @@ else
 fi
 
 chmod 4755 '/opt/mihomo-party/chrome-sandbox' || true
+chmod +sx /opt/mihomo-party/resources/sidecar/mihomo
+chmod +sx /opt/mihomo-party/resources/sidecar/mihomo-alpha
 
 if hash update-mime-database 2>/dev/null; then
     update-mime-database /usr/share/mime || true

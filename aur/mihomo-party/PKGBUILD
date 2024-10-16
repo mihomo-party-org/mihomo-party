@@ -33,8 +33,8 @@ package() {
     bsdtar -xf mihomo-party-linux-${pkgver}*.deb
     bsdtar -xf data.tar.xz -C "${pkgdir}/"
     chmod +x ${pkgdir}/opt/mihomo-party/mihomo-party
-    chmod +x ${pkgdir}/opt/mihomo-party/resources/sidecar/mihomo
-    chmod +x ${pkgdir}/opt/mihomo-party/resources/sidecar/mihomo-alpha
+    chmod +sx ${pkgdir}/opt/mihomo-party/resources/sidecar/mihomo
+    chmod +sx ${pkgdir}/opt/mihomo-party/resources/sidecar/mihomo-alpha
     install -Dm755 "${srcdir}/../${pkgname}.sh" "${pkgdir}/usr/bin/${pkgname}"
     sed -i '3s!/opt/mihomo-party/mihomo-party!mihomo-party!' "${pkgdir}/usr/share/applications/${pkgname}.desktop"
 
