@@ -1,5 +1,5 @@
 appId: party.mihomo.app
-productName: mihomo-party
+productName: Mihomo Party
 directories:
   buildResources: build
 files:
@@ -30,7 +30,6 @@ win:
   artifactName: ${name}-windows-${version}-${arch}-portable.${ext}
 nsis:
   artifactName: ${name}-windows-${version}-${arch}-setup.${ext}
-  shortcutName: Mihomo Party
   uninstallDisplayName: ${productName}
   allowToChangeInstallationDirectory: true
   oneClick: false
@@ -57,7 +56,7 @@ linux:
   target:
     - deb
     - rpm
-  maintainer: mihomo-party
+  maintainer: mihomo-party-org
   category: Utility
   artifactName: ${name}-linux-${version}-${arch}.${ext}
 deb:

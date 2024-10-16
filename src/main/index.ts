@@ -92,15 +92,6 @@ app.on('open-url', async (_event, url) => {
   showMainWindow()
   await handleDeepLink(url)
 })
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', (e) => {
-  e.preventDefault()
-  // if (process.platform !== 'darwin') {
-  //   app.quit()
-  // }
-})
 
 app.on('before-quit', async (e) => {
   e.preventDefault()
@@ -109,8 +100,7 @@ app.on('before-quit', async (e) => {
   app.exit()
 })
 
-powerMonitor.on('shutdown', async (e) => {
-  e.preventDefault()
+powerMonitor.on('shutdown', async () => {
   triggerSysProxy(false)
   await stopCore()
   app.exit()

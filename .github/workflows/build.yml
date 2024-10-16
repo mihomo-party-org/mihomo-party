@@ -142,6 +142,7 @@ jobs:
         run: |
           pnpm install
           pnpm add @mihomo-party/sysproxy-linux-${{ matrix.arch }}-gnu
+          sed -i "s/productName: Mihomo Party/productName: mihomo-party/" electron-builder.yml
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:
@@ -197,7 +198,6 @@ jobs:
           npm_config_arch: ${{ matrix.arch }}
           npm_config_target_arch: ${{ matrix.arch }}
         run: |
-          sed -i "" -e "s/productName: mihomo-party/productName: Mihomo Party/" electron-builder.yml
           chmod +x build/pkg-scripts/postinstall
           pnpm build:mac --${{ matrix.arch }}
       - name: Generate checksums
@@ -248,7 +248,6 @@ jobs:
           npm_config_arch: ${{ matrix.arch }}
           npm_config_target_arch: ${{ matrix.arch }}
         run: |
-          sed -i "" -e "s/productName: mihomo-party/productName: Mihomo Party/" electron-builder.yml
           sed -i "" -e "s/macos/catalina/" electron-builder.yml
           chmod +x build/pkg-scripts/postinstall
           pnpm build:mac --${{ matrix.arch }}

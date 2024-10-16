@@ -13,7 +13,7 @@ export function dataDir(): string {
   if (isPortable()) {
     return path.join(exeDir(), 'data')
   } else {
-    return path.join(app.getPath('appData'), 'mihomo-party')
+    return app.getPath('userData')
   }
 }
 

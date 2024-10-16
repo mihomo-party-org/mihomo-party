@@ -20,6 +20,7 @@ options=('!lto')
 
 prepare(){
     cd $srcdir/${pkgname}-${pkgver}
+    sed -i "s/productName: Mihomo Party/productName: mihomo-party/" electron-builder.yml
     pnpm install
 }
 
