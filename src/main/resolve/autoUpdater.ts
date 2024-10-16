@@ -7,7 +7,7 @@ import { copyFile, rm, writeFile } from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
 import os from 'os'
-import { exec, spawn } from 'child_process'
+import { exec, execSync, spawn } from 'child_process'
 import { promisify } from 'util'
 
 export async function checkUpdate(): Promise<IAppVersion | undefined> {
@@ -51,6 +51,14 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
   }
   if (process.platform === 'win32' && parseInt(os.release()) < 10) {
     file = file.replace('windows', 'win7')
+  }
+  if (process.platform === 'darwin') {
+    const productVersion = execSync('sw_vers -productVersion', { encoding: 'utf8' })
+      .toString()
+      .trim()
+    if (parseInt(productVersion) < 11) {
+      file = file.replace('macos', 'catalina')
+    }
   }
   try {
     if (!existsSync(path.join(dataDir(), file))) {

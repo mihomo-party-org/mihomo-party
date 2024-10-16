@@ -24,6 +24,11 @@ const macosFiles = [
   path.join(GITHUB_WORKSPACE, `mihomo-party-macos-${version}-x64.pkg`)
 ]
 
+const macos10Files = [
+  path.join(GITHUB_WORKSPACE, `mihomo-party-catalina-${version}-arm64.pkg`),
+  path.join(GITHUB_WORKSPACE, `mihomo-party-catalina-${version}-x64.pkg`)
+]
+
 const windowsFiles = [
   path.join(GITHUB_WORKSPACE, `mihomo-party-windows-${version}-x64-setup.exe`),
   path.join(GITHUB_WORKSPACE, `mihomo-party-windows-${version}-x64-portable.7z`),
@@ -80,12 +85,24 @@ const macosMedia = macosFiles.map((file, index) => ({
   type: 'document',
   media: `attach://file${index}`
 }))
-macosMedia[macosMedia.length - 1].caption = `#${hash} #macOS\n${message}`
+macosMedia[macosMedia.length - 1].caption = `#${hash} #macOS 11+\n${message}`
 const macosForm = new FormData()
 macosForm.append('chat_id', CHAT_ID)
 macosForm.append('media', JSON.stringify(macosMedia))
 macosFiles.forEach((file, index) => {
   macosForm.append(`file${index}`, fs.createReadStream(file))
+})
+
+const macos10Media = macos10Files.map((file, index) => ({
+  type: 'document',
+  media: `attach://file${index}`
+}))
+macos10Media[macos10Media.length - 1].caption = `#${hash} #macOS 10.15+\n${message}`
+const macos10Form = new FormData()
+macos10Form.append('chat_id', CHAT_ID)
+macos10Form.append('media', JSON.stringify(macos10Media))
+macos10Files.forEach((file, index) => {
+  macos10Form.append(`file${index}`, fs.createReadStream(file))
 })
 
 function sleep(ms) {
@@ -117,6 +134,16 @@ await axios.post(
   macosForm,
   {
     headers: macosForm.getHeaders()
+  }
+)
+
+await sleep(10000)
+
+await axios.post(
+  `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
+  macos10Form,
+  {
+    headers: macos10Form.getHeaders()
   }
 )
 

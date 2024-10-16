@@ -191,7 +191,6 @@ jobs:
         run: |
           pnpm install
           pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
-          pnpm add -D electron@32.2.0
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:
@@ -222,9 +221,61 @@ jobs:
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  macos10:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - x64
+          - arm64
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        run: npm install -g pnpm
+      - name: Install Dependencies
+        env:
+          npm_config_arch: ${{ matrix.arch }}
+          npm_config_target_arch: ${{ matrix.arch }}
+        run: |
+          pnpm install
+          pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
+          pnpm add -D electron@32.2.0
+          pnpm prepare --${{ matrix.arch }}
+      - name: Build
+        env:
+          npm_config_arch: ${{ matrix.arch }}
+          npm_config_target_arch: ${{ matrix.arch }}
+        run: |
+          sed -i "" -e "s/productName: mihomo-party/productName: Mihomo Party/" electron-builder.yml
+          sed -i "" -e "s/macos/catalina/" electron-builder.yml
+          chmod +x build/pkg-scripts/postinstall
+          pnpm build:mac --${{ matrix.arch }}
+      - name: Generate checksums
+        run: pnpm checksum .pkg
+      - name: Upload Artifacts
+        if: startsWith(github.ref, 'refs/heads/')
+        uses: actions/upload-artifact@v4
+        with:
+          name: Catalina ${{ matrix.arch }}
+          path: |
+            dist/*.sha256
+            dist/*.pkg
+          if-no-files-found: error
+      - name: Publish Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.sha256
+            dist/*.pkg
+          body_path: changelog.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   artifact:
     if: startsWith(github.ref, 'refs/heads/')
-    needs: [windows, macos, linux, windows7]
+    needs: [windows, macos, linux, windows7, macos10]
     runs-on: ubuntu-latest
     services:
       telegram-bot-api:
@@ -252,7 +303,7 @@ jobs:
 
   updater:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [windows, macos, windows7]
+    needs: [windows, macos, windows7, macos10]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -361,7 +412,7 @@ jobs:
   homebrew:
     if: startsWith(github.ref, 'refs/tags/v')
     name: Update Homebrew cask
-    needs: macos
+    needs: [macos, macos10]
     runs-on: macos-latest
     steps:
       - name: Set up Git
