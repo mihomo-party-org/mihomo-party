@@ -100,7 +100,7 @@ importers:
         specifier: ^33.0.0
         version: 33.0.0
       electron-builder:
-        specifier: 25.0.4
+        specifier: '=25.0.4'
         version: 25.0.4(electron-builder-squirrel-windows@25.0.4)
       electron-vite:
         specifier: ^2.3.0
@@ -109,7 +109,7 @@ importers:
         specifier: ^5.0.3
         version: 5.0.3
       eslint:
-        specifier: ^8.57.1
+        specifier: '=8.57.1'
         version: 8.57.1
       eslint-plugin-react:
         specifier: ^7.37.1
