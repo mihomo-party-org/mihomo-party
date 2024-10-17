@@ -49,6 +49,9 @@ mac:
 pkg:
   allowAnywhere: false
   allowCurrentUserHome: false
+  background:
+    alignment: bottomleft
+    file: build/background.png
 linux:
   desktop:
     Name: Mihomo Party
