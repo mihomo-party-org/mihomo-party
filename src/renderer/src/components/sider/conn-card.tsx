@@ -19,7 +19,7 @@ let drawing = false
 const ConnCard: React.FC = () => {
   const { theme = 'system', systemTheme = 'dark' } = useTheme()
   const { appConfig } = useAppConfig()
-  const { showTraffic, connectionCardStatus = 'col-span-2', customTheme } = appConfig || {}
+  const { showTraffic = false, connectionCardStatus = 'col-span-2', customTheme } = appConfig || {}
   const location = useLocation()
   const match = location.pathname.includes('/connections')
 

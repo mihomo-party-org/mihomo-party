@@ -39,7 +39,7 @@ const GeneralConfig: React.FC = () => {
   const {
     silentStart = false,
     useDockIcon = true,
-    showTraffic = true,
+    showTraffic = false,
     proxyInTray = true,
     disableTray = false,
     showFloatingWindow: showFloating = false,
