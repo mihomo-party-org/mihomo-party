@@ -241,7 +241,7 @@ jobs:
         run: |
           pnpm install
           pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
-          pnpm add -D electron@32.2.0
+          pnpm add -D electron@32.2.1
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:
