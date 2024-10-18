@@ -231,9 +231,6 @@ const OverrideItem: React.FC<Props> = (props) => {
                     全局
                   </Chip>
                 )}
-                <Chip size="sm" variant="bordered" className="mr-2">
-                  {info.type === 'local' ? '本地' : '远程'}
-                </Chip>
                 <Chip size="sm" variant="bordered">
                   {info.ext === 'yaml' ? 'YAML' : 'JavaScript'}
                 </Chip>

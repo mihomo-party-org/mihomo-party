@@ -231,7 +231,12 @@ const App: React.FC = () => {
         className={resizing ? 'bg-primary' : ''}
       />
       <Divider orientation="vertical" />
-      <div className="main grow h-full overflow-y-auto">{page}</div>
+      <div
+        style={{ width: `calc(100% - ${siderWidthValue + 1}px)` }}
+        className="main grow h-full overflow-y-auto"
+      >
+        {page}
+      </div>
     </div>
   )
 }
