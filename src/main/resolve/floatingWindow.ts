@@ -26,6 +26,7 @@ async function createFloatingWindow(): Promise<void> {
     skipTaskbar: true,
     minimizable: false,
     maximizable: false,
+    fullscreenable: false,
     closable: false,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
