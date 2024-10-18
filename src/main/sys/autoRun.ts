@@ -38,7 +38,7 @@ export async function enableAutoRun(): Promise<void> {
   if (process.platform === 'win32') {
     const execPromise = promisify(exec)
     await execPromise(
-      `C:\\\\Windows\\System32\\schtasks.exe /create /tn "${appName}" /tr "${exePath()}" /sc onlogon /delay 0000:03 /rl HIGHEST /it /f`
+      `C:\\\\Windows\\System32\\schtasks.exe /create /tn "${appName}" /tr "\\"${exePath()}\\"" /sc onlogon /delay 0000:03 /rl HIGHEST /it /f`
     )
   }
   if (process.platform === 'darwin') {
