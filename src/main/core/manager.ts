@@ -63,6 +63,8 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
     const pid = parseInt(await readFile(path.join(dataDir(), 'core.pid'), 'utf-8'))
     try {
       process.kill(pid, 'SIGINT')
+    } catch {
+      // ignore
     } finally {
       await rm(path.join(dataDir(), 'core.pid'))
     }
