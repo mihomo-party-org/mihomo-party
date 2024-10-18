@@ -44,6 +44,7 @@ const App: React.FC = () => {
     appTheme = 'system',
     customTheme,
     useWindowFrame = false,
+    siderWidth = 250,
     siderOrder = [
       'sysproxy',
       'tun',
@@ -61,6 +62,8 @@ const App: React.FC = () => {
     ]
   } = appConfig || {}
   const [order, setOrder] = useState(siderOrder)
+  const [siderWidthValue, setSiderWidthValue] = useState(siderWidth)
+  const [resizing, setResizing] = useState(false)
   const sensors = useSensors(useSensor(PointerSensor))
   const { setTheme, systemTheme } = useTheme()
   navigate = useNavigate()
@@ -82,7 +85,8 @@ const App: React.FC = () => {
   }
   useEffect(() => {
     setOrder(siderOrder)
-  }, [siderOrder])
+    setSiderWidthValue(siderWidth)
+  }, [siderOrder, siderWidth])
 
   useEffect(() => {
     const tourShown = window.localStorage.getItem('tourShown')
@@ -154,8 +158,29 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-[100vh] flex">
-      <div className="side w-[250px] h-full overflow-y-auto no-scrollbar">
+    <div
+      onMouseUp={() => {
+        if (resizing) {
+          setResizing(false)
+          patchAppConfig({ siderWidth: siderWidthValue })
+        }
+      }}
+      onMouseMove={(e) => {
+        if (!resizing) return
+        if (e.clientX <= 250) {
+          setSiderWidthValue(250)
+        } else if (e.clientX >= 400) {
+          setSiderWidthValue(400)
+        } else {
+          setSiderWidthValue(e.clientX)
+        }
+      }}
+      className={`w-full h-[100vh] flex ${resizing ? 'cursor-ew-resize' : ''}`}
+    >
+      <div
+        style={{ width: `${siderWidthValue}px` }}
+        className="side h-full overflow-y-auto no-scrollbar"
+      >
         <div className="app-drag sticky top-0 z-40 backdrop-blur bg-transparent h-[49px]">
           <div
             className={`flex justify-between p-2 ${!useWindowFrame && platform === 'darwin' ? 'ml-[60px]' : ''}`}
@@ -191,8 +216,22 @@ const App: React.FC = () => {
           </div>
         </DndContext>
       </div>
+      <div
+        onMouseDown={() => {
+          setResizing(true)
+        }}
+        style={{
+          position: 'fixed',
+          zIndex: 100,
+          left: `${siderWidthValue - 2}px`,
+          width: '5px',
+          height: '100vh',
+          cursor: 'ew-resize'
+        }}
+        className={resizing ? 'bg-primary' : ''}
+      />
       <Divider orientation="vertical" />
-      <div className="main w-[calc(100%-251px)] h-full overflow-y-auto">{page}</div>
+      <div className="main grow h-full overflow-y-auto">{page}</div>
     </div>
   )
 }

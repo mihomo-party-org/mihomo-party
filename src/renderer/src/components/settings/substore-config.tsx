@@ -136,7 +136,6 @@ const SubStoreConfig: React.FC = () => {
                   )}
                   <Input
                     size="sm"
-                    className="flex-grown"
                     value={subStoreBackendSyncCronValue}
                     placeholder="Cron 表达式"
                     onValueChange={(v: string) => {
@@ -170,7 +169,6 @@ const SubStoreConfig: React.FC = () => {
                   )}
                   <Input
                     size="sm"
-                    className="flex-grown"
                     value={subStoreBackendDownloadCronValue}
                     placeholder="Cron 表达式"
                     onValueChange={(v: string) => {
@@ -204,7 +202,6 @@ const SubStoreConfig: React.FC = () => {
                   )}
                   <Input
                     size="sm"
-                    className="flex-grown"
                     value={subStoreBackendUploadCronValue}
                     placeholder="Cron 表达式"
                     onValueChange={(v: string) => {

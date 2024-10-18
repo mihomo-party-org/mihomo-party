@@ -32,6 +32,7 @@ export const defaultConfig: IAppConfig = {
     'log',
     'substore'
   ],
+  siderWidth: 250,
   sysProxy: { enable: false, mode: 'manual' }
 }
 

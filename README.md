@@ -3,7 +3,7 @@
   <img height='48px' src='./images/icon-black.png#gh-light-mode-only'>
 </h3>
 
-<h3 align="center">Another Mihomo GUI</h3>
+<h3 align="center">Another <a href="https://github.com/MetaCubeX/mihomo">Mihomo</a> GUI</h3>
 
 <p align="center">
   <a href="https://github.com/mihomo-party-org/mihomo-party/releases">
