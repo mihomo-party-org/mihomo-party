@@ -1,17 +1,23 @@
-import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, Tooltip } from '@nextui-org/react'
 import BorderSwitch from '@renderer/components/base/border-swtich'
 import { RiScan2Fill } from 'react-icons/ri'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { patchMihomoConfig } from '@renderer/utils/ipc'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
+import React from 'react'
 
-const SniffCard: React.FC = () => {
+interface Props {
+  iconOnly?: boolean
+}
+const SniffCard: React.FC<Props> = (props) => {
   const { appConfig } = useAppConfig()
+  const { iconOnly } = props
   const { sniffCardStatus = 'col-span-1', controlSniff = true } = appConfig || {}
   const location = useLocation()
+  const navigate = useNavigate()
   const match = location.pathname.includes('/sniffer')
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const { sniffer } = controledMihomoConfig || {}
@@ -30,6 +36,26 @@ const SniffCard: React.FC = () => {
   const onChange = async (enable: boolean): Promise<void> => {
     await patchControledMihomoConfig({ sniffer: { enable } })
     await patchMihomoConfig({ sniffer: { enable } })
+  }
+
+  if (iconOnly) {
+    return (
+      <div className={`${sniffCardStatus} ${!controlSniff ? 'hidden' : ''} flex justify-center`}>
+        <Tooltip content="域名嗅探" placement="right">
+          <Button
+            size="sm"
+            isIconOnly
+            color={match ? 'primary' : 'default'}
+            variant={match ? 'solid' : 'light'}
+            onPress={() => {
+              navigate('/sniffer')
+            }}
+          >
+            <RiScan2Fill className="text-[20px]" />
+          </Button>
+        </Tooltip>
+      </div>
+    )
   }
 
   return (

@@ -1,8 +1,8 @@
-import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, Tooltip } from '@nextui-org/react'
 import { FaCircleArrowDown, FaCircleArrowUp } from 'react-icons/fa6'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic } from '@renderer/utils/calc'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { IoLink } from 'react-icons/io5'
@@ -16,11 +16,16 @@ let currentDownload: number | undefined = undefined
 let hasShowTraffic = false
 let drawing = false
 
-const ConnCard: React.FC = () => {
+interface Props {
+  iconOnly?: boolean
+}
+const ConnCard: React.FC<Props> = (props) => {
   const { theme = 'system', systemTheme = 'dark' } = useTheme()
+  const { iconOnly } = props
   const { appConfig } = useAppConfig()
   const { showTraffic = false, connectionCardStatus = 'col-span-2', customTheme } = appConfig || {}
   const location = useLocation()
+  const navigate = useNavigate()
   const match = location.pathname.includes('/connections')
 
   const [upload, setUpload] = useState(0)
@@ -86,6 +91,26 @@ const ConnCard: React.FC = () => {
       window.electron.ipcRenderer.removeAllListeners('mihomoTraffic')
     }
   }, [showTraffic])
+
+  if (iconOnly) {
+    return (
+      <div className={`${connectionCardStatus} flex justify-center`}>
+        <Tooltip content="连接" placement="right">
+          <Button
+            size="sm"
+            isIconOnly
+            color={match ? 'primary' : 'default'}
+            variant={match ? 'solid' : 'light'}
+            onPress={() => {
+              navigate('/connections')
+            }}
+          >
+            <IoLink className="text-[20px]" />
+          </Button>
+        </Tooltip>
+      </div>
+    )
+  }
 
   return (
     <div

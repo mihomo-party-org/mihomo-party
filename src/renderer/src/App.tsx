@@ -37,6 +37,7 @@ import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
 
 let navigate: NavigateFunction
+const narrowWidth = platform === 'darwin' ? 70 : 60
 
 const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -142,19 +143,19 @@ const App: React.FC = () => {
   }
 
   const componentMap = {
-    sysproxy: <SysproxySwitcher key="sysproxy" />,
-    tun: <TunSwitcher key="tun" />,
-    profile: <ProfileCard key="profile" />,
-    proxy: <ProxyCard key="proxy" />,
-    mihomo: <MihomoCoreCard key="mihomo" />,
-    connection: <ConnCard key="connection" />,
-    dns: <DNSCard key="dns" />,
-    sniff: <SniffCard key="sniff" />,
-    log: <LogCard key="log" />,
-    rule: <RuleCard key="rule" />,
-    resource: <ResourceCard key="resource" />,
-    override: <OverrideCard key="override" />,
-    substore: <SubStoreCard key="substore" />
+    sysproxy: SysproxySwitcher,
+    tun: TunSwitcher,
+    profile: ProfileCard,
+    proxy: ProxyCard,
+    mihomo: MihomoCoreCard,
+    connection: ConnCard,
+    dns: DNSCard,
+    sniff: SniffCard,
+    log: LogCard,
+    rule: RuleCard,
+    resource: ResourceCard,
+    override: OverrideCard,
+    substore: SubStoreCard
   }
 
   return (
@@ -167,7 +168,9 @@ const App: React.FC = () => {
       }}
       onMouseMove={(e) => {
         if (!resizing) return
-        if (e.clientX <= 250) {
+        if (e.clientX <= 150) {
+          setSiderWidthValue(narrowWidth)
+        } else if (e.clientX <= 250) {
           setSiderWidthValue(250)
         } else if (e.clientX >= 400) {
           setSiderWidthValue(400)
@@ -177,19 +180,23 @@ const App: React.FC = () => {
       }}
       className={`w-full h-[100vh] flex ${resizing ? 'cursor-ew-resize' : ''}`}
     >
-      <div
-        style={{ width: `${siderWidthValue}px` }}
-        className="side h-full overflow-y-auto no-scrollbar"
-      >
-        <div className="app-drag sticky top-0 z-40 backdrop-blur bg-transparent h-[49px]">
-          <div
-            className={`flex justify-between p-2 ${!useWindowFrame && platform === 'darwin' ? 'ml-[60px]' : ''}`}
-          >
-            <div className="flex ml-1">
+      {siderWidthValue === narrowWidth ? (
+        <div style={{ width: `${narrowWidth}px` }} className="side h-full">
+          <div className="app-drag flex justify-center items-center z-40 bg-transparent h-[49px]">
+            {platform !== 'darwin' && (
               <MihomoIcon className="h-[32px] leading-[32px] text-lg mx-[1px]" />
-              <h3 className="text-lg font-bold leading-[32px]">ihomo Party</h3>
+            )}
+          </div>
+          <div className="h-[calc(100%-110px)] overflow-y-auto no-scrollbar">
+            <div className="h-full w-full flex flex-col gap-2">
+              {order.map((key: string) => {
+                const Component = componentMap[key]
+                if (!Component) return null
+                return <Component key={key} iconOnly={true} />
+              })}
             </div>
-            <UpdaterButton />
+          </div>
+          <div className="mt-2 flex justify-center items-center h-[48px]">
             <Button
               size="sm"
               className="app-nodrag"
@@ -199,23 +206,56 @@ const App: React.FC = () => {
               onPress={() => {
                 navigate('/settings')
               }}
-              startContent={<IoSettings className="text-[20px]" />}
-            />
+            >
+              <IoSettings className="text-[20px]" />
+            </Button>
           </div>
         </div>
-        <div className="mt-2 mx-2">
-          <OutboundModeSwitcher />
-        </div>
-        <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
-          <div className="grid grid-cols-2 gap-2 m-2">
-            <SortableContext items={order}>
-              {order.map((key: string) => {
-                return componentMap[key]
-              })}
-            </SortableContext>
+      ) : (
+        <div
+          style={{ width: `${siderWidthValue}px` }}
+          className="side h-full overflow-y-auto no-scrollbar"
+        >
+          <div className="app-drag sticky top-0 z-40 backdrop-blur bg-transparent h-[49px]">
+            <div
+              className={`flex justify-between p-2 ${!useWindowFrame && platform === 'darwin' ? 'ml-[60px]' : ''}`}
+            >
+              <div className="flex ml-1">
+                <MihomoIcon className="h-[32px] leading-[32px] text-lg mx-[1px]" />
+                <h3 className="text-lg font-bold leading-[32px]">ihomo Party</h3>
+              </div>
+              <UpdaterButton />
+              <Button
+                size="sm"
+                className="app-nodrag"
+                isIconOnly
+                color={location.pathname.includes('/settings') ? 'primary' : 'default'}
+                variant={location.pathname.includes('/settings') ? 'solid' : 'light'}
+                onPress={() => {
+                  navigate('/settings')
+                }}
+              >
+                <IoSettings className="text-[20px]" />
+              </Button>
+            </div>
           </div>
-        </DndContext>
-      </div>
+          <div className="mt-2 mx-2">
+            <OutboundModeSwitcher />
+          </div>
+          <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
+            <div className="grid grid-cols-2 gap-2 m-2">
+              <SortableContext items={order}>
+                {order.map((key: string) => {
+                  const Component = componentMap[key]
+                  if (!Component) return null
+                  return <Component key={key} />
+                })}
+              </SortableContext>
+            </div>
+          </DndContext>
+        </div>
+      )}
+
       <div
         onMouseDown={() => {
           setResizing(true)

@@ -1,15 +1,22 @@
-import { Button, Card, CardBody, CardFooter, Chip } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, Chip, Tooltip } from '@nextui-org/react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { LuGroup } from 'react-icons/lu'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useGroups } from '@renderer/hooks/use-groups'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
+import React from 'react'
 
-const ProxyCard: React.FC = () => {
+interface Props {
+  iconOnly?: boolean
+}
+
+const ProxyCard: React.FC<Props> = (props) => {
   const { appConfig } = useAppConfig()
+  const { iconOnly } = props
   const { proxyCardStatus = 'col-span-1' } = appConfig || {}
   const location = useLocation()
+  const navigate = useNavigate()
   const match = location.pathname.includes('/proxies')
   const { groups = [] } = useGroups()
   const {
@@ -24,6 +31,25 @@ const ProxyCard: React.FC = () => {
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
 
+  if (iconOnly) {
+    return (
+      <div className={`${proxyCardStatus} flex justify-center`}>
+        <Tooltip content="代理组" placement="right">
+          <Button
+            size="sm"
+            isIconOnly
+            color={match ? 'primary' : 'default'}
+            variant={match ? 'solid' : 'light'}
+            onPress={() => {
+              navigate('/proxies')
+            }}
+          >
+            <LuGroup className="text-[20px]" />
+          </Button>
+        </Tooltip>
+      </div>
+    )
+  }
   return (
     <div
       style={{

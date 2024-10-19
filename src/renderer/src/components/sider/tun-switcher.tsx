@@ -1,16 +1,22 @@
-import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, Tooltip } from '@nextui-org/react'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
 import BorderSwitch from '@renderer/components/base/border-swtich'
 import { TbDeviceIpadHorizontalBolt } from 'react-icons/tb'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { restartCore } from '@renderer/utils/ipc'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import React from 'react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 
-const TunSwitcher: React.FC = () => {
+interface Props {
+  iconOnly?: boolean
+}
+
+const TunSwitcher: React.FC<Props> = (props) => {
+  const { iconOnly } = props
   const location = useLocation()
+  const navigate = useNavigate()
   const match = location.pathname.includes('/tun') || false
   const { appConfig } = useAppConfig()
   const { tunCardStatus = 'col-span-1' } = appConfig || {}
@@ -37,6 +43,26 @@ const TunSwitcher: React.FC = () => {
     await restartCore()
     window.electron.ipcRenderer.send('updateFloatingWindow')
     window.electron.ipcRenderer.send('updateTrayMenu')
+  }
+
+  if (iconOnly) {
+    return (
+      <div className={`${tunCardStatus} flex justify-center`}>
+        <Tooltip content="虚拟网卡" placement="right">
+          <Button
+            size="sm"
+            isIconOnly
+            color={match ? 'primary' : 'default'}
+            variant={match ? 'solid' : 'light'}
+            onPress={() => {
+              navigate('/tun')
+            }}
+          >
+            <TbDeviceIpadHorizontalBolt className="text-[20px]" />
+          </Button>
+        </Tooltip>
+      </div>
+    )
   }
 
   return (

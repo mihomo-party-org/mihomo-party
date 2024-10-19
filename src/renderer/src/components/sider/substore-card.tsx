@@ -1,13 +1,21 @@
-import { Button, Card, CardBody, CardFooter } from '@nextui-org/react'
-import { useLocation } from 'react-router-dom'
+import { Button, Card, CardBody, CardFooter, Tooltip } from '@nextui-org/react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import SubStoreIcon from '../base/substore-icon'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-const SubStoreCard: React.FC = () => {
+import React from 'react'
+
+interface Props {
+  iconOnly?: boolean
+}
+
+const SubStoreCard: React.FC<Props> = (props) => {
   const { appConfig } = useAppConfig()
+  const { iconOnly } = props
   const { substoreCardStatus = 'col-span-1', useSubStore = true } = appConfig || {}
   const location = useLocation()
+  const navigate = useNavigate()
   const match = location.pathname.includes('/substore')
   const {
     attributes,
@@ -20,6 +28,27 @@ const SubStoreCard: React.FC = () => {
     id: 'substore'
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
+
+  if (iconOnly) {
+    return (
+      <div className={`${substoreCardStatus} flex justify-center`}>
+        <Tooltip content="Sub-Store" placement="right">
+          <Button
+            size="sm"
+            isIconOnly
+            color={match ? 'primary' : 'default'}
+            variant={match ? 'solid' : 'light'}
+            onPress={() => {
+              navigate('/substore')
+            }}
+          >
+            <SubStoreIcon className="text-[20px]" />
+          </Button>
+        </Tooltip>
+      </div>
+    )
+  }
+
   return (
     <div
       style={{

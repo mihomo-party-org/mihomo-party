@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardFooter, Chip, Progress, Tooltip } from '@nextui-org/react'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic, calcPercent } from '@renderer/utils/calc'
 import { CgLoadbarDoc } from 'react-icons/cg'
 import { IoMdRefresh } from 'react-icons/io'
@@ -9,7 +9,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import ConfigViewer from './config-viewer'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { TiFolder } from 'react-icons/ti'
@@ -17,10 +17,16 @@ import { TiFolder } from 'react-icons/ti'
 dayjs.extend(relativeTime)
 dayjs.locale('zh-cn')
 
-const ProfileCard: React.FC = () => {
+interface Props {
+  iconOnly?: boolean
+}
+
+const ProfileCard: React.FC<Props> = (props) => {
   const { appConfig, patchAppConfig } = useAppConfig()
+  const { iconOnly } = props
   const { profileCardStatus = 'col-span-2', profileDisplayDate = 'expire' } = appConfig || {}
   const location = useLocation()
+  const navigate = useNavigate()
   const match = location.pathname.includes('/profiles')
   const [updating, setUpdating] = useState(false)
   const [showRuntimeConfig, setShowRuntimeConfig] = useState(false)
@@ -46,6 +52,26 @@ const ProfileCard: React.FC = () => {
   const extra = info?.extra
   const usage = (extra?.upload ?? 0) + (extra?.download ?? 0)
   const total = extra?.total ?? 0
+
+  if (iconOnly) {
+    return (
+      <div className={`${profileCardStatus} flex justify-center`}>
+        <Tooltip content="订阅管理" placement="right">
+          <Button
+            size="sm"
+            isIconOnly
+            color={match ? 'primary' : 'default'}
+            variant={match ? 'solid' : 'light'}
+            onPress={() => {
+              navigate('/profiles')
+            }}
+          >
+            <TiFolder className="text-[20px]" />
+          </Button>
+        </Tooltip>
+      </div>
+    )
+  }
 
   return (
     <div
