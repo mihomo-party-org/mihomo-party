@@ -1,5 +1,5 @@
 import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavigateFunction, useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import OutboundModeSwitcher from '@renderer/components/sider/outbound-mode-switcher'
 import SysproxySwitcher from '@renderer/components/sider/sysproxy-switcher'
@@ -64,7 +64,9 @@ const App: React.FC = () => {
   } = appConfig || {}
   const [order, setOrder] = useState(siderOrder)
   const [siderWidthValue, setSiderWidthValue] = useState(siderWidth)
+  const siderWidthValueRef = useRef(siderWidthValue)
   const [resizing, setResizing] = useState(false)
+  const resizingRef = useRef(resizing)
   const sensors = useSensors(useSensor(PointerSensor))
   const { setTheme, systemTheme } = useTheme()
   navigate = useNavigate()
@@ -84,10 +86,16 @@ const App: React.FC = () => {
       }
     }
   }
+
   useEffect(() => {
     setOrder(siderOrder)
     setSiderWidthValue(siderWidth)
   }, [siderOrder, siderWidth])
+
+  useEffect(() => {
+    siderWidthValueRef.current = siderWidthValue
+    resizingRef.current = resizing
+  }, [siderWidthValue, resizing])
 
   useEffect(() => {
     const tourShown = window.localStorage.getItem('tourShown')
@@ -108,6 +116,18 @@ const App: React.FC = () => {
       setTitlebar()
     })
   }, [customTheme])
+
+  useEffect(() => {
+    window.addEventListener('mouseup', onResizeEnd)
+    return (): void => window.removeEventListener('mouseup', onResizeEnd)
+  }, [])
+
+  const onResizeEnd = (): void => {
+    if (resizingRef.current) {
+      setResizing(false)
+      patchAppConfig({ siderWidth: siderWidthValueRef.current })
+    }
+  }
 
   const onDragEnd = async (event: DragEndEvent): Promise<void> => {
     const { active, over } = event
@@ -160,12 +180,6 @@ const App: React.FC = () => {
 
   return (
     <div
-      onMouseUp={() => {
-        if (resizing) {
-          setResizing(false)
-          patchAppConfig({ siderWidth: siderWidthValue })
-        }
-      }}
       onMouseMove={(e) => {
         if (!resizing) return
         if (e.clientX <= 150) {
