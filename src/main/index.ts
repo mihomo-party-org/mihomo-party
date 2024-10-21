@@ -23,7 +23,7 @@ import iconv from 'iconv-lite'
 let quitTimeout: NodeJS.Timeout | null = null
 export let mainWindow: BrowserWindow | null = null
 
-if (process.platform === 'win32' && !process.argv.includes('noadmin')) {
+if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')) {
   try {
     createElevateTask()
   } catch (createError) {
