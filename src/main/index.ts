@@ -18,11 +18,12 @@ import { exePath, taskDir } from './utils/dirs'
 import path from 'path'
 import { startMonitor } from './resolve/trafficMonitor'
 import { showFloatingWindow } from './resolve/floatingWindow'
+import iconv from 'iconv-lite'
 
 let quitTimeout: NodeJS.Timeout | null = null
 export let mainWindow: BrowserWindow | null = null
 
-if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')) {
+if (process.platform === 'win32' && !process.argv.includes('noadmin')) {
   try {
     createElevateTask()
   } catch (createError) {
@@ -38,9 +39,17 @@ if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')
         execSync('C:\\\\Windows\\System32\\schtasks.exe /run /tn mihomo-party-run')
       }
     } catch (e) {
+      let createErrorStr = `${createError}`
+      let eStr = `${e}`
+      try {
+        createErrorStr = iconv.decode((createError as { stderr: Buffer }).stderr, 'gbk')
+        eStr = iconv.decode((e as { stderr: Buffer }).stderr, 'gbk')
+      } catch {
+        // ignore
+      }
       dialog.showErrorBox(
         '首次启动请以管理员权限运行',
-        `首次启动请以管理员权限运行\n${createError}\n${e}`
+        `首次启动请以管理员权限运行\n${createErrorStr}\n${eStr}`
       )
     } finally {
       app.exit()
