@@ -22,12 +22,12 @@ const taskXml = `<?xml version="1.0" encoding="UTF-16"?>
     </Principal>
   </Principals>
   <Settings>
-    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <MultipleInstancesPolicy>Parallel</MultipleInstancesPolicy>
     <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
     <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
     <AllowHardTerminate>false</AllowHardTerminate>
-    <StartWhenAvailable>true</StartWhenAvailable>
-    <RunOnlyIfNetworkAvailable>true</RunOnlyIfNetworkAvailable>
+    <StartWhenAvailable>false</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
     <IdleSettings>
       <StopOnIdleEnd>false</StopOnIdleEnd>
       <RestartOnIdle>false</RestartOnIdle>
@@ -42,11 +42,12 @@ const taskXml = `<?xml version="1.0" encoding="UTF-16"?>
   </Settings>
   <Actions Context="Author">
     <Exec>
-      <Command>"${exePath()}"</Command>
+      <Command>"${path.join(taskDir(), `mihomo-party-run.exe`)}"</Command>
+      <Arguments>"${exePath()}"</Arguments>
     </Exec>
   </Actions>
 </Task>
- `
+`
 
 export async function checkAutoRun(): Promise<boolean> {
   if (process.platform === 'win32') {
