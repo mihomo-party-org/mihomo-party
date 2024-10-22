@@ -278,6 +278,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: artifact
+      cancel-in-progress: false
     services:
       telegram-bot-api:
         image: aiogram/telegram-bot-api:latest
@@ -310,6 +311,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: artifact
+      cancel-in-progress: false
     services:
       telegram-bot-api:
         image: aiogram/telegram-bot-api:latest
@@ -342,6 +344,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: artifact
+      cancel-in-progress: false
     services:
       telegram-bot-api:
         image: aiogram/telegram-bot-api:latest
@@ -374,6 +377,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: artifact
+      cancel-in-progress: false
     services:
       telegram-bot-api:
         image: aiogram/telegram-bot-api:latest
@@ -406,6 +410,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: artifact
+      cancel-in-progress: false
     services:
       telegram-bot-api:
         image: aiogram/telegram-bot-api:latest
