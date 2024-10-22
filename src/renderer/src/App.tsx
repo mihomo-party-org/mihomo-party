@@ -37,7 +37,6 @@ import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
 
 let navigate: NavigateFunction
-const narrowWidth = platform === 'darwin' ? 70 : 60
 
 const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -62,6 +61,7 @@ const App: React.FC = () => {
       'substore'
     ]
   } = appConfig || {}
+  const narrowWidth = platform === 'darwin' ? 70 : 60
   const [order, setOrder] = useState(siderOrder)
   const [siderWidthValue, setSiderWidthValue] = useState(siderWidth)
   const siderWidthValueRef = useRef(siderWidthValue)
@@ -200,6 +200,7 @@ const App: React.FC = () => {
             {platform !== 'darwin' && (
               <MihomoIcon className="h-[32px] leading-[32px] text-lg mx-[1px]" />
             )}
+            <UpdaterButton iconOnly={true} />
           </div>
           <div className="h-[calc(100%-110px)] overflow-y-auto no-scrollbar">
             <div className="h-full w-full flex flex-col gap-2">
