@@ -501,7 +501,7 @@ jobs:
           pkgbuild: aur/${{ matrix.pkgname }}/PKGBUILD
           commit_username: pompurin404
           commit_email: pompurin404@mihomo.party
-          ssh_private_key: ${{ secrets.PRIVATE_KEY }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           commit_message: Update AUR package
           ssh_keyscan_types: rsa,ed25519
           allow_empty_commits: false
@@ -523,7 +523,7 @@ jobs:
           pkgbuild: aur/mihomo-party-git/PKGBUILD
           commit_username: pompurin404
           commit_email: pompurin404@mihomo.party
-          ssh_private_key: ${{ secrets.PRIVATE_KEY }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           commit_message: Update AUR package
           ssh_keyscan_types: rsa,ed25519
           allow_empty_commits: false

@@ -8,16 +8,18 @@ jobs:
   close:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        repository: mihomo-party-org/auto-close-isssues
+      - uses: actions/checkout@v4
+        with:
+          repository: mihomo-party-org/auto-close-isssues
 
-    - uses: actions/setup-go@v5
-      with:
-        go-version: '1.23'
-    
-    - env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        API_URL: ${{ secrets.API_URL }}
-        API_KEY: ${{ secrets.API_KEY }}
-      run: go run main.go
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.POMPURIN404_TOKEN }}
+          API_URL: ${{ secrets.OPENAI_BASE_URL }}
+          API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: go run main.go
