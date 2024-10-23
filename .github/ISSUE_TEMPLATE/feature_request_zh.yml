@@ -9,8 +9,8 @@ body:
       description: 在提交之前，请勾选以下所有选项以证明您已经阅读并理解了以下要求，否则该 issue 将被关闭。
       options:
         - label: 我已在标题简短的描述了我所需的功能
-        - label: 我已在[Issue Tracker](./?q=is%3Aissue)中寻找过,但未找到我所需的功能
-        - label: 这是向GUI程序提出的功能请求,而不是内核程序
+        - label: 我已在 [Issue Tracker](./?q=is%3Aissue) 中寻找过，但未找到我所需的功能
+        - label: 这是向 GUI 程序提出的功能请求，而不是内核程序
         - label: 我未在最新的测试版本找到我所需的功能
 
   - type: dropdown
