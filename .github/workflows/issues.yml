@@ -9,11 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Auto Close Issue
-        uses: mihomo-party-org/auto-close-isssues@main
+        uses: mihomo-party-org/auto-close-issue@main
         with:
           url: ${{ secrets.OPENAI_BASE_URL }}
           key: ${{ secrets.OPENAI_API_KEY }}
           prompt: ${{ vars.OPENAI_SYSTEM_PROMPT }}
-          app-id: ${{ secrets.BOT_APP_ID }}
-          installation-id: ${{ secrets.BOT_INSTALLATION_ID }}
-          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+          app_id: ${{ secrets.BOT_APP_ID }}
+          private_key: ${{ secrets.BOT_PRIVATE_KEY }}
