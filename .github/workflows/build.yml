@@ -536,11 +536,6 @@ jobs:
     steps:
       - name: Get Tag Name
         run: echo "VERSION=$(echo ${{ github.ref }} | tr -d 'refs/tags/v')" >> $GITHUB_ENV
-      - uses: tibdex/github-app-token@v2
-        id: generate-token
-        with:
-          app_id: ${{ secrets.BOT_APP_ID }}
-          private_key: ${{ secrets.BOT_PRIVATE_KEY }}
       - name: Submit to Winget
         uses: vedantmgoyal9/winget-releaser@main
         with:
@@ -548,7 +543,7 @@ jobs:
           version: ${{env.VERSION}}
           release-tag: v${{env.VERSION}}
           installers-regex: 'mihomo-party-windows-.*setup\.exe$'
-          token: ${{ steps.generate-token.outputs.token }}
+          token: ${{ secrets.POMPURIN404_TOKEN }}
 
   homebrew:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -560,14 +555,9 @@ jobs:
         run: |
           git config --global user.email mihomo-party-bot[bot]@users.noreply.github.com
           git config --global user.name mihomo-party-bot[bot]
-      - uses: tibdex/github-app-token@v2
-        id: generate-token
-        with:
-          app_id: ${{ secrets.BOT_APP_ID }}
-          private_key: ${{ secrets.BOT_PRIVATE_KEY }}
       - name: Update Homebrew cask
         env:
-          HOMEBREW_GITHUB_API_TOKEN: ${{ steps.generate-token.outputs.token }}
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.POMPURIN404_TOKEN }}
         run: |
           brew tap mihomo-party-org/mihomo-party
           brew update
