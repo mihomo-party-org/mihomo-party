@@ -1,18 +1,29 @@
-name: Close Issues
+name: Review Issues
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  close:
+  review:
     runs-on: ubuntu-latest
     steps:
-      - name: Auto Close Issue
-        uses: mihomo-party-org/auto-close-issue@main
+      - name: Generate Token
+        uses: tibdex/github-app-token@v2
+        id: generate
         with:
-          url: ${{ secrets.OPENAI_BASE_URL }}
-          key: ${{ secrets.OPENAI_API_KEY }}
-          prompt: ${{ vars.OPENAI_SYSTEM_PROMPT }}
           app_id: ${{ secrets.BOT_APP_ID }}
           private_key: ${{ secrets.BOT_PRIVATE_KEY }}
+      - name: Review Issues
+        uses: mihomo-party-org/universal-assistant@v1.0.3
+        with:
+          github_token: ${{ steps.generate.outputs.token }}
+          openai_base_url: ${{ secrets.OPENAI_BASE_URL }}
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          openai_model: ${{ vars.OPENAI_MODEL }}
+          system_prompt: ${{ vars.SYSTEM_PROMPT }}
+          available_tools: ${{ vars.AVAILABLE_TOOLS }}
+          user_input: |
+            请审查如下 Issue：
+            标题："${{ github.event.issue.title }}"
+            内容："${{ github.event.issue.body }}"
