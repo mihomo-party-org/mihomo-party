@@ -1,5 +1,6 @@
 appId: party.mihomo.app
 productName: Mihomo Party
+electronLanguages: zh-CN
 directories:
   buildResources: build
 files:
