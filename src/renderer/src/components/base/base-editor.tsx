@@ -105,7 +105,9 @@ export const BaseEditor: React.FC<Props> = (props) => {
 
   useEffect(() => {
     window.onresize = (): void => {
-      editorRef.current?.layout()
+      setTimeout(() => {
+        editorRef.current?.layout()
+      }, 0)
     }
     return (): void => {
       window.onresize = null
