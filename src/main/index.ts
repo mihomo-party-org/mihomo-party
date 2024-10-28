@@ -265,6 +265,10 @@ export async function createWindow(): Promise<void> {
     }
   })
 
+  mainWindow.on('resized', () => {
+    if (mainWindow) mainWindowState.saveState(mainWindow)
+  })
+
   mainWindow.on('session-end', async () => {
     triggerSysProxy(false)
     await stopCore()
