@@ -20,7 +20,8 @@ export async function checkUpdate(): Promise<IAppVersion | undefined> {
         protocol: 'http',
         host: '127.0.0.1',
         port: mixedPort
-      }
+      },
+      responseType: 'text'
     }
   )
   const latest = yaml.parse(res.data, { merge: true }) as IAppVersion

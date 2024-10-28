@@ -75,7 +75,8 @@ export async function createOverride(item: Partial<IOverrideItem>): Promise<IOve
           protocol: 'http',
           host: '127.0.0.1',
           port: mixedPort
-        }
+        },
+        responseType: 'text'
       })
       const data = res.data
       await setOverride(id, newItem.ext, data)

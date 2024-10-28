@@ -20,7 +20,8 @@ async function listGists(token: string): Promise<GistInfo[]> {
       protocol: 'http',
       host: '127.0.0.1',
       port
-    }
+    },
+    responseType: 'json'
   })
   return res.data as GistInfo[]
 }
