@@ -18,7 +18,7 @@ const LogItem: React.FC<IMihomoLogInfo & { index: number }> = (props) => {
           </div>
           <small className="text-foreground-500">{time}</small>
         </CardHeader>
-        <CardBody className="pt-0 text-sm">{payload}</CardBody>
+        <CardBody className="select-text pt-0 text-sm">{payload}</CardBody>
       </Card>
     </div>
   )
