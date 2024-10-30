@@ -6,9 +6,9 @@ on:
     tags:
       - v*
     paths-ignore:
-      - "README.md"
-      - ".github/ISSUE_TEMPLATE/**"
-      - ".github/workflows/issues.yml"
+      - 'README.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/workflows/issues.yml'
 
 permissions: write-all
 
@@ -245,7 +245,7 @@ jobs:
         run: |
           pnpm install
           pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
-          pnpm add -D electron@32.2.1
+          pnpm add -D electron@32.2.2
           pnpm prepare --${{ matrix.arch }}
       - name: Build
         env:
