@@ -4,10 +4,38 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Divider, Input } from '@nextui-org/react'
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
 import { IoLocationSharp } from 'react-icons/io5'
+import { CgTrash } from 'react-icons/cg'
+
 import { includesIgnoreCase } from '@renderer/utils/includes'
 
+const cachedLogs: {
+  log: IMihomoLogInfo[]
+  trigger: ((i: IMihomoLogInfo[]) => void) | null
+  clean: () => void
+} = {
+  log: [],
+  trigger: null,
+  clean(): void {
+    this.log = []
+    if (this.trigger !== null) {
+      this.trigger(this.log)
+    }
+  }
+}
+
+window.electron.ipcRenderer.on('mihomoLogs', (_e, log: IMihomoLogInfo) => {
+  log.time = new Date().toLocaleString()
+  cachedLogs.log.push(log)
+  if (cachedLogs.log.length >= 500) {
+    cachedLogs.log.shift()
+  }
+  if (cachedLogs.trigger !== null) {
+    cachedLogs.trigger(cachedLogs.log)
+  }
+})
+
 const Logs: React.FC = () => {
-  const [logs, setLogs] = useState<IMihomoLogInfo[]>([])
+  const [logs, setLogs] = useState<IMihomoLogInfo[]>(cachedLogs.log)
   const [filter, setFilter] = useState('')
   const [trace, setTrace] = useState(true)
 
@@ -30,18 +58,12 @@ const Logs: React.FC = () => {
   }, [filteredLogs, trace])
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('mihomoLogs', (_e, log: IMihomoLogInfo) => {
-      log.time = new Date().toLocaleString()
-      setLogs((prevLogs) => {
-        if (prevLogs.length >= 500) {
-          prevLogs.shift()
-        }
-        return [...prevLogs, log]
-      })
-    })
-
+    const old = cachedLogs.trigger
+    cachedLogs.trigger = (a): void => {
+      setLogs([...a])
+    }
     return (): void => {
-      window.electron.ipcRenderer.removeAllListeners('mihomoLogs')
+      cachedLogs.trigger = old
     }
   }, [])
 
@@ -67,6 +89,19 @@ const Logs: React.FC = () => {
             }}
           >
             <IoLocationSharp className="text-lg" />
+          </Button>
+          <Button
+            size="sm"
+            isIconOnly
+            title="清空日志"
+            className="ml-2"
+            variant="light"
+            color="danger"
+            onPress={() => {
+              cachedLogs.clean()
+            }}
+          >
+            <CgTrash className="text-lg" />
           </Button>
         </div>
         <Divider />
