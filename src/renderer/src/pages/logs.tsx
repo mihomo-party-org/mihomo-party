@@ -7,6 +7,7 @@ import { IoLocationSharp } from 'react-icons/io5'
 import { CgTrash } from 'react-icons/cg'
 
 import { includesIgnoreCase } from '@renderer/utils/includes'
+let memoTrace = true
 
 const cachedLogs: {
   log: IMihomoLogInfo[]
@@ -38,7 +39,13 @@ let memoLogLevel = new Set<LogLevel>()
 const Logs: React.FC = () => {
   const [logs, setLogs] = useState<IMihomoLogInfo[]>(cachedLogs.log)
   const [filter, setFilter] = useState('')
-  const [trace, setTrace] = useState(true)
+  const [trace, setTrace] = useState(memoTrace)
+  const handleSeTrace = (e: boolean): void => {
+    const next = !e
+    setTrace(next)
+    memoTrace = next
+  }
+
   const [logLevel, setLogLevel] = useState(memoLogLevel)
 
   const handleSetLogLevel = (e: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -114,7 +121,7 @@ const Logs: React.FC = () => {
             color={trace ? 'primary' : 'default'}
             variant={trace ? 'solid' : 'bordered'}
             onPress={() => {
-              setTrace((prev) => !prev)
+              handleSeTrace(trace)
             }}
           >
             <IoLocationSharp className="text-lg" />
