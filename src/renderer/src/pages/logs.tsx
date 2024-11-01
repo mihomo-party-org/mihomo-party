@@ -71,12 +71,16 @@ const Logs: React.FC = () => {
 
   useEffect(() => {
     if (!trace) return
-    virtuosoRef.current?.scrollToIndex({
-      index: filteredLogs.length - 1,
-      behavior: 'smooth',
-      align: 'end',
-      offset: 0
-    })
+    // not work well with initialTopMostItemIndex
+    const id = setTimeout(() => {
+      virtuosoRef.current?.scrollToIndex({
+        index: filteredLogs.length - 1,
+        behavior: 'smooth',
+        align: 'end',
+        offset: 0
+      })
+    }, 50)
+    return (): void => clearTimeout(id)
   }, [filteredLogs, trace])
 
   useEffect(() => {
@@ -146,6 +150,7 @@ const Logs: React.FC = () => {
         <Virtuoso
           ref={virtuosoRef}
           data={filteredLogs}
+          initialTopMostItemIndex={filteredLogs.length - 1}
           itemContent={(i, log) => {
             return (
               <LogItem
