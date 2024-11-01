@@ -1,4 +1,4 @@
-import { Button, Input, Tab, Tabs } from '@nextui-org/react'
+import { Button, Input, Tab, Tabs, Tooltip } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
@@ -9,6 +9,7 @@ import { openUWPTool, triggerSysProxy } from '@renderer/utils/ipc'
 import { Key, useState } from 'react'
 import React from 'react'
 import { MdDeleteForever } from 'react-icons/md'
+import { IoIosHelpCircle } from 'react-icons/io'
 
 const defaultBypass: string[] =
   platform === 'linux'
@@ -135,7 +136,17 @@ const Sysproxy: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="代理模式" divider>
+        <SettingItem
+          actions={
+            <Tooltip content="PAC监听 代理主机:端口(10000开始的可用)">
+              <Button isIconOnly size="sm" variant="light">
+                <IoIosHelpCircle className="text-lg" />
+              </Button>
+            </Tooltip>
+          }
+          title="代理模式"
+          divider
+        >
           <Tabs
             size="sm"
             color="primary"
