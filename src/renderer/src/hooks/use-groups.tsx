@@ -1,20 +1,33 @@
 import React, { createContext, useContext, ReactNode } from 'react'
 import useSWR from 'swr'
-import { mihomoGroups } from '@renderer/utils/ipc'
+import { mihomoGroups, mihomoProxies } from '@renderer/utils/ipc'
 
 interface GroupsContextType {
   groups: IMihomoMixedGroup[] | undefined
+  proxies: IMihomoProxies | undefined
   mutate: () => void
 }
 
 const GroupsContext = createContext<GroupsContextType | undefined>(undefined)
 
 export const GroupsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: groups, mutate } = useSWR<IMihomoMixedGroup[]>('mihomoGroups', mihomoGroups, {
+  const { data: groups, mutate: mutateG } = useSWR<IMihomoMixedGroup[]>(
+    'mihomoGroups',
+    mihomoGroups,
+    {
+      errorRetryInterval: 200,
+      errorRetryCount: 10
+    }
+  )
+  const { data: proxies, mutate: mutateP } = useSWR('mihomoProxies', mihomoProxies, {
     errorRetryInterval: 200,
     errorRetryCount: 10
   })
 
+  const mutate = (): void => {
+    mutateG()
+    mutateP()
+  }
   React.useEffect(() => {
     window.electron.ipcRenderer.on('groupsUpdated', () => {
       mutate()
@@ -24,7 +37,9 @@ export const GroupsProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   }, [])
 
-  return <GroupsContext.Provider value={{ groups, mutate }}>{children}</GroupsContext.Provider>
+  return (
+    <GroupsContext.Provider value={{ groups, proxies, mutate }}>{children}</GroupsContext.Provider>
+  )
 }
 
 export const useGroups = (): GroupsContextType => {

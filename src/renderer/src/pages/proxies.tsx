@@ -24,7 +24,7 @@ import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-c
 const Proxies: React.FC = () => {
   const { controledMihomoConfig } = useControledMihomoConfig()
   const { mode = 'rule' } = controledMihomoConfig || {}
-  const { groups = [], mutate } = useGroups()
+  const { groups = [], mutate, proxies } = useGroups()
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     proxyDisplayMode = 'simple',
@@ -151,6 +151,10 @@ const Proxies: React.FC = () => {
     }
   }, [])
 
+  const proxySelectFn = (n: string): string | undefined => {
+    return (proxies?.proxies[n] as IMihomoGroup | undefined)?.now
+  }
+
   return (
     <BasePage
       title="代理组"
@@ -224,6 +228,14 @@ const Proxies: React.FC = () => {
                   mutate()
                 })
               }
+              const selectChain: string[] = []
+              {
+                let now: string | undefined = groups[index].now
+                while (now) {
+                  selectChain.push(now)
+                  now = proxySelectFn(now)
+                }
+              }
               return groups[index] ? (
                 <div
                   className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}
@@ -269,11 +281,15 @@ const Proxies: React.FC = () => {
                                 {groups[index].type}
                               </div>
                             )}
-                            {proxyDisplayMode === 'full' && (
-                              <div className="inline flag-emoji ml-2 text-sm text-foreground-500">
-                                {groups[index].now}
-                              </div>
-                            )}
+                            {proxyDisplayMode === 'full' &&
+                              selectChain.map((v) => (
+                                <div
+                                  key={v}
+                                  className="inline flag-emoji ml-2 text-sm text-foreground-500"
+                                >
+                                  {v}
+                                </div>
+                              ))}
                           </div>
                         </div>
                         <div className="flex">
@@ -362,20 +378,19 @@ const Proxies: React.FC = () => {
                   className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} ${groupIndex === groupCounts.length - 1 && innerIndex === groupCounts[groupIndex] - 1 ? 'pb-2' : ''} gap-2 pt-2 mx-2`}
                 >
                   {Array.from({ length: cols }).map((_, i) => {
-                    if (!allProxies[groupIndex][innerIndex * cols + i]) return null
+                    const p = allProxies[groupIndex][innerIndex * cols + i]
+                    if (!p) return null
                     return (
                       <ProxyItem
-                        key={allProxies[groupIndex][innerIndex * cols + i].name}
+                        key={p.name}
                         mutateProxies={mutate}
                         onProxyDelay={onProxyDelay}
                         onSelect={onChangeProxy}
-                        proxy={allProxies[groupIndex][innerIndex * cols + i]}
+                        proxy={p}
                         group={groups[groupIndex]}
+                        proxySelect={proxySelectFn(p.name)}
                         proxyDisplayMode={proxyDisplayMode}
-                        selected={
-                          allProxies[groupIndex][innerIndex * cols + i]?.name ===
-                          groups[groupIndex].now
-                        }
+                        selected={p?.name === groups[groupIndex].now}
                       />
                     )
                   })}

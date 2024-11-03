@@ -11,10 +11,20 @@ interface Props {
   group: IMihomoMixedGroup
   onSelect: (group: string, proxy: string) => void
   selected: boolean
+  proxySelect: string | undefined
 }
 
 const ProxyItem: React.FC<Props> = (props) => {
-  const { mutateProxies, proxyDisplayMode, group, proxy, selected, onSelect, onProxyDelay } = props
+  const {
+    mutateProxies,
+    proxyDisplayMode,
+    group,
+    proxy,
+    selected,
+    onSelect,
+    onProxyDelay,
+    proxySelect: nowSelect
+  } = props
 
   const delay = useMemo(() => {
     if (proxy.history.length > 0) {
@@ -66,6 +76,11 @@ const ProxyItem: React.FC<Props> = (props) => {
             </div>
             {proxyDisplayMode === 'full' && (
               <div className="flex gap-1 text-xs text-foreground-500">
+                {nowSelect && (
+                  <span className="flag-emoji" title={nowSelect}>
+                    {nowSelect}
+                  </span>
+                )}
                 <span title={proxy.type}>{proxy.type}</span>
                 {proxy.udp && <span title="UDP">UDP</span>}
                 {proxy.xudp && <span title="XUDP">XUDP</span>}
