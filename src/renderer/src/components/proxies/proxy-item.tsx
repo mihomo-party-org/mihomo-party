@@ -59,12 +59,17 @@ const ProxyItem: React.FC<Props> = (props) => {
       <CardBody className="p-2">
         <div className="flex justify-between items-center">
           <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-            <div className="flag-emoji inline" title={proxy.name}>
-              {proxy.name}
+            <div>
+              <div className="flag-emoji inline" title={proxy.name}>
+                {proxy.name}
+              </div>
             </div>
             {proxyDisplayMode === 'full' && (
-              <div className="inline ml-2 text-foreground-500" title={proxy.type}>
-                {proxy.type}
+              <div className="flex gap-1 text-xs text-foreground-500">
+                <span title={proxy.type}>{proxy.type}</span>
+                {proxy.udp && <span title="UDP">UDP</span>}
+                {proxy.xudp && <span title="XUDP">XUDP</span>}
+                {proxy.tfo && <span title="TFO">TFO</span>}
               </div>
             )}
           </div>
