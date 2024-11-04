@@ -44,9 +44,10 @@ export function findAvailablePort(startPort: number): Promise<number> {
 let pacServer: http.Server
 
 export async function startPacServer(): Promise<void> {
+  await stopPacServer()
   const { sysProxy } = await getAppConfig()
-  const { enable = false, mode = 'manual', host: cHost, pacScript } = sysProxy
-  if (!(enable && mode === 'auto')) {
+  const { mode = 'manual', host: cHost, pacScript } = sysProxy
+  if (mode !== 'auto') {
     return
   }
   const host = cHost || '127.0.0.1'
