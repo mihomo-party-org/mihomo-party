@@ -239,11 +239,13 @@ export async function init(): Promise<void> {
   await migration()
   await initFiles()
   await cleanup()
-  await startPacServer()
   await startSubStoreFrontendServer()
   await startSubStoreBackendServer()
   const { sysProxy } = await getAppConfig()
   try {
+    if (sysProxy.enable) {
+      await startPacServer()
+    }
     await triggerSysProxy(sysProxy.enable)
   } catch {
     // ignore

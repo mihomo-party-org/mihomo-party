@@ -41,21 +41,32 @@ export function findAvailablePort(startPort: number): Promise<number> {
   })
 }
 
+let pacServer: http.Server
+
 export async function startPacServer(): Promise<void> {
+  await stopPacServer()
+  const { sysProxy } = await getAppConfig()
+  const { mode = 'manual', host: cHost, pacScript } = sysProxy
+  if (mode !== 'auto') {
+    return
+  }
+  const host = cHost || '127.0.0.1'
+  let script = pacScript || defaultPacScript
+  const { 'mixed-port': port = 7890 } = await getControledMihomoConfig()
+  script = script.replaceAll('%mixed-port%', port.toString())
   pacPort = await findAvailablePort(10000)
-  const server = http
+  pacServer = http
     .createServer(async (_req, res) => {
-      const {
-        sysProxy: { pacScript }
-      } = await getAppConfig()
-      const { 'mixed-port': port = 7890 } = await getControledMihomoConfig()
-      let script = pacScript || defaultPacScript
-      script = script.replaceAll('%mixed-port%', port.toString())
       res.writeHead(200, { 'Content-Type': 'application/x-ns-proxy-autoconfig' })
       res.end(script)
     })
-    .listen(pacPort)
-  server.unref()
+    .listen(pacPort, host)
+}
+
+export async function stopPacServer(): Promise<void> {
+  if (pacServer) {
+    pacServer.close()
+  }
 }
 
 export async function startSubStoreFrontendServer(): Promise<void> {

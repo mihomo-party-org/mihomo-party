@@ -1,6 +1,6 @@
 import { triggerAutoProxy, triggerManualProxy } from '@mihomo-party/sysproxy'
 import { getAppConfig, getControledMihomoConfig } from '../config'
-import { pacPort } from '../resolve/server'
+import { pacPort, startPacServer, stopPacServer } from '../resolve/server'
 import { promisify } from 'util'
 import { execFile } from 'child_process'
 import path from 'path'
@@ -63,6 +63,7 @@ export async function triggerSysProxy(enable: boolean): Promise<void> {
 }
 
 async function enableSysProxy(): Promise<void> {
+  await startPacServer()
   const { sysProxy } = await getAppConfig()
   const { mode, host, bypass = defaultBypass } = sysProxy
   const { 'mixed-port': port = 7890 } = await getControledMihomoConfig()
@@ -105,6 +106,7 @@ async function enableSysProxy(): Promise<void> {
 }
 
 async function disableSysProxy(): Promise<void> {
+  await stopPacServer()
   const execFilePromise = promisify(execFile)
   if (process.platform === 'win32') {
     try {
