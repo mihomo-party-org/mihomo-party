@@ -27,6 +27,7 @@ type MihomoProxyType =
 type TunStack = 'gvisor' | 'mixed' | 'system'
 type FindProcessMode = 'off' | 'strict' | 'always'
 type DnsMode = 'normal' | 'fake-ip' | 'redir-host'
+type FilterMode = 'blacklist' | 'whitelist'
 type NetworkInterfaceInfo = os.NetworkInterfaceInfo
 
 interface IAppVersion {
@@ -311,18 +312,26 @@ interface IMihomoTunConfig {
 }
 interface IMihomoDNSConfig {
   enable?: boolean
+  listen?: string
   ipv6?: boolean
+  'ipv6-timeout'?: number
+  'prefer-h3'?: boolean
   'enhanced-mode'?: DnsMode
   'fake-ip-range'?: string
   'fake-ip-filter'?: string[]
+  'fake-ip-filter-mode'?: FilterMode
   'use-hosts'?: boolean
   'use-system-hosts'?: boolean
   'respect-rules'?: boolean
+  'default-nameserver'?: string[]
   nameserver?: string[]
   fallback?: string[]
   'fallback-filter'?: { [key: string]: boolean | string | string[] }
   'proxy-server-nameserver'?: string[]
+  'direct-nameserver'?: string[]
+  'direct-nameserver-follow-policy'?: boolean
   'nameserver-policy'?: { [key: string]: string | string[] }
+  'cache-algorithm'?: string
 }
 
 interface IMihomoSnifferConfig {

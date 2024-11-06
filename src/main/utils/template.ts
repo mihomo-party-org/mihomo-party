@@ -74,7 +74,8 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'use-hosts': false,
     'use-system-hosts': false,
     nameserver: ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query'],
-    'proxy-server-nameserver': ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query']
+    'proxy-server-nameserver': ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query'],
+    'direct-nameserver': []
   },
   sniffer: {
     enable: true,
