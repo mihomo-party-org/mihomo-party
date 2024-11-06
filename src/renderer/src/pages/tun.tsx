@@ -23,6 +23,7 @@ const Tun: React.FC = () => {
     'auto-redirect': autoRedirect = false,
     'auto-detect-interface': autoDetectInterface = true,
     'dns-hijack': dnsHijack = ['any:53'],
+    'route-exclude-address': routeExcludeAddress = [],
     'strict-route': strictRoute = false,
     mtu = 1500
   } = tun || {}
@@ -35,6 +36,7 @@ const Tun: React.FC = () => {
     autoDetectInterface,
     dnsHijack,
     strictRoute,
+    routeExcludeAddress,
     mtu
   })
   const setValues = (v: typeof values): void => {
@@ -234,6 +236,17 @@ const Tun: React.FC = () => {
               onValueChange={(v) => {
                 const arr = v !== '' ? v.split(',') : []
                 setValues({ ...values, dnsHijack: arr })
+              }}
+            />
+          </SettingItem>
+          <SettingItem title="排除自定义网段">
+            <Input
+              size="sm"
+              className="w-[50%]"
+              value={values.routeExcludeAddress.join(',')}
+              onValueChange={(v) => {
+                const arr = v !== '' ? v.split(',') : []
+                setValues({ ...values, routeExcludeAddress: arr })
               }}
             />
           </SettingItem>
