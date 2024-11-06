@@ -21,7 +21,6 @@ import vm from 'vm'
 import { existsSync, writeFileSync } from 'fs'
 import path from 'path'
 
-let runtimeConfigStr: string
 let runtimeConfig: IMihomoConfig
 
 export async function generateProfile(): Promise<void> {
@@ -33,7 +32,7 @@ export async function generateProfile(): Promise<void> {
   // 确保可以拿到基础日志信息
   profile['log-level'] = 'info'
   runtimeConfig = profile
-  runtimeConfigStr = yaml.stringify(profile)
+  const runtimeConfigStr = yaml.stringify(profile)
   if (diffWorkDir) {
     await prepareProfileWorkDir(current)
   }
