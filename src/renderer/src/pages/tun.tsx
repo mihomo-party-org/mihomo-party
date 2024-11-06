@@ -85,6 +85,7 @@ const Tun: React.FC = () => {
                     'auto-detect-interface': values.autoDetectInterface,
                     'dns-hijack': values.dnsHijack,
                     'strict-route': values.strictRoute,
+                    'route-exclude-address': values.routeExcludeAddress,
                     mtu: values.mtu
                   }
                 })
