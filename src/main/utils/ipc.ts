@@ -172,7 +172,9 @@ export function registerIpcMainHandlers(): void {
   )
   ipcMain.handle('getFilePath', (_e, ext) => getFilePath(ext))
   ipcMain.handle('readTextFile', (_e, filePath) => ipcErrorWrapper(readTextFile)(filePath))
-  ipcMain.handle('getRuntimeConfigStr', ipcErrorWrapper(getRuntimeConfigStr))
+  ipcMain.handle('getRuntimeConfigStr', (_e, ignoreKeys) =>
+    ipcErrorWrapper(getRuntimeConfigStr)(ignoreKeys)
+  )
   ipcMain.handle('getRuntimeConfig', ipcErrorWrapper(getRuntimeConfig))
   ipcMain.handle('downloadAndInstallUpdate', (_e, version) =>
     ipcErrorWrapper(downloadAndInstallUpdate)(version)

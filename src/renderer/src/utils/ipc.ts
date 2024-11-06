@@ -213,8 +213,10 @@ export async function readTextFile(filePath: string): Promise<string> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('readTextFile', filePath))
 }
 
-export async function getRuntimeConfigStr(): Promise<string> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getRuntimeConfigStr'))
+export async function getRuntimeConfigStr(ignoreKeys: string[] = []): Promise<string> {
+  return ipcErrorWrapper(
+    await window.electron.ipcRenderer.invoke('getRuntimeConfigStr', ignoreKeys)
+  )
 }
 
 export async function getRuntimeConfig(): Promise<IMihomoConfig> {

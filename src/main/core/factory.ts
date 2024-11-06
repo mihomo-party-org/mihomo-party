@@ -130,8 +130,14 @@ function runOverrideScript(
   }
 }
 
-export async function getRuntimeConfigStr(): Promise<string> {
-  return runtimeConfigStr
+export async function getRuntimeConfigStr(ignoreKeys: string[] = []): Promise<string> {
+  const config = Object.assign({}, runtimeConfig)
+  if (ignoreKeys.length > 0) {
+    ignoreKeys.forEach((key) => {
+      delete config[key]
+    })
+  }
+  return yaml.stringify(config)
 }
 
 export async function getRuntimeConfig(): Promise<IMihomoConfig> {

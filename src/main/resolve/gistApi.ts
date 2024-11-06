@@ -96,7 +96,7 @@ export async function uploadRuntimeConfig(): Promise<void> {
   if (!githubToken) return
   const gists = await listGists(githubToken)
   const gist = gists.find((gist) => gist.description === 'Auto Synced Mihomo Party Runtime Config')
-  const config = await getRuntimeConfigStr()
+  const config = await getRuntimeConfigStr(['mode'])
   if (gist) {
     await updateGist(githubToken, gist.id, config)
   } else {
