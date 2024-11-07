@@ -277,7 +277,7 @@ const App: React.FC = () => {
         }}
         style={{
           position: 'fixed',
-          zIndex: 100,
+          zIndex: 50,
           left: `${siderWidthValue - 2}px`,
           width: '5px',
           height: '100vh',
