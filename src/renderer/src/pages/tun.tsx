@@ -8,6 +8,7 @@ import { platform } from '@renderer/utils/init'
 import React, { Key, useState } from 'react'
 import BasePasswordModal from '@renderer/components/base/base-password-modal'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
+import { MdDeleteForever } from 'react-icons/md'
 
 const Tun: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
@@ -23,6 +24,7 @@ const Tun: React.FC = () => {
     'auto-redirect': autoRedirect = false,
     'auto-detect-interface': autoDetectInterface = true,
     'dns-hijack': dnsHijack = ['any:53'],
+    'route-exclude-address': routeExcludeAddress = [],
     'strict-route': strictRoute = false,
     mtu = 1500
   } = tun || {}
@@ -35,11 +37,28 @@ const Tun: React.FC = () => {
     autoDetectInterface,
     dnsHijack,
     strictRoute,
+    routeExcludeAddress,
     mtu
   })
   const setValues = (v: typeof values): void => {
     originSetValues(v)
     setChanged(true)
+  }
+
+  const handleExcludeAddressChange = (value: string, index: number): void => {
+    const newExcludeAddresses = [...values.routeExcludeAddress]
+    if (index === newExcludeAddresses.length) {
+      if (value.trim() !== '') {
+        newExcludeAddresses.push(value)
+      }
+    } else {
+      if (value.trim() === '') {
+        newExcludeAddresses.splice(index, 1)
+      } else {
+        newExcludeAddresses[index] = value
+      }
+    }
+    setValues({ ...values, routeExcludeAddress: newExcludeAddresses })
   }
 
   const onSave = async (patch: Partial<IMihomoConfig>): Promise<void> => {
@@ -83,6 +102,7 @@ const Tun: React.FC = () => {
                     'auto-detect-interface': values.autoDetectInterface,
                     'dns-hijack': values.dnsHijack,
                     'strict-route': values.strictRoute,
+                    'route-exclude-address': values.routeExcludeAddress,
                     mtu: values.mtu
                   }
                 })
@@ -226,7 +246,7 @@ const Tun: React.FC = () => {
               }}
             />
           </SettingItem>
-          <SettingItem title="DNS 劫持">
+          <SettingItem title="DNS 劫持" divider>
             <Input
               size="sm"
               className="w-[50%]"
@@ -237,6 +257,31 @@ const Tun: React.FC = () => {
               }}
             />
           </SettingItem>
+          <div className="flex flex-col items-stretch">
+            <h3 className="mb-2">排除自定义网段</h3>
+            {[...values.routeExcludeAddress, ''].map((address, index) => (
+              <div key={index} className="mb-2 flex">
+                <Input
+                  fullWidth
+                  size="sm"
+                  placeholder="例: 172.20.0.0/16"
+                  value={address}
+                  onValueChange={(v) => handleExcludeAddressChange(v, index)}
+                />
+                {index < values.routeExcludeAddress.length && (
+                  <Button
+                    className="ml-2"
+                    size="sm"
+                    variant="flat"
+                    color="warning"
+                    onClick={() => handleExcludeAddressChange('', index)}
+                  >
+                    <MdDeleteForever className="text-lg" />
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
         </SettingCard>
       </BasePage>
     </>
