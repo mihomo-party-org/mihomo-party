@@ -243,6 +243,7 @@ const Tun: React.FC = () => {
           <SettingItem title="排除自定义网段">
             <Input
               size="sm"
+              placeholder="例: 172.20.0.0/16,172.21.0.0/16"
               className="w-[50%]"
               value={values.routeExcludeAddress.join(',')}
               onValueChange={(v) => {
