@@ -130,10 +130,16 @@ function runOverrideScript(
 }
 
 export async function getRuntimeConfigStr(ignoreKeys: string[] = []): Promise<string> {
-  const config = Object.assign({}, runtimeConfig)
+  const config = JSON.parse(JSON.stringify(runtimeConfig)) // for deep copy
   if (ignoreKeys.length > 0) {
-    ignoreKeys.forEach((key) => {
-      delete config[key]
+    ignoreKeys.forEach((keyPath) => {
+      const parts = keyPath.split('.')
+      let current = config
+      for (let i = 0; i < parts.length - 1; i++) {
+        if (current[parts[i]] === undefined) return
+        current = current[parts[i]]
+      }
+      delete current[parts[parts.length - 1]]
     })
   }
   return yaml.stringify(config)
