@@ -109,6 +109,6 @@ export function createElevateTask(): void {
     path.join(taskDir(), 'mihomo-party-run.exe')
   )
   execSync(
-    `C:\\\\Windows\\System32\\schtasks.exe /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`
+    `%SystemRoot%\\System32\\schtasks.exe /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`
   )
 }

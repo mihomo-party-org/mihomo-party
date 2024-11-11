@@ -36,7 +36,7 @@ if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')
       if (!existsSync(path.join(taskDir(), 'mihomo-party-run.exe'))) {
         throw new Error('mihomo-party-run.exe not found')
       } else {
-        execSync('C:\\\\Windows\\System32\\schtasks.exe /run /tn mihomo-party-run')
+        execSync('%SystemRoot%\\System32\\schtasks.exe /run /tn mihomo-party-run')
       }
     } catch (e) {
       let createErrorStr = `${createError}`
