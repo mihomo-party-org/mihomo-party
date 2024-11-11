@@ -34,7 +34,7 @@ import { readFile, rm, writeFile } from 'fs/promises'
 import { promisify } from 'util'
 import { mainWindow } from '..'
 import path from 'path'
-import { existsSync } from 'fs'
+import { createWriteStream, existsSync } from 'fs'
 import { uploadRuntimeConfig } from '../resolve/gistApi'
 import { startMonitor } from '../resolve/trafficMonitor'
 
@@ -84,7 +84,8 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
       })
     }
   }
-
+  const stdout = createWriteStream(logPath(), { flags: 'a' })
+  const stderr = createWriteStream(logPath(), { flags: 'a' })
   child = spawn(
     corePath,
     ['-d', diffWorkDir ? mihomoProfileWorkDir(current) : mihomoWorkDir(), ctlParam, mihomoIpcPath],
@@ -111,9 +112,8 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
       await stopCore()
     }
   })
-  child.stdout?.on('data', async (data) => {
-    await writeFile(logPath(), data, { flag: 'a' })
-  })
+  child.stdout?.pipe(stdout)
+  child.stderr?.pipe(stderr)
   return new Promise((resolve, reject) => {
     child.stdout?.on('data', async (data) => {
       const str = data.toString()
