@@ -24,7 +24,6 @@ function FindProxyForURL(url, host) {
 export function findAvailablePort(startPort: number): Promise<number> {
   return new Promise((resolve, reject) => {
     const server = net.createServer()
-    server.unref()
     server.on('error', (err) => {
       if (startPort <= 65535) {
         resolve(findAvailablePort(startPort + 1))
@@ -32,13 +31,12 @@ export function findAvailablePort(startPort: number): Promise<number> {
         reject(err)
       }
     })
-
-    server.listen(startPort, () => {
-      // 端口可用
+    server.on('listening', () => {
       server.close(() => {
         resolve(startPort)
       })
     })
+    server.listen(startPort, '127.0.0.1')
   })
 }
 
