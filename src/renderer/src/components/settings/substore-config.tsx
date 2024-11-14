@@ -17,6 +17,7 @@ const SubStoreConfig: React.FC = () => {
   const {
     useSubStore = true,
     useCustomSubStore = false,
+    useProxyInSubStore = false,
     subStoreHost = '127.0.0.1',
     customSubStoreUrl,
     subStoreBackendSyncCron,
@@ -111,6 +112,20 @@ const SubStoreConfig: React.FC = () => {
             </SettingItem>
           ) : (
             <>
+              <SettingItem title="为 Sub-Store 内所有请求启用代理" divider>
+                <Switch
+                  size="sm"
+                  isSelected={useProxyInSubStore}
+                  onValueChange={async (v) => {
+                    try {
+                      await patchAppConfig({ useProxyInSubStore: v })
+                      await startSubStoreBackendServer()
+                    } catch (e) {
+                      alert(e)
+                    }
+                  }}
+                />
+              </SettingItem>
               <SettingItem title="定时同步订阅/文件" divider>
                 <div className="flex w-[60%] gap-2">
                   {subStoreBackendSyncCronValue !== subStoreBackendSyncCron && (

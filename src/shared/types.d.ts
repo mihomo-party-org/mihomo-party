@@ -239,6 +239,7 @@ interface IAppConfig {
   autoQuitWithoutCore?: boolean
   autoQuitWithoutCoreDelay?: number
   useCustomSubStore?: boolean
+  useProxyInSubStore?: boolean
   customSubStoreUrl?: string
   diffWorkDir?: boolean
   autoSetDNS?: boolean

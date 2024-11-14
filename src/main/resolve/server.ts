@@ -1,7 +1,8 @@
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { Worker } from 'worker_threads'
-import { mihomoWorkDir, resourcesFilesDir, subStoreDir } from '../utils/dirs'
+import { mihomoWorkDir, resourcesFilesDir, subStoreDir, substoreLogPath } from '../utils/dirs'
 import subStoreIcon from '../../../resources/subStoreIcon.png?asset'
+import { createWriteStream } from 'fs'
 import http from 'http'
 import net from 'net'
 import path from 'path'
@@ -89,6 +90,7 @@ export async function startSubStoreBackendServer(): Promise<void> {
   const {
     useSubStore = true,
     useCustomSubStore = false,
+    useProxyInSubStore = false,
     subStoreHost = '127.0.0.1',
     subStoreBackendSyncCron = '',
     subStoreBackendDownloadCron = '',
@@ -101,6 +103,8 @@ export async function startSubStoreBackendServer(): Promise<void> {
     subStorePort = await findAvailablePort(38324)
     const icon = nativeImage.createFromPath(subStoreIcon)
     icon.toDataURL()
+    const stdout = createWriteStream(substoreLogPath(), { flags: 'a' })
+    const stderr = createWriteStream(substoreLogPath(), { flags: 'a' })
     subStoreBackendWorker = new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
       env: {
         SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
@@ -113,11 +117,13 @@ export async function startSubStoreBackendServer(): Promise<void> {
         SUB_STORE_BACKEND_UPLOAD_CRON: subStoreBackendUploadCron,
         SUB_STORE_MMDB_COUNTRY_PATH: path.join(mihomoWorkDir(), 'country.mmdb'),
         SUB_STORE_MMDB_ASN_PATH: path.join(mihomoWorkDir(), 'ASN.mmdb'),
-        HTTP_PROXY: `http://127.0.0.1:${port}`,
-        HTTPS_PROXY: `http://127.0.0.1:${port}`,
-        ALL_PROXY: `http://127.0.0.1:${port}`
+        HTTP_PROXY: useProxyInSubStore ? `http://127.0.0.1:${port}` : undefined,
+        HTTPS_PROXY: useProxyInSubStore ? `http://127.0.0.1:${port}` : undefined,
+        ALL_PROXY: useProxyInSubStore ? `http://127.0.0.1:${port}` : undefined
       }
     })
+    subStoreBackendWorker.stdout.pipe(stdout)
+    subStoreBackendWorker.stderr.pipe(stderr)
   }
 }
 

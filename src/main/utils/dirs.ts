@@ -127,3 +127,9 @@ export function logPath(): string {
   const name = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
   return path.join(logDir(), `${name}.log`)
 }
+
+export function substoreLogPath(): string {
+  const date = new Date()
+  const name = `sub-store-${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  return path.join(logDir(), `${name}.log`)
+}
