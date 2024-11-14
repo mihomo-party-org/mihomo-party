@@ -124,6 +124,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
       if (newItem.substore) {
         const urlObj = new URL(`http://127.0.0.1:${subStorePort}${item.url}`)
         urlObj.searchParams.set('target', 'ClashMeta')
+        urlObj.searchParams.set('noCache', 'true')
         if (newItem.useProxy) {
           urlObj.searchParams.set('proxy', `http://127.0.0.1:${mixedPort}`)
         } else {
