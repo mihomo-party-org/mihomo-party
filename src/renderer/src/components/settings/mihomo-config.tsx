@@ -145,9 +145,14 @@ const MihomoConfig: React.FC = () => {
             size="sm"
             selectedKeys={new Set([mihomoCpuPriority])}
             onSelectionChange={async (v) => {
-              await patchAppConfig({
-                mihomoCpuPriority: v.currentKey as Priority
-              })
+              try {
+                await patchAppConfig({
+                  mihomoCpuPriority: v.currentKey as Priority
+                })
+                await restartCore()
+              } catch (e) {
+                alert(e)
+              }
             }}
           >
             <SelectItem key="PRIORITY_HIGHEST">实时</SelectItem>
