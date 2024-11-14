@@ -9,7 +9,6 @@ import { openUWPTool, triggerSysProxy } from '@renderer/utils/ipc'
 import { Key, useState } from 'react'
 import React from 'react'
 import { MdDeleteForever } from 'react-icons/md'
-import { IoIosHelpCircle } from 'react-icons/io'
 
 const defaultBypass: string[] =
   platform === 'linux'
@@ -136,15 +135,7 @@ const Sysproxy: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem
-          actions={
-            <Button isIconOnly size="sm" variant="light">
-              <IoIosHelpCircle className="text-lg" />
-            </Button>
-          }
-          title="代理模式"
-          divider
-        >
+        <SettingItem title="代理模式" divider>
           <Tabs
             size="sm"
             color="primary"

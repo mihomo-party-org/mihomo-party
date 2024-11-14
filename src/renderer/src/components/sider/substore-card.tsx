@@ -31,7 +31,7 @@ const SubStoreCard: React.FC<Props> = (props) => {
 
   if (iconOnly) {
     return (
-      <div className={`${substoreCardStatus} flex justify-center`}>
+      <div className={`${substoreCardStatus} ${!useSubStore ? 'hidden' : ''} flex justify-center`}>
         <Tooltip content="Sub-Store" placement="right">
           <Button
             size="sm"
