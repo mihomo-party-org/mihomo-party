@@ -8,6 +8,7 @@ import { getGistUrl, patchControledMihomoConfig, restartCore } from '@renderer/u
 import { MdDeleteForever } from 'react-icons/md'
 import { BiCopy } from 'react-icons/bi'
 import { IoIosHelpCircle } from 'react-icons/io'
+import { platform } from '@renderer/utils/init'
 
 const MihomoConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -136,26 +137,28 @@ const MihomoConfig: React.FC = () => {
           <SelectItem key="4">四列</SelectItem>
         </Select>
       </SettingItem>
-      <SettingItem title="内核进程优先级" divider>
-        <Select
-          classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
-          className="w-[150px]"
-          size="sm"
-          selectedKeys={new Set([mihomoCpuPriority])}
-          onSelectionChange={async (v) => {
-            await patchAppConfig({
-              mihomoCpuPriority: v.currentKey as Priority
-            })
-          }}
-        >
-          <SelectItem key="PRIORITY_HIGHEST">实时</SelectItem>
-          <SelectItem key="PRIORITY_HIGH">高</SelectItem>
-          <SelectItem key="PRIORITY_ABOVE_NORMAL">高于正常</SelectItem>
-          <SelectItem key="PRIORITY_NORMAL">正常</SelectItem>
-          <SelectItem key="PRIORITY_BELOW_NORMAL">低于正常</SelectItem>
-          <SelectItem key="PRIORITY_LOW">低</SelectItem>
-        </Select>
-      </SettingItem>
+      {platform === 'win32' && (
+        <SettingItem title="内核进程优先级" divider>
+          <Select
+            classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
+            className="w-[150px]"
+            size="sm"
+            selectedKeys={new Set([mihomoCpuPriority])}
+            onSelectionChange={async (v) => {
+              await patchAppConfig({
+                mihomoCpuPriority: v.currentKey as Priority
+              })
+            }}
+          >
+            <SelectItem key="PRIORITY_HIGHEST">实时</SelectItem>
+            <SelectItem key="PRIORITY_HIGH">高</SelectItem>
+            <SelectItem key="PRIORITY_ABOVE_NORMAL">高于正常</SelectItem>
+            <SelectItem key="PRIORITY_NORMAL">正常</SelectItem>
+            <SelectItem key="PRIORITY_BELOW_NORMAL">低于正常</SelectItem>
+            <SelectItem key="PRIORITY_LOW">低</SelectItem>
+          </Select>
+        </SettingItem>
+      )}
       <SettingItem
         title="为不同订阅分别指定工作目录"
         actions={

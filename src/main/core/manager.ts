@@ -100,7 +100,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
       stdio: detached ? 'ignore' : undefined
     }
   )
-  if (child.pid) {
+  if (process.platform === 'win32' && child.pid) {
     os.setPriority(child.pid, os.constants.priority[mihomoCpuPriority])
   }
   if (detached) {
