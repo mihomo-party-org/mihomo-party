@@ -7,12 +7,11 @@
 
 ### Features
 
-- 支持设置 `direct-nameserver`
-- 支持设置 `route-exclude-address`
+- 内置 Sub-Store 不使用缓存
+- 允许控制是否为 Sub-Store 使用代理
+- 允许设置内核进程优先级
+- 提高进程优先级
 
 ### Bug Fixes
 
-- 不使用pac模式时不再启动pac服务器
-- 修复对话框上层可调整侧栏大小的问题
-- 修复Windows系统路径错误
-- 修复内核panic没有日志的问题
+- 修复寻找可用端口失败的问题

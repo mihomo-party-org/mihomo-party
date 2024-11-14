@@ -22,6 +22,7 @@ const MihomoConfig: React.FC = () => {
     pauseSSID = [],
     delayTestUrl,
     userAgent,
+    mihomoCpuPriority = 'PRIORITY_HIGHEST',
     proxyCols = 'auto'
   } = appConfig || {}
   const [url, setUrl] = useState(delayTestUrl)
@@ -133,6 +134,26 @@ const MihomoConfig: React.FC = () => {
           <SelectItem key="2">两列</SelectItem>
           <SelectItem key="3">三列</SelectItem>
           <SelectItem key="4">四列</SelectItem>
+        </Select>
+      </SettingItem>
+      <SettingItem title="内核进程优先级" divider>
+        <Select
+          classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
+          className="w-[150px]"
+          size="sm"
+          selectedKeys={new Set([mihomoCpuPriority])}
+          onSelectionChange={async (v) => {
+            await patchAppConfig({
+              mihomoCpuPriority: v.currentKey as Priority
+            })
+          }}
+        >
+          <SelectItem key="PRIORITY_HIGHEST">实时</SelectItem>
+          <SelectItem key="PRIORITY_HIGH">高</SelectItem>
+          <SelectItem key="PRIORITY_ABOVE_NORMAL">高于正常</SelectItem>
+          <SelectItem key="PRIORITY_NORMAL">正常</SelectItem>
+          <SelectItem key="PRIORITY_BELOW_NORMAL">低于正常</SelectItem>
+          <SelectItem key="PRIORITY_LOW">低</SelectItem>
         </Select>
       </SettingItem>
       <SettingItem

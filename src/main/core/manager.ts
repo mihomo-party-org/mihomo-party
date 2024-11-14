@@ -34,6 +34,7 @@ import { readFile, rm, writeFile } from 'fs/promises'
 import { promisify } from 'util'
 import { mainWindow } from '..'
 import path from 'path'
+import os from 'os'
 import { createWriteStream, existsSync } from 'fs'
 import { uploadRuntimeConfig } from '../resolve/gistApi'
 import { startMonitor } from '../resolve/trafficMonitor'
@@ -57,7 +58,12 @@ let child: ChildProcess
 let retry = 10
 
 export async function startCore(detached = false): Promise<Promise<void>[]> {
-  const { core = 'mihomo', autoSetDNS = true, diffWorkDir = false } = await getAppConfig()
+  const {
+    core = 'mihomo',
+    autoSetDNS = true,
+    diffWorkDir = false,
+    mihomoCpuPriority = 'PRIORITY_HIGHEST'
+  } = await getAppConfig()
   const { 'log-level': logLevel } = await getControledMihomoConfig()
   if (existsSync(path.join(dataDir(), 'core.pid'))) {
     const pid = parseInt(await readFile(path.join(dataDir(), 'core.pid'), 'utf-8'))
@@ -94,6 +100,9 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
       stdio: detached ? 'ignore' : undefined
     }
   )
+  if (child.pid) {
+    os.setPriority(child.pid, os.constants.priority[mihomoCpuPriority])
+  }
   if (detached) {
     child.unref()
     return new Promise((resolve) => {

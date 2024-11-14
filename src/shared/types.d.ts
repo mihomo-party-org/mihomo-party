@@ -4,6 +4,13 @@ type SysProxyMode = 'auto' | 'manual'
 type CardStatus = 'col-span-2' | 'col-span-1' | 'hidden'
 type AppTheme = 'system' | 'light' | 'dark'
 type MihomoGroupType = 'Selector' | 'URLTest' | 'LoadBalance' | 'Relay'
+type Priority =
+  | 'PRIORITY_LOW'
+  | 'PRIORITY_BELOW_NORMAL'
+  | 'PRIORITY_NORMAL'
+  | 'PRIORITY_ABOVE_NORMAL'
+  | 'PRIORITY_HIGH'
+  | 'PRIORITY_HIGHEST'
 type MihomoProxyType =
   | 'Direct'
   | 'Reject'
@@ -240,6 +247,7 @@ interface IAppConfig {
   autoQuitWithoutCoreDelay?: number
   useCustomSubStore?: boolean
   useProxyInSubStore?: boolean
+  mihomoCpuPriority?: Priority
   customSubStoreUrl?: string
   diffWorkDir?: boolean
   autoSetDNS?: boolean

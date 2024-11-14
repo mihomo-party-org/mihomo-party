@@ -38,7 +38,7 @@ const taskXml = `<?xml version="1.0" encoding="UTF-16"?>
     <RunOnlyIfIdle>false</RunOnlyIfIdle>
     <WakeToRun>false</WakeToRun>
     <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
-    <Priority>0</Priority>
+    <Priority>3</Priority>
   </Settings>
   <Actions Context="Author">
     <Exec>
