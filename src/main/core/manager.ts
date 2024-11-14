@@ -62,7 +62,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
     core = 'mihomo',
     autoSetDNS = true,
     diffWorkDir = false,
-    mihomoCpuPriority = 'PRIORITY_HIGHEST'
+    mihomoCpuPriority = 'PRIORITY_NORMAL'
   } = await getAppConfig()
   const { 'log-level': logLevel } = await getControledMihomoConfig()
   if (existsSync(path.join(dataDir(), 'core.pid'))) {

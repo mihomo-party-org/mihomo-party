@@ -23,7 +23,7 @@ const MihomoConfig: React.FC = () => {
     pauseSSID = [],
     delayTestUrl,
     userAgent,
-    mihomoCpuPriority = 'PRIORITY_HIGHEST',
+    mihomoCpuPriority = 'PRIORITY_NORMAL',
     proxyCols = 'auto'
   } = appConfig || {}
   const [url, setUrl] = useState(delayTestUrl)
