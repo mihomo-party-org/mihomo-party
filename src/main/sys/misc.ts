@@ -90,7 +90,7 @@ const elevateTaskXml = `<?xml version="1.0" encoding="UTF-16"?>
     <RunOnlyIfIdle>false</RunOnlyIfIdle>
     <WakeToRun>false</WakeToRun>
     <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
-    <Priority>7</Priority>
+    <Priority>0</Priority>
   </Settings>
   <Actions Context="Author">
     <Exec>
