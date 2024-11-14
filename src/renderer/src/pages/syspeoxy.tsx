@@ -1,4 +1,4 @@
-import { Button, Input, Tab, Tabs, Tooltip } from '@nextui-org/react'
+import { Button, Input, Tab, Tabs } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
@@ -138,11 +138,9 @@ const Sysproxy: React.FC = () => {
         </SettingItem>
         <SettingItem
           actions={
-            <Tooltip content="PAC监听 代理主机:端口(10000开始的可用)">
-              <Button isIconOnly size="sm" variant="light">
-                <IoIosHelpCircle className="text-lg" />
-              </Button>
-            </Tooltip>
+            <Button isIconOnly size="sm" variant="light">
+              <IoIosHelpCircle className="text-lg" />
+            </Button>
           }
           title="代理模式"
           divider
