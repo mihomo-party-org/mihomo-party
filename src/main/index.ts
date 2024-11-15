@@ -269,6 +269,10 @@ export async function createWindow(): Promise<void> {
     if (mainWindow) mainWindowState.saveState(mainWindow)
   })
 
+  mainWindow.on('move', () => {
+    if (mainWindow) mainWindowState.saveState(mainWindow)
+  })
+
   mainWindow.on('session-end', async () => {
     triggerSysProxy(false)
     await stopCore()
