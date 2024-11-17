@@ -25,7 +25,12 @@ const CopyableSettingItem: React.FC<{
   const menuItems = [
     { key: 'raw', text: value },
     ...prefix.flatMap(p =>
-      (p === 'DOMAIN-SUFFIX' ? getSubDomains(value) : [value]).map(v => ({
+      (p === 'DOMAIN-SUFFIX'
+        ? getSubDomains(value)
+        : p === 'IP-ASN'
+          ? [value.split(' ')[0]]
+          : [value]
+      ).map(v => ({
         key: `${p},${v}${suffix}`,
         text: `${p},${v}${suffix}`
       }))
