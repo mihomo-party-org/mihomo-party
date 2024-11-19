@@ -103,22 +103,27 @@ export async function startSubStoreBackendServer(): Promise<void> {
     icon.toDataURL()
     const stdout = createWriteStream(substoreLogPath(), { flags: 'a' })
     const stderr = createWriteStream(substoreLogPath(), { flags: 'a' })
+    const env = {
+      SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
+      SUB_STORE_BACKEND_API_HOST: subStoreHost,
+      SUB_STORE_DATA_BASE_PATH: subStoreDir(),
+      SUB_STORE_BACKEND_CUSTOM_ICON: icon.toDataURL(),
+      SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party',
+      SUB_STORE_BACKEND_SYNC_CRON: subStoreBackendSyncCron,
+      SUB_STORE_BACKEND_DOWNLOAD_CRON: subStoreBackendDownloadCron,
+      SUB_STORE_BACKEND_UPLOAD_CRON: subStoreBackendUploadCron,
+      SUB_STORE_MMDB_COUNTRY_PATH: path.join(mihomoWorkDir(), 'country.mmdb'),
+      SUB_STORE_MMDB_ASN_PATH: path.join(mihomoWorkDir(), 'ASN.mmdb')
+    }
     subStoreBackendWorker = new Worker(path.join(resourcesFilesDir(), 'sub-store.bundle.js'), {
-      env: {
-        SUB_STORE_BACKEND_API_PORT: subStorePort.toString(),
-        SUB_STORE_BACKEND_API_HOST: subStoreHost,
-        SUB_STORE_DATA_BASE_PATH: subStoreDir(),
-        SUB_STORE_BACKEND_CUSTOM_ICON: icon.toDataURL(),
-        SUB_STORE_BACKEND_CUSTOM_NAME: 'Mihomo Party',
-        SUB_STORE_BACKEND_SYNC_CRON: subStoreBackendSyncCron,
-        SUB_STORE_BACKEND_DOWNLOAD_CRON: subStoreBackendDownloadCron,
-        SUB_STORE_BACKEND_UPLOAD_CRON: subStoreBackendUploadCron,
-        SUB_STORE_MMDB_COUNTRY_PATH: path.join(mihomoWorkDir(), 'country.mmdb'),
-        SUB_STORE_MMDB_ASN_PATH: path.join(mihomoWorkDir(), 'ASN.mmdb'),
-        HTTP_PROXY: useProxyInSubStore ? `http://127.0.0.1:${port}` : undefined,
-        HTTPS_PROXY: useProxyInSubStore ? `http://127.0.0.1:${port}` : undefined,
-        ALL_PROXY: useProxyInSubStore ? `http://127.0.0.1:${port}` : undefined
-      }
+      env: useProxyInSubStore
+        ? {
+            ...env,
+            HTTP_PROXY: `http://127.0.0.1:${port}`,
+            HTTPS_PROXY: `http://127.0.0.1:${port}`,
+            ALL_PROXY: `http://127.0.0.1:${port}`
+          }
+        : env
     })
     subStoreBackendWorker.stdout.pipe(stdout)
     subStoreBackendWorker.stderr.pipe(stderr)
