@@ -7,10 +7,9 @@
 
 ### Features
 
-- 内置 Sub-Store 不使用缓存
-- 允许控制是否为 Sub-Store 使用代理
-- Windows 允许设置内核进程优先级
+- 连接详情支持复制规则
 
 ### Bug Fixes
 
-- 修复寻找可用端口失败的问题
+- 修复 Sub-Store 代理问题
+- 实时保存窗口位置
