@@ -88,6 +88,8 @@ interface IMihomoConnectionDetail {
     network: 'tcp' | 'udp'
     type: string
     sourceIP: string
+    sourceGeoIP: string
+    sourceIPASN: string
     destinationIP: string
     destinationGeoIP: string
     destinationIPASN: string

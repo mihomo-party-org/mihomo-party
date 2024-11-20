@@ -12,7 +12,7 @@ interface Props {
 
 const CopyableSettingItem: React.FC<{
   title: string
-  value: string
+  value: string | string[]
   displayName?: string
   prefix?: string[]
   suffix?: string
@@ -23,18 +23,23 @@ const CopyableSettingItem: React.FC<{
       : domain.split('.').map((_, i, parts) => parts.slice(i).join('.')).slice(0, -1)
 
   const menuItems = [
-    { key: 'raw', text: value },
-    ...prefix.flatMap(p =>
-      (p === 'DOMAIN-SUFFIX'
-        ? getSubDomains(value)
-        : p === 'IP-ASN'
-          ? [value.split(' ')[0]]
-          : [value]
-      ).map(v => ({
-        key: `${p},${v}${suffix}`,
-        text: `${p},${v}${suffix}`
-      }))
-    )
+    { key: 'raw', text: displayName || (Array.isArray(value) ? value.join(', ') : value) },
+    ...(Array.isArray(value) && value.length === prefix.length
+      ? prefix.map((p, i) => value[i] ? ({
+        key: `${p},${value[i]}${suffix}`,
+        text: `${p},${value[i]}${suffix}`
+      }) : null).filter(Boolean)
+      : prefix.flatMap(p =>
+        (p === 'DOMAIN-SUFFIX'
+          ? getSubDomains(Array.isArray(value) ? value[0] : value)
+          : p === 'IP-ASN'
+            ? [(Array.isArray(value) ? value[0] : value).split(' ')[0]]
+            : [Array.isArray(value) ? value[0] : value]
+        ).map(v => ({
+          key: `${p},${v}${suffix}`,
+          text: `${p},${v}${suffix}`
+        }))
+      ))
   ]
 
   return (
@@ -49,17 +54,17 @@ const CopyableSettingItem: React.FC<{
           </DropdownTrigger>
           <DropdownMenu
             onAction={key =>
-              navigator.clipboard.writeText(key === 'raw' ? value : key as string)
+              navigator.clipboard.writeText(key === 'raw' ? (Array.isArray(value) ? value.join(', ') : value) : key as string)
             }
           >
-            {menuItems.map(({ key, text }) => (
+            {menuItems.filter(item => item !== null).map(({ key, text }) => (
               <DropdownItem key={key}>{text}</DropdownItem>
             ))}
           </DropdownMenu>
         </Dropdown>
       }
     >
-      {displayName || value}
+      {displayName || (Array.isArray(value) ? value.join(', ') : value)}
     </SettingItem>
   )
 }
@@ -91,9 +96,9 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
           <SettingItem title='下载量'>{calcTraffic(connection.download)}</SettingItem>
           <CopyableSettingItem
             title='连接类型'
-            value={connection.metadata.type}
+            value={[connection.metadata.type, connection.metadata.network]}
             displayName={`${connection.metadata.type}(${connection.metadata.network})`}
-            prefix={['IN-TYPE']}
+            prefix={['IN-TYPE', 'NETWORK']}
           />
           {connection.metadata.host && (
             <CopyableSettingItem
@@ -112,9 +117,9 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
           {connection.metadata.process && (
             <CopyableSettingItem
               title='进程名'
-              value={connection.metadata.process}
+              value={[connection.metadata.process, connection.metadata.uid ? connection.metadata.uid.toString() : '']}
               displayName={`${connection.metadata.process}${connection.metadata.uid ? `(${connection.metadata.uid})` : ''}`}
-              prefix={['PROCESS-NAME']}
+              prefix={['PROCESS-NAME', 'UID']}
             />
           )}
           {connection.metadata.processPath && (
@@ -130,6 +135,20 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
               value={connection.metadata.sourceIP}
               prefix={['SRC-IP-CIDR']}
               suffix='/32'
+            />
+          )}
+          {connection.metadata.sourceGeoIP && (
+            <CopyableSettingItem
+              title='来源GeoIP'
+              value={connection.metadata.sourceGeoIP}
+              prefix={['SRC-GEOIP']}
+            />
+          )}
+          {connection.metadata.sourceIPASN && (
+            <CopyableSettingItem
+              title='来源ASN'
+              value={connection.metadata.sourceIPASN}
+              prefix={['SRC-IP-ASN']}
             />
           )}
           {connection.metadata.destinationIP && (
