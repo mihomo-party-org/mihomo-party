@@ -1,14 +1,42 @@
-import { mihomoProxyProviders, mihomoUpdateProxyProviders } from '@renderer/utils/ipc'
-import { Fragment, useMemo, useState } from 'react'
+import { mihomoProxyProviders, mihomoUpdateProxyProviders, mihomoRunProxyProviders } from '@renderer/utils/ipc'
+import { Fragment, useEffect, useMemo, useState } from 'react'
+import Viewer from './viewer'
 import useSWR from 'swr'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
 import { Button, Chip } from '@nextui-org/react'
-import { IoMdRefresh } from 'react-icons/io'
+import { IoMdRefresh, IoMdEye } from 'react-icons/io'
+import { CgLoadbarDoc } from 'react-icons/cg'
 import dayjs from 'dayjs'
 import { calcTraffic } from '@renderer/utils/calc'
+import { getHash } from '@renderer/utils/hash'
 
 const ProxyProvider: React.FC = () => {
+  const [ShowProvider, setShowProvider] = useState(false)
+  const [ShowPath, setShowPath] = useState('')
+  const [ShowType, setShowType] = useState('')
+
+  useEffect(() => {
+    const fetchProviderPath = async (name: string) => {
+      try {
+        const providers = await mihomoRunProxyProviders()
+        const provider = providers[name]
+        if (provider?.path) {
+          setShowPath(provider.path)
+        } else if (provider?.url) {
+          setShowPath(`proxies/` + getHash(provider.url))
+        }
+        setShowProvider(true)
+      } catch (error) {
+        setShowPath('')
+      }
+    }
+
+    if (ShowPath != '') {
+      fetchProviderPath(ShowPath)
+    }
+  }, [ShowProvider, ShowPath])
+
   const { data, mutate } = useSWR('mihomoProxyProviders', mihomoProxyProviders)
   const providers = useMemo(() => {
     if (!data) return []
@@ -45,6 +73,7 @@ const ProxyProvider: React.FC = () => {
 
   return (
     <SettingCard>
+      {ShowProvider && <Viewer onClose={() => { setShowProvider(false); setShowPath(''); setShowType('')}} path={ShowPath} type={ShowType} />}
       <SettingItem title="代理集合" divider>
         <Button
           size="sm"
@@ -58,56 +87,69 @@ const ProxyProvider: React.FC = () => {
           更新全部
         </Button>
       </SettingItem>
-      {providers.map((provider, index) => {
-        return (
-          <Fragment key={provider.name}>
+      {providers.map((provider, index) => (
+        <Fragment key={provider.name}>
+          <SettingItem
+            title={provider.name}
+            actions={
+              <Chip className="ml-2" size="sm">
+                {provider.proxies?.length || 0}
+              </Chip>
+            }
+            divider={!provider.subscriptionInfo && index !== providers.length - 1}
+          >
+            <div className="flex h-[32px] leading-[32px] text-foreground-500">
+              <div>{dayjs(provider.updatedAt).fromNow()}</div>
+              <Button
+                isIconOnly
+                className="ml-2"
+                size="sm"
+                onPress={() => {
+                  onUpdate(provider.name, index)
+                }}
+              >
+                <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
+              </Button>
+              <Button
+                isIconOnly
+                className="ml-2"
+                size="sm"
+              >
+                <IoMdEye className="text-lg" />
+              </Button>
+              <Button
+                isIconOnly
+                className="ml-2"
+                size="sm"
+                onPress={() => {
+                  setShowType(provider.vehicleType)
+                  setShowPath(provider.name)
+                }}
+              >
+                <CgLoadbarDoc className="text-lg" />
+              </Button>
+            </div>
+          </SettingItem>
+          {provider.subscriptionInfo && (
             <SettingItem
-              title={provider.name}
-              actions={
-                <Chip className="ml-2" size="sm">
-                  {provider.proxies?.length || 0}
-                </Chip>
-              }
-              divider={!provider.subscriptionInfo && index !== providers.length - 1}
-            >
-              {
-                <div className="flex h-[32px] leading-[32px] text-foreground-500">
-                  <div>{dayjs(provider.updatedAt).fromNow()}</div>
-                  <Button
-                    isIconOnly
-                    className="ml-2"
-                    size="sm"
-                    onPress={() => {
-                      onUpdate(provider.name, index)
-                    }}
-                  >
-                    <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
-                  </Button>
+              divider={index !== providers.length - 1}
+              title={
+                <div className="text-foreground-500">
+                  {`${calcTraffic(
+                    provider.subscriptionInfo.Upload + provider.subscriptionInfo.Download
+                  )} / ${calcTraffic(provider.subscriptionInfo.Total)}`}
                 </div>
               }
+            >
+              <div className="h-[32px] leading-[32px] text-foreground-500">
+                {provider.subscriptionInfo.Expire
+                  ? dayjs.unix(provider.subscriptionInfo.Expire).format('YYYY-MM-DD')
+                  : '长期有效'}
+              </div>
             </SettingItem>
-            {provider.subscriptionInfo && (
-              <SettingItem
-                divider={index !== providers.length - 1}
-                title={
-                  <div className="text-foreground-500">{`${calcTraffic(
-                    provider.subscriptionInfo.Upload + provider.subscriptionInfo.Download
-                  )}
-                    /${calcTraffic(provider.subscriptionInfo.Total)}`}</div>
-                }
-              >
-                {provider.subscriptionInfo && (
-                  <div className="h-[32px] leading-[32px] text-foreground-500">
-                    {provider.subscriptionInfo.Expire
-                      ? dayjs.unix(provider.subscriptionInfo.Expire).format('YYYY-MM-DD')
-                      : '长期有效'}
-                  </div>
-                )}
-              </SettingItem>
-            )}
-          </Fragment>
-        )
-      })}
+          )}
+        </Fragment>
+      ))}
     </SettingCard>
   )
 }

@@ -140,10 +140,10 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
         res = await axios.get(item.url, {
           proxy: newItem.useProxy
             ? {
-                protocol: 'http',
-                host: '127.0.0.1',
-                port: mixedPort
-              }
+              protocol: 'http',
+              host: '127.0.0.1',
+              port: mixedPort
+            }
             : false,
           headers: {
             'User-Agent': userAgent || 'clash.meta'
@@ -219,4 +219,24 @@ function parseSubinfo(str: string): ISubscriptionUserInfo {
     obj[key] = parseInt(value)
   })
   return obj
+}
+
+function isAbsolutePath(path: string): boolean {
+  return path.startsWith('/') || /^[a-zA-Z]:\\/.test(path);
+}
+
+export async function getFileStr(path: string): Promise<string> {
+  if (isAbsolutePath(path)) {
+    return await readFile(path, 'utf-8')
+  } else {
+    return await readFile(mihomoProfileWorkDir(path), 'utf-8')
+  }
+}
+
+export async function setFileStr(path: string, content: string): Promise<void> {
+  if (isAbsolutePath(path)) {
+    await writeFile(path, content, 'utf-8')
+  } else {
+    await writeFile(mihomoProfileWorkDir(path), content, 'utf-8')
+  }
 }

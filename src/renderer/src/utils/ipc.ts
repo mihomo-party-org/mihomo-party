@@ -43,6 +43,10 @@ export async function mihomoUpdateProxyProviders(name: string): Promise<void> {
   )
 }
 
+export async function mihomoRunProxyProviders(): Promise<IMihomoRuleProviders> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoRunProxyProviders'))
+}
+
 export async function mihomoRuleProviders(): Promise<IMihomoRuleProviders> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoRuleProviders'))
 }
@@ -51,6 +55,10 @@ export async function mihomoUpdateRuleProviders(name: string): Promise<void> {
   return ipcErrorWrapper(
     await window.electron.ipcRenderer.invoke('mihomoUpdateRuleProviders', name)
   )
+}
+
+export async function mihomoRunRuleProviders(): Promise<IMihomoRuleProviders> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoRunRuleProviders'))
 }
 
 export async function mihomoChangeProxy(group: string, proxy: string): Promise<IMihomoProxy> {
@@ -149,6 +157,14 @@ export async function updateProfileItem(item: IProfileItem): Promise<void> {
 
 export async function getProfileStr(id: string): Promise<string> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getProfileStr', id))
+}
+
+export async function getFileStr(id: string): Promise<string> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('getFileStr', id))
+}
+
+export async function setFileStr(id: string, str: string): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setFileStr', id, str))
 }
 
 export async function setProfileStr(id: string, str: string): Promise<void> {

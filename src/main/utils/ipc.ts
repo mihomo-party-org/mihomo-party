@@ -8,7 +8,9 @@ import {
   mihomoProxies,
   mihomoProxyDelay,
   mihomoProxyProviders,
+  mihomoRunProxyProviders,
   mihomoRuleProviders,
+  mihomoRunRuleProviders,
   mihomoRules,
   mihomoUnfixedProxy,
   mihomoUpdateProxyProviders,
@@ -31,6 +33,8 @@ import {
   removeProfileItem,
   changeCurrentProfile,
   getProfileStr,
+  getFileStr,
+  setFileStr,
   setProfileStr,
   updateProfileItem,
   setProfileConfig,
@@ -115,10 +119,12 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoProxies', ipcErrorWrapper(mihomoProxies))
   ipcMain.handle('mihomoGroups', ipcErrorWrapper(mihomoGroups))
   ipcMain.handle('mihomoProxyProviders', ipcErrorWrapper(mihomoProxyProviders))
+  ipcMain.handle('mihomoRunProxyProviders', ipcErrorWrapper(mihomoRunProxyProviders))
   ipcMain.handle('mihomoUpdateProxyProviders', (_e, name) =>
     ipcErrorWrapper(mihomoUpdateProxyProviders)(name)
   )
   ipcMain.handle('mihomoRuleProviders', ipcErrorWrapper(mihomoRuleProviders))
+  ipcMain.handle('mihomoRunRuleProviders', ipcErrorWrapper(mihomoRunRuleProviders))
   ipcMain.handle('mihomoUpdateRuleProviders', (_e, name) =>
     ipcErrorWrapper(mihomoUpdateRuleProviders)(name)
   )
@@ -151,6 +157,8 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('getCurrentProfileItem', ipcErrorWrapper(getCurrentProfileItem))
   ipcMain.handle('getProfileItem', (_e, id) => ipcErrorWrapper(getProfileItem)(id))
   ipcMain.handle('getProfileStr', (_e, id) => ipcErrorWrapper(getProfileStr)(id))
+  ipcMain.handle('getFileStr', (_e, path) => ipcErrorWrapper(getFileStr)(path))
+  ipcMain.handle('setFileStr', (_e, path, str) => ipcErrorWrapper(setFileStr)(path, str))
   ipcMain.handle('setProfileStr', (_e, id, str) => ipcErrorWrapper(setProfileStr)(id, str))
   ipcMain.handle('updateProfileItem', (_e, item) => ipcErrorWrapper(updateProfileItem)(item))
   ipcMain.handle('changeCurrentProfile', (_e, id) => ipcErrorWrapper(changeCurrentProfile)(id))
