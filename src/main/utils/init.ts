@@ -99,6 +99,7 @@ async function initFiles(): Promise<void> {
   }
   await Promise.all([
     copy('country.mmdb'),
+    copy('geoip.metadb'),
     copy('geoip.dat'),
     copy('geosite.dat'),
     copy('ASN.mmdb')

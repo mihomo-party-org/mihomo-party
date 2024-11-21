@@ -43,10 +43,6 @@ export async function mihomoUpdateProxyProviders(name: string): Promise<void> {
   )
 }
 
-export async function mihomoRunProxyProviders(): Promise<IMihomoRuleProviders> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoRunProxyProviders'))
-}
-
 export async function mihomoRuleProviders(): Promise<IMihomoRuleProviders> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoRuleProviders'))
 }
@@ -55,10 +51,6 @@ export async function mihomoUpdateRuleProviders(name: string): Promise<void> {
   return ipcErrorWrapper(
     await window.electron.ipcRenderer.invoke('mihomoUpdateRuleProviders', name)
   )
-}
-
-export async function mihomoRunRuleProviders(): Promise<IMihomoRuleProviders> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoRunRuleProviders'))
 }
 
 export async function mihomoChangeProxy(group: string, proxy: string): Promise<IMihomoProxy> {

@@ -114,11 +114,6 @@ export const mihomoUpdateProxyProviders = async (name: string): Promise<void> =>
   return await instance.put(`/providers/proxies/${encodeURIComponent(name)}`)
 }
 
-export const mihomoRunProxyProviders = async (): Promise<IMihomoProxyProviders> => {
-  const runtime = await getRuntimeConfig()
-  return runtime?.['proxy-providers']
-}
-
 export const mihomoRuleProviders = async (): Promise<IMihomoRuleProviders> => {
   const instance = await getAxios()
   return await instance.get('/providers/rules')
@@ -127,11 +122,6 @@ export const mihomoRuleProviders = async (): Promise<IMihomoRuleProviders> => {
 export const mihomoUpdateRuleProviders = async (name: string): Promise<void> => {
   const instance = await getAxios()
   return await instance.put(`/providers/rules/${encodeURIComponent(name)}`)
-}
-
-export const mihomoRunRuleProviders = async (): Promise<IMihomoRuleProviders> => {
-  const runtime = await getRuntimeConfig()
-  return runtime?.['rule-providers']
 }
 
 export const mihomoChangeProxy = async (group: string, proxy: string): Promise<IMihomoProxy> => {
@@ -204,9 +194,9 @@ const mihomoTraffic = async (): Promise<void> => {
       if (process.platform !== 'linux') {
         tray?.setToolTip(
           '↑' +
-          `${calcTraffic(json.up)}/s`.padStart(9) +
-          '\n↓' +
-          `${calcTraffic(json.down)}/s`.padStart(9)
+            `${calcTraffic(json.up)}/s`.padStart(9) +
+            '\n↓' +
+            `${calcTraffic(json.down)}/s`.padStart(9)
         )
       }
       floatingWindow?.webContents.send('mihomoTraffic', json)

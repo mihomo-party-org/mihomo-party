@@ -56,6 +56,7 @@ async function prepareProfileWorkDir(current: string | undefined): Promise<void>
   }
   await Promise.all([
     copy('country.mmdb'),
+    copy('geoip.metadb'),
     copy('geoip.dat'),
     copy('geosite.dat'),
     copy('ASN.mmdb')
@@ -125,7 +126,7 @@ function runOverrideScript(
     log('info', '脚本执行成功')
     return newProfile
   } catch (e) {
-    log('exception', `脚本执行失败: ${e}`)
+    log('exception', `脚本执行失败：${e}`)
     return profile
   }
 }

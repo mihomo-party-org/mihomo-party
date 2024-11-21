@@ -8,9 +8,7 @@ import {
   mihomoProxies,
   mihomoProxyDelay,
   mihomoProxyProviders,
-  mihomoRunProxyProviders,
   mihomoRuleProviders,
-  mihomoRunRuleProviders,
   mihomoRules,
   mihomoUnfixedProxy,
   mihomoUpdateProxyProviders,
@@ -119,12 +117,10 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoProxies', ipcErrorWrapper(mihomoProxies))
   ipcMain.handle('mihomoGroups', ipcErrorWrapper(mihomoGroups))
   ipcMain.handle('mihomoProxyProviders', ipcErrorWrapper(mihomoProxyProviders))
-  ipcMain.handle('mihomoRunProxyProviders', ipcErrorWrapper(mihomoRunProxyProviders))
   ipcMain.handle('mihomoUpdateProxyProviders', (_e, name) =>
     ipcErrorWrapper(mihomoUpdateProxyProviders)(name)
   )
   ipcMain.handle('mihomoRuleProviders', ipcErrorWrapper(mihomoRuleProviders))
-  ipcMain.handle('mihomoRunRuleProviders', ipcErrorWrapper(mihomoRunRuleProviders))
   ipcMain.handle('mihomoUpdateRuleProviders', (_e, name) =>
     ipcErrorWrapper(mihomoUpdateRuleProviders)(name)
   )

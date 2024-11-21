@@ -241,6 +241,11 @@ const resolveMmdb = () =>
     file: 'country.mmdb',
     downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb`
   })
+const resolveMetadb = () =>
+  resolveResource({
+    file: 'geoip.metadb',
+    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb`
+  })
 const resolveGeosite = () =>
   resolveResource({
     file: 'geosite.dat',
@@ -351,6 +356,7 @@ const tasks = [
     retry: 5
   },
   { name: 'mmdb', func: resolveMmdb, retry: 5 },
+  { name: 'metadb', func: resolveMetadb, retry: 5 },
   { name: 'geosite', func: resolveGeosite, retry: 5 },
   { name: 'geoip', func: resolveGeoIP, retry: 5 },
   { name: 'asn', func: resolveASN, retry: 5 },

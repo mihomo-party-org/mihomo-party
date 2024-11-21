@@ -1,4 +1,8 @@
-import { mihomoRuleProviders, mihomoUpdateRuleProviders, mihomoRunRuleProviders } from '@renderer/utils/ipc'
+import {
+  mihomoRuleProviders,
+  mihomoUpdateRuleProviders,
+  getRuntimeConfig
+} from '@renderer/utils/ipc'
 import { getHash } from '@renderer/utils/hash'
 import Viewer from './viewer'
 import { Fragment, useEffect, useMemo, useState } from 'react'
@@ -8,6 +12,7 @@ import SettingItem from '../base/base-setting-item'
 import { Button, Chip } from '@nextui-org/react'
 import { IoMdRefresh } from 'react-icons/io'
 import { CgLoadbarDoc } from 'react-icons/cg'
+import { MdEditDocument } from 'react-icons/md'
 import dayjs from 'dayjs'
 
 const RuleProvider: React.FC = () => {
@@ -27,8 +32,8 @@ const RuleProvider: React.FC = () => {
   useEffect(() => {
     const fetchProviderPath = async (name: string) => {
       try {
-        const providers = await mihomoRunRuleProviders()
-        const provider = providers[name]
+        const providers = await getRuntimeConfig()
+        const provider = providers['rule-providers'][name]
         if (provider?.path) {
           setShowPath(provider.path)
         } else if (provider?.url) {
@@ -68,12 +73,18 @@ const RuleProvider: React.FC = () => {
 
   return (
     <SettingCard>
-      {ShowProvider && <Viewer
-        path={ShowPath}
-        type={ShowType}
-        format={ShowFormat}
-        onClose={() => { setShowProvider(false); setShowPath(''); setShowType('') }}
-      />}
+      {ShowProvider && (
+        <Viewer
+          path={ShowPath}
+          type={ShowType}
+          format={ShowFormat}
+          onClose={() => {
+            setShowProvider(false)
+            setShowPath('')
+            setShowType('')
+          }}
+        />
+      )}
       <SettingItem title="规则集合" divider>
         <Button
           size="sm"
@@ -99,17 +110,7 @@ const RuleProvider: React.FC = () => {
           >
             <div className="flex h-[32px] leading-[32px] text-foreground-500">
               <div>{dayjs(provider.updatedAt).fromNow()}</div>
-              <Button
-                isIconOnly
-                className="ml-2"
-                size="sm"
-                onPress={() => {
-                  onUpdate(provider.name, index)
-                }}
-              >
-                <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
-              </Button>
-              {provider.format !== "MrsRule" && (
+              {provider.format !== 'MrsRule' && (
                 <Button
                   isIconOnly
                   className="ml-2"
@@ -120,9 +121,23 @@ const RuleProvider: React.FC = () => {
                     setShowPath(provider.name)
                   }}
                 >
-                  <CgLoadbarDoc className={`text-lg`} />
+                  {provider.vehicleType == 'File' ? (
+                    <MdEditDocument className={`text-lg`} />
+                  ) : (
+                    <CgLoadbarDoc className={`text-lg`} />
+                  )}
                 </Button>
               )}
+              <Button
+                isIconOnly
+                className="ml-2"
+                size="sm"
+                onPress={() => {
+                  onUpdate(provider.name, index)
+                }}
+              >
+                <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
+              </Button>
             </div>
           </SettingItem>
           <SettingItem

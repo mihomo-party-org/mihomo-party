@@ -88,10 +88,10 @@ interface IMihomoConnectionDetail {
     network: 'tcp' | 'udp'
     type: string
     sourceIP: string
-    sourceGeoIP: string
+    sourceGeoIP: string[]
     sourceIPASN: string
     destinationIP: string
-    destinationGeoIP: string
+    destinationGeoIP: string[]
     destinationIPASN: string
     sourcePort: string
     destinationPort: string
@@ -181,8 +181,6 @@ interface IMihomoRuleProvider {
   type: string
   updatedAt: string
   vehicleType: string
-  url: string
-  path: string
 }
 
 interface IMihomoProxyProviders {
@@ -205,8 +203,6 @@ interface IMihomoProxyProvider {
   testUrl?: string
   updatedAt?: string
   vehicleType: string
-  url: string
-  path: string
 }
 
 interface ISysProxyConfig {

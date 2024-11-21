@@ -26,20 +26,41 @@ const CopyableSettingItem: React.FC<{
     { key: 'raw', text: displayName || (Array.isArray(value) ? value.join(', ') : value) },
     ...(Array.isArray(value) && value.length === prefix.length
       ? prefix.map((p, i) => value[i] ? ({
-        key: `${p},${value[i]}${suffix}`,
-        text: `${p},${value[i]}${suffix}`
+        key: `${p},${p === 'IP-ASN' ? value[i].split(' ')[0] : value[i]}${suffix}`,
+        text: `${p},${p === 'IP-ASN' ? value[i].split(' ')[0] : value[i]}${suffix}`
       }) : null).filter(Boolean)
       : prefix.flatMap(p =>
-        (p === 'DOMAIN-SUFFIX'
-          ? getSubDomains(Array.isArray(value) ? value[0] : value)
-          : p === 'IP-ASN'
-            ? [(Array.isArray(value) ? value[0] : value).split(' ')[0]]
-            : [Array.isArray(value) ? value[0] : value]
-        ).map(v => ({
-          key: `${p},${v}${suffix}`,
-          text: `${p},${v}${suffix}`
-        }))
-      ))
+      (Array.isArray(value)
+        ? value.map(v => p === 'DOMAIN-SUFFIX'
+          ? getSubDomains(v).map(subV => ({
+            key: `${p},${subV}${suffix}`,
+            text: `${p},${subV}${suffix}`
+          }))
+          : p === 'IP-ASN' || p === 'SRC-IP-ASN'
+            ? [{
+              key: `${p},${v.split(' ')[0]}${suffix}`,
+              text: `${p},${v.split(' ')[0]}${suffix}`
+            }]
+            : [{
+              key: `${p},${v}${suffix}`,
+              text: `${p},${v}${suffix}`
+            }]
+        ).flat()
+        : p === 'DOMAIN-SUFFIX'
+          ? getSubDomains(value).map(v => ({
+            key: `${p},${v}${suffix}`,
+            text: `${p},${v}${suffix}`
+          }))
+          : p === 'IP-ASN' || p === 'SRC-IP-ASN'
+            ? [{
+              key: `${p},${value.split(' ')[0]}${suffix}`,
+              text: `${p},${value.split(' ')[0]}${suffix}`
+            }]
+            : [{
+              key: `${p},${value}${suffix}`,
+              text: `${p},${value}${suffix}`
+            }]
+      )))
   ]
 
   return (
@@ -137,7 +158,7 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
               suffix='/32'
             />
           )}
-          {connection.metadata.sourceGeoIP && (
+          {connection.metadata.sourceGeoIP && connection.metadata.sourceGeoIP.length > 0 && (
             <CopyableSettingItem
               title='来源GeoIP'
               value={connection.metadata.sourceGeoIP}
@@ -159,7 +180,7 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
               suffix='/32'
             />
           )}
-          {connection.metadata.destinationGeoIP && (
+          {connection.metadata.destinationGeoIP && connection.metadata.destinationGeoIP.length > 0 && (
             <CopyableSettingItem
               title='目标GeoIP'
               value={connection.metadata.destinationGeoIP}
