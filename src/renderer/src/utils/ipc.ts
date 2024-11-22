@@ -383,6 +383,10 @@ export async function openDevTools(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('openDevTools'))
 }
 
+export async function resetAppConfig(): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('resetAppConfig'))
+}
+
 export async function createHeapSnapshot(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('createHeapSnapshot'))
 }

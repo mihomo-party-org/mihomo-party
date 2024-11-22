@@ -140,10 +140,10 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
         res = await axios.get(item.url, {
           proxy: newItem.useProxy
             ? {
-              protocol: 'http',
-              host: '127.0.0.1',
-              port: mixedPort
-            }
+                protocol: 'http',
+                host: '127.0.0.1',
+                port: mixedPort
+              }
             : false,
           headers: {
             'User-Agent': userAgent || 'clash.meta'
@@ -222,7 +222,7 @@ function parseSubinfo(str: string): ISubscriptionUserInfo {
 }
 
 function isAbsolutePath(path: string): boolean {
-  return path.startsWith('/') || /^[a-zA-Z]:\\/.test(path);
+  return path.startsWith('/') || /^[a-zA-Z]:\\/.test(path)
 }
 
 export async function getFileStr(path: string): Promise<string> {

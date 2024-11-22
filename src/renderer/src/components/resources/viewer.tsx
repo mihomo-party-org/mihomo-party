@@ -13,7 +13,7 @@ interface Props {
 const Viewer: React.FC<Props> = (props) => {
   const { type, path, format, onClose } = props
   const [currData, setCurrData] = useState('')
-  const language: Language = (!format || format === 'YamlRule') ? 'yaml' : 'text'
+  const language: Language = !format || format === 'YamlRule' ? 'yaml' : 'text'
 
   const getContent = async (): Promise<void> => {
     setCurrData(await getFileStr(path))
@@ -36,13 +36,18 @@ const Viewer: React.FC<Props> = (props) => {
       <ModalContent className="h-full w-[calc(100%-100px)]">
         <ModalHeader className="flex pb-0 app-drag">Provider 内容</ModalHeader>
         <ModalBody className="h-full">
-          <BaseEditor language={language} value={currData} readOnly={type != 'File'} onChange={(value) => setCurrData(value)}/>
+          <BaseEditor
+            language={language}
+            value={currData}
+            readOnly={type != 'File'}
+            onChange={(value) => setCurrData(value)}
+          />
         </ModalBody>
         <ModalFooter className="pt-0">
           <Button size="sm" variant="light" onPress={onClose}>
             关闭
           </Button>
-          {type == 'File' &&
+          {type == 'File' && (
             <Button
               size="sm"
               color="primary"
@@ -52,7 +57,8 @@ const Viewer: React.FC<Props> = (props) => {
               }}
             >
               保存
-            </Button>}
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>
