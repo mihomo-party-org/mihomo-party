@@ -1,7 +1,13 @@
 import { Button, Tooltip } from '@nextui-org/react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { checkUpdate, createHeapSnapshot, quitApp, quitWithoutCore } from '@renderer/utils/ipc'
+import {
+  checkUpdate,
+  createHeapSnapshot,
+  quitApp,
+  quitWithoutCore,
+  resetAppConfig
+} from '@renderer/utils/ipc'
 import { useState } from 'react'
 import UpdaterModal from '../updater/updater-modal'
 import { version } from '@renderer/utils/init'
@@ -52,6 +58,21 @@ const Actions: React.FC = () => {
             }}
           >
             检查更新
+          </Button>
+        </SettingItem>
+        <SettingItem
+          title="重置软件"
+          actions={
+            <Tooltip content="删除所有配置，将软件恢复初始状态">
+              <Button isIconOnly size="sm" variant="light">
+                <IoIosHelpCircle className="text-lg" />
+              </Button>
+            </Tooltip>
+          }
+          divider
+        >
+          <Button size="sm" onPress={resetAppConfig}>
+            重置软件
           </Button>
         </SettingItem>
         <SettingItem

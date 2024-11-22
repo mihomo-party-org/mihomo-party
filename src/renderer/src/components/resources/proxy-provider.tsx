@@ -22,7 +22,7 @@ const ProxyProvider: React.FC = () => {
   const [ShowType, setShowType] = useState('')
 
   useEffect(() => {
-    const fetchProviderPath = async (name: string) => {
+    const fetchProviderPath = async (name: string): Promise<void> => {
       try {
         const providers = await getRuntimeConfig()
         const provider = providers['proxy-providers'][name]

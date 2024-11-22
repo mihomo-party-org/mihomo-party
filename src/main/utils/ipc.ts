@@ -61,6 +61,7 @@ import {
   openFile,
   openUWPTool,
   readTextFile,
+  resetAppConfig,
   setNativeTheme,
   setupFirewall
 } from '../sys/misc'
@@ -246,6 +247,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('alert', (_e, msg) => {
     dialog.showErrorBox('Mihomo Party', msg)
   })
+  ipcMain.handle('resetAppConfig', resetAppConfig)
   ipcMain.handle('relaunchApp', () => {
     app.relaunch()
     app.quit()

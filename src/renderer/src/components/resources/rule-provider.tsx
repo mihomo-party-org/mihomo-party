@@ -30,7 +30,7 @@ const RuleProvider: React.FC = () => {
   const [updating, setUpdating] = useState(Array(providers.length).fill(false))
 
   useEffect(() => {
-    const fetchProviderPath = async (name: string) => {
+    const fetchProviderPath = async (name: string): Promise<void> => {
       try {
         const providers = await getRuntimeConfig()
         const provider = providers['rule-providers'][name]

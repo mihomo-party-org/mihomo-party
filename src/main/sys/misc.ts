@@ -1,9 +1,10 @@
-import { exec, execFile, execSync } from 'child_process'
-import { dialog, nativeTheme, shell } from 'electron'
+import { exec, execFile, execSync, spawn } from 'child_process'
+import { app, dialog, nativeTheme, shell } from 'electron'
 import { readFile } from 'fs/promises'
 import path from 'path'
 import { promisify } from 'util'
 import {
+  dataDir,
   exePath,
   mihomoCorePath,
   overridePath,
@@ -111,4 +112,34 @@ export function createElevateTask(): void {
   execSync(
     `%SystemRoot%\\System32\\schtasks.exe /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`
   )
+}
+
+export function resetAppConfig(): void {
+  if (process.platform === 'win32') {
+    spawn(
+      'cmd',
+      [
+        '/C',
+        `"timeout /t 2 /nobreak >nul && rmdir /s /q "${dataDir()}" && start "" "${exePath()}""`
+      ],
+      {
+        shell: true,
+        detached: true
+      }
+    ).unref()
+  } else {
+    const script = `while kill -0 ${process.pid} 2>/dev/null; do
+  sleep 0.1
+done
+  rm -rf '${dataDir()}'
+  ${process.argv.join(' ')} & disown
+exit
+`
+    spawn('sh', ['-c', `"${script}"`], {
+      shell: true,
+      detached: true,
+      stdio: 'ignore'
+    })
+  }
+  app.quit()
 }
