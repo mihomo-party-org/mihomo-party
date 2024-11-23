@@ -26,72 +26,65 @@ const CopyableSettingItem: React.FC<{
   value: string | string[]
   displayName?: string
   prefix?: string[]
-  suffix?: string
-}> = ({ title, value, displayName, prefix = [], suffix = '' }) => {
+}> = ({ title, value, displayName, prefix = [] }) => {
   const getSubDomains = (domain: string): string[] =>
     domain.split('.').length <= 2
       ? [domain]
       : domain
-          .split('.')
-          .map((_, i, parts) => parts.slice(i).join('.'))
-          .slice(0, -1)
+        .split('.')
+        .map((_, i, parts) => parts.slice(i).join('.'))
+        .slice(0, -1)
+  const isIPv6 = (ip: string) => ip.includes(':')
 
   const menuItems = [
     { key: 'raw', text: displayName || (Array.isArray(value) ? value.join(', ') : value) },
-    ...(Array.isArray(value) && value.length === prefix.length
-      ? prefix
-          .map((p, i) =>
-            value[i]
-              ? {
-                  key: `${p},${p === 'IP-ASN' ? value[i].split(' ')[0] : value[i]}${suffix}`,
-                  text: `${p},${p === 'IP-ASN' ? value[i].split(' ')[0] : value[i]}${suffix}`
-                }
-              : null
-          )
-          .filter(Boolean)
-      : prefix.flatMap((p) =>
-          Array.isArray(value)
-            ? value
-                .map((v) =>
-                  p === 'DOMAIN-SUFFIX'
-                    ? getSubDomains(v).map((subV) => ({
-                        key: `${p},${subV}${suffix}`,
-                        text: `${p},${subV}${suffix}`
-                      }))
-                    : p === 'IP-ASN' || p === 'SRC-IP-ASN'
-                      ? [
-                          {
-                            key: `${p},${v.split(' ')[0]}${suffix}`,
-                            text: `${p},${v.split(' ')[0]}${suffix}`
-                          }
-                        ]
-                      : [
-                          {
-                            key: `${p},${v}${suffix}`,
-                            text: `${p},${v}${suffix}`
-                          }
-                        ]
-                )
-                .flat()
-            : p === 'DOMAIN-SUFFIX'
-              ? getSubDomains(value).map((v) => ({
-                  key: `${p},${v}${suffix}`,
-                  text: `${p},${v}${suffix}`
-                }))
-              : p === 'IP-ASN' || p === 'SRC-IP-ASN'
-                ? [
-                    {
-                      key: `${p},${value.split(' ')[0]}${suffix}`,
-                      text: `${p},${value.split(' ')[0]}${suffix}`
-                    }
-                  ]
-                : [
-                    {
-                      key: `${p},${value}${suffix}`,
-                      text: `${p},${value}${suffix}`
-                    }
-                  ]
-        ))
+    ...(Array.isArray(value)
+      ? value.map((v, i) => {
+          const p = prefix[i]
+          if (!p || !v) return null
+  
+          if (p === 'DOMAIN-SUFFIX') {
+            return getSubDomains(v).map((subV) => ({
+              key: `${p},${subV}`,
+              text: `${p},${subV}`
+            }))
+          }
+  
+          if (p === 'IP-ASN' || p === 'SRC-IP-ASN') {
+            return {
+              key: `${p},${v.split(' ')[0]}`,
+              text: `${p},${v.split(' ')[0]}`
+            }
+          }
+  
+          const suffix = (p === 'IP-CIDR' || p === 'SRC-IP-CIDR') ? (isIPv6(v) ? '/128' : '/32') : ''
+          return {
+            key: `${p},${v}${suffix}`,
+            text: `${p},${v}${suffix}`
+          }
+        }).filter(Boolean).flat()
+      : prefix.map(p => {
+          const v = value as string
+          if (p === 'DOMAIN-SUFFIX') {
+            return getSubDomains(v).map((subV) => ({
+              key: `${p},${subV}`,
+              text: `${p},${subV}`
+            }))
+          }
+  
+          if (p === 'IP-ASN' || p === 'SRC-IP-ASN') {
+            return {
+              key: `${p},${v.split(' ')[0]}`,
+              text: `${p},${v.split(' ')[0]}`
+            }
+          }
+  
+          const suffix = (p === 'IP-CIDR' || p === 'SRC-IP-CIDR') ? (isIPv6(v) ? '/128' : '/32') : ''
+          return {
+            key: `${p},${v}${suffix}`,
+            text: `${p},${v}${suffix}`
+          }
+        }).flat())
   ]
 
   return (
@@ -175,10 +168,10 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
               title="进程名"
               value={[
                 connection.metadata.process,
-                connection.metadata.uid ? connection.metadata.uid.toString() : ''
+                ...(connection.metadata.uid ? [connection.metadata.uid.toString()] : [])
               ]}
               displayName={`${connection.metadata.process}${connection.metadata.uid ? `(${connection.metadata.uid})` : ''}`}
-              prefix={['PROCESS-NAME', 'UID']}
+              prefix={['PROCESS-NAME', ...(connection.metadata.uid ? ['UID'] : [])]}
             />
           )}
           {connection.metadata.processPath && (
@@ -193,7 +186,6 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
               title="来源IP"
               value={connection.metadata.sourceIP}
               prefix={['SRC-IP-CIDR']}
-              suffix="/32"
             />
           )}
           {connection.metadata.sourceGeoIP && connection.metadata.sourceGeoIP.length > 0 && (
@@ -215,7 +207,6 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
               title="目标IP"
               value={connection.metadata.destinationIP}
               prefix={['IP-CIDR']}
-              suffix="/32"
             />
           )}
           {connection.metadata.destinationGeoIP &&
