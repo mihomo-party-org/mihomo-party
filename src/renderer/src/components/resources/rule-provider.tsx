@@ -113,6 +113,7 @@ const RuleProvider: React.FC = () => {
               {provider.format !== 'MrsRule' && (
                 <Button
                   isIconOnly
+                  title={provider.vehicleType == 'File' ? '编辑' : '查看'}
                   className="ml-2"
                   size="sm"
                   onPress={() => {
@@ -130,6 +131,7 @@ const RuleProvider: React.FC = () => {
               )}
               <Button
                 isIconOnly
+                title="更新"
                 className="ml-2"
                 size="sm"
                 onPress={() => {

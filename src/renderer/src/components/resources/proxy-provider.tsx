@@ -9,7 +9,7 @@ import useSWR from 'swr'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
 import { Button, Chip } from '@nextui-org/react'
-import { IoMdRefresh, IoMdEye } from 'react-icons/io'
+import { IoMdRefresh } from 'react-icons/io'
 import { CgLoadbarDoc } from 'react-icons/cg'
 import { MdEditDocument } from 'react-icons/md'
 import dayjs from 'dayjs'
@@ -116,11 +116,12 @@ const ProxyProvider: React.FC = () => {
           >
             <div className="flex h-[32px] leading-[32px] text-foreground-500">
               <div>{dayjs(provider.updatedAt).fromNow()}</div>
-              <Button isIconOnly className="ml-2" size="sm">
+              {/* <Button isIconOnly className="ml-2" size="sm">
                 <IoMdEye className="text-lg" />
-              </Button>
+              </Button> */}
               <Button
                 isIconOnly
+                title={provider.vehicleType == 'File' ? '编辑' : '查看'}
                 className="ml-2"
                 size="sm"
                 onPress={() => {
@@ -136,6 +137,7 @@ const ProxyProvider: React.FC = () => {
               </Button>
               <Button
                 isIconOnly
+                title="更新"
                 className="ml-2"
                 size="sm"
                 onPress={() => {
