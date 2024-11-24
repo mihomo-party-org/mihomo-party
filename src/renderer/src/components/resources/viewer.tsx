@@ -8,10 +8,11 @@ interface Props {
   onClose: () => void
   path: string
   type: string
+  title: string
   format?: string
 }
 const Viewer: React.FC<Props> = (props) => {
-  const { type, path, format, onClose } = props
+  const { type, path, title, format, onClose } = props
   const [currData, setCurrData] = useState('')
   const language: Language = !format || format === 'YamlRule' ? 'yaml' : 'text'
 
@@ -34,7 +35,7 @@ const Viewer: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="h-full w-[calc(100%-100px)]">
-        <ModalHeader className="flex pb-0 app-drag">Provider 内容</ModalHeader>
+        <ModalHeader className="flex pb-0 app-drag">{title}</ModalHeader>
         <ModalBody className="h-full">
           <BaseEditor
             language={language}
