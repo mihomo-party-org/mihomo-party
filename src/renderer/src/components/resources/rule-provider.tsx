@@ -16,10 +16,33 @@ import { MdEditDocument } from 'react-icons/md'
 import dayjs from 'dayjs'
 
 const RuleProvider: React.FC = () => {
-  const [ShowProvider, setShowProvider] = useState(false)
-  const [ShowPath, setShowPath] = useState('')
-  const [ShowType, setShowType] = useState('')
-  const [ShowFormat, setShowFormat] = useState('')
+  const [showDetails, setShowDetails] = useState({
+    show: false,
+    path: '',
+    type: '',
+    title: '',
+    format: ''
+  })
+  useEffect(() => {
+    if (showDetails.title) {
+      const fetchProviderPath = async (name: string): Promise<void> => {
+        try {
+          const providers= await getRuntimeConfig()
+          const provider = providers['rule-providers'][name]
+          if (provider) {
+            setShowDetails((prev) => ({
+              ...prev,
+              show: true,
+              path: provider?.path || `rules/${getHash(provider?.url)}`
+            }))
+          }
+        } catch {
+          setShowDetails((prev) => ({ ...prev, path: '' }))
+        }
+      }
+      fetchProviderPath(showDetails.title)
+    }
+  }, [showDetails.title])
 
   const { data, mutate } = useSWR('mihomoRuleProviders', mihomoRuleProviders)
   const providers = useMemo(() => {
@@ -28,26 +51,6 @@ const RuleProvider: React.FC = () => {
     return Object.keys(data.providers).map((key) => data.providers[key])
   }, [data])
   const [updating, setUpdating] = useState(Array(providers.length).fill(false))
-
-  useEffect(() => {
-    const fetchProviderPath = async (name: string): Promise<void> => {
-      try {
-        const providers = await getRuntimeConfig()
-        const provider = providers['rule-providers'][name]
-        if (provider?.path) {
-          setShowPath(provider.path)
-        } else if (provider?.url) {
-          setShowPath(`rules/` + getHash(provider.url))
-        }
-        setShowProvider(true)
-      } catch (error) {
-        setShowPath('')
-      }
-    }
-    if (ShowPath != '') {
-      fetchProviderPath(ShowPath)
-    }
-  }, [ShowProvider, ShowPath])
 
   const onUpdate = async (name: string, index: number): Promise<void> => {
     setUpdating((prev) => {
@@ -73,16 +76,13 @@ const RuleProvider: React.FC = () => {
 
   return (
     <SettingCard>
-      {ShowProvider && (
+      {showDetails.show && (
         <Viewer
-          path={ShowPath}
-          type={ShowType}
-          format={ShowFormat}
-          onClose={() => {
-            setShowProvider(false)
-            setShowPath('')
-            setShowType('')
-          }}
+          path={showDetails.path}
+          type={showDetails.type}
+          title={showDetails.title}
+          format={showDetails.format}
+          onClose={() => setShowDetails({ show: false, path: '', type: '', title: '', format: '' })}
         />
       )}
       <SettingItem title="规则集合" divider>
@@ -117,9 +117,13 @@ const RuleProvider: React.FC = () => {
                   className="ml-2"
                   size="sm"
                   onPress={() => {
-                    setShowType(provider.vehicleType)
-                    setShowFormat(provider.format)
-                    setShowPath(provider.name)
+                    setShowDetails({
+                      show: false,
+                      path: provider.name,
+                      type: provider.vehicleType,
+                      title: provider.name,
+                      format: provider.format
+                    })
                   }}
                 >
                   {provider.vehicleType == 'File' ? (

@@ -17,31 +17,32 @@ import { calcTraffic } from '@renderer/utils/calc'
 import { getHash } from '@renderer/utils/hash'
 
 const ProxyProvider: React.FC = () => {
-  const [ShowProvider, setShowProvider] = useState(false)
-  const [ShowPath, setShowPath] = useState('')
-  const [ShowType, setShowType] = useState('')
-
+  const [showDetails, setShowDetails] = useState({
+    show: false,
+    path: '',
+    type: '',
+    title: ''
+  })
   useEffect(() => {
-    const fetchProviderPath = async (name: string): Promise<void> => {
-      try {
-        const providers = await getRuntimeConfig()
-        const provider = providers['proxy-providers'][name]
-        console.log(provider)
-        if (provider?.path) {
-          setShowPath(provider.path)
-        } else if (provider?.url) {
-          setShowPath(`proxies/` + getHash(provider.url))
+    if (showDetails.title) {
+      const fetchProviderPath = async (name: string): Promise<void> => {
+        try {
+          const providers= await getRuntimeConfig()
+          const provider = providers['proxy-providers'][name]
+          if (provider) {
+            setShowDetails((prev) => ({
+              ...prev,
+              show: true,
+              path: provider?.path || `proxies/${getHash(provider?.url)}`
+            }))
+          }
+        } catch {
+          setShowDetails((prev) => ({ ...prev, path: '' }))
         }
-        setShowProvider(true)
-      } catch (error) {
-        setShowPath('')
       }
+      fetchProviderPath(showDetails.title)
     }
-
-    if (ShowPath != '') {
-      fetchProviderPath(ShowPath)
-    }
-  }, [ShowProvider, ShowPath])
+  }, [showDetails.title])
 
   const { data, mutate } = useSWR('mihomoProxyProviders', mihomoProxyProviders)
   const providers = useMemo(() => {
@@ -79,15 +80,12 @@ const ProxyProvider: React.FC = () => {
 
   return (
     <SettingCard>
-      {ShowProvider && (
+      {showDetails.show && (
         <Viewer
-          onClose={() => {
-            setShowProvider(false)
-            setShowPath('')
-            setShowType('')
-          }}
-          path={ShowPath}
-          type={ShowType}
+          path={showDetails.path}
+          type={showDetails.type}
+          title={showDetails.title}
+          onClose={() => setShowDetails({ show: false, path: '', type: '', title: '' })}
         />
       )}
       <SettingItem title="代理集合" divider>
@@ -125,8 +123,12 @@ const ProxyProvider: React.FC = () => {
                 className="ml-2"
                 size="sm"
                 onPress={() => {
-                  setShowType(provider.vehicleType)
-                  setShowPath(provider.name)
+                  setShowDetails({
+                    show: false,
+                    path: provider.name,
+                    type: provider.vehicleType,
+                    title: provider.name
+                  })
                 }}
               >
                 {provider.vehicleType == 'File' ? (
