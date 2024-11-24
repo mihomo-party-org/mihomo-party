@@ -1,5 +1,5 @@
 import { getControledMihomoConfig } from './controledMihomo'
-import { mihomoProfileWorkDir, profileConfigPath, profilePath } from '../utils/dirs'
+import { mihomoProfileWorkDir, mihomoWorkDir, profileConfigPath, profilePath } from '../utils/dirs'
 import { addProfileUpdater } from '../core/profileUpdater'
 import { readFile, rm, writeFile } from 'fs/promises'
 import { restartCore } from '../core/manager'
@@ -9,6 +9,7 @@ import axios, { AxiosResponse } from 'axios'
 import yaml from 'yaml'
 import { defaultProfile } from '../utils/template'
 import { subStorePort } from '../resolve/server'
+import { join } from 'path'
 
 let profileConfig: IProfileConfig // profile.yaml
 
@@ -226,17 +227,28 @@ function isAbsolutePath(path: string): boolean {
 }
 
 export async function getFileStr(path: string): Promise<string> {
+  const { diffWorkDir = false } = await getAppConfig()
+  const { current } = await getProfileConfig()
   if (isAbsolutePath(path)) {
     return await readFile(path, 'utf-8')
   } else {
-    return await readFile(mihomoProfileWorkDir(path), 'utf-8')
+    return await readFile(
+      join(diffWorkDir ? mihomoProfileWorkDir(current) : mihomoWorkDir(), path),
+      'utf-8'
+    )
   }
 }
 
 export async function setFileStr(path: string, content: string): Promise<void> {
+  const { diffWorkDir = false } = await getAppConfig()
+  const { current } = await getProfileConfig()
   if (isAbsolutePath(path)) {
     await writeFile(path, content, 'utf-8')
   } else {
-    await writeFile(mihomoProfileWorkDir(path), content, 'utf-8')
+    await writeFile(
+      join(diffWorkDir ? mihomoProfileWorkDir(current) : mihomoWorkDir(), path),
+      content,
+      'utf-8'
+    )
   }
 }
