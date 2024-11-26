@@ -47,11 +47,16 @@ const ProxyProvider: React.FC = () => {
   const { data, mutate } = useSWR('mihomoProxyProviders', mihomoProxyProviders)
   const providers = useMemo(() => {
     if (!data) return []
-    if (!data.providers) return []
-    return Object.keys(data.providers)
-      .map((key) => data.providers[key])
-      .filter((provider) => {
-        return 'subscriptionInfo' in provider
+    return Object.values(data.providers)
+      .filter(provider => 'subscriptionInfo' in provider)
+      .sort((a, b) => {
+        if (a.vehicleType === 'File' && b.vehicleType !== 'File') {
+          return -1
+        }
+        if (a.vehicleType !== 'File' && b.vehicleType === 'File') {
+          return 1
+        }
+        return 0
       })
   }, [data])
   const [updating, setUpdating] = useState(Array(providers.length).fill(false))
