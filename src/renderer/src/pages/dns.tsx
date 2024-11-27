@@ -28,10 +28,11 @@ const DNS: React.FC = () => {
     'use-hosts': useHosts = false,
     'use-system-hosts': useSystemHosts = false,
     'respect-rules': respectRules = false,
-    nameserver = ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query'],
+    'default-nameserver': defaultNameserver = ['tls://223.5.5.5'],
+    nameserver = ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'],
     'proxy-server-nameserver': proxyServerNameserver = [
-      'https://120.53.53.53/dns-query',
-      'https://223.5.5.5/dns-query'
+      'https://doh.pub/dns-query',
+      'https://dns.alidns.com/dns-query'
     ],
     'direct-nameserver': directNameserver = []
   } = dns || {}
@@ -44,6 +45,7 @@ const DNS: React.FC = () => {
     fakeIPFilter,
     useSystemHosts,
     respectRules,
+    defaultNameserver,
     nameserver,
     proxyServerNameserver,
     directNameserver,
@@ -149,11 +151,12 @@ const DNS: React.FC = () => {
                 'use-hosts': values.useHosts,
                 'use-system-hosts': values.useSystemHosts,
                 'respect-rules': values.respectRules,
+                'default-nameserver': values.defaultNameserver,
                 nameserver: values.nameserver,
                 'proxy-server-nameserver': values.proxyServerNameserver,
                 'direct-nameserver': values.directNameserver,
-                fallback: [],
-                'fallback-filter': {}
+                fallback: undefined,
+                'fallback-filter': undefined
               }
               if (values.useNameserverPolicy) {
                 dnsConfig['nameserver-policy'] = Object.fromEntries(
@@ -223,18 +226,23 @@ const DNS: React.FC = () => {
         </SettingItem>
 
         <div className="flex flex-col items-stretch">
-          <h3>节点域名解析</h3>
-          {renderListInputs('proxyServerNameserver', '例：tls://223.5.5.5')}
+          <h3>DNS 服务器域名解析</h3>
+          {renderListInputs('defaultNameserver', '例：223.5.5.5，仅支持 IP')}
         </div>
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
-          <h3>DNS 服务器</h3>
-          {renderListInputs('nameserver', '例：tls://223.5.5.5')}
+          <h3>代理服务器域名解析</h3>
+          {renderListInputs('proxyServerNameserver', '例：tls://dns.alidns.com')}
         </div>
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
-          <h3>直连 DNS 服务器</h3>
-          {renderListInputs('directNameserver', '例：tls://223.5.5.5')}
+          <h3>默认解析服务器</h3>
+          {renderListInputs('nameserver', '例：tls://dns.alidns.com')}
+        </div>
+        <Divider className="my-2" />
+        <div className="flex flex-col items-stretch">
+          <h3>直连解析服务器</h3>
+          {renderListInputs('directNameserver', '例：tls://dns.alidns.com')}
         </div>
         <Divider className="my-2" />
         <SettingItem title="覆盖DNS策略" divider>
