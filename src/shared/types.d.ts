@@ -259,6 +259,7 @@ interface IAppConfig {
   siderOrder: string[]
   siderWidth: number
   appTheme: AppTheme
+  appScale: number
   customTheme?: string
   autoCheckUpdate: boolean
   silentStart: boolean

@@ -28,7 +28,7 @@ import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
 import ResourceCard from '@renderer/components/sider/resource-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { applyTheme, setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
+import { applyTheme, openDevTools, quitApp, setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
 import SubStoreCard from '@renderer/components/sider/substore-card'
@@ -37,6 +37,7 @@ import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
 
 let navigate: NavigateFunction
+let F12Count = 0
 
 const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -59,7 +60,8 @@ const App: React.FC = () => {
       'sniff',
       'log',
       'substore'
-    ]
+    ],
+    appScale = 1
   } = appConfig || {}
   const narrowWidth = platform === 'darwin' ? 70 : 60
   const [order, setOrder] = useState(siderOrder)
@@ -72,6 +74,7 @@ const App: React.FC = () => {
   navigate = useNavigate()
   const location = useLocation()
   const page = useRoutes(routes)
+  const [scale, setScale] = useState(appScale)
   const setTitlebar = (): void => {
     if (!useWindowFrame) {
       const options = { height: 48 } as TitleBarOverlayOptions
@@ -98,6 +101,10 @@ const App: React.FC = () => {
   }, [siderWidthValue, resizing])
 
   useEffect(() => {
+    setScale(appScale)
+  }, [appScale])
+
+  useEffect(() => {
     const tourShown = window.localStorage.getItem('tourShown')
     if (!tourShown) {
       window.localStorage.setItem('tourShown', 'true')
@@ -120,6 +127,73 @@ const App: React.FC = () => {
   useEffect(() => {
     window.addEventListener('mouseup', onResizeEnd)
     return (): void => window.removeEventListener('mouseup', onResizeEnd)
+  }, [])
+
+  useEffect(() => {
+    const SCALE_STEP = 0.1
+    const SCALE_MIN = 0.5
+    const SCALE_MAX = 2.0
+    const DEFAULT_SCALE = 1
+
+    const scaleUp = (): void => {
+      setScale((prev) => {
+        const newScale = Math.min(SCALE_MAX, prev + SCALE_STEP)
+        patchAppConfig({ appScale: newScale })
+        return newScale
+      })
+    }
+
+    const scaleDown = (): void => {
+      setScale((prev) => {
+        const newScale = Math.max(SCALE_MIN, prev - SCALE_STEP)
+        patchAppConfig({ appScale: newScale })
+        return newScale
+      })
+    }
+
+    const resetScale = (): void => {
+      setScale(DEFAULT_SCALE)
+      patchAppConfig({ appScale: DEFAULT_SCALE })
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      console.log('Key pressed:', e.key, 'Ctrl:', e.ctrlKey)
+      if (platform !== 'darwin' && e.ctrlKey && e.key === 'q') {
+        e.preventDefault()
+        quitApp()
+      }
+      if (platform === 'darwin' && e.metaKey && e.key === 'q') {
+        e.preventDefault()
+        quitApp()
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        window.close()
+      }
+      if (e.key === 'F12') {
+        e.preventDefault()
+        F12Count++
+        if (F12Count >= 5) {
+          openDevTools()
+          F12Count = 0
+        }
+      }
+      if (e.ctrlKey) {
+        if (e.key === '-' || e.key === '_') {
+          e.preventDefault()
+          scaleDown()
+        } else if (e.key === '=' || e.key === '+') {
+          e.preventDefault()
+          scaleUp()
+        } else if (e.key === '0') {
+          e.preventDefault()
+          resetScale()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
   const onResizeEnd = (): void => {
@@ -180,6 +254,12 @@ const App: React.FC = () => {
 
   return (
     <div
+      style={{
+        width: `${100 / scale}vw`,
+        height: `${100 / scale}vh`,
+        transform: `scale(${scale})`,
+        transformOrigin: '0 0',
+      }}
       onMouseMove={(e) => {
         if (!resizing) return
         if (e.clientX <= 150) {
@@ -192,7 +272,7 @@ const App: React.FC = () => {
           setSiderWidthValue(e.clientX)
         }
       }}
-      className={`w-full h-[100vh] flex ${resizing ? 'cursor-ew-resize' : ''}`}
+      className={`flex overflow-hidden ${resizing ? 'cursor-ew-resize' : ''}`}
     >
       {siderWidthValue === narrowWidth ? (
         <div style={{ width: `${narrowWidth}px` }} className="side h-full">
@@ -287,8 +367,10 @@ const App: React.FC = () => {
       />
       <Divider orientation="vertical" />
       <div
-        style={{ width: `calc(100% - ${siderWidthValue + 1}px)` }}
-        className="main grow h-full overflow-y-auto"
+        style={{
+          width: `calc(100% - ${siderWidthValue + 1}px)`
+        }}
+        className="main grow min-h-0"
       >
         {page}
       </div>

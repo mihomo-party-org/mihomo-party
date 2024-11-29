@@ -36,7 +36,7 @@ const Rules: React.FC = () => {
         </div>
         <Divider />
       </div>
-      <div className="h-[calc(100vh-100px)] mt-[1px]">
+      <div className="h-[calc(100%-100px)] mt-[1px]">
         <Virtuoso
           data={filteredRules}
           itemContent={(i, rule) => (
