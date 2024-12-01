@@ -157,7 +157,6 @@ const App: React.FC = () => {
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      console.log('Key pressed:', e.key, 'Ctrl:', e.ctrlKey)
       if (platform !== 'darwin' && e.ctrlKey && e.key === 'q') {
         e.preventDefault()
         quitApp()
@@ -179,10 +178,11 @@ const App: React.FC = () => {
         }
       }
       if (e.ctrlKey) {
-        if (e.key === '-' || e.key === '_') {
+        // "-" Not working Here, key can't be detected
+        if (e.key === '-' || e.key === '_' || e.key === '[') {
           e.preventDefault()
           scaleDown()
-        } else if (e.key === '=' || e.key === '+') {
+        } else if (e.key === '=' || e.key === '+' || e.key === ']') {
           e.preventDefault()
           scaleUp()
         } else if (e.key === '0') {
