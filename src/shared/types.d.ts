@@ -353,6 +353,8 @@ interface IMihomoSnifferConfig {
   'force-dns-mapping'?: boolean
   'force-domain'?: string[]
   'skip-domain'?: string[]
+  'skip-dst-address'?: string[]
+  'skip-src-address'?: string[]
   sniff?: {
     HTTP?: {
       ports: (number | string)[]
