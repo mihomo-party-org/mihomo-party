@@ -2,6 +2,7 @@ import { Button, Card, CardBody, CardFooter, Tooltip } from '@nextui-org/react'
 import { FaCircleArrowDown, FaCircleArrowUp } from 'react-icons/fa6'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic } from '@renderer/utils/calc'
+import { mihomoConfig } from '@renderer/utils/ipc'
 import React, { useEffect, useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -30,6 +31,7 @@ const ConnCard: React.FC<Props> = (props) => {
 
   const [upload, setUpload] = useState(0)
   const [download, setDownload] = useState(0)
+  const [interfaceName, setInterfaceName] = useState('')
   const {
     attributes,
     listeners,
@@ -66,6 +68,7 @@ const ConnCard: React.FC<Props> = (props) => {
     window.electron.ipcRenderer.on('mihomoTraffic', async (_e, info: IMihomoTrafficInfo) => {
       setUpload(info.up)
       setDownload(info.down)
+      mihomoConfig().then(config => setInterfaceName(config['interface-name']));
       const data = series
       data.shift()
       data.push(info.up + info.down)
@@ -159,11 +162,12 @@ const ConnCard: React.FC<Props> = (props) => {
               </div>
             </CardBody>
             <CardFooter className="pt-1">
-              <h3
-                className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
+              <div
+                className={`flex justify-between items-center w-full text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
               >
-                连接
-              </h3>
+                <h3>连接</h3>
+                <h3 className="truncate max-w-[65%]">{interfaceName}</h3>
+              </div>
             </CardFooter>
           </Card>
           <ResponsiveContainer
@@ -222,8 +226,9 @@ const ConnCard: React.FC<Props> = (props) => {
             </h3>
           </CardFooter>
         </Card>
-      )}
-    </div>
+      )
+      }
+    </div >
   )
 }
 

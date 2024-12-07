@@ -69,63 +69,6 @@ jobs:
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  windows7:
-    strategy:
-      fail-fast: false
-      matrix:
-        arch:
-          - x64
-          - ia32
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup pnpm
-        run: npm install -g pnpm
-      - name: Install Dependencies
-        env:
-          npm_config_arch: ${{ matrix.arch }}
-          npm_config_target_arch: ${{ matrix.arch }}
-        run: |
-          pnpm install
-          pnpm add @mihomo-party/sysproxy-win32-${{ matrix.arch }}-msvc
-          pnpm add -D electron@22.3.27
-          (Get-Content electron-builder.yml) -replace 'windows', 'win7' | Set-Content electron-builder.yml
-          pnpm prepare --${{ matrix.arch }}
-      - name: Build
-        env:
-          npm_config_arch: ${{ matrix.arch }}
-          npm_config_target_arch: ${{ matrix.arch }}
-        run: pnpm build:win --${{ matrix.arch }}
-      - name: Add Portable Flag
-        run: |
-          New-Item -Path "PORTABLE" -ItemType File
-          Get-ChildItem dist/*portable.7z | ForEach-Object {
-            7z a $_.FullName PORTABLE
-          }
-      - name: Generate checksums
-        run: pnpm checksum setup.exe portable.7z
-      - name: Upload Artifacts
-        if: startsWith(github.ref, 'refs/heads/')
-        uses: actions/upload-artifact@v4
-        with:
-          name: Win7 ${{ matrix.arch }}
-          path: |
-            dist/*.sha256
-            dist/*setup.exe
-            dist/*portable.7z
-          if-no-files-found: error
-      - name: Publish Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/*.sha256
-            dist/*setup.exe
-            dist/*portable.7z
-          body_path: changelog.md
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   linux:
     strategy:
       fail-fast: false
@@ -225,225 +168,32 @@ jobs:
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  macos10:
-    strategy:
-      fail-fast: false
-      matrix:
-        arch:
-          - x64
-          - arm64
-    runs-on: macos-latest
+  artifact:
+    if: startsWith(github.ref, 'refs/heads/')
+    needs: [windows, linux, macos]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: artifact
+      cancel-in-progress: false
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup pnpm
-        run: npm install -g pnpm
-      - name: Install Dependencies
-        env:
-          npm_config_arch: ${{ matrix.arch }}
-          npm_config_target_arch: ${{ matrix.arch }}
-        run: |
-          pnpm install
-          pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
-          pnpm add -D electron@32.2.2
-          pnpm prepare --${{ matrix.arch }}
-      - name: Build
-        env:
-          npm_config_arch: ${{ matrix.arch }}
-          npm_config_target_arch: ${{ matrix.arch }}
-        run: |
-          sed -i "" -e "s/macos/catalina/" electron-builder.yml
-          chmod +x build/pkg-scripts/postinstall
-          pnpm build:mac --${{ matrix.arch }}
-      - name: Generate checksums
-        run: pnpm checksum .pkg
-      - name: Upload Artifacts
-        if: startsWith(github.ref, 'refs/heads/')
-        uses: actions/upload-artifact@v4
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: Catalina ${{ matrix.arch }}
-          path: |
-            dist/*.sha256
-            dist/*.pkg
-          if-no-files-found: error
-      - name: Publish Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
+          path: bin/
+          merge-multiple: true
+
+      - name: Upload Prerelease
+        uses: softprops/action-gh-release@v1
+        if: ${{  success() }}
         with:
+          tag_name: pre-release
           files: |
-            dist/*.sha256
-            dist/*.pkg
-          body_path: changelog.md
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-  artifact-windows:
-    if: startsWith(github.ref, 'refs/heads/')
-    needs: windows
-    runs-on: ubuntu-latest
-    concurrency:
-      group: artifact
-      cancel-in-progress: false
-    services:
-      telegram-bot-api:
-        image: aiogram/telegram-bot-api:latest
-        env:
-          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_BOT_API_ID }}
-          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_BOT_API_HASH }}
-        ports:
-          - 8081:8081
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup pnpm
-        run: npm install -g pnpm
-      - name: Install Dependencies
-        run: pnpm install
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: 'Windows*'
-          merge-multiple: true
-      - name: Upload Artifacts
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ARTIFACT_TARGET: windows
-        run: pnpm artifact
-
-  artifact-windows7:
-    if: startsWith(github.ref, 'refs/heads/')
-    needs: windows7
-    runs-on: ubuntu-latest
-    concurrency:
-      group: artifact
-      cancel-in-progress: false
-    services:
-      telegram-bot-api:
-        image: aiogram/telegram-bot-api:latest
-        env:
-          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_BOT_API_ID }}
-          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_BOT_API_HASH }}
-        ports:
-          - 8081:8081
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup pnpm
-        run: npm install -g pnpm
-      - name: Install Dependencies
-        run: pnpm install
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: 'Win7*'
-          merge-multiple: true
-      - name: Upload Artifacts
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ARTIFACT_TARGET: windows7
-        run: pnpm artifact
-
-  artifact-macos:
-    if: startsWith(github.ref, 'refs/heads/')
-    needs: macos
-    runs-on: ubuntu-latest
-    concurrency:
-      group: artifact
-      cancel-in-progress: false
-    services:
-      telegram-bot-api:
-        image: aiogram/telegram-bot-api:latest
-        env:
-          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_BOT_API_ID }}
-          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_BOT_API_HASH }}
-        ports:
-          - 8081:8081
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup pnpm
-        run: npm install -g pnpm
-      - name: Install Dependencies
-        run: pnpm install
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: 'MacOS*'
-          merge-multiple: true
-      - name: Upload Artifacts
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ARTIFACT_TARGET: macos
-        run: pnpm artifact
-
-  artifact-macos10:
-    if: startsWith(github.ref, 'refs/heads/')
-    needs: macos10
-    runs-on: ubuntu-latest
-    concurrency:
-      group: artifact
-      cancel-in-progress: false
-    services:
-      telegram-bot-api:
-        image: aiogram/telegram-bot-api:latest
-        env:
-          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_BOT_API_ID }}
-          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_BOT_API_HASH }}
-        ports:
-          - 8081:8081
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup pnpm
-        run: npm install -g pnpm
-      - name: Install Dependencies
-        run: pnpm install
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: 'Catalina*'
-          merge-multiple: true
-      - name: Upload Artifacts
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ARTIFACT_TARGET: macos10
-        run: pnpm artifact
-
-  artifact-linux:
-    if: startsWith(github.ref, 'refs/heads/')
-    needs: linux
-    runs-on: ubuntu-latest
-    concurrency:
-      group: artifact
-      cancel-in-progress: false
-    services:
-      telegram-bot-api:
-        image: aiogram/telegram-bot-api:latest
-        env:
-          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_BOT_API_ID }}
-          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_BOT_API_HASH }}
-        ports:
-          - 8081:8081
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup pnpm
-        run: npm install -g pnpm
-      - name: Install Dependencies
-        run: pnpm install
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: 'Linux*'
-          merge-multiple: true
-      - name: Upload Artifacts
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ARTIFACT_TARGET: linux
-        run: pnpm artifact
+            bin/*
+          prerelease: true
 
   updater:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [windows, macos, windows7, macos10]
+    needs: [windows, macos, linux]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -452,10 +202,6 @@ jobs:
         run: npm install -g pnpm
       - name: Install Dependencies
         run: pnpm install
-      - name: Telegram Notification
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        run: pnpm telegram
       - name: Generate latest.yml
         run: pnpm updater
       - name: Publish Release
@@ -464,105 +210,3 @@ jobs:
           files: latest.yml
           body_path: changelog.md
           token: ${{ secrets.GITHUB_TOKEN }}
-
-  aur-release-updater:
-    strategy:
-      fail-fast: false
-      matrix:
-        pkgname:
-          - mihomo-party-electron-bin
-          - mihomo-party-electron
-          - mihomo-party-bin
-          - mihomo-party
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Update Version
-        run: |
-          sed -i "s/pkgver=.*/pkgver=$(echo ${{ github.ref }} | tr -d 'refs/tags/v')/" aur/${{ matrix.pkgname }}/PKGBUILD
-      - name: Update Checksums
-        if: matrix.pkgname == 'mihomo-party' || matrix.pkgname == 'mihomo-party-electron'
-        run: |
-          wget https://github.com/mihomo-party-org/mihomo-party/archive/refs/tags/$(echo ${{ github.ref }} | tr -d 'refs/tags/').tar.gz -O release.tar.gz
-          sed -i "s/sha256sums=.*/sha256sums=(\"$(sha256sum ./release.tar.gz | awk '{print $1}')\"/" aur/mihomo-party/PKGBUILD
-          sed -i "s/sha256sums=.*/sha256sums=(\"$(sha256sum ./release.tar.gz | awk '{print $1}')\"/" aur/mihomo-party-electron/PKGBUILD
-      - name: Update Checksums
-        if: matrix.pkgname == 'mihomo-party-bin' || matrix.pkgname == 'mihomo-party-electron-bin'
-        run: |
-          wget https://github.com/mihomo-party-org/mihomo-party/releases/download/$(echo ${{ github.ref }} | tr -d 'refs/tags/')/mihomo-party-linux-$(echo ${{ github.ref }} | tr -d 'refs/tags/v')-amd64.deb -O amd64.deb
-          wget https://github.com/mihomo-party-org/mihomo-party/releases/download/$(echo ${{ github.ref }} | tr -d 'refs/tags/')/mihomo-party-linux-$(echo ${{ github.ref }} | tr -d 'refs/tags/v')-arm64.deb -O arm64.deb
-          sed -i "s/sha256sums_x86_64=.*/sha256sums_x86_64=(\"$(sha256sum ./amd64.deb | awk '{print $1}')\")/" aur/mihomo-party-bin/PKGBUILD
-          sed -i "s/sha256sums_aarch64=.*/sha256sums_aarch64=(\"$(sha256sum ./arm64.deb | awk '{print $1}')\")/" aur/mihomo-party-bin/PKGBUILD
-          sed -i "s/sha256sums_x86_64=.*/sha256sums_x86_64=(\"$(sha256sum ./amd64.deb | awk '{print $1}')\")/" aur/mihomo-party-electron-bin/PKGBUILD
-          sed -i "s/sha256sums_aarch64=.*/sha256sums_aarch64=(\"$(sha256sum ./arm64.deb | awk '{print $1}')\")/" aur/mihomo-party-electron-bin/PKGBUILD
-      - name: Publish AUR package
-        uses: KSXGitHub/github-actions-deploy-aur@v2.7.2
-        with:
-          pkgname: ${{ matrix.pkgname }}
-          pkgbuild: aur/${{ matrix.pkgname }}/PKGBUILD
-          commit_username: pompurin404
-          commit_email: pompurin404@mihomo.party
-          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          commit_message: Update AUR package
-          ssh_keyscan_types: rsa,ed25519
-          allow_empty_commits: false
-
-  aur-git-updater:
-    if: startsWith(github.ref, 'refs/heads/')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: update version
-        run: |
-          sed -i "s/pkgver=.*/pkgver=$(git describe --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' | tr -d 'v')/" aur/mihomo-party-git/PKGBUILD
-      - name: Publish AUR package
-        uses: KSXGitHub/github-actions-deploy-aur@v2.7.2
-        with:
-          pkgname: mihomo-party-git
-          pkgbuild: aur/mihomo-party-git/PKGBUILD
-          commit_username: pompurin404
-          commit_email: pompurin404@mihomo.party
-          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-          commit_message: Update AUR package
-          ssh_keyscan_types: rsa,ed25519
-          allow_empty_commits: false
-
-  winget:
-    if: startsWith(github.ref, 'refs/tags/v')
-    name: Update WinGet Package
-    needs: windows
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get Tag Name
-        run: echo "VERSION=$(echo ${{ github.ref }} | tr -d 'refs/tags/v')" >> $GITHUB_ENV
-      - name: Submit to Winget
-        uses: vedantmgoyal9/winget-releaser@main
-        with:
-          identifier: Mihomo-Party.Mihomo-Party
-          version: ${{env.VERSION}}
-          release-tag: v${{env.VERSION}}
-          installers-regex: 'mihomo-party-windows-.*setup\.exe$'
-          token: ${{ secrets.POMPURIN404_TOKEN }}
-
-  homebrew:
-    if: startsWith(github.ref, 'refs/tags/v')
-    name: Update Homebrew cask
-    needs: [macos, macos10]
-    runs-on: macos-latest
-    steps:
-      - name: Set up Git
-        run: |
-          git config --global user.email mihomo-party-bot[bot]@users.noreply.github.com
-          git config --global user.name mihomo-party-bot[bot]
-      - name: Update Homebrew cask
-        env:
-          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.POMPURIN404_TOKEN }}
-        run: |
-          brew tap mihomo-party-org/mihomo-party
-          brew update
-          brew bump-cask-pr mihomo-party --version $(echo ${{ github.ref }} | tr -d 'refs/tags/v') --no-browse

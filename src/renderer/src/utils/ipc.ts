@@ -13,6 +13,10 @@ export async function mihomoVersion(): Promise<IMihomoVersion> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoVersion'))
 }
 
+export async function mihomoConfig(): Promise<IMihomoConfigs> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoConfig'))
+}
+
 export async function mihomoCloseConnection(id: string): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('mihomoCloseConnection', id))
 }

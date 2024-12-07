@@ -46,6 +46,11 @@ export async function mihomoVersion(): Promise<IMihomoVersion> {
   return await instance.get('/version')
 }
 
+export const mihomoConfig = async (): Promise<IMihomoConfigs> => {
+  const instance = await getAxios()
+  return await instance.get('/configs')
+}
+
 export const patchMihomoConfig = async (patch: Partial<IMihomoConfig>): Promise<void> => {
   const instance = await getAxios()
   return await instance.patch('/configs', patch)

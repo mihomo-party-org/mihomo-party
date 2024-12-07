@@ -16,6 +16,7 @@ import {
   mihomoUpgrade,
   mihomoUpgradeGeo,
   mihomoVersion,
+  mihomoConfig,
   patchMihomoConfig
 } from '../core/mihomoApi'
 import { checkAutoRun, disableAutoRun, enableAutoRun } from '../sys/autoRun'
@@ -112,6 +113,7 @@ function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-e
 }
 export function registerIpcMainHandlers(): void {
   ipcMain.handle('mihomoVersion', ipcErrorWrapper(mihomoVersion))
+  ipcMain.handle('mihomoConfig', ipcErrorWrapper(mihomoConfig))
   ipcMain.handle('mihomoCloseConnection', (_e, id) => ipcErrorWrapper(mihomoCloseConnection)(id))
   ipcMain.handle('mihomoCloseAllConnections', ipcErrorWrapper(mihomoCloseAllConnections))
   ipcMain.handle('mihomoRules', ipcErrorWrapper(mihomoRules))

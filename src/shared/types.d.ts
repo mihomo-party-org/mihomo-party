@@ -47,6 +47,49 @@ interface IMihomoVersion {
   meta: boolean
 }
 
+interface IMihomoConfigs {
+  port: number
+  'socks-port': number
+  'redir-port': number
+  'tproxy-port': number
+  'mixed-port': number
+  tun: IMihomoTunDetail
+  'allow-lan': boolean
+  'skip-auth-prefixes': string[]
+  'lan-allowed-ips': string[]
+  'lan-disallowed-ips': string[]
+  'bind-address': string
+  'interface-name': string
+  mode: OutboundMode
+  'unified-delay': boolean
+  'log-level': LogLevel
+  ipv6: boolean
+  'routing-mark': number
+  'tcp-concurrent': boolean
+  'find-process-mode': FindProcessMode
+  'geodata-mode': boolean
+  'global-client-fingerprint': string
+  'global-ua': string
+  'etag-support': boolean
+  'keep-alive-idle': number
+  'keep-alive-interval': number
+  'disable-keep-alive': boolean
+  sniffing: boolean
+}
+
+interface IMihomoTunDetail {
+  enable: boolean
+  stack: TunStack
+  'auto-route': boolean
+  'auto-redirect'?: boolean
+  'auto-detect-interface': boolean
+  'dns-hijack': string[]
+  device: string
+  mtu: number
+  'inet4-address': string[]
+  'inet6-address': string[]
+}
+
 interface IMihomoTrafficInfo {
   up: number
   down: number
