@@ -282,7 +282,7 @@ const DNS: React.FC = () => {
                       <Input
                         size="sm"
                         fullWidth
-                        placeholder="DNS 服务器"
+                        placeholder="DNS 服务器，使用逗号分割多个值"
                         value={Array.isArray(value) ? value.join(',') : value}
                         onValueChange={(v) =>
                           handleSubkeyChange('nameserverPolicy', domain, v, index)

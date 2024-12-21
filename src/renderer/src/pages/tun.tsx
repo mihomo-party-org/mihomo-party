@@ -246,7 +246,7 @@ const Tun: React.FC = () => {
               }}
             />
           </SettingItem>
-          <SettingItem title="DNS 劫持" divider>
+          <SettingItem title="DNS 劫持，使用逗号分割多个值" divider>
             <Input
               size="sm"
               className="w-[50%]"

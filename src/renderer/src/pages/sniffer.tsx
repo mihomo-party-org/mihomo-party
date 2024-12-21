@@ -186,7 +186,7 @@ const Sniffer: React.FC = () => {
           <Input
             size="sm"
             className="w-[50%]"
-            placeholder="端口号,使用英文逗号分割"
+            placeholder="端口号，使用逗号分割多个值"
             value={values.sniff.HTTP?.ports.join(',')}
             onValueChange={(v) => handleSniffPortChange('HTTP', v)}
           />
@@ -195,7 +195,7 @@ const Sniffer: React.FC = () => {
           <Input
             size="sm"
             className="w-[50%]"
-            placeholder="端口号,使用英文逗号分割"
+            placeholder="端口号，使用逗号分割多个值"
             value={values.sniff.TLS?.ports.join(',')}
             onValueChange={(v) => handleSniffPortChange('TLS', v)}
           />
@@ -204,7 +204,7 @@ const Sniffer: React.FC = () => {
           <Input
             size="sm"
             className="w-[50%]"
-            placeholder="端口号,使用英文逗号分割"
+            placeholder="端口号，使用逗号分割多个值"
             value={values.sniff.QUIC?.ports.join(',')}
             onValueChange={(v) => handleSniffPortChange('QUIC', v)}
           />
