@@ -135,8 +135,8 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
         <ModalBody>
           <SettingItem title="连接建立时间">{dayjs(connection.start).fromNow()}</SettingItem>
           <SettingItem title="规则">
-            {connection.rule}
-            {connection.rulePayload ? `(${connection.rulePayload})` : '未命中任何规则'}
+            {connection.rule ? connection.rule : '未命中任何规则'}
+            {connection.rulePayload ? `(${connection.rulePayload})` : ''}
           </SettingItem>
           <SettingItem title="代理链">{[...connection.chains].reverse().join('>>')}</SettingItem>
           <SettingItem title="上传速度">{calcTraffic(connection.uploadSpeed || 0)}/s</SettingItem>

@@ -304,6 +304,7 @@ interface IAppConfig {
   appTheme: AppTheme
   customTheme?: string
   autoCheckUpdate: boolean
+  updateChannel: string
   silentStart: boolean
   autoCloseConnection: boolean
   sysProxy: ISysProxyConfig
