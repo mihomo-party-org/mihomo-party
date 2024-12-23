@@ -31,6 +31,28 @@ jobs:
       - name: Setup pnpm
         run: npm install -g pnpm
 
+      - name: Determine and Update Version
+        shell: bash
+        run: |
+          GIT_COMMIT_HASH=$(git rev-parse --short HEAD)
+          VERSION=$(jq -r '.version' package.json)
+
+          if [ "${{ github.event.inputs.version }}" == "" ]; then
+            BASE_VERSION=$(echo $VERSION | awk -F. '{print $1"."$2"."$3+1}')
+            VERSION_PREFIX=${VERSION_PREFIX:-beta}
+            RELEASE_VERSION="${BASE_VERSION}-${VERSION_PREFIX}-${GIT_COMMIT_HASH}"
+          else
+            INPUT_VERSION="${{ github.event.inputs.version }}"
+            CLEAN_VERSION=$(echo "$INPUT_VERSION" | sed 's/^v//')
+            if [[ ! "$CLEAN_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "Invalid version format: $INPUT_VERSION"
+              exit 1
+            fi
+            RELEASE_VERSION="$CLEAN_VERSION"
+          fi
+
+          jq --arg version "$RELEASE_VERSION" '.version = $version' package.json > tmp.json && mv tmp.json package.json
+
       - name: Install Dependencies and Prepare
         env:
           npm_config_arch: ${{ matrix.arch }}
@@ -69,7 +91,6 @@ jobs:
             changelog.md
 
   pre-release:
-    if: startsWith(github.ref, 'refs/heads/') || (github.event_name == 'workflow_dispatch' && github.event.inputs.version == '')
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -101,16 +122,29 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Version
+        run:
+        INPUT_VERSION="${{ github.event.inputs.version }}"
+        CLEAN_VERSION=$(echo "$INPUT_VERSION" | sed 's/^v//')
+        if [[ ! "$CLEAN_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "Invalid version format: $INPUT_VERSION"
+          exit 1
+        fi
+        jq --arg version "$CLEAN_VERSION" '.version = $version' package.json > tmp.json && mv tmp.json package.json
+
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        git add package.json
+        git commit -m "Update version to $CLEAN_VERSION"
+        git push
+
       - uses: actions/download-artifact@v4
         with:
           path: bin/
           merge-multiple: true
-
-      - name: Debug event inputs
-        run: |
-          echo "github.ref: ${{ github.ref }}"
-          echo "github.event_name: ${{ github.event_name }}"
-          echo "github.event.inputs.version: ${{ github.event.inputs.version }}"
 
       - name: Delete Current
         uses: 8Mi-Tech/delete-release-assets-action@main
