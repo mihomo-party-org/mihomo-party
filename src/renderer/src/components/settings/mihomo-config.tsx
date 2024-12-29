@@ -42,7 +42,7 @@ const MihomoConfig: React.FC = () => {
           size="sm"
           className="w-[60%]"
           value={ua}
-          placeholder="默认 clash.meta"
+          placeholder="默认 clash.meta/alpha-de19f92"
           onValueChange={(v) => {
             setUa(v)
             setUaDebounce(v)

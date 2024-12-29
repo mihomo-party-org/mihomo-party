@@ -133,7 +133,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
         }
         res = await axios.get(urlObj.toString(), {
           headers: {
-            'User-Agent': userAgent || 'clash.meta'
+            'User-Agent': userAgent || 'clash.meta/alpha-de19f92'
           },
           responseType: 'text'
         })
@@ -147,7 +147,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
               }
             : false,
           headers: {
-            'User-Agent': userAgent || 'clash.meta'
+            'User-Agent': userAgent || 'clash.meta/alpha-de19f92'
           },
           responseType: 'text'
         })
