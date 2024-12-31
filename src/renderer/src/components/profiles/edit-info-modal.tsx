@@ -1,4 +1,5 @@
 import {
+  cn,
   Modal,
   ModalContent,
   ModalHeader,
@@ -29,6 +30,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
   const { overrideConfig } = useOverrideConfig()
   const { items: overrideItems = [] } = overrideConfig || {}
   const [values, setValues] = useState(item)
+  const inputWidth = 'w-[400px] md:w-[400px] lg:w-[600px] xl:w-[800px]'
 
   const onSave = async (): Promise<void> => {
     try {
@@ -49,7 +51,11 @@ const EditInfoModal: React.FC<Props> = (props) => {
   return (
     <Modal
       backdrop="blur"
-      classNames={{ backdrop: 'top-[48px]' }}
+      size="5xl"
+      classNames={{
+        backdrop: 'top-[48px]',
+        base: 'w-[600px] md:w-[600px] lg:w-[800px] xl:w-[1024px]'
+      }}
       hideCloseButton
       isOpen={true}
       onOpenChange={onClose}
@@ -61,7 +67,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
           <SettingItem title="名称">
             <Input
               size="sm"
-              className="w-[200px]"
+              className={cn(inputWidth)}
               value={values.name}
               onValueChange={(v) => {
                 setValues({ ...values, name: v })
@@ -73,7 +79,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
               <SettingItem title="订阅地址">
                 <Input
                   size="sm"
-                  className="w-[200px]"
+                  className={cn(inputWidth)}
                   value={values.url}
                   onValueChange={(v) => {
                     setValues({ ...values, url: v })
@@ -93,7 +99,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
                 <Input
                   size="sm"
                   type="number"
-                  className="w-[200px]"
+                  className={cn(inputWidth)}
                   value={values.interval?.toString() ?? ''}
                   onValueChange={(v) => {
                     setValues({ ...values, interval: parseInt(v) })
