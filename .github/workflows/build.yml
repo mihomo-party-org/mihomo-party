@@ -197,6 +197,10 @@ jobs:
           pnpm install
           pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
           pnpm prepare --${{ matrix.arch }}
+      - name: Enable Notarization
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          sed -i "" -e "s/notarize: false/notarize: true/" electron-builder.yml
       - name: Build
         env:
           npm_config_arch: ${{ matrix.arch }}
@@ -252,6 +256,10 @@ jobs:
           pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
           pnpm add -D electron@32.2.2
           pnpm prepare --${{ matrix.arch }}
+      - name: Enable Notarization
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          sed -i "" -e "s/notarize: false/notarize: true/" electron-builder.yml
       - name: Build
         env:
           npm_config_arch: ${{ matrix.arch }}
