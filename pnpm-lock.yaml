@@ -15,8 +15,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(electron@33.1.0)
       '@mihomo-party/sysproxy':
-        specifier: ^2.0.4
-        version: 2.0.4
+        specifier: ^2.0.7
+        version: 2.0.7
       '@types/crypto-js':
         specifier: ^4.2.2
         version: 4.2.2
@@ -770,50 +770,50 @@ packages:
     resolution: {integrity: sha512-9QOtNffcOF/c1seMCDnjckb3R9WHcG34tky+FHpNKKCW0wc/scYLwMtO+ptyGUfMW0/b/n4qRiALlaFHc9Oj7Q==}
     engines: {node: '>= 10.0.0'}
 
-  '@mihomo-party/sysproxy-darwin-arm64@2.0.4':
-    resolution: {integrity: sha512-s3MOKABzIl2oNxVFYdhFk7NY77aZhF1L7lTSZWc2BCy6dU6CnDxIpVjS+AKGK9qAXLZQVAFdKW1lqgHA30OsmA==}
+  '@mihomo-party/sysproxy-darwin-arm64@2.0.7':
+    resolution: {integrity: sha512-bTSjw1r5ylscPTG3YgtFxP78lBcMC2bw+Qh8tgpY2IwtCbpS+q02Gi5g9u/JqN90+YPbjDo73g5NXCCWbQ+2fA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
 
-  '@mihomo-party/sysproxy-darwin-x64@2.0.4':
-    resolution: {integrity: sha512-aBrdrucV4umh0dClrDk+X7i9lZGojKoEfK/pes12TxXltjtBIEEKtd5uKfAdESMCtPi7Wi0i40bOve3/PE2ZTQ==}
+  '@mihomo-party/sysproxy-darwin-x64@2.0.7':
+    resolution: {integrity: sha512-EAjILj2jDzAEwJRyIdHkOyYq8EC+RiLzpz+4GJyUAVZ5ZTpkw1lLwHy+qvrOtDiNG13LqO2cJjEWGCMtkMZ18w==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
-  '@mihomo-party/sysproxy-linux-arm64-gnu@2.0.4':
-    resolution: {integrity: sha512-FR9oSSMHyK/eCyE0ggOXAlaxUeemk8mOld3jd0951AsbmgwCdw9qBMXET9HDheYzA+9wOiqzzOsru6BWiUjFWw==}
+  '@mihomo-party/sysproxy-linux-arm64-gnu@2.0.7':
+    resolution: {integrity: sha512-nYOPB6N+fAhrd6YIsZERnan/z/PNflAABg8xGR6sD3lEGFdZKK/TPuNpRYzmitqVvnwpuyOsbcwpsmfRIIeElw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
 
-  '@mihomo-party/sysproxy-linux-x64-gnu@2.0.4':
-    resolution: {integrity: sha512-hZV7bUWuv9nea8X60zBk4xiDFNEDINxBMCRlm4gtOlNvCfrQPEjDozWTcOhbR74SGrMj+zLKXEDQZtlV2y3pVg==}
+  '@mihomo-party/sysproxy-linux-x64-gnu@2.0.7':
+    resolution: {integrity: sha512-1clCRliQyofrbON8rI9vQhRa/r31wH7BRgebUka2cmr3ssxM12uiIGY4gRn32HzOyTcomsU92TK1IInSTzr2ZQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
 
-  '@mihomo-party/sysproxy-win32-arm64-msvc@2.0.4':
-    resolution: {integrity: sha512-LrL5EOW9xzUKiJg3mZ6KAEyoVbLG/jiQUxAjdvWBg+GnbqbRL4pjvdZqxH0cymPqRBl8iMLis04XY7+thX6bPA==}
+  '@mihomo-party/sysproxy-win32-arm64-msvc@2.0.7':
+    resolution: {integrity: sha512-vEVRlm3iY9czCha71xEkB5fiRseRaeAVMaM7X78SWNotnkHc0vHplJ/LeIByF2+sjN9Q42BlGocFyevgnmVGgw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
-  '@mihomo-party/sysproxy-win32-ia32-msvc@2.0.4':
-    resolution: {integrity: sha512-IwIWKRqX2ugMVxxdsQzzJ/jQ2+AnLjgyVqfYeAkAmv5djBWxJKx3bBjHJh6Kzy1iMLIMGbOAsCG6GILyEn4f8Q==}
+  '@mihomo-party/sysproxy-win32-ia32-msvc@2.0.7':
+    resolution: {integrity: sha512-TsNpDV3RmqKZcxI8SrwRVC/EbTZbrLTMPyGvUk/RoGOdSdP9/mJw1q/fVufHvBcEXsyNiHWuyiUGs7rsfwpWvQ==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
 
-  '@mihomo-party/sysproxy-win32-x64-msvc@2.0.4':
-    resolution: {integrity: sha512-0WCRSEtL4XRcoKpzjArMoUEwScCquC8MyWd1/GJ+p9WqxtuMMlzEgNpplD2f6ug40iY/vTovP8+Ni8ikOQTRjQ==}
+  '@mihomo-party/sysproxy-win32-x64-msvc@2.0.7':
+    resolution: {integrity: sha512-Mw4ji5CA43ihs7sxC9a/W8ILq5txwUe1iHkIrlYAC241HBs9My4at0sA1JfgQGR+1CwxjxpX6JkKas38qQMadw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
 
-  '@mihomo-party/sysproxy@2.0.4':
-    resolution: {integrity: sha512-/Viitid0aUxJCQh6ldNA816PNmNyrSGI73D369CnA+JI5ZcVQlmTZeMEGAYebndPybhUwsrnSglPTNd3a8gVcQ==}
+  '@mihomo-party/sysproxy@2.0.7':
+    resolution: {integrity: sha512-vIbOdMqSKjoNNPmE5vqPFHVMef1TEGWXvrheDud2UHQa5SZUkwBSBAijGGj+To5JE2Xn1Eigb0Vnj5N6+ebeQg==}
     engines: {node: '>= 10'}
 
   '@nextui-org/accordion@2.0.40':
@@ -5833,36 +5833,36 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mihomo-party/sysproxy-darwin-arm64@2.0.4':
+  '@mihomo-party/sysproxy-darwin-arm64@2.0.7':
     optional: true
 
-  '@mihomo-party/sysproxy-darwin-x64@2.0.4':
+  '@mihomo-party/sysproxy-darwin-x64@2.0.7':
     optional: true
 
-  '@mihomo-party/sysproxy-linux-arm64-gnu@2.0.4':
+  '@mihomo-party/sysproxy-linux-arm64-gnu@2.0.7':
     optional: true
 
-  '@mihomo-party/sysproxy-linux-x64-gnu@2.0.4':
+  '@mihomo-party/sysproxy-linux-x64-gnu@2.0.7':
     optional: true
 
-  '@mihomo-party/sysproxy-win32-arm64-msvc@2.0.4':
+  '@mihomo-party/sysproxy-win32-arm64-msvc@2.0.7':
     optional: true
 
-  '@mihomo-party/sysproxy-win32-ia32-msvc@2.0.4':
+  '@mihomo-party/sysproxy-win32-ia32-msvc@2.0.7':
     optional: true
 
-  '@mihomo-party/sysproxy-win32-x64-msvc@2.0.4':
+  '@mihomo-party/sysproxy-win32-x64-msvc@2.0.7':
     optional: true
 
-  '@mihomo-party/sysproxy@2.0.4':
+  '@mihomo-party/sysproxy@2.0.7':
     optionalDependencies:
-      '@mihomo-party/sysproxy-darwin-arm64': 2.0.4
-      '@mihomo-party/sysproxy-darwin-x64': 2.0.4
-      '@mihomo-party/sysproxy-linux-arm64-gnu': 2.0.4
-      '@mihomo-party/sysproxy-linux-x64-gnu': 2.0.4
-      '@mihomo-party/sysproxy-win32-arm64-msvc': 2.0.4
-      '@mihomo-party/sysproxy-win32-ia32-msvc': 2.0.4
-      '@mihomo-party/sysproxy-win32-x64-msvc': 2.0.4
+      '@mihomo-party/sysproxy-darwin-arm64': 2.0.7
+      '@mihomo-party/sysproxy-darwin-x64': 2.0.7
+      '@mihomo-party/sysproxy-linux-arm64-gnu': 2.0.7
+      '@mihomo-party/sysproxy-linux-x64-gnu': 2.0.7
+      '@mihomo-party/sysproxy-win32-arm64-msvc': 2.0.7
+      '@mihomo-party/sysproxy-win32-ia32-msvc': 2.0.7
+      '@mihomo-party/sysproxy-win32-x64-msvc': 2.0.7
 
   '@nextui-org/accordion@2.0.40(@nextui-org/system@2.2.6(@nextui-org/theme@2.2.11(tailwindcss@3.4.14))(framer-motion@11.5.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@nextui-org/theme@2.2.11(tailwindcss@3.4.14))(framer-motion@11.5.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
