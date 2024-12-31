@@ -15,19 +15,38 @@ const FloatingApp: React.FC = () => {
 
   const [upload, setUpload] = useState(0)
   const [download, setDownload] = useState(0)
-  const slowest = 10
-  const fastest = 0.1
 
-  const spinDuration = useMemo(() => {
-    let duration = upload + download === 0 ? slowest : 409600 / (upload + download)
-    if (duration > slowest) {
-      duration = slowest
-    }
-    if (duration < fastest) {
-      duration = fastest
-    }
-    return duration
+  // 根据总速率计算旋转速度
+  const spinSpeed = useMemo(() => {
+    const total = upload + download
+    if (total === 0) return 0
+    if (total < 1024) return 2
+    if (total < 1024 * 1024) return 3
+    if (total < 1024 * 1024 * 1024) return 4
+    return 5
   }, [upload, download])
+
+  const [rotation, setRotation] = useState(0)
+
+  useEffect(() => {
+    if (!spinFloatingIcon) return
+
+    let animationFrameId: number
+    const animate = (): void => {
+      setRotation((prev) => {
+        if (prev === 360) {
+          return 0
+        }
+        return prev + spinSpeed
+      })
+      animationFrameId = requestAnimationFrame(animate)
+    }
+
+    animationFrameId = requestAnimationFrame(animate)
+    return (): void => {
+      cancelAnimationFrame(animationFrameId)
+    }
+  }, [spinSpeed, spinFloatingIcon])
 
   useEffect(() => {
     window.electron.ipcRenderer.on('mihomoTraffic', async (_e, info: IMihomoTrafficInfo) => {
@@ -51,7 +70,14 @@ const FloatingApp: React.FC = () => {
             onClick={() => {
               triggerMainWindow()
             }}
-            style={spinFloatingIcon ? { animation: `spin ${spinDuration}s linear infinite` } : {}}
+            style={
+              spinFloatingIcon
+                ? {
+                    transform: `rotate(${rotation}deg)`,
+                    transition: 'transform 0.1s linear'
+                  }
+                : {}
+            }
             className={`app-nodrag cursor-pointer floating-thumb ${tunEnabled ? 'bg-secondary' : sysProxyEnabled ? 'bg-primary' : 'bg-default'} hover:opacity-hover rounded-full h-[calc(100%-4px)] aspect-square`}
           >
             <MihomoIcon className="floating-icon text-primary-foreground h-full leading-full text-[22px] mx-auto" />
