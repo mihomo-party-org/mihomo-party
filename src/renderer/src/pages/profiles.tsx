@@ -14,7 +14,8 @@ import ProfileItem from '@renderer/components/profiles/profile-item'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { getFilePath, readTextFile, subStoreCollections, subStoreSubs } from '@renderer/utils/ipc'
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import type { KeyboardEvent } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { MdContentPaste } from 'react-icons/md'
 import {
   DndContext,
@@ -52,6 +53,7 @@ const Profiles: React.FC = () => {
   const [updating, setUpdating] = useState(false)
   const [fileOver, setFileOver] = useState(false)
   const [url, setUrl] = useState('')
+  const isUrlEmpty = url.trim() === ''
   const sensors = useSensors(useSensor(PointerSensor))
   const { data: subs = [], mutate: mutateSubs } = useSWR(
     useSubStore ? 'subStoreSubs' : undefined,
@@ -142,6 +144,14 @@ const Profiles: React.FC = () => {
     }
   }
 
+  const handleInputKeyUp = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key !== 'Enter' || isUrlEmpty) return
+      handleImport()
+    },
+    [isUrlEmpty]
+  )
+
   useEffect(() => {
     pageRef.current?.addEventListener('dragover', (e) => {
       e.preventDefault()
@@ -218,6 +228,7 @@ const Profiles: React.FC = () => {
             size="sm"
             value={url}
             onValueChange={setUrl}
+            onKeyUp={handleInputKeyUp}
             endContent={
               <>
                 <Button
@@ -247,7 +258,7 @@ const Profiles: React.FC = () => {
             size="sm"
             color="primary"
             className="ml-2"
-            isDisabled={url === ''}
+            isDisabled={isUrlEmpty}
             isLoading={importing}
             onPress={handleImport}
           >
