@@ -1,0 +1,5 @@
+.border-switch {
+  input[type='checkbox'] {
+    width: 100%;
+  }
+}
