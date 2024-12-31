@@ -44,7 +44,9 @@ const ConnectionItem: React.FC<Props> = (props) => {
                 {info.metadata.type}({info.metadata.network.toUpperCase()})
               </Chip>
               <div className="text-ellipsis whitespace-nowrap overflow-hidden">
-                {info.metadata.process || info.metadata.sourceIP}
+                {(!info.metadata.process || info.metadata.process === 'mihomo' || !info.metadata.sourceIP) 
+                  ? 'mihomo-core' 
+                  : info.metadata.process || info.metadata.sourceIP}
                 {' -> '}
                 {info.metadata.host ||
                   info.metadata.sniffHost ||

@@ -140,9 +140,9 @@ const DNS: React.FC = () => {
             className="app-nodrag"
             color="primary"
             onPress={() => {
-              const hostsObject = Object.fromEntries(
-                values.hosts.map(({ domain, value }) => [domain, value])
-              )
+              const hostsObject = values.useHosts
+                ? Object.fromEntries(values.hosts.map(({ domain, value }) => [domain, value]))
+                : undefined
               const dnsConfig = {
                 ipv6: values.ipv6,
                 'fake-ip-range': values.fakeIPRange,

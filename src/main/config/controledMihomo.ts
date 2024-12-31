@@ -37,14 +37,15 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
       controledMihomoConfig.sniffer = defaultControledMihomoConfig.sniffer
     }
   }
-  if (patch.hosts) {
-    controledMihomoConfig.hosts = patch.hosts
-  }
   if (patch.dns?.['nameserver-policy']) {
     controledMihomoConfig.dns = controledMihomoConfig.dns || {}
     controledMihomoConfig.dns['nameserver-policy'] = patch.dns['nameserver-policy']
   }
   controledMihomoConfig = deepMerge(controledMihomoConfig, patch)
+  if (patch.hosts && patch.dns?.['use-hosts']) {
+    delete controledMihomoConfig.hosts
+    controledMihomoConfig.hosts = patch.hosts
+  }
   if (!useNameserverPolicy) {
     delete controledMihomoConfig?.dns?.['nameserver-policy']
   }
