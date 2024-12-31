@@ -1,5 +1,6 @@
 import React from 'react'
 import { cn, Switch, SwitchProps } from '@nextui-org/react'
+import './border-switch.css'
 
 interface SiderSwitchProps extends SwitchProps {
   isShowBorder?: boolean
@@ -10,6 +11,7 @@ const BorderSwitch: React.FC<SiderSwitchProps> = (props) => {
 
   return (
     <Switch
+      className="border-switch px-[8px]"
       classNames={{
         wrapper: cn('border-2', {
           'border-transparent': !isShowBorder,
