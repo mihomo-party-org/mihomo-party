@@ -14,14 +14,17 @@ import { IoMdRefresh } from 'react-icons/io'
 import { CgLoadbarDoc } from 'react-icons/cg'
 import { MdEditDocument } from 'react-icons/md'
 import dayjs from '@renderer/utils/dayjs'
+import { useTranslation } from 'react-i18next'
 
 const RuleProvider: React.FC = () => {
+  const { t } = useTranslation()
   const [showDetails, setShowDetails] = useState({
     show: false,
     path: '',
     type: '',
     title: '',
-    format: ''
+    format: '',
+    privderType: ''
   })
   useEffect(() => {
     if (showDetails.title) {
@@ -89,10 +92,11 @@ const RuleProvider: React.FC = () => {
           type={showDetails.type}
           title={showDetails.title}
           format={showDetails.format}
-          onClose={() => setShowDetails({ show: false, path: '', type: '', title: '', format: '' })}
+          privderType={showDetails.privderType}
+          onClose={() => setShowDetails({ show: false, path: '', type: '', title: '', format: '', privderType: '' })}
         />
       )}
-      <SettingItem title="规则集合" divider>
+      <SettingItem title={t('resources.ruleProviders.title')} divider>
         <Button
           size="sm"
           color="primary"
@@ -102,7 +106,7 @@ const RuleProvider: React.FC = () => {
             })
           }}
         >
-          更新全部
+          {t('resources.ruleProviders.updateAll')}
         </Button>
       </SettingItem>
       {providers.map((provider, index) => (
@@ -120,12 +124,13 @@ const RuleProvider: React.FC = () => {
               {provider.format !== 'MrsRule' && (
                 <Button
                   isIconOnly
-                  title={provider.vehicleType == 'File' ? '编辑' : '查看'}
+                  title={provider.vehicleType == 'File' ? t('common.editor.edit') : t('common.viewer.view')}
                   className="ml-2"
                   size="sm"
                   onPress={() => {
                     setShowDetails({
                       show: false,
+                      privderType: 'rule-providers',
                       path: provider.name,
                       type: provider.vehicleType,
                       title: provider.name,
@@ -142,7 +147,7 @@ const RuleProvider: React.FC = () => {
               )}
               <Button
                 isIconOnly
-                title="更新"
+                title={t('common.updater.update')}
                 className="ml-2"
                 size="sm"
                 onPress={() => {

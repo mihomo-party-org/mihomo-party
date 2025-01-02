@@ -256,7 +256,7 @@ const ProfileItem: React.FC<Props> = (props) => {
                       await patchAppConfig({ profileDisplayDate: 'update' })
                     }}
                   >
-                    {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
+                    {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : t('profiles.neverExpire')}
                   </Button>
                 ) : (
                   <Button
