@@ -27,7 +27,7 @@ const ProxyProvider: React.FC = () => {
     if (showDetails.title) {
       const fetchProviderPath = async (name: string): Promise<void> => {
         try {
-          const providers= await getRuntimeConfig()
+          const providers = await getRuntimeConfig()
           const provider = providers['proxy-providers'][name]
           if (provider) {
             setShowDetails((prev) => ({
@@ -48,6 +48,20 @@ const ProxyProvider: React.FC = () => {
   const providers = useMemo(() => {
     if (!data) return []
     return Object.values(data.providers)
+      .map(provider => {
+        if (provider.vehicleType === 'Inline' || (provider.subscriptionInfo &&
+          provider.subscriptionInfo.Upload === 0 &&
+          provider.subscriptionInfo.Download === 0 &&
+          provider.subscriptionInfo.Total === 0 &&
+          provider.subscriptionInfo.Expire === 0)) {
+          return {
+            ...provider,
+            subscriptionInfo: null
+          }
+        }
+        return provider
+      })
+
       .filter(provider => 'subscriptionInfo' in provider)
       .sort((a, b) => {
         if (a.vehicleType === 'File' && b.vehicleType !== 'File') {
@@ -122,26 +136,28 @@ const ProxyProvider: React.FC = () => {
               {/* <Button isIconOnly className="ml-2" size="sm">
                 <IoMdEye className="text-lg" />
               </Button> */}
-              <Button
-                isIconOnly
-                title={provider.vehicleType == 'File' ? '编辑' : '查看'}
-                className="ml-2"
-                size="sm"
-                onPress={() => {
-                  setShowDetails({
-                    show: false,
-                    path: provider.name,
-                    type: provider.vehicleType,
-                    title: provider.name
-                  })
-                }}
-              >
-                {provider.vehicleType == 'File' ? (
-                  <MdEditDocument className={`text-lg`} />
-                ) : (
-                  <CgLoadbarDoc className={`text-lg`} />
-                )}
-              </Button>
+              {provider.vehicleType !== 'Inline' && (
+                <Button
+                  isIconOnly
+                  title={provider.vehicleType == 'File' ? '编辑' : '查看'}
+                  className="ml-2"
+                  size="sm"
+                  onPress={() => {
+                    setShowDetails({
+                      show: false,
+                      path: provider.name,
+                      type: provider.vehicleType,
+                      title: provider.name
+                    })
+                  }}
+                >
+                  {provider.vehicleType == 'File' ? (
+                    <MdEditDocument className={`text-lg`} />
+                  ) : (
+                    <CgLoadbarDoc className={`text-lg`} />
+                  )}
+                </Button>
+              )}
               <Button
                 isIconOnly
                 title="更新"

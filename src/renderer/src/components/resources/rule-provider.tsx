@@ -117,7 +117,7 @@ const RuleProvider: React.FC = () => {
           >
             <div className="flex h-[32px] leading-[32px] text-foreground-500">
               <div>{dayjs(provider.updatedAt).fromNow()}</div>
-              {provider.format !== 'MrsRule' && (
+              {provider.format !== 'MrsRule' && provider.vehicleType !== 'Inline' && (
                 <Button
                   isIconOnly
                   title={provider.vehicleType == 'File' ? '编辑' : '查看'}

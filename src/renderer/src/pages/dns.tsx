@@ -12,7 +12,7 @@ const DNS: React.FC = () => {
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const { appConfig, patchAppConfig } = useAppConfig()
   const { nameserverPolicy, useNameserverPolicy } = appConfig || {}
-  const { dns, hosts } = controledMihomoConfig || {}
+  const { dns } = controledMihomoConfig || {}
   const {
     ipv6 = false,
     'fake-ip-range': fakeIPRange = '198.18.0.1/16',
@@ -54,7 +54,7 @@ const DNS: React.FC = () => {
       domain,
       value
     })),
-    hosts: Object.entries(hosts || {}).map(([domain, value]) => ({ domain, value }))
+    hosts: useHosts ? [] : undefined
   })
 
   const setValues = (v: typeof values): void => {
@@ -140,7 +140,7 @@ const DNS: React.FC = () => {
             className="app-nodrag"
             color="primary"
             onPress={() => {
-              const hostsObject = values.useHosts
+              const hostsObject = values.useHosts && values.hosts && values.hosts.length > 0
                 ? Object.fromEntries(values.hosts.map(({ domain, value }) => [domain, value]))
                 : undefined
               const dnsConfig = {
@@ -187,7 +187,7 @@ const DNS: React.FC = () => {
             <Tab key="normal" title="取消映射" />
           </Tabs>
         </SettingItem>
-        {values.enhancedMode === 'fake-ip' ? (
+        {values.enhancedMode === 'fake-ip' && (
           <>
             <SettingItem title="回应范围" divider>
               <Input
@@ -205,7 +205,7 @@ const DNS: React.FC = () => {
             </div>
             <Divider className="my-2" />
           </>
-        ) : null}
+        )}
         <SettingItem title="IPv6" divider>
           <Switch
             size="sm"
@@ -320,14 +320,14 @@ const DNS: React.FC = () => {
             size="sm"
             isSelected={values.useHosts}
             onValueChange={(v) => {
-              setValues({ ...values, useHosts: v })
+              setValues({ ...values, useHosts: v, hosts: v ? [] : undefined })
             }}
           />
         </SettingItem>
         {values.useHosts && (
           <div className="flex flex-col items-stretch">
             <h3 className="mb-2"></h3>
-            {[...values.hosts, { domain: '', value: '' }].map(({ domain, value }, index) => (
+            {[...(values.hosts || []), { domain: '', value: '' }].map(({ domain, value }, index) => (
               <div key={index} className="flex mb-2">
                 <div className="flex-[4]">
                   <Input
@@ -354,7 +354,7 @@ const DNS: React.FC = () => {
                     value={Array.isArray(value) ? value.join(',') : value}
                     onValueChange={(v) => handleSubkeyChange('hosts', domain, v, index)}
                   />
-                  {index < values.hosts.length && (
+                  {index < (values.hosts || []).length && (
                     <Button
                       size="sm"
                       color="warning"
