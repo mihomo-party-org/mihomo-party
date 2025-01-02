@@ -2,6 +2,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from
 import React, { useEffect, useState } from 'react'
 import { BaseEditor } from '../base/base-editor'
 import { getFileStr, setFileStr } from '@renderer/utils/ipc'
+import yaml from 'js-yaml'
 type Language = 'yaml' | 'javascript' | 'css' | 'json' | 'text'
 
 interface Props {
@@ -9,15 +10,36 @@ interface Props {
   path: string
   type: string
   title: string
+  privderType: string
   format?: string
 }
 const Viewer: React.FC<Props> = (props) => {
-  const { type, path, title, format, onClose } = props
+  const { type, path, title, format, privderType, onClose } = props
   const [currData, setCurrData] = useState('')
-  const language: Language = !format || format === 'YamlRule' ? 'yaml' : 'text'
+  let language: Language = !format || format === 'YamlRule' ? 'yaml' : 'text'
 
   const getContent = async (): Promise<void> => {
-    setCurrData(await getFileStr(path))
+    let fileContent: React.SetStateAction<string>
+    if (type === 'Inline') {
+      fileContent = await getFileStr('config.yaml')
+      language = 'yaml'
+    } else {
+      fileContent = await getFileStr(path)
+    }
+    try {
+      const parsedYaml = yaml.load(fileContent)
+      if (privderType === 'proxy-providers') {
+        setCurrData(yaml.dump({
+          'proxies': parsedYaml[privderType][title].payload
+        }))
+      } else {
+        setCurrData(yaml.dump({
+          'rules': parsedYaml[privderType][title].payload
+        }))
+      }
+    } catch (error) {
+      setCurrData(fileContent)
+    }
   }
 
   useEffect(() => {

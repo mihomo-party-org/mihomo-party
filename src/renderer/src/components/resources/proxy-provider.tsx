@@ -21,7 +21,8 @@ const ProxyProvider: React.FC = () => {
     show: false,
     path: '',
     type: '',
-    title: ''
+    title: '',
+    privderType: ''
   })
   useEffect(() => {
     if (showDetails.title) {
@@ -104,7 +105,8 @@ const ProxyProvider: React.FC = () => {
           path={showDetails.path}
           type={showDetails.type}
           title={showDetails.title}
-          onClose={() => setShowDetails({ show: false, path: '', type: '', title: '' })}
+          privderType={showDetails.privderType}
+          onClose={() => setShowDetails({ show: false, path: '', type: '', title: '', privderType: '' })}
         />
       )}
       <SettingItem title="代理集合" divider>
@@ -136,28 +138,27 @@ const ProxyProvider: React.FC = () => {
               {/* <Button isIconOnly className="ml-2" size="sm">
                 <IoMdEye className="text-lg" />
               </Button> */}
-              {provider.vehicleType !== 'Inline' && (
-                <Button
-                  isIconOnly
-                  title={provider.vehicleType == 'File' ? '编辑' : '查看'}
-                  className="ml-2"
-                  size="sm"
-                  onPress={() => {
-                    setShowDetails({
-                      show: false,
-                      path: provider.name,
-                      type: provider.vehicleType,
-                      title: provider.name
-                    })
-                  }}
-                >
-                  {provider.vehicleType == 'File' ? (
-                    <MdEditDocument className={`text-lg`} />
-                  ) : (
-                    <CgLoadbarDoc className={`text-lg`} />
-                  )}
-                </Button>
-              )}
+              <Button
+                isIconOnly
+                title={provider.vehicleType == 'File' ? '编辑' : '查看'}
+                className="ml-2"
+                size="sm"
+                onPress={() => {
+                  setShowDetails({
+                    show: false,
+                    privderType: 'proxy-providers',
+                    path: provider.name,
+                    type: provider.vehicleType,
+                    title: provider.name
+                  })
+                }}
+              >
+                {provider.vehicleType == 'File' ? (
+                  <MdEditDocument className={`text-lg`} />
+                ) : (
+                  <CgLoadbarDoc className={`text-lg`} />
+                )}
+              </Button>
               <Button
                 isIconOnly
                 title="更新"
