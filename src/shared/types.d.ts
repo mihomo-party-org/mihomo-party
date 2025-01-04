@@ -258,6 +258,10 @@ interface ISysProxyConfig {
 
 interface IAppConfig {
   core: 'mihomo' | 'mihomo-alpha'
+  disableLoopbackDetector: boolean
+  disableEmbedCA: boolean
+  disableSystemCA: boolean
+  skipSafePathCheck: boolean
   proxyDisplayMode: 'simple' | 'full'
   proxyDisplayOrder: 'default' | 'delay' | 'name'
   profileDisplayDate?: 'expire' | 'update'

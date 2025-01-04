@@ -62,7 +62,11 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
     core = 'mihomo',
     autoSetDNS = true,
     diffWorkDir = false,
-    mihomoCpuPriority = 'PRIORITY_NORMAL'
+    mihomoCpuPriority = 'PRIORITY_NORMAL',
+    disableLoopbackDetector = false,
+    disableEmbedCA = false,
+    disableSystemCA = false,
+    skipSafePathCheck = false
   } = await getAppConfig()
   const { 'log-level': logLevel } = await getControledMihomoConfig()
   if (existsSync(path.join(dataDir(), 'core.pid'))) {
@@ -92,12 +96,19 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
   }
   const stdout = createWriteStream(logPath(), { flags: 'a' })
   const stderr = createWriteStream(logPath(), { flags: 'a' })
+  const env = {
+    DISABLE_LOOPBACK_DETECTOR: String(disableLoopbackDetector),
+    DISABLE_EMBED_CA: String(disableEmbedCA),
+    DISABLE_SYSTEM_CA: String(disableSystemCA),
+    SKIP_SAFE_PATH_CHECK: String(skipSafePathCheck)
+  }
   child = spawn(
     corePath,
     ['-d', diffWorkDir ? mihomoProfileWorkDir(current) : mihomoWorkDir(), ctlParam, mihomoIpcPath],
     {
       detached: detached,
-      stdio: detached ? 'ignore' : undefined
+      stdio: detached ? 'ignore' : undefined,
+      env: env
     }
   )
   if (process.platform === 'win32' && child.pid) {
@@ -130,7 +141,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
         patchControledMihomoConfig({ tun: { enable: false } })
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
         ipcMain.emit('updateTrayMenu')
-        reject('虚拟网卡启动失败, 请尝试手动授予内核权限')
+        reject('虚拟网卡启动失败，请尝试手动授予内核权限')
       }
 
       if (
@@ -211,10 +222,17 @@ export async function quitWithoutCore(): Promise<void> {
 }
 
 async function checkProfile(): Promise<void> {
-  const { core = 'mihomo', diffWorkDir = false } = await getAppConfig()
+  const {
+    core = 'mihomo',
+    diffWorkDir = false,
+    skipSafePathCheck = false
+  } = await getAppConfig()
   const { current } = await getProfileConfig()
   const corePath = mihomoCorePath(core)
   const execFilePromise = promisify(execFile)
+  const env = {
+    SKIP_SAFE_PATH_CHECK: String(skipSafePathCheck)
+  }
   try {
     await execFilePromise(corePath, [
       '-t',
@@ -222,7 +240,7 @@ async function checkProfile(): Promise<void> {
       diffWorkDir ? mihomoWorkConfigPath(current) : mihomoWorkConfigPath('work'),
       '-d',
       mihomoTestDir()
-    ])
+    ], { env })
   } catch (error) {
     if (error instanceof Error && 'stdout' in error) {
       const { stdout } = error as { stdout: string }
