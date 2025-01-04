@@ -27,7 +27,14 @@ const CoreMap = {
 const Mihomo: React.FC = () => {
   const { t } = useTranslation()
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { core = 'mihomo', maxLogDays = 7, sysProxy } = appConfig || {}
+  const { 
+    core = 'mihomo',
+    maxLogDays = 7,
+    sysProxy,
+    disableLoopbackDetector,
+    disableEmbedCA,
+    disableSystemCA,
+    skipSafePathCheck } = appConfig || {}
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const {
     ipv6,
@@ -68,6 +75,17 @@ const Mihomo: React.FC = () => {
   const onChangeNeedRestart = async (patch: Partial<IMihomoConfig>): Promise<void> => {
     await patchControledMihomoConfig(patch)
     await restartCore()
+  }
+
+  const handleConfigChangeWithRestart = async (key: string, value: any) => {
+    try {
+      await patchAppConfig({ [key]: value })
+      await restartCore()
+    } catch (e) {
+      alert(e)
+    } finally {
+      PubSub.publish('mihomo-core-changed')
+    }
   }
 
   return (
@@ -119,14 +137,7 @@ const Mihomo: React.FC = () => {
               aria-label={t('mihomo.selectCoreVersion')}
               selectedKeys={new Set([core])}
               onSelectionChange={async (v) => {
-                try {
-                  await patchAppConfig({ core: v.currentKey as 'mihomo' | 'mihomo-alpha' })
-                  await restartCore()
-                } catch (e) {
-                  alert(e)
-                } finally {
-                  PubSub.publish('mihomo-core-changed')
-                }
+                handleConfigChangeWithRestart('core', v.currentKey as 'mihomo' | 'mihomo-alpha')
               }}
             >
               <SelectItem key="mihomo">{t(CoreMap['mihomo'])}</SelectItem>
@@ -634,6 +645,42 @@ const Mihomo: React.FC = () => {
               isSelected={storeFakeIp}
               onValueChange={(v) => {
                 onChangeNeedRestart({ profile: { 'store-fake-ip': v } })
+              }}
+            />
+          </SettingItem>
+          <SettingItem title={t('mihomo.disableLoopbackDetector')} divider>
+            <Switch
+              size="sm"
+              isSelected={disableLoopbackDetector}
+              onValueChange={(v) => {
+                handleConfigChangeWithRestart('disableLoopbackDetector', v)
+              }}
+            />
+          </SettingItem>
+          <SettingItem title={t('mihomo.skipSafePathCheck')} divider>
+            <Switch
+              size="sm"
+              isSelected={skipSafePathCheck}
+              onValueChange={(v) => {
+                handleConfigChangeWithRestart('skipSafePathCheck', v)
+              }}
+            />
+          </SettingItem>
+          <SettingItem title={t('mihomo.disableEmbedCA')} divider>
+            <Switch
+              size="sm"
+              isSelected={disableEmbedCA}
+              onValueChange={(v) => {
+                handleConfigChangeWithRestart('disableEmbedCA', v)
+              }}
+            />
+          </SettingItem>
+          <SettingItem title={t('mihomo.disableSystemCA')} divider>
+            <Switch
+              size="sm"
+              isSelected={disableSystemCA}
+              onValueChange={(v) => {
+                handleConfigChangeWithRestart('disableSystemCA', v)
               }}
             />
           </SettingItem>
