@@ -89,7 +89,7 @@ export const BaseEditor: React.FC<Props> = (props) => {
   const trueTheme = theme === 'system' ? systemTheme : theme
   const { value, readOnly = false, language, onChange } = props
 
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>()
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>(undefined)
 
   const editorWillMount = (): void => {
     monacoInitialization()
@@ -141,6 +141,7 @@ export const BaseEditor: React.FC<Props> = (props) => {
       }}
       editorWillMount={editorWillMount}
       editorDidMount={editorDidMount}
+      editorWillUnmount={(): void => { }}
       onChange={onChange}
     />
   )
