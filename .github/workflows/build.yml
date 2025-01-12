@@ -197,10 +197,6 @@ jobs:
           pnpm install
           pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
           pnpm prepare --${{ matrix.arch }}
-      - name: Enable Notarization
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          sed -i "" -e "s/notarize: false/notarize: true/" electron-builder.yml
       - name: Build
         env:
           npm_config_arch: ${{ matrix.arch }}
@@ -223,7 +219,7 @@ jobs:
           for pkg_name in $(ls -1 dist/*.pkg); do
             pkg_name=$(ls -1 dist/*.pkg)
             mv $pkg_name Unsigned-Workbench.pkg
-            productsign --sign "Developer ID Installer: Prometheus Advertising Corp (489PDK5LP3)" Unsigned-Workbench.pkg $pkg_name
+            productsign --sign "Developer ID Application: Prometheus Advertising Corp (489PDK5LP3)" Unsigned-Workbench.pkg $pkg_name
             rm -f Unsigned-Workbench.pkg
             xcrun notarytool submit $pkg_name --apple-id $APPLE_ID --team-id $APPLE_TEAM_ID --password $APPLE_APP_SPECIFIC_PASSWORD --wait
           done
@@ -275,10 +271,6 @@ jobs:
           pnpm add @mihomo-party/sysproxy-darwin-${{ matrix.arch }}
           pnpm add -D electron@32.2.2
           pnpm prepare --${{ matrix.arch }}
-      - name: Enable Notarization
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          sed -i "" -e "s/notarize: false/notarize: true/" electron-builder.yml
       - name: Build
         env:
           npm_config_arch: ${{ matrix.arch }}
@@ -286,9 +278,7 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          CSC_INSTALLER_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          CSC_INSTALLER_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
         run: |
           sed -i "" -e "s/macos/catalina/" electron-builder.yml
           chmod +x build/pkg-scripts/postinstall
@@ -303,7 +293,7 @@ jobs:
           for pkg_name in $(ls -1 dist/*.pkg); do
             pkg_name=$(ls -1 dist/*.pkg)
             mv $pkg_name Unsigned-Workbench.pkg
-            productsign --sign "Developer ID Installer: Prometheus Advertising Corp (489PDK5LP3)" Unsigned-Workbench.pkg $pkg_name
+            productsign --sign "Developer ID Application: Prometheus Advertising Corp (489PDK5LP3)" Unsigned-Workbench.pkg $pkg_name
             rm -f Unsigned-Workbench.pkg
             xcrun notarytool submit $pkg_name --apple-id $APPLE_ID --team-id $APPLE_TEAM_ID --password $APPLE_APP_SPECIFIC_PASSWORD --wait
           done
