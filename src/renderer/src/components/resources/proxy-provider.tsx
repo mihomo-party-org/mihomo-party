@@ -50,11 +50,7 @@ const ProxyProvider: React.FC = () => {
     if (!data) return []
     return Object.values(data.providers)
       .map(provider => {
-        if (provider.vehicleType === 'Inline' || (provider.subscriptionInfo &&
-          provider.subscriptionInfo.Upload === 0 &&
-          provider.subscriptionInfo.Download === 0 &&
-          provider.subscriptionInfo.Total === 0 &&
-          provider.subscriptionInfo.Expire === 0)) {
+        if (provider.vehicleType === 'Inline' || provider.vehicleType === 'File') {
           return {
             ...provider,
             subscriptionInfo: null

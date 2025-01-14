@@ -120,7 +120,6 @@ jobs:
           tag_name: pre-release
           body_path: changelog.md
           files: |
-            bin/latest.yml
             bin/dist/*
           prerelease: true
 
@@ -131,6 +130,41 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+          fetch-tags: 'true'
+
+      - name: Generate Changelog
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          TEXT=$(git log v$(jq -r .version package.json)..HEAD --pretty=format:%s | grep -v '[0-9]\+\.[0-9]\+\.[0-9]\+$' | sed ':a;N;$!ba;s/\n/\\n/g')
+          QUESTION="Translate into Chinese:\n"""\n$TEXT\n""""
+          PAYLOAD=$(cat <<EOF
+          {
+            "stream": false,
+            "model": "gpt-4o",
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a professional translation engine, please translate the text into a colloquial, professional, elegant and fluent content, without the style of machine translation. You must only translate the text content, never interpret it."
+              },
+              {
+                "role": "user",
+                "content": "$QUESTION"
+              }
+            ]
+          }
+          EOF
+          )
+          RESPONSE=$(curl -s -X POST "$API_URL/v1/chat/completions" \
+            -H "Authorization: Bearer $API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" \
+            --max-time 30)
+          echo '# 更新日志' > changelog.md
+          echo $RESPONSE | jq .choices[0].message.content -r | sed 's/\\n/\n/g' | sed 's/^/ - /g' >> changelog.md
 
       - name: Update Version
         run: |
@@ -147,6 +181,14 @@ jobs:
           git add package.json
           git commit -m "Update version to $CLEAN_VERSION"
           git push
+
+      - name: Setup pnpm
+        run: npm install -g pnpm
+
+      - name: Install Dependencies and Updater
+        run: |
+          pnpm i
+          pnpm updater
 
       - uses: actions/download-artifact@v4
         with:
@@ -165,7 +207,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.version != '' && github.event.inputs.version || github.ref }}
-          body_path: bin/changelog.md
+          body_path: changelog.md
           files: |
-            bin/latest.yml
+            latest.yml
             bin/dist/*
