@@ -23,6 +23,7 @@ import {
   writeTheme
 } from '@renderer/utils/ipc'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
+import debounce from '@renderer/utils/debounce'
 import { platform } from '@renderer/utils/init'
 import { useTheme } from 'next-themes'
 import { IoIosHelpCircle, IoMdCloudDownload } from 'react-icons/io'
@@ -35,6 +36,7 @@ const GeneralConfig: React.FC = () => {
   const [customThemes, setCustomThemes] = useState<{ key: string; label: string }[]>()
   const [openCSSEditor, setOpenCSSEditor] = useState(false)
   const [fetching, setFetching] = useState(false)
+  const [isRelaunching, setIsRelaunching] = useState(false)
   const { setTheme } = useTheme()
   const {
     silentStart = false,
@@ -270,10 +272,18 @@ const GeneralConfig: React.FC = () => {
           <Switch
             size="sm"
             isSelected={useWindowFrame}
-            onValueChange={async (v) => {
-              await patchAppConfig({ useWindowFrame: v })
-              await relaunchApp()
-            }}
+            isDisabled={isRelaunching}
+            onValueChange={debounce(async (v) => {
+              if (isRelaunching) return
+              setIsRelaunching(true)
+              try {
+                await patchAppConfig({ useWindowFrame: v })
+                await relaunchApp()
+              } catch (e) {
+                alert(e)
+                setIsRelaunching(false)
+              }
+            }, 1000)}
           />
         </SettingItem>
         <SettingItem title="背景色" divider>
