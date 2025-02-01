@@ -142,6 +142,8 @@ interface IMihomoProxy {
   type: MihomoProxyType
   udp: boolean
   xudp: boolean
+  mptcp: boolean
+  smux: boolean
 }
 
 interface IMihomoGroup {
