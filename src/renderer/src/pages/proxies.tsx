@@ -11,7 +11,7 @@ import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
 import { TbCircleLetterD } from 'react-icons/tb'
 import { FaLocationCrosshairs } from 'react-icons/fa6'
 import { RxLetterCaseCapitalize } from 'react-icons/rx'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { GroupedVirtuoso, GroupedVirtuosoHandle } from 'react-virtuoso'
 import ProxyItem from '@renderer/components/proxies/proxy-item'
 import { IoIosArrowBack } from 'react-icons/io'
@@ -20,6 +20,96 @@ import { useGroups } from '@renderer/hooks/use-groups'
 import CollapseInput from '@renderer/components/base/collapse-input'
 import { includesIgnoreCase } from '@renderer/utils/includes'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
+
+const SCROLL_POSITION_KEY = 'proxy_scroll_position'
+const GROUP_EXPAND_STATE_KEY = 'proxy_group_expand_state'
+const SCROLL_DEBOUNCE_TIME = 200
+const RENDER_DELAY = 100
+
+// 自定义 hook 用于管理滚动位置和展开状态
+const useProxyState = (groups: IMihomoMixedGroup[]) => {
+  const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
+  const [scrollPosition, setScrollPosition] = useState<number>(0)
+  const scrollTimerRef = useRef<NodeJS.Timeout>()
+  
+  // 初始化展开状态
+  const [isOpen, setIsOpen] = useState(() => {
+    try {
+      const savedState = localStorage.getItem(GROUP_EXPAND_STATE_KEY)
+      return savedState ? JSON.parse(savedState) : Array(groups.length).fill(false)
+    } catch (error) {
+      console.error('Failed to load group expand state:', error)
+      return Array(groups.length).fill(false)
+    }
+  })
+
+  // 保存展开状态
+  useEffect(() => {
+    try {
+      localStorage.setItem(GROUP_EXPAND_STATE_KEY, JSON.stringify(isOpen))
+    } catch (error) {
+      console.error('Failed to save group expand state:', error)
+    }
+  }, [isOpen])
+
+  // 清理定时器
+  useEffect(() => {
+    return () => {
+      if (scrollTimerRef.current) {
+        clearTimeout(scrollTimerRef.current)
+      }
+    }
+  }, [])
+
+  // 恢复滚动位置
+  useEffect(() => {
+    if (groups.length > 0) {
+      try {
+        const savedPosition = localStorage.getItem(SCROLL_POSITION_KEY)
+        if (savedPosition) {
+          const position = parseInt(savedPosition)
+          if (!isNaN(position) && position >= 0) {
+            const timer = setTimeout(() => {
+              virtuosoRef.current?.scrollTo({ top: position })
+            }, RENDER_DELAY)
+            return () => clearTimeout(timer)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to restore scroll position:', error)
+      }
+    }
+  }, [groups])
+
+  const saveScrollPosition = useCallback((position: number) => {
+    try {
+      localStorage.setItem(SCROLL_POSITION_KEY, position.toString())
+    } catch (error) {
+      console.error('Failed to save scroll position:', error)
+    }
+  }, [])
+
+  return {
+    virtuosoRef,
+    isOpen,
+    setIsOpen,
+    scrollPosition,
+    onScroll: useCallback((e: React.UIEvent<HTMLElement>) => {
+      const position = (e.target as HTMLElement).scrollTop
+      setScrollPosition(position)
+      
+      // 清理之前的定时器
+      if (scrollTimerRef.current) {
+        clearTimeout(scrollTimerRef.current)
+      }
+      
+      // 使用防抖来减少存储频率
+      scrollTimerRef.current = setTimeout(() => {
+        saveScrollPosition(position)
+      }, SCROLL_DEBOUNCE_TIME)
+    }, [saveScrollPosition])
+  }
+}
 
 const Proxies: React.FC = () => {
   const { controledMihomoConfig } = useControledMihomoConfig()
@@ -33,11 +123,11 @@ const Proxies: React.FC = () => {
     proxyCols = 'auto',
     delayTestConcurrency = 50
   } = appConfig || {}
+  
   const [cols, setCols] = useState(1)
-  const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
+  const { virtuosoRef, isOpen, setIsOpen, onScroll, scrollPosition } = useProxyState(groups)
   const [delaying, setDelaying] = useState(Array(groups.length).fill(false))
   const [searchValue, setSearchValue] = useState(Array(groups.length).fill(''))
-  const virtuosoRef = useRef<GroupedVirtuosoHandle>(null)
   const { groupCounts, allProxies } = useMemo(() => {
     const groupCounts: number[] = []
     const allProxies: (IMihomoProxy | IMihomoGroup)[][] = []
@@ -70,19 +160,25 @@ const Proxies: React.FC = () => {
     return { groupCounts, allProxies }
   }, [groups, isOpen, proxyDisplayOrder, cols, searchValue])
 
-  const onChangeProxy = async (group: string, proxy: string): Promise<void> => {
+  const onChangeProxy = useCallback(async (group: string, proxy: string): Promise<void> => {
     await mihomoChangeProxy(group, proxy)
     if (autoCloseConnection) {
       await mihomoCloseAllConnections()
     }
     mutate()
-  }
+    // 等待 DOM 更新完成后再恢复滚动位置
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        virtuosoRef.current?.scrollTo({ top: scrollPosition })
+      })
+    })
+  }, [autoCloseConnection, mutate, virtuosoRef, scrollPosition])
 
-  const onProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
+  const onProxyDelay = useCallback(async (proxy: string, url?: string): Promise<IMihomoDelay> => {
     return await mihomoProxyDelay(proxy, url)
-  }
+  }, [])
 
-  const onGroupDelay = async (index: number): Promise<void> => {
+  const onGroupDelay = useCallback(async (index: number): Promise<void> => {
     if (allProxies[index].length === 0) {
       setIsOpen((prev) => {
         const newOpen = [...prev]
@@ -95,61 +191,62 @@ const Proxies: React.FC = () => {
       newDelaying[index] = true
       return newDelaying
     })
-    // 限制并发数量
-    const result: Promise<void>[] = []
-    const runningList: Promise<void>[] = []
-    for (const proxy of allProxies[index]) {
-      const promise = Promise.resolve().then(async () => {
-        try {
-          await mihomoProxyDelay(proxy.name, groups[index].testUrl)
-        } catch {
-          // ignore
-        } finally {
-          mutate()
-        }
-      })
-      result.push(promise)
-      const running = promise.then(() => {
-        runningList.splice(runningList.indexOf(running), 1)
-      })
-      runningList.push(running)
-      if (runningList.length >= (delayTestConcurrency || 50)) {
-        await Promise.race(runningList)
-      }
-    }
-    await Promise.all(result)
-    setDelaying((prev) => {
-      const newDelaying = [...prev]
-      newDelaying[index] = false
-      return newDelaying
-    })
-  }
 
-  const calcCols = (): number => {
-    if (window.matchMedia('(min-width: 1536px)').matches) {
-      return 5
-    } else if (window.matchMedia('(min-width: 1280px)').matches) {
-      return 4
-    } else if (window.matchMedia('(min-width: 1024px)').matches) {
-      return 3
-    } else {
-      return 2
+    try {
+      // 限制并发数量
+      const result: Promise<void>[] = []
+      const runningList: Promise<void>[] = []
+      for (const proxy of allProxies[index]) {
+        const promise = Promise.resolve().then(async () => {
+          try {
+            await mihomoProxyDelay(proxy.name, groups[index].testUrl)
+          } catch {
+            // ignore
+          } finally {
+            mutate()
+          }
+        })
+        result.push(promise)
+        const running = promise.then(() => {
+          runningList.splice(runningList.indexOf(running), 1)
+        })
+        runningList.push(running)
+        if (runningList.length >= (delayTestConcurrency || 50)) {
+          await Promise.race(runningList)
+        }
+      }
+      await Promise.all(result)
+    } finally {
+      setDelaying((prev) => {
+        const newDelaying = [...prev]
+        newDelaying[index] = false
+        return newDelaying
+      })
     }
-  }
+  }, [allProxies, groups, delayTestConcurrency, mutate])
+
+  const calcCols = useCallback((): number => {
+    if (proxyCols !== 'auto') {
+      return parseInt(proxyCols)
+    }
+    if (window.matchMedia('(min-width: 1536px)').matches) return 5
+    if (window.matchMedia('(min-width: 1280px)').matches) return 4
+    if (window.matchMedia('(min-width: 1024px)').matches) return 3
+    return 2
+  }, [proxyCols])
 
   useEffect(() => {
-    if (proxyCols !== 'auto') {
-      setCols(parseInt(proxyCols))
-      return
-    }
-    setCols(calcCols())
-    window.onresize = (): void => {
+    const handleResize = (): void => {
       setCols(calcCols())
     }
-    return (): void => {
-      window.onresize = null
+
+    handleResize() // 初始化
+    window.addEventListener('resize', handleResize)
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
     }
-  }, [])
+  }, [calcCols])
 
   return (
     <BasePage
@@ -212,6 +309,7 @@ const Proxies: React.FC = () => {
           <GroupedVirtuoso
             ref={virtuosoRef}
             groupCounts={groupCounts}
+            onScroll={onScroll}
             groupContent={(index) => {
               if (
                 groups[index] &&
