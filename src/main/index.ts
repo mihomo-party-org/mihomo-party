@@ -221,7 +221,8 @@ export async function createWindow(): Promise<void> {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       spellcheck: false,
-      sandbox: false
+      sandbox: false,
+      devTools: true
     }
   })
   mainWindowState.manage(mainWindow)
@@ -282,6 +283,12 @@ export async function createWindow(): Promise<void> {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
+
+  // 在开发模式下自动打开 DevTools
+  if (is.dev) {
+    mainWindow.webContents.openDevTools()
+  }
+
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
