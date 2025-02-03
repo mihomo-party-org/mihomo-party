@@ -126,6 +126,7 @@ const MihomoConfig: React.FC = () => {
           className="w-[150px]"
           size="sm"
           selectedKeys={new Set([proxyCols])}
+          aria-label="选择代理节点展示列数"
           onSelectionChange={async (v) => {
             await patchAppConfig({ proxyCols: v.currentKey as 'auto' | '1' | '2' | '3' | '4' })
           }}

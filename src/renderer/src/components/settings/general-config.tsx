@@ -170,6 +170,7 @@ const GeneralConfig: React.FC = () => {
             size="sm"
             selectionMode="multiple"
             selectedKeys={new Set(envType)}
+            aria-label="选择环境变量类型"
             onSelectionChange={async (v) => {
               try {
                 await patchAppConfig({
@@ -363,6 +364,7 @@ const GeneralConfig: React.FC = () => {
               className="w-[60%]"
               size="sm"
               selectedKeys={new Set([customTheme])}
+              aria-label="选择主题"
               onSelectionChange={async (v) => {
                 try {
                   await patchAppConfig({ customTheme: v.currentKey as string })
