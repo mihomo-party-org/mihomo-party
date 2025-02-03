@@ -12,9 +12,11 @@ import { useState } from 'react'
 import UpdaterModal from '../updater/updater-modal'
 import { version } from '@renderer/utils/init'
 import { IoIosHelpCircle } from 'react-icons/io'
-import { firstDriver } from '@renderer/App'
+import { getDriver } from '@renderer/App'
+import { useTranslation } from 'react-i18next'
 
 const Actions: React.FC = () => {
+  const { t } = useTranslation()
   const [newVersion, setNewVersion] = useState('')
   const [changelog, setChangelog] = useState('')
   const [openUpdate, setOpenUpdate] = useState(false)
@@ -30,12 +32,12 @@ const Actions: React.FC = () => {
         />
       )}
       <SettingCard>
-        <SettingItem title="打开引导页面" divider>
-          <Button size="sm" onPress={() => firstDriver.drive()}>
-            打开引导页面
+        <SettingItem title={t('actions.guide.title')} divider>
+          <Button size="sm" onPress={() => getDriver()?.drive()}>
+            {t('actions.guide.button')}
           </Button>
         </SettingItem>
-        <SettingItem title="检查更新" divider>
+        <SettingItem title={t('actions.update.title')} divider>
           <Button
             size="sm"
             isLoading={checkingUpdate}
@@ -48,7 +50,9 @@ const Actions: React.FC = () => {
                   setChangelog(version.changelog)
                   setOpenUpdate(true)
                 } else {
-                  new window.Notification('当前已是最新版本', { body: '无需更新' })
+                  new window.Notification(t('actions.update.upToDate.title'), { 
+                    body: t('actions.update.upToDate.body') 
+                  })
                 }
               } catch (e) {
                 alert(e)
@@ -57,13 +61,13 @@ const Actions: React.FC = () => {
               }
             }}
           >
-            检查更新
+            {t('actions.update.button')}
           </Button>
         </SettingItem>
         <SettingItem
-          title="重置软件"
+          title={t('actions.reset.title')}
           actions={
-            <Tooltip content="删除所有配置，将软件恢复初始状态">
+            <Tooltip content={t('actions.reset.tooltip')}>
               <Button isIconOnly size="sm" variant="light">
                 <IoIosHelpCircle className="text-lg" />
               </Button>
@@ -72,13 +76,13 @@ const Actions: React.FC = () => {
           divider
         >
           <Button size="sm" onPress={resetAppConfig}>
-            重置软件
+            {t('actions.reset.button')}
           </Button>
         </SettingItem>
         <SettingItem
-          title="创建堆快照"
+          title={t('actions.heapSnapshot.title')}
           actions={
-            <Tooltip content="创建主进程堆快照，用于排查内存问题">
+            <Tooltip content={t('actions.heapSnapshot.tooltip')}>
               <Button isIconOnly size="sm" variant="light">
                 <IoIosHelpCircle className="text-lg" />
               </Button>
@@ -87,13 +91,13 @@ const Actions: React.FC = () => {
           divider
         >
           <Button size="sm" onPress={createHeapSnapshot}>
-            创建堆快照
+            {t('actions.heapSnapshot.button')}
           </Button>
         </SettingItem>
         <SettingItem
-          title="轻量模式"
+          title={t('actions.lightMode.title')}
           actions={
-            <Tooltip content="完全退出软件，只保留内核进程">
+            <Tooltip content={t('actions.lightMode.tooltip')}>
               <Button isIconOnly size="sm" variant="light">
                 <IoIosHelpCircle className="text-lg" />
               </Button>
@@ -102,15 +106,15 @@ const Actions: React.FC = () => {
           divider
         >
           <Button size="sm" onPress={quitWithoutCore}>
-            轻量模式
+            {t('actions.lightMode.button')}
           </Button>
         </SettingItem>
-        <SettingItem title="退出应用" divider>
+        <SettingItem title={t('actions.quit.title')} divider>
           <Button size="sm" onPress={quitApp}>
-            退出应用
+            {t('actions.quit.button')}
           </Button>
         </SettingItem>
-        <SettingItem title="应用版本">
+        <SettingItem title={t('actions.version.title')}>
           <div>v{version}</div>
         </SettingItem>
       </SettingCard>

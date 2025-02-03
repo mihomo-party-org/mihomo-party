@@ -5,6 +5,7 @@ import { Button, Divider, Input } from '@nextui-org/react'
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
 import { IoLocationSharp } from 'react-icons/io5'
 import { CgTrash } from 'react-icons/cg'
+import { useTranslation } from 'react-i18next'
 
 import { includesIgnoreCase } from '@renderer/utils/includes'
 
@@ -35,6 +36,7 @@ window.electron.ipcRenderer.on('mihomoLogs', (_e, log: IMihomoLogInfo) => {
 })
 
 const Logs: React.FC = () => {
+  const { t } = useTranslation()
   const [logs, setLogs] = useState<IMihomoLogInfo[]>(cachedLogs.log)
   const [filter, setFilter] = useState('')
   const [trace, setTrace] = useState(true)
@@ -68,13 +70,13 @@ const Logs: React.FC = () => {
   }, [])
 
   return (
-    <BasePage title="实时日志">
+    <BasePage title={t('logs.title')}>
       <div className="sticky top-0 z-40">
         <div className="w-full flex p-2">
           <Input
             size="sm"
             value={filter}
-            placeholder="筛选过滤"
+            placeholder={t('logs.filter')}
             isClearable
             onValueChange={setFilter}
           />
@@ -84,6 +86,7 @@ const Logs: React.FC = () => {
             className="ml-2"
             color={trace ? 'primary' : 'default'}
             variant={trace ? 'solid' : 'bordered'}
+            title={t('logs.autoScroll')}
             onPress={() => {
               setTrace((prev) => !prev)
             }}
@@ -93,7 +96,7 @@ const Logs: React.FC = () => {
           <Button
             size="sm"
             isIconOnly
-            title="清空日志"
+            title={t('logs.clear')}
             className="ml-2"
             variant="light"
             color="danger"

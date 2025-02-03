@@ -1,0 +1,723 @@
+{
+  "common": {
+    "settings": "设置",
+    "profiles": "配置",
+    "proxies": "代理",
+    "connections": "连接",
+    "dns": "DNS",
+    "tun": "TUN",
+    "save": "保存",
+    "cancel": "取消",
+    "edit": "编辑",
+    "delete": "删除",
+    "seconds": "秒",
+    "confirm": "确认",
+    "auto": "自动",
+    "default": "默认",
+    "close": "关闭",
+    "pinWindow": "窗口置顶",
+    "enterRootPassword": "请输入root密码",
+    "next": "下一步",
+    "prev": "上一步",
+    "done": "完成",
+    "notification": {
+      "restartRequired": "需要重启应用以使更改生效"
+    },
+    "error": {
+      "appCrash": "应用崩溃了 :( 请将以下信息提交给开发者以排查错误",
+      "copyErrorMessage": "复制报错信息",
+      "invalidCron": "无效的 Cron 表达式",
+      "getBackupListFailed": "获取备份列表失败：{{error}}",
+      "restoreFailed": "恢复失败：{{error}}",
+      "deleteFailed": "删除失败：{{error}}",
+      "shortcutRegistrationFailed": "快捷键注册失败",
+      "shortcutRegistrationFailedWithError": "快捷键注册失败：{{error}}"
+    },
+    "updater": {
+      "versionReady": "v{{version}} 版本就绪",
+      "goToDownload": "前往下载",
+      "update": "更新"
+    }
+  },
+  "settings": {
+    "general": "通用设置",
+    "mihomo": "Mihomo 设置",
+    "language": "语言",
+    "theme": "主题",
+    "darkMode": "深色模式",
+    "lightMode": "浅色模式",
+    "autoStart": "开机自启",
+    "autoCheckUpdate": "自动检查更新",
+    "silentStart": "静默启动",
+    "autoQuitWithoutCore": "自动进入轻量模式",
+    "autoQuitWithoutCoreTooltip": "关闭窗口后指定时间自动进入轻量模式",
+    "autoQuitWithoutCoreDelay": "轻量模式自动启用延迟",
+    "envType": "环境变量类型",
+    "showFloatingWindow": "显示悬浮窗",
+    "spinFloatingIcon": "根据网速旋转悬浮窗图标",
+    "disableTray": "禁用托盘图标",
+    "proxyInTray": "在托盘菜单显示代理信息",
+    "showTraffic_windows": "在任务栏显示网速",
+    "showTraffic_mac": "在状态栏显示网速",
+    "showDockIcon": "显示 Dock 图标",
+    "useWindowFrame": "使用系统标题栏",
+    "backgroundColor": "背景颜色",
+    "backgroundAuto": "自动",
+    "backgroundDark": "深色",
+    "backgroundLight": "浅色",
+    "fetchTheme": "获取主题",
+    "importTheme": "导入主题",
+    "editTheme": "编辑主题",
+    "selectTheme": "选择主题",
+    "links": {
+      "docs": "官方文档",
+      "github": "GitHub 仓库",
+      "telegram": "Telegram 群组"
+    },
+    "title": "应用设置"
+  },
+  "mihomo": {
+    "title": "内核设置",
+    "restart": "重启内核",
+    "memory": "内存使用",
+    "userAgent": "订阅 User Agent",
+    "userAgentPlaceholder": "默认：clash.meta",
+    "delayTest": {
+      "url": "延迟测试 URL",
+      "urlPlaceholder": "默认：https://www.gstatic.com/generate_204",
+      "concurrency": "延迟测试并发数",
+      "concurrencyPlaceholder": "默认：50",
+      "timeout": "延迟测试超时",
+      "timeoutPlaceholder": "默认：5000"
+    },
+    "gist": {
+      "title": "同步运行时配置到 Gist",
+      "copyUrl": "复制 Gist URL",
+      "token": "GitHub Token"
+    },
+    "proxyColumns": {
+      "title": "代理显示列数",
+      "auto": "自动",
+      "one": "一列",
+      "two": "两列",
+      "three": "三列",
+      "four": "四列"
+    },
+    "cpuPriority": {
+      "title": "核心进程优先级",
+      "realtime": "实时",
+      "high": "高",
+      "aboveNormal": "高于正常",
+      "normal": "正常",
+      "belowNormal": "低于正常",
+      "low": "低"
+    },
+    "workDir": {
+      "title": "不同订阅使用独立工作目录",
+      "tooltip": "启用后可避免不同订阅中存在相同名称的代理组时发生冲突"
+    },
+    "controlDns": "控制 DNS 设置",
+    "controlSniff": "控制域名嗅探",
+    "autoCloseConnection": "自动关闭连接",
+    "pauseSSID": {
+      "title": "指定 WiFi SSID 直连",
+      "placeholder": "输入 SSID"
+    },
+    "coreVersion": "内核版本",
+    "upgradeCore": "升级内核",
+    "coreAuthLost": "内核权限丢失",
+    "coreUpgradeSuccess": "内核升级成功，若要使用虚拟网卡（Tun），请到虚拟网卡页面重新手动授权内核",
+    "alreadyLatestVersion": "已经是最新版本",
+    "selectCoreVersion": "选择内核版本",
+    "stableVersion": "稳定版",
+    "alphaVersion": "预览版",
+    "mixedPort": "混合端口",
+    "confirm": "确认",
+    "socksPort": "Socks 端口",
+    "httpPort": "Http 端口",
+    "redirPort": "Redir 端口",
+    "externalController": "外部控制地址",
+    "externalControllerSecret": "外部控制访问密钥",
+    "ipv6": "IPv6",
+    "allowLanConnection": "允许局域网连接",
+    "allowedIpSegments": "允许连接的 IP 段",
+    "disallowedIpSegments": "禁止连接的 IP 段",
+    "userVerification": "用户验证",
+    "skipAuthPrefixes": "允许跳过验证的 IP 段",
+    "useRttDelayTest": "使用 RTT 延迟测试",
+    "tcpConcurrent": "TCP 并发",
+    "storeSelectedNode": "存储选择节点",
+    "storeFakeIp": "存储 FakeIP",
+    "logRetentionDays": "日志保留天数",
+    "logLevel": "日志等级",
+    "selectLogLevel": "选择日志等级",
+    "silent": "静默",
+    "error": "错误",
+    "warning": "警告",
+    "info": "信息",
+    "debug": "调试",
+    "findProcess": "查找进程",
+    "selectFindProcessMode": "选择进程查找模式",
+    "strict": "自动",
+    "off": "关闭",
+    "always": "开启",
+    "username": {
+      "placeholder": "用户名"
+    },
+    "password": {
+      "placeholder": "密码"
+    },
+    "ipSegment": {
+      "placeholder": "IP 段"
+    },
+    "interface": {
+      "title": "网络信息"
+    }
+  },
+  "substore": {
+    "title": "Sub-Store",
+    "openInBrowser": "在浏览器中打开",
+    "enable": "启用 Sub-Store",
+    "allowLan": "允许局域网访问",
+    "useCustomBackend": "使用自定义 Sub-Store 后端",
+    "customBackendUrl": {
+      "title": "自定义 Sub-Store 后端 URL",
+      "placeholder": "必须包含协议"
+    },
+    "useProxy": "为所有 Sub-Store 请求启用代理",
+    "sync": {
+      "title": "定时同步订阅/文件",
+      "placeholder": "Cron 表达式"
+    },
+    "restore": {
+      "title": "定时恢复配置",
+      "placeholder": "Cron 表达式"
+    },
+    "backup": {
+      "title": "定时备份配置",
+      "placeholder": "Cron 表达式"
+    }
+  },
+  "webdav": {
+    "title": "WebDAV 备份",
+    "url": "WebDAV URL",
+    "dir": "WebDAV 备份目录",
+    "username": "WebDAV 用户名",
+    "password": "WebDAV 密码",
+    "backup": "备份",
+    "restore": {
+      "title": "恢复备份",
+      "noBackups": "还没有备份"
+    },
+    "notification": {
+      "backupSuccess": {
+        "title": "备份成功",
+        "body": "备份文件已上传到 WebDAV"
+      }
+    }
+  },
+  "shortcuts": {
+    "title": "快捷键设置",
+    "toggleWindow": "打开/关闭窗口",
+    "toggleFloatingWindow": "打开/关闭悬浮窗",
+    "toggleSystemProxy": "打开/关闭系统代理",
+    "toggleTun": "打开/关闭 TUN",
+    "toggleRuleMode": "切换规则模式",
+    "toggleGlobalMode": "切换全局模式",
+    "toggleDirectMode": "切换直连模式",
+    "toggleLightMode": "切换轻量模式",
+    "restartApp": "重启应用",
+    "input": {
+      "placeholder": "点击输入快捷键"
+    }
+  },
+  "sider": {
+    "title": "侧边栏设置",
+    "cards": {
+      "systemProxy": "系统代理",
+      "tun": "虚拟网卡",
+      "profiles": "订阅管理",
+      "proxies": "代理组",
+      "rules": "规则",
+      "resources": "外部资源",
+      "override": "覆写",
+      "connections": "连接",
+      "core": "内核设置",
+      "dns": "DNS",
+      "sniff": "域名嗅探",
+      "logs": "日志",
+      "substore": "Sub-Store",
+      "config": "运行时配置",
+      "emptyProfile": "空白配置",
+      "viewRuntimeConfig": "查看运行时配置",
+      "remote": "远程",
+      "local": "本地",
+      "trafficUsage": "流量使用进度",
+      "neverExpire": "长期有效",
+      "outbound": {
+        "title": "出站模式",
+        "rule": "规则",
+        "global": "全局",
+        "direct": "直连"
+      }
+    },
+    "size": {
+      "large": "大",
+      "small": "小",
+      "hidden": "隐藏"
+    }
+  },
+  "actions": {
+    "guide": {
+      "title": "打开引导页面",
+      "button": "打开引导页面"
+    },
+    "update": {
+      "title": "检查更新",
+      "button": "检查更新",
+      "upToDate": {
+        "title": "当前已是最新版本",
+        "body": "无需更新"
+      }
+    },
+    "reset": {
+      "title": "重置软件",
+      "button": "重置软件",
+      "tooltip": "删除所有配置，将软件恢复初始状态"
+    },
+    "heapSnapshot": {
+      "title": "创建堆快照",
+      "button": "创建堆快照",
+      "tooltip": "创建主进程堆快照，用于排查内存问题"
+    },
+    "lightMode": {
+      "title": "轻量模式",
+      "button": "轻量模式",
+      "tooltip": "完全退出软件，只保留内核进程"
+    },
+    "restartApp": "重启应用",
+    "quit": {
+      "title": "退出应用",
+      "button": "退出应用"
+    },
+    "version": {
+      "title": "应用版本"
+    }
+  },
+  "theme": {
+    "editor": {
+      "title": "编辑主题"
+    }
+  },
+  "proxies": {
+    "card": {
+      "title": "代理组"
+    },
+    "delay": {
+      "test": "测试",
+      "timeout": "超时"
+    },
+    "unpin": "取消固定",
+    "order": {
+      "default": "默认",
+      "delay": "延迟",
+      "name": "名称"
+    },
+    "mode": {
+      "full": "详细信息",
+      "simple": "简洁信息",
+      "direct": "直连模式"
+    },
+    "search": {
+      "placeholder": "搜索节点"
+    },
+    "locate": "定位到当前节点"
+  },
+  "sniffer": {
+    "title": "域名嗅探设置",
+    "parsePureIP": "对未映射 IP 地址嗅探",
+    "forceDNSMapping": "对真实 IP 映射嗅探",
+    "overrideDestination": "覆盖连接地址",
+    "sniff": {
+      "title": "HTTP 端口嗅探",
+      "tls": "TLS 端口嗅探",
+      "quic": "QUIC 端口嗅探",
+      "ports": {
+        "placeholder": "端口号，使用英文逗号分割"
+      }
+    },
+    "skipDomain": {
+      "title": "跳过域名嗅探",
+      "placeholder": "例：+.push.apple.com"
+    },
+    "forceDomain": {
+      "title": "强制域名嗅探",
+      "placeholder": "例：v2ex.com"
+    },
+    "skipDstAddress": {
+      "title": "跳过目标地址嗅探",
+      "placeholder": "例：1.1.1.1/32"
+    },
+    "skipSrcAddress": {
+      "title": "跳过来源地址嗅探",
+      "placeholder": "例：192.168.1.1/24"
+    }
+  },
+  "sysproxy": {
+    "title": "系统代理",
+    "host": {
+      "title": "代理主机",
+      "placeholder": "默认 127.0.0.1 若无特殊需求请勿修改"
+    },
+    "mode": {
+      "title": "代理模式",
+      "manual": "手动",
+      "pac": "PAC"
+    },
+    "uwp": {
+      "title": "UWP 工具",
+      "open": "打开 UWP 工具"
+    },
+    "pac": {
+      "edit": "编辑 PAC 脚本"
+    },
+    "bypass": {
+      "title": "代理绕过",
+      "addDefault": "添加默认代理绕过",
+      "placeholder": "例: *.baidu.com"
+    }
+  },
+  "tun": {
+    "title": "虚拟网卡",
+    "firewall": {
+      "title": "重设防火墙",
+      "reset": "重设防火墙"
+    },
+    "core": {
+      "title": "手动授权内核",
+      "auth": "手动授权内核"
+    },
+    "dns": {
+      "autoSet": "自动设置系统DNS"
+    },
+    "stack": {
+      "title": "Tun 模式堆栈"
+    },
+    "device": {
+      "title": "Tun 网卡名称"
+    },
+    "strictRoute": "严格路由",
+    "autoRoute": "自动设置全局路由",
+    "autoRedirect": "自动设置TCP重定向",
+    "autoDetectInterface": "自动选择流量出口接口",
+    "dnsHijack": "DNS 劫持",
+    "excludeAddress": {
+      "title": "排除自定义网段",
+      "placeholder": "例: 172.20.0.0/16"
+    },
+    "notifications": {
+      "coreAuthSuccess": "内核授权成功",
+      "firewallResetSuccess": "防火墙重设成功"
+    }
+  },
+  "dns": {
+    "title": "DNS 设置",
+    "enhancedMode": {
+      "title": "域名映射模式",
+      "fakeIp": "虚假 IP",
+      "redirHost": "真实 IP",
+      "normal": "取消映射"
+    },
+    "fakeIp": {
+      "range": "回应范围",
+      "rangePlaceholder": "例：198.18.0.1/16",
+      "filter": "真实 IP 回应",
+      "filterPlaceholder": "例：+.lan"
+    },
+    "respectRules": "遵守规则",
+    "defaultNameserver": "DNS 服务器域名解析",
+    "defaultNameserverPlaceholder": "例：223.5.5.5，仅支持 IP",
+    "proxyServerNameserver": "代理服务器域名解析",
+    "proxyServerNameserverPlaceholder": "例：tls://dns.alidns.com",
+    "nameserver": "默认解析服务器",
+    "nameserverPlaceholder": "例：tls://dns.alidns.com",
+    "directNameserver": "直连解析服务器",
+    "directNameserverPlaceholder": "例：tls://dns.alidns.com",
+    "nameserverPolicy": {
+      "title": "覆盖 DNS 策略",
+      "list": "DNS 策略列表",
+      "domainPlaceholder": "域名",
+      "serverPlaceholder": "DNS 服务器"
+    },
+    "systemHosts": {
+      "title": "使用系统 Hosts"
+    },
+    "customHosts": {
+      "title": "自定义 Hosts",
+      "list": "Hosts 列表",
+      "domainPlaceholder": "域名",
+      "valuePlaceholder": "域名或 IP"
+    }
+  },
+  "profiles": {
+    "title": "订阅管理",
+    "updateAll": "更新全部订阅",
+    "useProxy": "代理",
+    "import": "导入",
+    "open": "打开",
+    "new": "新建",
+    "newProfile": "新建订阅",
+    "substore": {
+      "visit": "访问 Sub-Store"
+    },
+    "error": {
+      "unsupportedFileType": "不支持的文件类型"
+    },
+    "emptyProfile": "空白订阅",
+    "viewRuntimeConfig": "查看当前运行时配置",
+    "neverExpire": "长期有效",
+    "remote": "远程",
+    "local": "本地",
+    "trafficUsage": "流量使用进度",
+    "traffic": {
+      "usage": "{{used}}/{{total}}",
+      "unlimited": "无限制",
+      "expired": "已过期",
+      "remainingDays": "剩余 {{days}} 天",
+      "lastUpdate": "最后更新：{{time}}"
+    },
+    "editInfo": {
+      "title": "编辑信息",
+      "name": "名称",
+      "url": "订阅地址",
+      "useProxy": "使用代理更新",
+      "interval": "更新间隔（分钟）",
+      "override": {
+        "title": "覆写",
+        "global": "全局",
+        "noAvailable": "没有可用的覆写",
+        "add": "添加覆写"
+      }
+    },
+    "editFile": {
+      "title": "编辑订阅",
+      "notice": "注意：此处编辑配置更新订阅后会还原，如需要自定义配置请使用",
+      "override": "覆写",
+      "feature": "功能"
+    },
+    "openFile": "打开文件",
+    "home": "主页"
+  },
+  "outbound": {
+    "title": "出站模式",
+    "modes": {
+      "rule": "规则",
+      "global": "全局",
+      "direct": "直连"
+    }
+  },
+  "rules": {
+    "title": "分流规则",
+    "filter": "筛选过滤"
+  },
+  "override": {
+    "title": "覆写",
+    "import": "导入",
+    "docs": "使用文档",
+    "repository": "常用覆写仓库",
+    "unsupportedFileType": "不支持的文件类型",
+    "actions": {
+      "open": "打开",
+      "newYaml": "新建 YAML",
+      "newJs": "新建 JavaScript"
+    },
+    "defaultContent": {
+      "yaml": "# https://mihomo.party/docs/guide/override/yaml",
+      "js": "// https://mihomo.party/docs/guide/override/javascript\nfunction main(config) {\n  return config\n}"
+    },
+    "newFile": {
+      "yaml": "新建YAML",
+      "js": "新建JS"
+    },
+    "editInfo": {
+      "title": "编辑信息",
+      "name": "名称",
+      "url": "地址",
+      "global": "全局启用"
+    },
+    "editFile": {
+      "title": "编辑覆写{{type}}",
+      "script": "脚本",
+      "config": "配置"
+    },
+    "execLog": {
+      "title": "执行日志",
+      "close": "关闭"
+    },
+    "menuItems": {
+      "editInfo": "编辑信息",
+      "editFile": "编辑文件",
+      "openFile": "打开文件", 
+      "execLog": "执行日志",
+      "delete": "删除"
+    },
+    "labels": {
+      "global": "全局"
+    }
+  },
+  "connections": {
+    "title": "连接",
+    "upload": "上传",
+    "download": "下载",
+    "closeAll": "关闭全部连接",
+    "active": "活动中",
+    "closed": "已关闭",
+    "filter": "筛选过滤",
+    "orderBy": "连接排序方式",
+    "uploadAmount": "上传量",
+    "downloadAmount": "下载量",
+    "uploadSpeed": "上传速度",
+    "downloadSpeed": "下载速度",
+    "detail": {
+      "title": "连接详情",
+      "establishTime": "连接建立时间",
+      "rule": "规则",
+      "proxyChain": "代理链",
+      "connectionType": "连接类型",
+      "host": "主机",
+      "sniffHost": "嗅探主机",
+      "processName": "进程名",
+      "processPath": "进程路径",
+      "sourceIP": "来源IP",
+      "sourceGeoIP": "来源GeoIP",
+      "sourceASN": "来源ASN",
+      "destinationIP": "目标IP",
+      "destinationGeoIP": "目标GeoIP",
+      "destinationASN": "目标ASN",
+      "sourcePort": "来源端口",
+      "destinationPort": "目标端口",
+      "inboundIP": "入站IP",
+      "inboundPort": "入站端口",
+      "copyRule": "复制规则",
+      "inboundName": "入站名称",
+      "inboundUser": "入站用户",
+      "dscp": "DSCP",
+      "remoteDestination": "远程目标",
+      "dnsMode": "DNS模式",
+      "specialProxy": "特殊代理",
+      "specialRules": "特殊规则",
+      "close": "关闭"
+    }
+  },
+  "resources": {
+    "geoData": {
+      "geoip": "GeoIP 数据库",
+      "geosite": "GeoSite 数据库",
+      "mmdb": "MMDB 数据库",
+      "asn": "ASN 数据库",
+      "mode": "GeoData 数据模式",
+      "autoUpdate": "自动更新",
+      "updateInterval": "更新间隔（小时）",
+      "updateSuccess": "GeoData 更新成功"
+    }
+  },
+  "logs": {
+    "title": "实时日志",
+    "filter": "筛选过滤",
+    "clear": "清空日志",
+    "autoScroll": "自动滚动"
+  },
+  "tray": {
+    "showWindow": "显示窗口",
+    "showFloatingWindow": "显示悬浮窗",
+    "hideFloatingWindow": "关闭悬浮窗",
+    "ruleMode": "规则模式",
+    "globalMode": "全局模式",
+    "directMode": "直连模式",
+    "systemProxy": "系统代理",
+    "tun": "虚拟网卡",
+    "profiles": "订阅配置",
+    "openDirectories": {
+      "title": "打开目录",
+      "appDir": "应用目录",
+      "workDir": "工作目录",
+      "coreDir": "内核目录",
+      "logDir": "日志目录"
+    },
+    "copyEnv": "复制环境变量"
+  },
+  "guide": {
+    "welcome": {
+      "title": "欢迎使用 Mihomo Party",
+      "description": "这是一份交互式使用教程，如果您已经完全熟悉本软件的操作，可以直接点击右上角关闭按钮，后续您可以随时从设置中打开本教程"
+    },
+    "sider": {
+      "title": "导航栏",
+      "description": "左侧是应用的导航栏，兼顾仪表盘功能，在这里可以切换不同页面，也可以概览常用的状态信息"
+    },
+    "card": {
+      "title": "卡片",
+      "description": "点击导航栏卡片可以跳转到对应页面，拖动导航栏卡片可以自由排列卡片顺序"
+    },
+    "main": {
+      "title": "主要区域",
+      "description": "右侧是应用的主要区域，展示了导航栏所选页面的内容"
+    },
+    "profile": {
+      "title": "订阅管理",
+      "description": "订阅管理卡片展示当前运行的订阅配置信息，点击进入订阅管理页面可以在这里管理订阅配置"
+    },
+    "import": {
+      "title": "订阅导入",
+      "description": "Mihomo Party 支持多种订阅导入方式，在此输入订阅链接，点击导入即可导入您的订阅配置，如果您的订阅需要代理才能更新，请勾选\"代理\"再点击导入，当然这需要已经有一个可以正常使用的订阅才可以"
+    },
+    "substore": {
+      "title": "Sub-Store",
+      "description": "Mihomo Party 深度集成了 Sub-Store，您可以点击该按钮进入 Sub-Store 或直接导入您通过 Sub-Store 管理的订阅，Mihomo Party 默认使用内置的 Sub-Store 后端，如果您有自建的 Sub-Store 后端，可以在设置页面中配置，如果您不使用 Sub-Store 也可以在设置页面中关闭"
+    },
+    "localProfile": {
+      "title": "本地订阅",
+      "description": "点击\"+\"可以选择本地文件进行导入或者直接新建空白配置进行编辑"
+    },
+    "sysproxy": {
+      "title": "系统代理",
+      "description": "导入订阅之后，内核已经开始运行并监听指定端口，此时您已经可以通过指定代理端口来使用代理了，如果您要使大部分应用自动使用该端口的代理，您还需要打开系统代理开关"
+    },
+    "sysproxySetting": {
+      "title": "系统代理设置",
+      "description": "在此您可以进行系统代理相关设置，选择代理模式，如果某些 Windows 应用不遵循系统代理，还可以使用\"UWP 工具\"解除本地回环限制，对于\"手动代理模式\"和\"PAC 代理模式\"的区别，请自行百度"
+    },
+    "tun": {
+      "title": "虚拟网卡",
+      "description": "虚拟网卡，即同类软件中常见的\"Tun 模式\"，对于某些不遵循系统代理的应用，您可以打开虚拟网卡以让内核接管所有流量"
+    },
+    "tunSetting": {
+      "title": "虚拟网卡设置",
+      "description": "这里可以更改虚拟网卡相关设置，Mihomo Party 理论上已经完全解决权限问题，如果您的虚拟网卡仍然不可用，可以尝试重设防火墙（Windows）或手动授权内核（MacOS/Linux）后重启内核"
+    },
+    "override": {
+      "title": "覆写",
+      "description": "Mihomo Party 提供强大的覆写功能，可以对您导入的订阅配置进行个性化修改，如添加规则、自定义代理组等，您可以直接导入别人写好的覆写文件，也可以自己动手编写，<b>编辑好覆写文件一定要记得在需要覆写的订阅上启用</b>，覆写文件的语法请参考 <a href=\"https://mihomo.party/docs/guide/override\" target=\"_blank\">官方文档</a>"
+    },
+    "dns": {
+      "title": "DNS",
+      "description": "软件默认接管了内核的 DNS 设置，如果您需要使用订阅配置中的 DNS 设置，可以到应用设置中关闭\"接管 DNS 设置\"，域名嗅探同理"
+    },
+    "end": {
+      "title": "教程结束",
+      "description": "现在您已经了解了软件的基本用法，导入您的订阅开始使用吧，祝您使用愉快！\n您还可以加入我们的官方 <a href=\"https://t.me/mihomo_party_group\" target=\"_blank\">Telegram 群组</a> 获取最新资讯"
+    }
+  },
+  "main": {
+    "error": {
+      "adminRequired": "首次启动请以管理员权限运行",
+      "initFailed": "应用初始化失败",
+      "coreStartFailed": "内核启动出错",
+      "importFailed": "订阅导入失败",
+      "urlParamMissing": "缺少参数 url"
+    },
+    "notification": {
+      "importSuccess": "订阅导入成功"
+    }
+  }
+} 

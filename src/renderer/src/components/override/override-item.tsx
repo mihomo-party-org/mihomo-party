@@ -9,7 +9,7 @@ import {
   DropdownTrigger
 } from '@nextui-org/react'
 import { IoMdMore, IoMdRefresh } from 'react-icons/io'
-import dayjs from 'dayjs'
+import dayjs from '@renderer/utils/dayjs'
 import React, { Key, useEffect, useMemo, useState } from 'react'
 import EditFileModal from './edit-file-modal'
 import EditInfoModal from './edit-info-modal'
@@ -17,6 +17,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import ExecLogModal from './exec-log-modal'
 import { openFile, restartCore } from '@renderer/utils/ipc'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   info: IOverrideItem
@@ -35,6 +36,7 @@ interface MenuItem {
 }
 
 const OverrideItem: React.FC<Props> = (props) => {
+  const { t } = useTranslation()
   const { info, addOverrideItem, removeOverrideItem, mutateOverrideConfig, updateOverrideItem } =
     props
   const [updating, setUpdating] = useState(false)
@@ -57,35 +59,35 @@ const OverrideItem: React.FC<Props> = (props) => {
     const list = [
       {
         key: 'edit-info',
-        label: '编辑信息',
+        label: t('override.menuItems.editInfo'),
         showDivider: false,
         color: 'default',
         className: ''
       } as MenuItem,
       {
         key: 'edit-file',
-        label: '编辑文件',
+        label: t('override.menuItems.editFile'),
         showDivider: false,
         color: 'default',
         className: ''
       } as MenuItem,
       {
         key: 'open-file',
-        label: '打开文件',
+        label: t('override.menuItems.openFile'),
         showDivider: false,
         color: 'default',
         className: ''
       } as MenuItem,
       {
         key: 'exec-log',
-        label: '执行日志',
+        label: t('override.menuItems.execLog'),
         showDivider: true,
         color: 'default',
         className: ''
       } as MenuItem,
       {
         key: 'delete',
-        label: '删除',
+        label: t('override.menuItems.delete'),
         showDivider: false,
         color: 'danger',
         className: 'text-danger'
@@ -95,7 +97,7 @@ const OverrideItem: React.FC<Props> = (props) => {
       list.splice(3, 1)
     }
     return list
-  }, [info])
+  }, [info, t])
   const onMenuAction = (key: Key): void => {
     switch (key) {
       case 'edit-info': {
@@ -228,7 +230,7 @@ const OverrideItem: React.FC<Props> = (props) => {
               <div className={`mt-2 flex justify-start`}>
                 {info.global && (
                   <Chip size="sm" variant="dot" color="primary" className="mr-2">
-                    全局
+                    {t('override.labels.global')}
                   </Chip>
                 )}
                 <Chip size="sm" variant="bordered">

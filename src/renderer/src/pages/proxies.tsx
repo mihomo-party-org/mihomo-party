@@ -20,6 +20,7 @@ import { useGroups } from '@renderer/hooks/use-groups'
 import CollapseInput from '@renderer/components/base/collapse-input'
 import { includesIgnoreCase } from '@renderer/utils/includes'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
+import { useTranslation } from 'react-i18next'
 
 const SCROLL_POSITION_KEY = 'proxy_scroll_position'
 const GROUP_EXPAND_STATE_KEY = 'proxy_group_expand_state'
@@ -112,6 +113,7 @@ const useProxyState = (groups: IMihomoMixedGroup[]) => {
 }
 
 const Proxies: React.FC = () => {
+  const { t } = useTranslation()
   const { controledMihomoConfig } = useControledMihomoConfig()
   const { mode = 'rule' } = controledMihomoConfig || {}
   const { groups = [], mutate } = useGroups()
@@ -250,7 +252,7 @@ const Proxies: React.FC = () => {
 
   return (
     <BasePage
-      title="代理组"
+      title={t('proxies.card.title')}
       header={
         <>
           <Button
@@ -270,11 +272,11 @@ const Proxies: React.FC = () => {
             }}
           >
             {proxyDisplayOrder === 'default' ? (
-              <TbCircleLetterD className="text-lg" title="默认" />
+              <TbCircleLetterD className="text-lg" title={t('proxies.order.default')} />
             ) : proxyDisplayOrder === 'delay' ? (
-              <MdOutlineSpeed className="text-lg" title="延迟" />
+              <MdOutlineSpeed className="text-lg" title={t('proxies.order.delay')} />
             ) : (
-              <RxLetterCaseCapitalize className="text-lg" title="名称" />
+              <RxLetterCaseCapitalize className="text-lg" title={t('proxies.order.name')} />
             )}
           </Button>
           <Button
@@ -289,9 +291,9 @@ const Proxies: React.FC = () => {
             }}
           >
             {proxyDisplayMode === 'full' ? (
-              <CgDetailsMore className="text-lg" title="详细信息" />
+              <CgDetailsMore className="text-lg" title={t('proxies.mode.full')} />
             ) : (
-              <CgDetailsLess className="text-lg" title="简洁信息" />
+              <CgDetailsLess className="text-lg" title={t('proxies.mode.simple')} />
             )}
           </Button>
         </>
@@ -301,7 +303,7 @@ const Proxies: React.FC = () => {
         <div className="h-full w-full flex justify-center items-center">
           <div className="flex flex-col items-center">
             <MdDoubleArrow className="text-foreground-500 text-[100px]" />
-            <h2 className="text-foreground-500 text-[20px]">直连模式</h2>
+            <h2 className="text-foreground-500 text-[20px]">{t('proxies.mode.direct')}</h2>
           </div>
         </div>
       ) : (
@@ -383,7 +385,7 @@ const Proxies: React.FC = () => {
                               </Chip>
                             )}
                             <CollapseInput
-                              title="搜索节点"
+                              title={t('proxies.search.placeholder')}
                               value={searchValue[index]}
                               onValueChange={(v) => {
                                 setSearchValue((prev) => {
@@ -394,7 +396,7 @@ const Proxies: React.FC = () => {
                               }}
                             />
                             <Button
-                              title="定位到当前节点"
+                              title={t('proxies.locate')}
                               variant="light"
                               size="sm"
                               isIconOnly
@@ -424,7 +426,7 @@ const Proxies: React.FC = () => {
                               <FaLocationCrosshairs className="text-lg text-foreground-500" />
                             </Button>
                             <Button
-                              title="延迟测试"
+                              title={t('proxies.delay.test')}
                               variant="light"
                               isLoading={delaying[index]}
                               size="sm"

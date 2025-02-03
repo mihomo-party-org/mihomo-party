@@ -5,17 +5,19 @@ import { Badge, Button, Divider, Input, Select, SelectItem, Tab, Tabs } from '@n
 import { calcTraffic } from '@renderer/utils/calc'
 import ConnectionItem from '@renderer/components/connections/connection-item'
 import { Virtuoso } from 'react-virtuoso'
-import dayjs from 'dayjs'
+import dayjs from '@renderer/utils/dayjs'
 import ConnectionDetailModal from '@renderer/components/connections/connection-detail-modal'
 import { CgClose, CgTrash } from 'react-icons/cg'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { HiSortAscending, HiSortDescending } from 'react-icons/hi'
 import { includesIgnoreCase } from '@renderer/utils/includes'
 import { differenceWith, unionWith } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 let cachedConnections: IMihomoConnectionDetail[] = []
 
 const Connections: React.FC = () => {
+  const { t } = useTranslation()
   const [filter, setFilter] = useState('')
   const { appConfig, patchAppConfig } = useAppConfig()
   const { connectionDirection = 'asc', connectionOrderBy = 'time' } = appConfig || {}
@@ -133,7 +135,7 @@ const Connections: React.FC = () => {
 
   return (
     <BasePage
-      title="连接"
+      title={t('connections.title')}
       header={
         <div className="flex">
           <div className="flex items-center">
@@ -153,7 +155,7 @@ const Connections: React.FC = () => {
           >
             <Button
               className="app-nodrag ml-1"
-              title="关闭全部连接"
+              title={t('connections.closeAll')}
               isIconOnly
               size="sm"
               variant="light"
@@ -199,7 +201,7 @@ const Connections: React.FC = () => {
                   content={activeConnections.length}
                   showOutline={false}
                 >
-                  <span className="p-1">活动中</span>
+                  <span className="p-1">{t('connections.active')}</span>
                 </Badge>
               }
             />
@@ -214,7 +216,7 @@ const Connections: React.FC = () => {
                   content={closedConnections.length}
                   showOutline={false}
                 >
-                  <span className="p-1">已关闭</span>
+                  <span className="p-1">{t('connections.closed')}</span>
                 </Badge>
               }
             />
@@ -223,7 +225,7 @@ const Connections: React.FC = () => {
             variant="flat"
             size="sm"
             value={filter}
-            placeholder="筛选过滤"
+            placeholder={t('connections.filter')}
             isClearable
             onValueChange={setFilter}
           />
@@ -232,7 +234,7 @@ const Connections: React.FC = () => {
             classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
             size="sm"
             className="w-[180px] min-w-[120px]"
-            aria-label="连接排序方式"
+            aria-label={t('connections.orderBy')}
             selectedKeys={new Set([connectionOrderBy])}
             onSelectionChange={async (v) => {
               await patchAppConfig({
@@ -245,11 +247,10 @@ const Connections: React.FC = () => {
               })
             }}
           >
-            <SelectItem key="upload">上传量</SelectItem>
-            <SelectItem key="download">下载量</SelectItem>
-            <SelectItem key="uploadSpeed">上传速度</SelectItem>
-            <SelectItem key="downloadSpeed">下载速度</SelectItem>
-            <SelectItem key="time">时间</SelectItem>
+            <SelectItem key="upload">{t('connections.uploadAmount')}</SelectItem>
+            <SelectItem key="download">{t('connections.downloadAmount')}</SelectItem>
+            <SelectItem key="uploadSpeed">{t('connections.uploadSpeed')}</SelectItem>
+            <SelectItem key="downloadSpeed">{t('connections.downloadSpeed')}</SelectItem>
           </Select>
           <Button
             size="sm"

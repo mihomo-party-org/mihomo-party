@@ -10,18 +10,21 @@ import ShortcutConfig from '@renderer/components/settings/shortcut-config'
 import { FaTelegramPlane } from 'react-icons/fa'
 import SiderConfig from '@renderer/components/settings/sider-config'
 import SubStoreConfig from '@renderer/components/settings/substore-config'
+import { useTranslation } from 'react-i18next'
 
 const Settings: React.FC = () => {
+  const { t } = useTranslation()
+
   return (
     <BasePage
-      title="应用设置"
+      title={t('settings.title')}
       header={
         <>
           <Button
             isIconOnly
             size="sm"
             variant="light"
-            title="官方文档"
+            title={t('settings.links.docs')}
             className="app-nodrag"
             onPress={() => {
               window.open('https://mihomo.party')
@@ -34,7 +37,7 @@ const Settings: React.FC = () => {
             size="sm"
             variant="light"
             className="app-nodrag"
-            title="GitHub 仓库"
+            title={t('settings.links.github')}
             onPress={() => {
               window.open('https://github.com/mihomo-party-org/mihomo-party')
             }}
@@ -46,7 +49,7 @@ const Settings: React.FC = () => {
             size="sm"
             variant="light"
             className="app-nodrag"
-            title="Telegram 群组"
+            title={t('settings.links.telegram')}
             onPress={() => {
               window.open('https://t.me/mihomo_party_group')
             }}

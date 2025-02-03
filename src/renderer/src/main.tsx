@@ -14,6 +14,7 @@ import { OverrideConfigProvider } from './hooks/use-override-config'
 import { ProfileConfigProvider } from './hooks/use-profile-config'
 import { RulesProvider } from './hooks/use-rules'
 import { GroupsProvider } from './hooks/use-groups'
+import './i18n'
 
 let F12Count = 0
 

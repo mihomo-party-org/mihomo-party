@@ -9,6 +9,8 @@ import {
 } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import { getOverride } from '@renderer/utils/ipc'
+import { useTranslation } from 'react-i18next'
+
 interface Props {
   id: string
   onClose: () => void
@@ -16,6 +18,7 @@ interface Props {
 const ExecLogModal: React.FC<Props> = (props) => {
   const { id, onClose } = props
   const [logs, setLogs] = useState<string[]>([])
+  const { t } = useTranslation()
 
   const getLog = async (): Promise<void> => {
     setLogs((await getOverride(id, 'log')).split('\n').filter(Boolean))
@@ -35,7 +38,7 @@ const ExecLogModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent>
-        <ModalHeader className="flex app-drag">执行日志</ModalHeader>
+        <ModalHeader className="flex app-drag">{t('override.execLog.title')}</ModalHeader>
         <ModalBody>
           {logs.map((log) => {
             return (
@@ -48,7 +51,7 @@ const ExecLogModal: React.FC<Props> = (props) => {
         </ModalBody>
         <ModalFooter>
           <Button size="sm" variant="light" onPress={onClose}>
-            关闭
+            {t('override.execLog.close')}
           </Button>
         </ModalFooter>
       </ModalContent>

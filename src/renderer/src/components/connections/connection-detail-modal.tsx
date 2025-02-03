@@ -13,8 +13,9 @@ import {
 import React from 'react'
 import SettingItem from '../base/base-setting-item'
 import { calcTraffic } from '@renderer/utils/calc'
-import dayjs from 'dayjs'
+import dayjs from '@renderer/utils/dayjs'
 import { BiCopy } from 'react-icons/bi'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   connection: IMihomoConnectionDetail
@@ -27,6 +28,7 @@ const CopyableSettingItem: React.FC<{
   displayName?: string
   prefix?: string[]
 }> = ({ title, value, displayName, prefix = [] }) => {
+  const { t } = useTranslation()
   const getSubDomains = (domain: string): string[] =>
     domain.split('.').length <= 2
       ? [domain]
@@ -93,7 +95,7 @@ const CopyableSettingItem: React.FC<{
       actions={
         <Dropdown>
           <DropdownTrigger>
-            <Button title="复制规则" isIconOnly size="sm" variant="light">
+            <Button title={t('connections.detail.copyRule')} isIconOnly size="sm" variant="light">
               <BiCopy className="text-lg" />
             </Button>
           </DropdownTrigger>
@@ -120,6 +122,8 @@ const CopyableSettingItem: React.FC<{
 
 const ConnectionDetailModal: React.FC<Props> = (props) => {
   const { connection, onClose } = props
+  const { t } = useTranslation()
+
   return (
     <Modal
       backdrop="blur"
@@ -131,41 +135,41 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
       scrollBehavior="inside"
     >
       <ModalContent className="flag-emoji break-all">
-        <ModalHeader className="flex app-drag">连接详情</ModalHeader>
+        <ModalHeader className="flex app-drag">{t('connections.detail.title')}</ModalHeader>
         <ModalBody>
-          <SettingItem title="连接建立时间">{dayjs(connection.start).fromNow()}</SettingItem>
-          <SettingItem title="规则">
+          <SettingItem title={t('connections.detail.establishTime')}>{dayjs(connection.start).fromNow()}</SettingItem>
+          <SettingItem title={t('connections.detail.rule')}>
             {connection.rule}
             {connection.rulePayload ? `(${connection.rulePayload})` : ''}
           </SettingItem>
-          <SettingItem title="代理链">{[...connection.chains].reverse().join('>>')}</SettingItem>
-          <SettingItem title="上传速度">{calcTraffic(connection.uploadSpeed || 0)}/s</SettingItem>
-          <SettingItem title="下载速度">{calcTraffic(connection.downloadSpeed || 0)}/s</SettingItem>
-          <SettingItem title="上传量">{calcTraffic(connection.upload)}</SettingItem>
-          <SettingItem title="下载量">{calcTraffic(connection.download)}</SettingItem>
+          <SettingItem title={t('connections.detail.proxyChain')}>{[...connection.chains].reverse().join('>>')}</SettingItem>
+          <SettingItem title={t('connections.uploadSpeed')}>{calcTraffic(connection.uploadSpeed || 0)}/s</SettingItem>
+          <SettingItem title={t('connections.downloadSpeed')}>{calcTraffic(connection.downloadSpeed || 0)}/s</SettingItem>
+          <SettingItem title={t('connections.uploadAmount')}>{calcTraffic(connection.upload)}</SettingItem>
+          <SettingItem title={t('connections.downloadAmount')}>{calcTraffic(connection.download)}</SettingItem>
           <CopyableSettingItem
-            title="连接类型"
+            title={t('connections.detail.connectionType')}
             value={[connection.metadata.type, connection.metadata.network]}
             displayName={`${connection.metadata.type}(${connection.metadata.network})`}
             prefix={['IN-TYPE', 'NETWORK']}
           />
           {connection.metadata.host && (
             <CopyableSettingItem
-              title="主机"
+              title={t('connections.detail.host')}
               value={connection.metadata.host}
               prefix={['DOMAIN', 'DOMAIN-SUFFIX']}
             />
           )}
           {connection.metadata.sniffHost && (
             <CopyableSettingItem
-              title="嗅探主机"
+              title={t('connections.detail.sniffHost')}
               value={connection.metadata.sniffHost}
               prefix={['DOMAIN', 'DOMAIN-SUFFIX']}
             />
           )}
           {connection.metadata.process && (
             <CopyableSettingItem
-              title="进程名"
+              title={t('connections.detail.processName')}
               value={[
                 connection.metadata.process,
                 ...(connection.metadata.uid ? [connection.metadata.uid.toString()] : [])
@@ -176,35 +180,35 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
           )}
           {connection.metadata.processPath && (
             <CopyableSettingItem
-              title="进程路径"
+              title={t('connections.detail.processPath')}
               value={connection.metadata.processPath}
               prefix={['PROCESS-PATH']}
             />
           )}
           {connection.metadata.sourceIP && (
             <CopyableSettingItem
-              title="来源IP"
+              title={t('connections.detail.sourceIP')}
               value={connection.metadata.sourceIP}
               prefix={['SRC-IP-CIDR']}
             />
           )}
           {connection.metadata.sourceGeoIP && connection.metadata.sourceGeoIP.length > 0 && (
             <CopyableSettingItem
-              title="来源GeoIP"
+              title={t('connections.detail.sourceGeoIP')}
               value={connection.metadata.sourceGeoIP}
               prefix={['SRC-GEOIP']}
             />
           )}
           {connection.metadata.sourceIPASN && (
             <CopyableSettingItem
-              title="来源ASN"
+              title={t('connections.detail.sourceASN')}
               value={connection.metadata.sourceIPASN}
               prefix={['SRC-IP-ASN']}
             />
           )}
           {connection.metadata.destinationIP && (
             <CopyableSettingItem
-              title="目标IP"
+              title={t('connections.detail.destinationIP')}
               value={connection.metadata.destinationIP}
               prefix={['IP-CIDR']}
             />
@@ -212,83 +216,83 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
           {connection.metadata.destinationGeoIP &&
             connection.metadata.destinationGeoIP.length > 0 && (
               <CopyableSettingItem
-                title="目标GeoIP"
+                title={t('connections.detail.destinationGeoIP')}
                 value={connection.metadata.destinationGeoIP}
                 prefix={['GEOIP']}
               />
             )}
           {connection.metadata.destinationIPASN && (
             <CopyableSettingItem
-              title="目标ASN"
+              title={t('connections.detail.destinationASN')}
               value={connection.metadata.destinationIPASN}
               prefix={['IP-ASN']}
             />
           )}
           {connection.metadata.sourcePort && (
             <CopyableSettingItem
-              title="来源端口"
+              title={t('connections.detail.sourcePort')}
               value={connection.metadata.sourcePort}
               prefix={['SRC-PORT']}
             />
           )}
           {connection.metadata.destinationPort && (
             <CopyableSettingItem
-              title="目标端口"
+              title={t('connections.detail.destinationPort')}
               value={connection.metadata.destinationPort}
               prefix={['DST-PORT']}
             />
           )}
           {connection.metadata.inboundIP && (
             <CopyableSettingItem
-              title="入站IP"
+              title={t('connections.detail.inboundIP')}
               value={connection.metadata.inboundIP}
               prefix={['SRC-IP-CIDR']}
             />
           )}
           {connection.metadata.inboundPort && (
             <CopyableSettingItem
-              title="入站端口"
+              title={t('connections.detail.inboundPort')}
               value={connection.metadata.inboundPort}
-              prefix={['SRC-PORT']}
+              prefix={['IN-PORT']}
             />
           )}
           {connection.metadata.inboundName && (
             <CopyableSettingItem
-              title="入站名称"
+              title={t('connections.detail.inboundName')}
               value={connection.metadata.inboundName}
               prefix={['IN-NAME']}
             />
           )}
           {connection.metadata.inboundUser && (
             <CopyableSettingItem
-              title="入站用户"
+              title={t('connections.detail.inboundUser')}
               value={connection.metadata.inboundUser}
               prefix={['IN-USER']}
             />
           )}
 
           <CopyableSettingItem
-            title="DSCP"
+            title={t('connections.detail.dscp')}
             value={connection.metadata.dscp.toString()}
             prefix={['DSCP']}
           />
 
           {connection.metadata.remoteDestination && (
-            <SettingItem title="远程目标">{connection.metadata.remoteDestination}</SettingItem>
+            <SettingItem title={t('connections.detail.remoteDestination')}>{connection.metadata.remoteDestination}</SettingItem>
           )}
           {connection.metadata.dnsMode && (
-            <SettingItem title="DNS模式">{connection.metadata.dnsMode}</SettingItem>
+            <SettingItem title={t('connections.detail.dnsMode')}>{connection.metadata.dnsMode}</SettingItem>
           )}
           {connection.metadata.specialProxy && (
-            <SettingItem title="特殊代理">{connection.metadata.specialProxy}</SettingItem>
+            <SettingItem title={t('connections.detail.specialProxy')}>{connection.metadata.specialProxy}</SettingItem>
           )}
           {connection.metadata.specialRules && (
-            <SettingItem title="特殊规则">{connection.metadata.specialRules}</SettingItem>
+            <SettingItem title={t('connections.detail.specialRules')}>{connection.metadata.specialRules}</SettingItem>
           )}
         </ModalBody>
         <ModalFooter>
           <Button size="sm" variant="light" onPress={onClose}>
-            关闭
+            {t('connections.detail.close')}
           </Button>
         </ModalFooter>
       </ModalContent>

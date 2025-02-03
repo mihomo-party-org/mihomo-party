@@ -7,12 +7,14 @@ import { AiOutlineGlobal } from 'react-icons/ai'
 import React from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   iconOnly?: boolean
 }
 
 const SysproxySwitcher: React.FC<Props> = (props) => {
+  const { t } = useTranslation()
   const { iconOnly } = props
   const location = useLocation()
   const navigate = useNavigate()
@@ -45,7 +47,7 @@ const SysproxySwitcher: React.FC<Props> = (props) => {
   if (iconOnly) {
     return (
       <div className={`${sysproxyCardStatus} flex justify-center`}>
-        <Tooltip content="系统代理" placement="right">
+        <Tooltip content={t('sider.cards.systemProxy')} placement="right">
           <Button
             size="sm"
             isIconOnly
@@ -102,7 +104,7 @@ const SysproxySwitcher: React.FC<Props> = (props) => {
           <h3
             className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
           >
-            系统代理
+            {t('sider.cards.systemProxy')}
           </h3>
         </CardFooter>
       </Card>

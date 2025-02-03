@@ -19,6 +19,8 @@ import path from 'path'
 import { startMonitor } from './resolve/trafficMonitor'
 import { showFloatingWindow } from './resolve/floatingWindow'
 import iconv from 'iconv-lite'
+import { initI18n } from '../shared/i18n'
+import i18next from 'i18next'
 
 let quitTimeout: NodeJS.Timeout | null = null
 export let mainWindow: BrowserWindow | null = null
@@ -48,8 +50,8 @@ if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')
         // ignore
       }
       dialog.showErrorBox(
-        '首次启动请以管理员权限运行',
-        `首次启动请以管理员权限运行\n${createErrorStr}\n${eStr}`
+        i18next.t('main.error.adminRequired'),
+        `${i18next.t('main.error.adminRequired')}\n${createErrorStr}\n${eStr}`
       )
     } finally {
       app.exit()
@@ -122,9 +124,11 @@ app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('party.mihomo.app')
   try {
+    const appConfig = await getAppConfig()
+    await initI18n({ lng: appConfig.language })
     await initPromise
   } catch (e) {
-    dialog.showErrorBox('应用初始化失败', `${e}`)
+    dialog.showErrorBox(i18next.t('main.error.initFailed'), `${e}`)
     app.quit()
   }
   try {
@@ -133,7 +137,7 @@ app.whenReady().then(async () => {
       await initProfileUpdater()
     })
   } catch (e) {
-    dialog.showErrorBox('内核启动出错', `${e}`)
+    dialog.showErrorBox(i18next.t('main.error.coreStartFailed'), `${e}`)
   }
   try {
     await startMonitor()
@@ -174,7 +178,7 @@ async function handleDeepLink(url: string): Promise<void> {
         const profileUrl = urlObj.searchParams.get('url')
         const profileName = urlObj.searchParams.get('name')
         if (!profileUrl) {
-          throw new Error('缺少参数 url')
+          throw new Error(i18next.t('main.error.urlParamMissing'))
         }
         await addProfileItem({
           type: 'remote',
@@ -182,10 +186,10 @@ async function handleDeepLink(url: string): Promise<void> {
           url: profileUrl
         })
         mainWindow?.webContents.send('profileConfigUpdated')
-        new Notification({ title: '订阅导入成功' }).show()
+        new Notification({ title: i18next.t('main.notification.importSuccess') }).show()
         break
       } catch (e) {
-        dialog.showErrorBox('订阅导入失败', `${url}\n${e}`)
+        dialog.showErrorBox(i18next.t('main.error.importFailed'), `${url}\n${e}`)
       }
     }
   }

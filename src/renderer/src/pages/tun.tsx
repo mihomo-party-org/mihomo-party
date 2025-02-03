@@ -9,8 +9,10 @@ import React, { Key, useState } from 'react'
 import BasePasswordModal from '@renderer/components/base/base-password-modal'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { MdDeleteForever } from 'react-icons/md'
+import { useTranslation } from 'react-i18next'
 
 const Tun: React.FC = () => {
+  const { t } = useTranslation()
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const { appConfig, patchAppConfig } = useAppConfig()
   const { autoSetDNS = true } = appConfig || {}
@@ -75,7 +77,7 @@ const Tun: React.FC = () => {
           onConfirm={async (password: string) => {
             try {
               await manualGrantCorePermition(password)
-              new Notification('内核授权成功')
+              new Notification(t('tun.notifications.coreAuthSuccess'))
               await restartCore()
               setOpenPasswordModal(false)
             } catch (e) {
@@ -85,7 +87,7 @@ const Tun: React.FC = () => {
         />
       )}
       <BasePage
-        title="虚拟网卡设置"
+        title={t('tun.title')}
         header={
           changed && (
             <Button
@@ -108,14 +110,14 @@ const Tun: React.FC = () => {
                 })
               }
             >
-              保存
+              {t('common.save')}
             </Button>
           )
         }
       >
         <SettingCard className="tun-settings">
           {platform === 'win32' && (
-            <SettingItem title="重设防火墙" divider>
+            <SettingItem title={t('tun.firewall.title')} divider>
               <Button
                 size="sm"
                 color="primary"
@@ -124,7 +126,7 @@ const Tun: React.FC = () => {
                   setLoading(true)
                   try {
                     await setupFirewall()
-                    new Notification('防火墙重设成功')
+                    new Notification(t('tun.notifications.firewallResetSuccess'))
                     await restartCore()
                   } catch (e) {
                     alert(e)
@@ -133,12 +135,12 @@ const Tun: React.FC = () => {
                   }
                 }}
               >
-                重设防火墙
+                {t('tun.firewall.reset')}
               </Button>
             </SettingItem>
           )}
           {platform !== 'win32' && (
-            <SettingItem title="手动授权内核" divider>
+            <SettingItem title={t('tun.core.title')} divider>
               <Button
                 size="sm"
                 color="primary"
@@ -146,7 +148,7 @@ const Tun: React.FC = () => {
                   if (platform === 'darwin') {
                     try {
                       await manualGrantCorePermition()
-                      new Notification('内核授权成功')
+                      new Notification(t('tun.notifications.coreAuthSuccess'))
                       await restartCore()
                     } catch (e) {
                       alert(e)
@@ -156,12 +158,12 @@ const Tun: React.FC = () => {
                   }
                 }}
               >
-                手动授权内核
+                {t('tun.core.auth')}
               </Button>
             </SettingItem>
           )}
           {platform === 'darwin' && (
-            <SettingItem title="自动设置系统DNS" divider>
+            <SettingItem title={t('tun.dns.autoSet')} divider>
               <Switch
                 size="sm"
                 isSelected={autoSetDNS}
@@ -172,7 +174,7 @@ const Tun: React.FC = () => {
             </SettingItem>
           )}
 
-          <SettingItem title="Tun 模式堆栈" divider>
+          <SettingItem title={t('tun.stack.title')} divider>
             <Tabs
               size="sm"
               color="primary"
@@ -185,7 +187,7 @@ const Tun: React.FC = () => {
             </Tabs>
           </SettingItem>
           {platform !== 'darwin' && (
-            <SettingItem title="Tun 网卡名称" divider>
+            <SettingItem title={t('tun.device.title')} divider>
               <Input
                 size="sm"
                 className="w-[100px]"
@@ -197,7 +199,7 @@ const Tun: React.FC = () => {
             </SettingItem>
           )}
 
-          <SettingItem title="严格路由" divider>
+          <SettingItem title={t('tun.strictRoute')} divider>
             <Switch
               size="sm"
               isSelected={values.strictRoute}
@@ -206,7 +208,7 @@ const Tun: React.FC = () => {
               }}
             />
           </SettingItem>
-          <SettingItem title="自动设置全局路由" divider>
+          <SettingItem title={t('tun.autoRoute')} divider>
             <Switch
               size="sm"
               isSelected={values.autoRoute}
@@ -216,7 +218,7 @@ const Tun: React.FC = () => {
             />
           </SettingItem>
           {platform === 'linux' && (
-            <SettingItem title="自动设置TCP重定向" divider>
+            <SettingItem title={t('tun.autoRedirect')} divider>
               <Switch
                 size="sm"
                 isSelected={values.autoRedirect}
@@ -226,7 +228,7 @@ const Tun: React.FC = () => {
               />
             </SettingItem>
           )}
-          <SettingItem title="自动选择流量出口接口" divider>
+          <SettingItem title={t('tun.autoDetectInterface')} divider>
             <Switch
               size="sm"
               isSelected={values.autoDetectInterface}
@@ -246,7 +248,7 @@ const Tun: React.FC = () => {
               }}
             />
           </SettingItem>
-          <SettingItem title="DNS 劫持" divider>
+          <SettingItem title={t('tun.dnsHijack')} divider>
             <Input
               size="sm"
               className="w-[50%]"
@@ -258,13 +260,13 @@ const Tun: React.FC = () => {
             />
           </SettingItem>
           <div className="flex flex-col items-stretch">
-            <h3 className="mb-2">排除自定义网段</h3>
+            <h3 className="mb-2">{t('tun.excludeAddress.title')}</h3>
             {[...values.routeExcludeAddress, ''].map((address, index) => (
               <div key={index} className="mb-2 flex">
                 <Input
                   fullWidth
                   size="sm"
-                  placeholder="例: 172.20.0.0/16"
+                  placeholder={t('tun.excludeAddress.placeholder')}
                   value={address}
                   onValueChange={(v) => handleExcludeAddressChange(v, index)}
                 />

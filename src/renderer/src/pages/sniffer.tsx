@@ -6,8 +6,10 @@ import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-c
 import { restartCore } from '@renderer/utils/ipc'
 import React, { ReactNode, useState } from 'react'
 import { MdDeleteForever } from 'react-icons/md'
+import { useTranslation } from 'react-i18next'
 
 const Sniffer: React.FC = () => {
+  const { t } = useTranslation()
   const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
   const { sniffer } = controledMihomoConfig || {}
   const {
@@ -118,7 +120,7 @@ const Sniffer: React.FC = () => {
 
   return (
     <BasePage
-      title="域名嗅探设置"
+      title={t('sniffer.title')}
       header={
         changed && (
           <Button
@@ -138,13 +140,13 @@ const Sniffer: React.FC = () => {
               })
             }
           >
-            保存
+            {t('common.save')}
           </Button>
         )
       }
     >
       <SettingCard>
-        <SettingItem title="覆盖连接地址" divider>
+        <SettingItem title={t('sniffer.overrideDestination')} divider>
           <Switch
             size="sm"
             isSelected={values.overrideDestination}
@@ -164,7 +166,7 @@ const Sniffer: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="对真实 IP 映射嗅探" divider>
+        <SettingItem title={t('sniffer.forceDNSMapping')} divider>
           <Switch
             size="sm"
             isSelected={values.forceDNSMapping}
@@ -173,7 +175,7 @@ const Sniffer: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="对未映射 IP 地址嗅探" divider>
+        <SettingItem title={t('sniffer.parsePureIP')} divider>
           <Switch
             size="sm"
             isSelected={values.parsePureIP}
@@ -182,51 +184,51 @@ const Sniffer: React.FC = () => {
             }}
           />
         </SettingItem>
-        <SettingItem title="HTTP 端口嗅探" divider>
+        <SettingItem title={t('sniffer.sniff.title')} divider>
           <Input
             size="sm"
             className="w-[50%]"
-            placeholder="端口号,使用英文逗号分割"
+            placeholder={t('sniffer.sniff.ports.placeholder')}
             value={values.sniff.HTTP?.ports.join(',')}
             onValueChange={(v) => handleSniffPortChange('HTTP', v)}
           />
         </SettingItem>
-        <SettingItem title="TLS 端口嗅探" divider>
+        <SettingItem title={t('sniffer.sniff.tls')} divider>
           <Input
             size="sm"
             className="w-[50%]"
-            placeholder="端口号,使用英文逗号分割"
+            placeholder={t('sniffer.sniff.ports.placeholder')}
             value={values.sniff.TLS?.ports.join(',')}
             onValueChange={(v) => handleSniffPortChange('TLS', v)}
           />
         </SettingItem>
-        <SettingItem title="QUIC 端口嗅探" divider>
+        <SettingItem title={t('sniffer.sniff.quic')} divider>
           <Input
             size="sm"
             className="w-[50%]"
-            placeholder="端口号,使用英文逗号分割"
+            placeholder={t('sniffer.sniff.ports.placeholder')}
             value={values.sniff.QUIC?.ports.join(',')}
             onValueChange={(v) => handleSniffPortChange('QUIC', v)}
           />
         </SettingItem>
         <div className="flex flex-col items-stretch">
-          <h3>跳过域名嗅探</h3>
-          {renderListInputs('skipDomain', '例：+.push.apple.com')}
+          <h3>{t('sniffer.skipDomain.title')}</h3>
+          {renderListInputs('skipDomain', t('sniffer.skipDomain.placeholder'))}
         </div>
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
-          <h3 className="mb-2">强制域名嗅探</h3>
-          {renderListInputs('forceDomain', '例：v2ex.com')}
+          <h3 className="mb-2">{t('sniffer.forceDomain.title')}</h3>
+          {renderListInputs('forceDomain', t('sniffer.forceDomain.placeholder'))}
         </div>
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
-          <h3 className="mb-2">跳过目标地址嗅探</h3>
-          {renderListInputs('skipDstAddress', '例：1.1.1.1/32')}
+          <h3 className="mb-2">{t('sniffer.skipDstAddress.title')}</h3>
+          {renderListInputs('skipDstAddress', t('sniffer.skipDstAddress.placeholder'))}
         </div>
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
-          <h3 className="mb-2">跳过来源地址嗅探</h3>
-          {renderListInputs('skipSrcAddress', '例：192.168.1.1/24')}
+          <h3 className="mb-2">{t('sniffer.skipSrcAddress.title')}</h3>
+          {renderListInputs('skipSrcAddress', t('sniffer.skipSrcAddress.placeholder'))}
         </div>
       </SettingCard>
     </BasePage>

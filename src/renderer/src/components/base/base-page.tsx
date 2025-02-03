@@ -4,6 +4,8 @@ import { platform } from '@renderer/utils/init'
 import { isAlwaysOnTop, setAlwaysOnTop } from '@renderer/utils/ipc'
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { RiPushpin2Fill, RiPushpin2Line } from 'react-icons/ri'
+import { useTranslation } from 'react-i18next'
+
 interface Props {
   title?: React.ReactNode
   header?: React.ReactNode
@@ -13,6 +15,7 @@ interface Props {
 let saveOnTop = false
 
 const BasePage = forwardRef<HTMLDivElement, Props>((props, ref) => {
+  const { t } = useTranslation()
   const { appConfig } = useAppConfig()
   const { useWindowFrame = false } = appConfig || {}
   const [overlayWidth, setOverlayWidth] = React.useState(0)
@@ -51,7 +54,7 @@ const BasePage = forwardRef<HTMLDivElement, Props>((props, ref) => {
               size="sm"
               className="app-nodrag"
               isIconOnly
-              title="窗口置顶"
+              title={t('common.pinWindow')}
               variant="light"
               color={onTop ? 'primary' : 'default'}
               onPress={async () => {

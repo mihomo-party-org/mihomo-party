@@ -3,14 +3,18 @@ import React, { useEffect, useState } from 'react'
 import { BaseEditor } from '../base/base-editor'
 import { getProfileStr, setProfileStr } from '@renderer/utils/ipc'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+
 interface Props {
   id: string
   onClose: () => void
 }
+
 const EditFileModal: React.FC<Props> = (props) => {
   const { id, onClose } = props
   const [currData, setCurrData] = useState('')
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const getContent = async (): Promise<void> => {
     setCurrData(await getProfileStr(id))
@@ -33,9 +37,9 @@ const EditFileModal: React.FC<Props> = (props) => {
       <ModalContent className="h-full w-[calc(100%-100px)]">
         <ModalHeader className="flex pb-0 app-drag">
           <div className="flex justify-start">
-            <div className="flex items-center">编辑订阅</div>
+            <div className="flex items-center">{t('profiles.editFile.title')}</div>
             <small className="ml-2 text-foreground-500">
-              注意：此处编辑配置更新订阅后会还原，如需要自定义配置请使用
+              {t('profiles.editFile.notice')}
               <Button
                 size="sm"
                 color="primary"
@@ -45,9 +49,9 @@ const EditFileModal: React.FC<Props> = (props) => {
                   navigate('/override')
                 }}
               >
-                覆写
+                {t('profiles.editFile.override')}
               </Button>
-              功能
+              {t('profiles.editFile.feature')}
             </small>
           </div>
         </ModalHeader>
@@ -56,7 +60,7 @@ const EditFileModal: React.FC<Props> = (props) => {
         </ModalBody>
         <ModalFooter className="pt-0">
           <Button size="sm" variant="light" onPress={onClose}>
-            取消
+            {t('common.cancel')}
           </Button>
           <Button
             size="sm"
@@ -66,7 +70,7 @@ const EditFileModal: React.FC<Props> = (props) => {
               onClose()
             }}
           >
-            确认
+            {t('common.confirm')}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -8,11 +8,13 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   iconOnly?: boolean
 }
 const DNSCard: React.FC<Props> = (props) => {
+  const { t } = useTranslation()
   const { appConfig } = useAppConfig()
   const { iconOnly } = props
   const { dnsCardStatus = 'col-span-1', controlDns = true } = appConfig || {}
@@ -41,7 +43,7 @@ const DNSCard: React.FC<Props> = (props) => {
   if (iconOnly) {
     return (
       <div className={`${dnsCardStatus} ${!controlDns ? 'hidden' : ''} flex justify-center`}>
-        <Tooltip content="DNS" placement="right">
+        <Tooltip content={t('sider.cards.dns')} placement="right">
           <Button
             size="sm"
             isIconOnly
@@ -99,7 +101,7 @@ const DNSCard: React.FC<Props> = (props) => {
           <h3
             className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
           >
-            DNS
+            {t('sider.cards.dns')}
           </h3>
         </CardFooter>
       </Card>

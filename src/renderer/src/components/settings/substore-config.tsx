@@ -11,8 +11,10 @@ import {
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import debounce from '@renderer/utils/debounce'
 import { isValidCron } from 'cron-validator'
+import { useTranslation } from 'react-i18next'
 
 const SubStoreConfig: React.FC = () => {
+  const { t } = useTranslation()
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     useSubStore = true,
@@ -37,8 +39,8 @@ const SubStoreConfig: React.FC = () => {
   const [subStoreBackendUploadCronValue, setSubStoreBackendUploadCronValue] =
     useState(subStoreBackendUploadCron)
   return (
-    <SettingCard title="Sub-Store 设置">
-      <SettingItem title="启用 Sub-Store" divider={useSubStore}>
+    <SettingCard title={t('substore.title')}>
+      <SettingItem title={t('substore.enable')} divider={useSubStore}>
         <Switch
           size="sm"
           isSelected={useSubStore}
@@ -60,7 +62,7 @@ const SubStoreConfig: React.FC = () => {
       </SettingItem>
       {useSubStore && (
         <>
-          <SettingItem title="允许局域网连接" divider>
+          <SettingItem title={t('substore.allowLan')} divider>
             <Switch
               size="sm"
               isSelected={subStoreHost === '0.0.0.0'}
@@ -79,7 +81,7 @@ const SubStoreConfig: React.FC = () => {
               }}
             />
           </SettingItem>
-          <SettingItem title="使用自建 Sub-Store 后端" divider>
+          <SettingItem title={t('substore.useCustomBackend')} divider>
             <Switch
               size="sm"
               isSelected={useCustomSubStore}
@@ -98,12 +100,12 @@ const SubStoreConfig: React.FC = () => {
             />
           </SettingItem>
           {useCustomSubStore ? (
-            <SettingItem title="自建 Sub-Store 后端地址">
+            <SettingItem title={t('substore.customBackendUrl.title')}>
               <Input
                 size="sm"
                 className="w-[60%]"
                 value={customSubStoreUrlValue}
-                placeholder="必须包含协议头"
+                placeholder={t('substore.customBackendUrl.placeholder')}
                 onValueChange={(v: string) => {
                   setCustomSubStoreUrlValue(v)
                   setCustomSubStoreUrl(v)
@@ -112,7 +114,7 @@ const SubStoreConfig: React.FC = () => {
             </SettingItem>
           ) : (
             <>
-              <SettingItem title="为 Sub-Store 内所有请求启用代理" divider>
+              <SettingItem title={t('substore.useProxy')} divider>
                 <Switch
                   size="sm"
                   isSelected={useProxyInSubStore}
@@ -126,7 +128,7 @@ const SubStoreConfig: React.FC = () => {
                   }}
                 />
               </SettingItem>
-              <SettingItem title="定时同步订阅/文件" divider>
+              <SettingItem title={t('substore.sync.title')} divider>
                 <div className="flex w-[60%] gap-2">
                   {subStoreBackendSyncCronValue !== subStoreBackendSyncCron && (
                     <Button
@@ -140,26 +142,26 @@ const SubStoreConfig: React.FC = () => {
                           await patchAppConfig({
                             subStoreBackendSyncCron: subStoreBackendSyncCronValue
                           })
-                          new Notification('重启应用生效')
+                          new Notification(t('common.notification.restartRequired'))
                         } else {
-                          alert('Cron 表达式无效')
+                          alert(t('common.error.invalidCron'))
                         }
                       }}
                     >
-                      确认
+                      {t('common.confirm')}
                     </Button>
                   )}
                   <Input
                     size="sm"
                     value={subStoreBackendSyncCronValue}
-                    placeholder="Cron 表达式"
+                    placeholder={t('substore.sync.placeholder')}
                     onValueChange={(v: string) => {
                       setSubStoreBackendSyncCronValue(v)
                     }}
                   />
                 </div>
               </SettingItem>
-              <SettingItem title="定时恢复配置" divider>
+              <SettingItem title={t('substore.restore.title')} divider>
                 <div className="flex w-[60%] gap-2">
                   {subStoreBackendDownloadCronValue !== subStoreBackendDownloadCron && (
                     <Button
@@ -173,26 +175,26 @@ const SubStoreConfig: React.FC = () => {
                           await patchAppConfig({
                             subStoreBackendDownloadCron: subStoreBackendDownloadCronValue
                           })
-                          new Notification('重启应用生效')
+                          new Notification(t('common.notification.restartRequired'))
                         } else {
-                          alert('Cron 表达式无效')
+                          alert(t('common.error.invalidCron'))
                         }
                       }}
                     >
-                      确认
+                      {t('common.confirm')}
                     </Button>
                   )}
                   <Input
                     size="sm"
                     value={subStoreBackendDownloadCronValue}
-                    placeholder="Cron 表达式"
+                    placeholder={t('substore.restore.placeholder')}
                     onValueChange={(v: string) => {
                       setSubStoreBackendDownloadCronValue(v)
                     }}
                   />
                 </div>
               </SettingItem>
-              <SettingItem title="定时备份配置">
+              <SettingItem title={t('substore.backup.title')}>
                 <div className="flex w-[60%] gap-2">
                   {subStoreBackendUploadCronValue !== subStoreBackendUploadCron && (
                     <Button
@@ -206,19 +208,19 @@ const SubStoreConfig: React.FC = () => {
                           await patchAppConfig({
                             subStoreBackendUploadCron: subStoreBackendUploadCronValue
                           })
-                          new Notification('重启应用生效')
+                          new Notification(t('common.notification.restartRequired'))
                         } else {
-                          alert('Cron 表达式无效')
+                          alert(t('common.error.invalidCron'))
                         }
                       }}
                     >
-                      确认
+                      {t('common.confirm')}
                     </Button>
                   )}
                   <Input
                     size="sm"
                     value={subStoreBackendUploadCronValue}
-                    placeholder="Cron 表达式"
+                    placeholder={t('substore.backup.placeholder')}
                     onValueChange={(v: string) => {
                       setSubStoreBackendUploadCronValue(v)
                     }}

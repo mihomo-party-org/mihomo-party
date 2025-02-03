@@ -31,8 +31,10 @@ import { IoMdRefresh } from 'react-icons/io'
 import SubStoreIcon from '@renderer/components/base/substore-icon'
 import useSWR from 'swr'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const Profiles: React.FC = () => {
+  const { t } = useTranslation()
   const {
     profileConfig,
     setProfileConfig,
@@ -67,7 +69,7 @@ const Profiles: React.FC = () => {
     const items: { icon?: ReactNode; key: string; children: ReactNode; divider: boolean }[] = [
       {
         key: 'open-substore',
-        children: '访问 Sub-Store',
+        children: t('profiles.substore.visit'),
         icon: <SubStoreIcon className="text-lg" />,
         divider:
           (Boolean(subs) && subs.length > 0) || (Boolean(collections) && collections.length > 0)
@@ -177,7 +179,7 @@ const Profiles: React.FC = () => {
             alert(e)
           }
         } else {
-          alert('不支持的文件类型')
+          alert(t('profiles.error.unsupportedFileType'))
         }
       }
       setFileOver(false)
@@ -196,11 +198,11 @@ const Profiles: React.FC = () => {
   return (
     <BasePage
       ref={pageRef}
-      title="订阅管理"
+      title={t('profiles.title')}
       header={
         <Button
           size="sm"
-          title="更新全部订阅"
+          title={t('profiles.updateAll')}
           className="app-nodrag"
           variant="light"
           isIconOnly
@@ -248,7 +250,7 @@ const Profiles: React.FC = () => {
                   checked={useProxy}
                   onValueChange={setUseProxy}
                 >
-                  代理
+                  {t('profiles.useProxy')}
                 </Checkbox>
               </>
             }
@@ -262,7 +264,7 @@ const Profiles: React.FC = () => {
             isLoading={importing}
             onPress={handleImport}
           >
-            导入
+            {t('profiles.import')}
           </Button>
           {useSubStore && (
             <Dropdown
@@ -361,15 +363,15 @@ const Profiles: React.FC = () => {
                   }
                 } else if (key === 'new') {
                   await addProfileItem({
-                    name: '新建订阅',
+                    name: t('profiles.newProfile'),
                     type: 'local',
                     file: 'proxies: []\nproxy-groups: []\nrules: []'
                   })
                 }
               }}
             >
-              <DropdownItem key="open">打开</DropdownItem>
-              <DropdownItem key="new">新建</DropdownItem>
+              <DropdownItem key="open">{t('profiles.open')}</DropdownItem>
+              <DropdownItem key="new">{t('profiles.new')}</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>

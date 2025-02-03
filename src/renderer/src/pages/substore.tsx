@@ -4,8 +4,10 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { subStoreFrontendPort, subStorePort } from '@renderer/utils/ipc'
 import React, { useEffect, useState } from 'react'
 import { HiExternalLink } from 'react-icons/hi'
+import { useTranslation } from 'react-i18next'
 
 const SubStore: React.FC = () => {
+  const { t } = useTranslation()
   const { appConfig } = useAppConfig()
   const { useCustomSubStore, customSubStoreUrl } = appConfig || {}
   const [backendPort, setBackendPort] = useState<number | undefined>()
@@ -23,10 +25,10 @@ const SubStore: React.FC = () => {
   return (
     <>
       <BasePage
-        title="Sub-Store"
+        title={t('substore.title')}
         header={
           <Button
-            title="在浏览器中打开"
+            title={t('substore.openInBrowser')}
             isIconOnly
             size="sm"
             className="app-nodrag"

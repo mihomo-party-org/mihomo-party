@@ -1,6 +1,6 @@
 import { Button, Card, CardFooter, CardHeader, Chip } from '@nextui-org/react'
 import { calcTraffic } from '@renderer/utils/calc'
-import dayjs from 'dayjs'
+import dayjs from '@renderer/utils/dayjs'
 import React, { useEffect } from 'react'
 import { CgClose, CgTrash } from 'react-icons/cg'
 

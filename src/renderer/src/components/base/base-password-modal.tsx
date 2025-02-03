@@ -8,6 +8,7 @@ import {
   Input
 } from '@nextui-org/react'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   onCancel: () => void
@@ -15,22 +16,23 @@ interface Props {
 }
 
 const BasePasswordModal: React.FC<Props> = (props) => {
+  const { t } = useTranslation()
   const { onCancel, onConfirm } = props
   const [password, setPassword] = useState('')
 
   return (
     <Modal backdrop="blur" classNames={{ backdrop: 'top-[48px]' }} hideCloseButton isOpen={true}>
       <ModalContent>
-        <ModalHeader className="flex app-drag">请输入root密码</ModalHeader>
+        <ModalHeader className="flex app-drag">{t('common.enterRootPassword')}</ModalHeader>
         <ModalBody>
           <Input fullWidth type="password" value={password} onValueChange={setPassword} />
         </ModalBody>
         <ModalFooter>
           <Button size="sm" variant="light" onPress={onCancel}>
-            取消
+            {t('common.cancel')}
           </Button>
           <Button size="sm" color="primary" onPress={() => onConfirm(password)}>
-            确认
+            {t('common.confirm')}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -1,76 +1,73 @@
-import React from 'react'
-import SettingCard from '../base/base-setting-card'
-import SettingItem from '../base/base-setting-item'
-import { RadioGroup, Radio } from '@nextui-org/react'
+import SettingCard from '@renderer/components/base/base-setting-card'
+import SettingItem from '@renderer/components/base/base-setting-item'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-const titleMap = {
-  sysproxyCardStatus: '系统代理',
-  tunCardStatus: '虚拟网卡',
-  profileCardStatus: '订阅管理',
-  proxyCardStatus: '代理组',
-  ruleCardStatus: '规则',
-  resourceCardStatus: '外部资源',
-  overrideCardStatus: '覆写',
-  connectionCardStatus: '连接',
-  mihomoCoreCardStatus: '内核',
-  dnsCardStatus: 'DNS',
-  sniffCardStatus: '域名嗅探',
-  logCardStatus: '日志',
-  substoreCardStatus: 'Sub-Store'
+import { Radio, RadioGroup } from '@nextui-org/react'
+import { useTranslation } from 'react-i18next'
+import type { FC } from 'react'
+
+const titleMap: Record<string, string> = {
+  sysproxyCardStatus: 'sider.cards.systemProxy',
+  tunCardStatus: 'sider.cards.tun',
+  profileCardStatus: 'sider.cards.profiles',
+  proxyCardStatus: 'sider.cards.proxies',
+  ruleCardStatus: 'sider.cards.rules',
+  resourceCardStatus: 'sider.cards.resources',
+  overrideCardStatus: 'sider.cards.override',
+  connectionCardStatus: 'sider.cards.connections',
+  mihomoCoreCardStatus: 'sider.cards.core',
+  dnsCardStatus: 'sider.cards.dns',
+  sniffCardStatus: 'sider.cards.sniff',
+  logCardStatus: 'sider.cards.logs',
+  substoreCardStatus: 'sider.cards.substore'
 }
-const SiderConfig: React.FC = () => {
+
+const sizeMap: Record<string, string> = {
+  'col-span-2': 'sider.size.large',
+  'col-span-1': 'sider.size.small',
+  hidden: 'sider.size.hidden'
+}
+
+const SiderConfig: FC = () => {
+  const { t } = useTranslation()
   const { appConfig, patchAppConfig } = useAppConfig()
-  const {
-    sysproxyCardStatus = 'col-span-1',
-    tunCardStatus = 'col-span-1',
-    profileCardStatus = 'col-span-2',
-    proxyCardStatus = 'col-span-1',
-    ruleCardStatus = 'col-span-1',
-    resourceCardStatus = 'col-span-1',
-    overrideCardStatus = 'col-span-1',
-    connectionCardStatus = 'col-span-2',
-    mihomoCoreCardStatus = 'col-span-2',
-    dnsCardStatus = 'col-span-1',
-    sniffCardStatus = 'col-span-1',
-    logCardStatus = 'col-span-1',
-    substoreCardStatus = 'col-span-1'
-  } = appConfig || {}
 
   const cardStatus = {
-    sysproxyCardStatus,
-    tunCardStatus,
-    profileCardStatus,
-    proxyCardStatus,
-    ruleCardStatus,
-    resourceCardStatus,
-    overrideCardStatus,
-    connectionCardStatus,
-    mihomoCoreCardStatus,
-    dnsCardStatus,
-    sniffCardStatus,
-    logCardStatus,
-    substoreCardStatus
+    sysproxyCardStatus: appConfig?.sysproxyCardStatus || 'col-span-1',
+    tunCardStatus: appConfig?.tunCardStatus || 'col-span-1',
+    profileCardStatus: appConfig?.profileCardStatus || 'col-span-2',
+    proxyCardStatus: appConfig?.proxyCardStatus || 'col-span-1',
+    ruleCardStatus: appConfig?.ruleCardStatus || 'col-span-1',
+    resourceCardStatus: appConfig?.resourceCardStatus || 'col-span-1',
+    overrideCardStatus: appConfig?.overrideCardStatus || 'col-span-1',
+    connectionCardStatus: appConfig?.connectionCardStatus || 'col-span-2',
+    mihomoCoreCardStatus: appConfig?.mihomoCoreCardStatus || 'col-span-2',
+    dnsCardStatus: appConfig?.dnsCardStatus || 'col-span-1',
+    sniffCardStatus: appConfig?.sniffCardStatus || 'col-span-1',
+    logCardStatus: appConfig?.logCardStatus || 'col-span-1',
+    substoreCardStatus: appConfig?.substoreCardStatus || 'col-span-1'
   }
 
   return (
-    <SettingCard title="侧边栏设置">
-      {Object.keys(cardStatus).map((key, index, array) => {
-        return (
-          <SettingItem title={titleMap[key]} key={key} divider={index !== array.length - 1}>
-            <RadioGroup
-              orientation="horizontal"
-              value={cardStatus[key]}
-              onValueChange={(v) => {
-                patchAppConfig({ [key]: v as CardStatus })
-              }}
-            >
-              <Radio value="col-span-2">大</Radio>
-              <Radio value="col-span-1">小</Radio>
-              <Radio value="hidden">隐藏</Radio>
-            </RadioGroup>
-          </SettingItem>
-        )
-      })}
+    <SettingCard title={t('sider.title')}>
+      {Object.entries(cardStatus).map(([key, value]) => (
+        <SettingItem key={key} title={t(titleMap[key])}>
+          <RadioGroup
+            orientation="horizontal"
+            value={value}
+            onValueChange={(v: string) => {
+              if (v === 'col-span-1' || v === 'col-span-2' || v === 'hidden') {
+                patchAppConfig({ [key]: v })
+              }
+            }}
+          >
+            {Object.entries(sizeMap).map(([size, label]) => (
+              <Radio key={size} value={size}>
+                {t(label)}
+              </Radio>
+            ))}
+          </RadioGroup>
+        </SettingItem>
+      ))}
     </SettingCard>
   )
 }

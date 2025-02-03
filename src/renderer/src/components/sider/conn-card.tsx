@@ -10,6 +10,7 @@ import { useTheme } from 'next-themes'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
 import { Area, AreaChart, ResponsiveContainer } from 'recharts'
+import { useTranslation } from 'react-i18next'
 
 let currentUpload: number | undefined = undefined
 let currentDownload: number | undefined = undefined
@@ -27,6 +28,7 @@ const ConnCard: React.FC<Props> = (props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const match = location.pathname.includes('/connections')
+  const { t } = useTranslation()
 
   const [upload, setUpload] = useState(0)
   const [download, setDownload] = useState(0)
@@ -95,7 +97,7 @@ const ConnCard: React.FC<Props> = (props) => {
   if (iconOnly) {
     return (
       <div className={`${connectionCardStatus} flex justify-center`}>
-        <Tooltip content="连接" placement="right">
+        <Tooltip content={t('sider.cards.connections')} placement="right">
           <Button
             size="sm"
             isIconOnly
@@ -162,7 +164,7 @@ const ConnCard: React.FC<Props> = (props) => {
               <h3
                 className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
               >
-                连接
+                {t('sider.cards.connections')}
               </h3>
             </CardFooter>
           </Card>
@@ -218,7 +220,7 @@ const ConnCard: React.FC<Props> = (props) => {
             <h3
               className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
             >
-              连接
+              {t('sider.cards.connections')}
             </h3>
           </CardFooter>
         </Card>

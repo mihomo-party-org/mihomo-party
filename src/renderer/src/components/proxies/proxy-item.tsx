@@ -2,6 +2,7 @@ import { Button, Card, CardBody } from '@nextui-org/react'
 import { mihomoUnfixedProxy } from '@renderer/utils/ipc'
 import React, { useMemo, useState } from 'react'
 import { FaMapPin } from 'react-icons/fa6'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   mutateProxies: () => void
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const ProxyItem: React.FC<Props> = (props) => {
+  const { t } = useTranslation()
   const { mutateProxies, proxyDisplayMode, group, proxy, selected, onSelect, onProxyDelay } = props
 
   const delay = useMemo(() => {
@@ -32,8 +34,8 @@ const ProxyItem: React.FC<Props> = (props) => {
   }
 
   function delayText(delay: number): string {
-    if (delay === -1) return '测试'
-    if (delay === 0) return '超时'
+    if (delay === -1) return t('proxies.delay.test')
+    if (delay === 0) return t('proxies.delay.timeout')
     return delay.toString()
   }
 
@@ -74,7 +76,7 @@ const ProxyItem: React.FC<Props> = (props) => {
                 {fixed && (
                   <Button
                     isIconOnly
-                    title="取消固定"
+                    title={t('proxies.unpin')}
                     color="danger"
                     onPress={async () => {
                       await mihomoUnfixedProxy(group.name)
@@ -124,7 +126,7 @@ const ProxyItem: React.FC<Props> = (props) => {
                 {fixed && (
                   <Button
                     isIconOnly
-                    title="取消固定"
+                    title={t('proxies.unpin')}
                     color="danger"
                     onPress={async () => {
                       await mihomoUnfixedProxy(group.name)

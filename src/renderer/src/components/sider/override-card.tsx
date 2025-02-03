@@ -5,12 +5,14 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   iconOnly?: boolean
 }
 
 const OverrideCard: React.FC<Props> = (props) => {
+  const { t } = useTranslation()
   const { appConfig } = useAppConfig()
   const { iconOnly } = props
   const { overrideCardStatus = 'col-span-1' } = appConfig || {}
@@ -31,7 +33,7 @@ const OverrideCard: React.FC<Props> = (props) => {
   if (iconOnly) {
     return (
       <div className={`${overrideCardStatus} flex justify-center`}>
-        <Tooltip content="覆写" placement="right">
+        <Tooltip content={t('sider.cards.override')} placement="right">
           <Button
             size="sm"
             isIconOnly
@@ -83,7 +85,7 @@ const OverrideCard: React.FC<Props> = (props) => {
           <h3
             className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
           >
-            覆写
+            {t('sider.cards.override')}
           </h3>
         </CardFooter>
       </Card>

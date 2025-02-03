@@ -12,7 +12,7 @@ import { Button, Chip } from '@nextui-org/react'
 import { IoMdRefresh } from 'react-icons/io'
 import { CgLoadbarDoc } from 'react-icons/cg'
 import { MdEditDocument } from 'react-icons/md'
-import dayjs from 'dayjs'
+import dayjs from '@renderer/utils/dayjs'
 import { calcTraffic } from '@renderer/utils/calc'
 import { getHash } from '@renderer/utils/hash'
 

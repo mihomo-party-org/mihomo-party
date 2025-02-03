@@ -10,6 +10,7 @@ import PubSub from 'pubsub-js'
 import useSWR from 'swr'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { LuCpu } from 'react-icons/lu'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   iconOnly?: boolean
@@ -35,6 +36,7 @@ const MihomoCoreCard: React.FC<Props> = (props) => {
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const [mem, setMem] = useState(0)
+  const { t } = useTranslation()
 
   useEffect(() => {
     const token = PubSub.subscribe('mihomo-core-changed', () => {
@@ -52,7 +54,7 @@ const MihomoCoreCard: React.FC<Props> = (props) => {
   if (iconOnly) {
     return (
       <div className={`${mihomoCoreCardStatus} flex justify-center`}>
-        <Tooltip content="内核设置" placement="right">
+        <Tooltip content={t('sider.cards.core')} placement="right">
           <Button
             size="sm"
             isIconOnly
@@ -125,7 +127,7 @@ const MihomoCoreCard: React.FC<Props> = (props) => {
             <div
               className={`flex justify-between w-full text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
             >
-              <h4>内核设置</h4>
+              <h4>{t('sider.cards.core')}</h4>
               <h4>{calcTraffic(mem)}</h4>
             </div>
           </CardFooter>
@@ -157,7 +159,7 @@ const MihomoCoreCard: React.FC<Props> = (props) => {
             <h3
               className={`text-md font-bold ${match ? 'text-primary-foreground' : 'text-foreground'}`}
             >
-              内核设置
+              {t('sider.cards.core')}
             </h3>
           </CardFooter>
         </Card>
