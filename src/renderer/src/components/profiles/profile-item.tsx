@@ -303,6 +303,7 @@ const ProfileItem: React.FC<Props> = (props) => {
               {extra && (
                 <Progress
                   className="w-full"
+                  aria-label="流量使用进度"
                   classNames={{
                     indicator: isCurrent ? 'bg-primary-foreground' : 'bg-foreground'
                   }}

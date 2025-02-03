@@ -204,6 +204,7 @@ const ProfileCard: React.FC<Props> = (props) => {
             {extra && (
               <Progress
                 className="w-full"
+                aria-label="流量使用进度"
                 classNames={{ indicator: match ? 'bg-primary-foreground' : 'bg-foreground' }}
                 value={calcPercent(extra?.upload, extra?.download, extra?.total)}
               />

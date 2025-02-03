@@ -232,6 +232,7 @@ const Connections: React.FC = () => {
             classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
             size="sm"
             className="w-[180px] min-w-[120px]"
+            aria-label="连接排序方式"
             selectedKeys={new Set([connectionOrderBy])}
             onSelectionChange={async (v) => {
               await patchAppConfig({

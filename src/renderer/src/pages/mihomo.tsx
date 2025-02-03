@@ -114,6 +114,7 @@ const Mihomo: React.FC = () => {
               classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
               className="w-[100px]"
               size="sm"
+              aria-label="选择内核版本"
               selectedKeys={new Set([core])}
               onSelectionChange={async (v) => {
                 try {
@@ -650,6 +651,7 @@ const Mihomo: React.FC = () => {
               classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
               className="w-[100px]"
               size="sm"
+              aria-label="选择日志等级"
               selectedKeys={new Set([logLevel])}
               onSelectionChange={(v) => {
                 onChangeNeedRestart({ 'log-level': v.currentKey as LogLevel })
@@ -667,6 +669,7 @@ const Mihomo: React.FC = () => {
               classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
               className="w-[100px]"
               size="sm"
+              aria-label="选择进程查找模式"
               selectedKeys={new Set([findProcessMode])}
               onSelectionChange={(v) => {
                 onChangeNeedRestart({ 'find-process-mode': v.currentKey as FindProcessMode })
