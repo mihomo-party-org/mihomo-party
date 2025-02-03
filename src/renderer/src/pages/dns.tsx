@@ -95,7 +95,7 @@ const DNS: React.FC = () => {
             size="sm"
             variant="flat"
             color="warning"
-            onClick={() => handleListChange(type, '', index)}
+            onPress={() => handleListChange(type, '', index)}
           >
             <MdDeleteForever className="text-lg" />
           </Button>
@@ -294,7 +294,7 @@ const DNS: React.FC = () => {
                           color="warning"
                           variant="flat"
                           className="ml-2"
-                          onClick={() => handleSubkeyChange('nameserverPolicy', '', '', index)}
+                          onPress={() => handleSubkeyChange('nameserverPolicy', '', '', index)}
                         >
                           <MdDeleteForever className="text-lg" />
                         </Button>
@@ -360,7 +360,7 @@ const DNS: React.FC = () => {
                       color="warning"
                       variant="flat"
                       className="ml-2"
-                      onClick={() => handleSubkeyChange('hosts', '', '', index)}
+                      onPress={() => handleSubkeyChange('hosts', '', '', index)}
                     >
                       <MdDeleteForever className="text-lg" />
                     </Button>

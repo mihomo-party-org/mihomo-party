@@ -31,7 +31,7 @@ const CollapseInput: React.FC<CollapseInputProps> = (props) => {
             <FaSearch title={title} />
           </div>
         }
-        onClick={(e) => {
+        onPress={(e) => {
           e.stopPropagation()
           inputRef.current?.focus()
         }}

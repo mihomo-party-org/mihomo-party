@@ -52,7 +52,7 @@ const WebdavRestoreModal: React.FC<Props> = (props) => {
                   color="warning"
                   variant="flat"
                   className="ml-2"
-                  onClick={async () => {
+                  onPress={async () => {
                     try {
                       await webdavDelete(filename)
                       setFilenames(filenames.filter((name) => name !== filename))

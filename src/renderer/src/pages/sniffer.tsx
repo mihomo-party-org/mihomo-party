@@ -107,7 +107,7 @@ const Sniffer: React.FC = () => {
             size="sm"
             variant="flat"
             color="warning"
-            onClick={() => handleListChange(type, '', index)}
+            onPress={() => handleListChange(type, '', index)}
           >
             <MdDeleteForever className="text-lg" />
           </Button>

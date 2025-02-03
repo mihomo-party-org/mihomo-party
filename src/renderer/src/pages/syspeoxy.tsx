@@ -195,7 +195,7 @@ const Sysproxy: React.FC = () => {
                       size="sm"
                       variant="flat"
                       color="warning"
-                      onClick={() => handleBypassChange('', index)}
+                      onPress={() => handleBypassChange('', index)}
                     >
                       <MdDeleteForever className="text-lg" />
                     </Button>

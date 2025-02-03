@@ -274,7 +274,7 @@ const Tun: React.FC = () => {
                     size="sm"
                     variant="flat"
                     color="warning"
-                    onClick={() => handleExcludeAddressChange('', index)}
+                    onPress={() => handleExcludeAddressChange('', index)}
                   >
                     <MdDeleteForever className="text-lg" />
                   </Button>

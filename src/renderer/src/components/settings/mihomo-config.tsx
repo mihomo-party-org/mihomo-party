@@ -263,7 +263,7 @@ const MihomoConfig: React.FC = () => {
                   size="sm"
                   variant="flat"
                   color="warning"
-                  onClick={() => setPauseSSIDInput(pauseSSIDInput.filter((_, i) => i !== index))}
+                  onPress={() => setPauseSSIDInput(pauseSSIDInput.filter((_, i) => i !== index))}
                 >
                   <MdDeleteForever className="text-lg" />
                 </Button>

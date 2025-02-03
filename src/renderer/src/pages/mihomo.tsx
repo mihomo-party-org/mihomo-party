@@ -405,7 +405,7 @@ const Mihomo: React.FC = () => {
                           size="sm"
                           variant="flat"
                           color="warning"
-                          onClick={() =>
+                          onPress={() =>
                             setLanAllowedIpsInput(lanAllowedIpsInput.filter((_, i) => i !== index))
                           }
                         >
@@ -455,7 +455,7 @@ const Mihomo: React.FC = () => {
                           size="sm"
                           variant="flat"
                           color="warning"
-                          onClick={() =>
+                          onPress={() =>
                             setLanDisallowedIpsInput(
                               lanDisallowedIpsInput.filter((_, i) => i !== index)
                             )
@@ -533,7 +533,7 @@ const Mihomo: React.FC = () => {
                         size="sm"
                         variant="flat"
                         color="warning"
-                        onClick={() =>
+                        onPress={() =>
                           setAuthenticationInput(authenticationInput.filter((_, i) => i !== index))
                         }
                       >
@@ -585,7 +585,7 @@ const Mihomo: React.FC = () => {
                       size="sm"
                       variant="flat"
                       color="warning"
-                      onClick={() =>
+                      onPress={() =>
                         setSkipAuthPrefixesInput(
                           skipAuthPrefixesInput.filter((_, i) => i !== index)
                         )
