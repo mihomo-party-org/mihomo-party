@@ -4,7 +4,7 @@ import { NavigateFunction, useLocation, useNavigate, useRoutes } from 'react-rou
 import OutboundModeSwitcher from '@renderer/components/sider/outbound-mode-switcher'
 import SysproxySwitcher from '@renderer/components/sider/sysproxy-switcher'
 import TunSwitcher from '@renderer/components/sider/tun-switcher'
-import { Button, Divider } from '@nextui-org/react'
+import { Button, Divider } from '@heroui/react'
 import { IoSettings } from 'react-icons/io5'
 import routes from '@renderer/routes'
 import {

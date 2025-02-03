@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import { NextUIProvider } from '@nextui-org/react'
+import { HeroUIProvider } from '@heroui/react'
 import '@renderer/assets/floating.css'
 import FloatingApp from '@renderer/FloatingApp'
 import BaseErrorBoundary from './components/base/base-error-boundary'
@@ -10,7 +10,7 @@ import { ControledMihomoConfigProvider } from './hooks/use-controled-mihomo-conf
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <NextUIProvider>
+    <HeroUIProvider>
       <NextThemesProvider attribute="class" enableSystem defaultTheme="dark">
         <BaseErrorBoundary>
           <AppConfigProvider>
@@ -20,6 +20,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           </AppConfigProvider>
         </BaseErrorBoundary>
       </NextThemesProvider>
-    </NextUIProvider>
+    </HeroUIProvider>
   </React.StrictMode>
 )

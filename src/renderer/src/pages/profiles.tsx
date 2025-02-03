@@ -8,7 +8,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Input
-} from '@nextui-org/react'
+} from '@heroui/react'
 import BasePage from '@renderer/components/base/base-page'
 import ProfileItem from '@renderer/components/profiles/profile-item'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'

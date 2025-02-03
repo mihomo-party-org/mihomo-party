@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import { NextUIProvider } from '@nextui-org/react'
+import { HeroUIProvider } from '@heroui/react'
 import { init, platform } from '@renderer/utils/init'
 import '@renderer/assets/main.css'
 import App from '@renderer/App'
@@ -43,7 +43,7 @@ init().then(() => {
   })
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
-      <NextUIProvider>
+      <HeroUIProvider>
         <NextThemesProvider attribute="class" enableSystem defaultTheme="dark">
           <BaseErrorBoundary>
             <HashRouter>
@@ -63,7 +63,7 @@ init().then(() => {
             </HashRouter>
           </BaseErrorBoundary>
         </NextThemesProvider>
-      </NextUIProvider>
+      </HeroUIProvider>
     </React.StrictMode>
   )
 })

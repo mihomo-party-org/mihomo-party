@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, Chip, Tooltip } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, Chip, Tooltip } from '@heroui/react'
 import { MdOutlineAltRoute } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'

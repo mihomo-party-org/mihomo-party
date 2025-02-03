@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn, Switch, SwitchProps } from '@nextui-org/react'
+import { cn, Switch, SwitchProps } from '@heroui/react'
 import './border-switch.css'
 
 interface SiderSwitchProps extends SwitchProps {

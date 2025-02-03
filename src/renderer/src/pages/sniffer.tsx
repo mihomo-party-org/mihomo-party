@@ -1,4 +1,4 @@
-import { Button, Divider, Input, Switch } from '@nextui-org/react'
+import { Button, Divider, Input, Switch } from '@heroui/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'

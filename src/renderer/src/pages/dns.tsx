@@ -1,4 +1,4 @@
-import { Button, Tab, Input, Switch, Tabs, Divider } from '@nextui-org/react'
+import { Button, Tab, Input, Switch, Tabs, Divider } from '@heroui/react'
 import BasePage from '@renderer/components/base/base-page'
 import { MdDeleteForever } from 'react-icons/md'
 import SettingCard from '@renderer/components/base/base-setting-card'

@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react'
+import { Button } from '@heroui/react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { checkUpdate } from '@renderer/utils/ipc'
 import React, { useState } from 'react'

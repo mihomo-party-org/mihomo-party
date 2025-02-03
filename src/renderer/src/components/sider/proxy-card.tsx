@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, Chip, Tooltip } from '@nextui-org/react'
+import { Button, Card, CardBody, CardFooter, Chip, Tooltip } from '@heroui/react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { LuGroup } from 'react-icons/lu'

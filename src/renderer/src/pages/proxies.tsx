@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardBody, Chip } from '@nextui-org/react'
+import { Avatar, Button, Card, CardBody, Chip } from '@heroui/react'
 import BasePage from '@renderer/components/base/base-page'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import {

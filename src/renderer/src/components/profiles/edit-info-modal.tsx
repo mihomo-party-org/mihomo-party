@@ -12,7 +12,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem
-} from '@nextui-org/react'
+} from '@heroui/react'
 import React, { useState } from 'react'
 import SettingItem from '../base/base-setting-item'
 import { useOverrideConfig } from '@renderer/hooks/use-override-config'

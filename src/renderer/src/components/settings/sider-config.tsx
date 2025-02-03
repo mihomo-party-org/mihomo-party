@@ -1,7 +1,7 @@
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { Radio, RadioGroup } from '@nextui-org/react'
+import { Radio, RadioGroup } from '@heroui/react'
 import { useTranslation } from 'react-i18next'
 import type { FC } from 'react'
 

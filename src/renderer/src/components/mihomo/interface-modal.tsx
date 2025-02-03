@@ -6,7 +6,7 @@ import {
   ModalFooter,
   Button,
   Snippet
-} from '@nextui-org/react'
+} from '@heroui/react'
 import React, { useEffect, useState } from 'react'
 import { getInterfaces } from '@renderer/utils/ipc'
 import { useTranslation } from 'react-i18next'

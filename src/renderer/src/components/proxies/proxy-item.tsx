@@ -1,4 +1,4 @@
-import { Button, Card, CardBody } from '@nextui-org/react'
+import { Button, Card, CardBody } from '@heroui/react'
 import { mihomoUnfixedProxy } from '@renderer/utils/ipc'
 import React, { useMemo, useState } from 'react'
 import { FaMapPin } from 'react-icons/fa6'

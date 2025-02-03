@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@nextui-org/react'
+import { Button, Tooltip } from '@heroui/react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
 import {

@@ -7,7 +7,7 @@ import {
   Button,
   Input,
   Switch
-} from '@nextui-org/react'
+} from '@heroui/react'
 import React, { useState } from 'react'
 import SettingItem from '../base/base-setting-item'
 import { restartCore } from '@renderer/utils/ipc'

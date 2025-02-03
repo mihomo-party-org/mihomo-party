@@ -6,7 +6,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Input
-} from '@nextui-org/react'
+} from '@heroui/react'
 import BasePage from '@renderer/components/base/base-page'
 import { getFilePath, readTextFile } from '@renderer/utils/ipc'
 import { useEffect, useRef, useState } from 'react'

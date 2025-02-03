@@ -1,4 +1,4 @@
-import { Button, Input, Switch, Tab, Tabs } from '@nextui-org/react'
+import { Button, Input, Switch, Tab, Tabs } from '@heroui/react'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
