@@ -247,6 +247,7 @@ const Connections: React.FC = () => {
               })
             }}
           >
+            <SelectItem key="time">{t('connections.time')}</SelectItem>
             <SelectItem key="upload">{t('connections.uploadAmount')}</SelectItem>
             <SelectItem key="download">{t('connections.downloadAmount')}</SelectItem>
             <SelectItem key="uploadSpeed">{t('connections.uploadSpeed')}</SelectItem>

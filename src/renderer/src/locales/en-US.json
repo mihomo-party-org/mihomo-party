@@ -574,6 +574,7 @@
     "closed": "Closed",
     "filter": "Filter",
     "orderBy": "Order By",
+    "time": "Time",
     "uploadAmount": "Upload Amount",
     "downloadAmount": "Download Amount",
     "uploadSpeed": "Upload Speed",
