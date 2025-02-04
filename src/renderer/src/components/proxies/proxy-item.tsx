@@ -51,6 +51,7 @@ const ProxyItem: React.FC<Props> = (props) => {
 
   return (
     <Card
+      as="div"
       onPress={() => onSelect(group.name, proxy.name)}
       isPressable
       fullWidth

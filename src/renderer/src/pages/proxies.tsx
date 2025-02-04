@@ -329,6 +329,7 @@ const Proxies: React.FC = () => {
                   className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}
                 >
                   <Card
+                    as="div"
                     isPressable
                     fullWidth
                     onPress={() => {

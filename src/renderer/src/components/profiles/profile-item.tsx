@@ -174,6 +174,7 @@ const ProfileItem: React.FC<Props> = (props) => {
         />
       )}
       <Card
+        as="div"
         fullWidth
         isPressable
         onPress={() => {
