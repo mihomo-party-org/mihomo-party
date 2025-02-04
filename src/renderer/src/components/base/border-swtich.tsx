@@ -2,12 +2,13 @@ import React from 'react'
 import { cn, Switch, SwitchProps } from '@heroui/react'
 import './border-switch.css'
 
-interface SiderSwitchProps extends SwitchProps {
+interface BorderSwitchProps extends Omit<SwitchProps, 'isSelected'> {
   isShowBorder?: boolean
+  isSelected?: boolean
 }
 
-const BorderSwitch: React.FC<SiderSwitchProps> = (props) => {
-  const { isShowBorder = false, classNames, ...switchProps } = props
+const BorderSwitch: React.FC<BorderSwitchProps> = (props) => {
+  const { isShowBorder = false, isSelected = false, classNames, ...switchProps } = props
 
   return (
     <Switch
@@ -21,6 +22,7 @@ const BorderSwitch: React.FC<SiderSwitchProps> = (props) => {
         ...classNames
       }}
       size="sm"
+      isSelected={isSelected}
       {...switchProps}
     />
   )

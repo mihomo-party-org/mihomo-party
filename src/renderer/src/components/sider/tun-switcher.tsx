@@ -98,7 +98,7 @@ const TunSwitcher: React.FC<Props> = (props) => {
             </Button>
             <BorderSwitch
               isShowBorder={match && enable}
-              isSelected={enable}
+              isSelected={enable ?? false}
               onValueChange={onChange}
             />
           </div>

@@ -276,7 +276,11 @@ export async function webdavDelete(filename: string): Promise<void> {
 }
 
 export async function setTitleBarOverlay(overlay: TitleBarOverlayOptions): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setTitleBarOverlay', overlay))
+  try {
+    return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('setTitleBarOverlay', overlay))
+  } catch (error) {
+    console.debug('setTitleBarOverlay not supported on this platform')
+  }
 }
 
 export async function setAlwaysOnTop(alwaysOnTop: boolean): Promise<void> {
