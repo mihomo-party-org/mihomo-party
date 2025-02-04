@@ -233,7 +233,7 @@ const Connections: React.FC = () => {
           <Select
             classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
             size="sm"
-            className="w-[180px] min-w-[120px]"
+            className="w-[180px] min-w-[131px]"
             aria-label={t('connections.orderBy')}
             selectedKeys={new Set([connectionOrderBy])}
             onSelectionChange={async (v) => {

@@ -31,7 +31,9 @@
       "restoreFailed": "恢复失败：{{error}}",
       "deleteFailed": "删除失败：{{error}}",
       "shortcutRegistrationFailed": "快捷键注册失败",
-      "shortcutRegistrationFailedWithError": "快捷键注册失败：{{error}}"
+      "shortcutRegistrationFailedWithError": "快捷键注册失败：{{error}}",
+      "adminRequired": "首次启动请以管理员权限运行",
+      "initFailed": "应用初始化失败"
     },
     "updater": {
       "versionReady": "v{{version}} 版本就绪",
@@ -152,7 +154,10 @@
     "logLevel": "日志等级",
     "selectLogLevel": "选择日志等级",
     "silent": "静默",
-    "error": "错误",
+    "error": {
+      "coreStartFailed": "内核启动出错",
+      "profileCheckFailed": "配置检查失败"
+    },
     "warning": "警告",
     "info": "信息",
     "debug": "调试",
@@ -310,6 +315,7 @@
     }
   },
   "proxies": {
+    "title": "代理组与节点",
     "card": {
       "title": "代理组"
     },
@@ -418,6 +424,9 @@
     "notifications": {
       "coreAuthSuccess": "内核授权成功",
       "firewallResetSuccess": "防火墙重设成功"
+    },
+    "error": {
+      "tunPermissionDenied": "虚拟网卡启动失败，请尝试手动授予内核权限"
     }
   },
   "dns": {
@@ -471,7 +480,9 @@
       "visit": "访问 Sub-Store"
     },
     "error": {
-      "unsupportedFileType": "不支持的文件类型"
+      "unsupportedFileType": "不支持的文件类型",
+      "urlParamMissing": "缺少参数 url",
+      "importFailed": "订阅导入失败"
     },
     "emptyProfile": "空白订阅",
     "viewRuntimeConfig": "查看当前运行时配置",
@@ -506,7 +517,10 @@
       "feature": "功能"
     },
     "openFile": "打开文件",
-    "home": "主页"
+    "home": "主页",
+    "notification": {
+      "importSuccess": "订阅导入成功"
+    }
   },
   "outbound": {
     "title": "出站模式",
@@ -707,18 +721,6 @@
     "end": {
       "title": "教程结束",
       "description": "现在您已经了解了软件的基本用法，导入您的订阅开始使用吧，祝您使用愉快！\n您还可以加入我们的官方 <a href=\"https://t.me/mihomo_party_group\" target=\"_blank\">Telegram 群组</a> 获取最新资讯"
-    }
-  },
-  "main": {
-    "error": {
-      "adminRequired": "首次启动请以管理员权限运行",
-      "initFailed": "应用初始化失败",
-      "coreStartFailed": "内核启动出错",
-      "importFailed": "订阅导入失败",
-      "urlParamMissing": "缺少参数 url"
-    },
-    "notification": {
-      "importSuccess": "订阅导入成功"
     }
   }
 } 

@@ -31,7 +31,9 @@
       "restoreFailed": "Failed to restore: {{error}}",
       "deleteFailed": "Failed to delete: {{error}}",
       "shortcutRegistrationFailed": "Failed to register shortcut",
-      "shortcutRegistrationFailedWithError": "Failed to register shortcut: {{error}}"
+      "shortcutRegistrationFailedWithError": "Failed to register shortcut: {{error}}",
+      "adminRequired": "Please run with administrator privileges for first launch",
+      "initFailed": "Application initialization failed"
     },
     "updater": {
       "versionReady": "v{{version}} Version Ready",
@@ -129,8 +131,8 @@
     "coreUpgradeSuccess": "Core upgrade successful. If you want to use virtual network card (Tun), please go to the virtual network card page to manually authorize the Core again",
     "alreadyLatestVersion": "Already Latest Version",
     "selectCoreVersion": "Select Core Version",
-    "stableVersion": "Stable Version",
-    "alphaVersion": "Alpha Version",
+    "stableVersion": "Stable",
+    "alphaVersion": "Alpha",
     "mixedPort": "Mixed Port",
     "confirm": "Confirm",
     "socksPort": "Socks Port",
@@ -152,7 +154,10 @@
     "logLevel": "Log Level",
     "selectLogLevel": "Select Log Level",
     "silent": "Silent",
-    "error": "Error",
+    "error": {
+      "coreStartFailed": "Core start failed",
+      "profileCheckFailed": "Profile Check Failed"
+    },
     "warning": "Warning",
     "info": "Info",
     "debug": "Debug",
@@ -310,6 +315,7 @@
     }
   },
   "proxies": {
+    "title": "Proxy Groups & Nodes",
     "card": {
       "title": "ProxyGrp"
     },
@@ -418,6 +424,9 @@
     "notifications": {
       "coreAuthSuccess": "Core Authorization Successful",
       "firewallResetSuccess": "Firewall Reset Successful"
+    },
+    "error": {
+      "tunPermissionDenied": "TUN interface start failed, please try to manually grant core permissions"
     }
   },
   "dns": {
@@ -471,7 +480,9 @@
       "visit": "Visit Sub-Store"
     },
     "error": {
-      "unsupportedFileType": "Unsupported file type"
+      "unsupportedFileType": "Unsupported file type",
+      "urlParamMissing": "Missing parameter: url",
+      "importFailed": "Subscription import failed"
     },
     "emptyProfile": "Empty Profile",
     "viewRuntimeConfig": "View Current Runtime Config",
@@ -506,6 +517,9 @@
       "expired": "Expired",
       "remainingDays": "{{days}} days",
       "lastUpdate": "Last updated: {{time}}"
+    },
+    "notification": {
+      "importSuccess": "Subscription imported successfully"
     }
   },
   "outbound": {
@@ -575,10 +589,10 @@
     "filter": "Filter",
     "orderBy": "Order By",
     "time": "Time",
-    "uploadAmount": "Upload Amount",
-    "downloadAmount": "Download Amount",
-    "uploadSpeed": "Upload Speed",
-    "downloadSpeed": "Download Speed",
+    "uploadAmount": "Up Amount",
+    "downloadAmount": "Down Amount",
+    "uploadSpeed": "Up Speed",
+    "downloadSpeed": "Down Speed",
     "detail": {
       "title": "Connection Details",
       "establishTime": "Establish Time",
@@ -707,18 +721,6 @@
     "end": {
       "title": "Tutorial Complete",
       "description": "Now that you understand the basic usage of the software, import your subscription and start using it. Enjoy!\nYou can also join our official <a href=\"https://t.me/mihomo_party_group\" target=\"_blank\">Telegram group</a> for the latest news."
-    }
-  },
-  "main": {
-    "error": {
-      "adminRequired": "Please run with administrator privileges for first launch",
-      "initFailed": "Application initialization failed",
-      "coreStartFailed": "Core startup error",
-      "importFailed": "Subscription import failed",
-      "urlParamMissing": "Missing parameter: url"
-    },
-    "notification": {
-      "importSuccess": "Subscription imported successfully"
     }
   }
 } 

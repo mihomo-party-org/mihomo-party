@@ -50,8 +50,8 @@ if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')
         // ignore
       }
       dialog.showErrorBox(
-        i18next.t('main.error.adminRequired'),
-        `${i18next.t('main.error.adminRequired')}\n${createErrorStr}\n${eStr}`
+        i18next.t('common.error.adminRequired'),
+        `${i18next.t('common.error.adminRequired')}\n${createErrorStr}\n${eStr}`
       )
     } finally {
       app.exit()
@@ -123,12 +123,13 @@ powerMonitor.on('shutdown', async () => {
 app.whenReady().then(async () => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('party.mihomo.app')
+
   try {
     const appConfig = await getAppConfig()
     await initI18n({ lng: appConfig.language })
     await initPromise
   } catch (e) {
-    dialog.showErrorBox(i18next.t('main.error.initFailed'), `${e}`)
+    dialog.showErrorBox(i18next.t('common.error.initFailed'), `${e}`)
     app.quit()
   }
   try {
@@ -137,7 +138,7 @@ app.whenReady().then(async () => {
       await initProfileUpdater()
     })
   } catch (e) {
-    dialog.showErrorBox(i18next.t('main.error.coreStartFailed'), `${e}`)
+    dialog.showErrorBox(i18next.t('mihomo.error.coreStartFailed'), `${e}`)
   }
   try {
     await startMonitor()
@@ -178,7 +179,7 @@ async function handleDeepLink(url: string): Promise<void> {
         const profileUrl = urlObj.searchParams.get('url')
         const profileName = urlObj.searchParams.get('name')
         if (!profileUrl) {
-          throw new Error(i18next.t('main.error.urlParamMissing'))
+          throw new Error(i18next.t('profiles.error.urlParamMissing'))
         }
         await addProfileItem({
           type: 'remote',
@@ -186,10 +187,10 @@ async function handleDeepLink(url: string): Promise<void> {
           url: profileUrl
         })
         mainWindow?.webContents.send('profileConfigUpdated')
-        new Notification({ title: i18next.t('main.notification.importSuccess') }).show()
+        new Notification({ title: i18next.t('profiles.notification.importSuccess') }).show()
         break
       } catch (e) {
-        dialog.showErrorBox(i18next.t('main.error.importFailed'), `${url}\n${e}`)
+        dialog.showErrorBox(i18next.t('profiles.error.importFailed'), `${url}\n${e}`)
       }
     }
   }

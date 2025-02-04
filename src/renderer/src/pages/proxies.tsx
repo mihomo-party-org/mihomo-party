@@ -252,7 +252,7 @@ const Proxies: React.FC = () => {
 
   return (
     <BasePage
-      title={t('proxies.card.title')}
+      title={t('proxies.title')}
       header={
         <>
           <Button

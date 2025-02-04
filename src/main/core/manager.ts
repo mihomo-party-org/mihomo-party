@@ -38,13 +38,14 @@ import os from 'os'
 import { createWriteStream, existsSync } from 'fs'
 import { uploadRuntimeConfig } from '../resolve/gistApi'
 import { startMonitor } from '../resolve/trafficMonitor'
+import i18next from '../../shared/i18n'
 
 chokidar.watch(path.join(mihomoCoreDir(), 'meta-update'), {}).on('unlinkDir', async () => {
   try {
     await stopCore(true)
     await startCore()
   } catch (e) {
-    dialog.showErrorBox('内核启动出错', `${e}`)
+    dialog.showErrorBox(i18next.t('mihomo.error.coreStartFailed'), `${e}`)
   }
 })
 
@@ -130,7 +131,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
         patchControledMihomoConfig({ tun: { enable: false } })
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
         ipcMain.emit('updateTrayMenu')
-        reject('虚拟网卡启动失败, 请尝试手动授予内核权限')
+        reject(i18next.t('tun.error.tunPermissionDenied'))
       }
 
       if (
@@ -189,7 +190,7 @@ export async function restartCore(): Promise<void> {
   try {
     await startCore()
   } catch (e) {
-    dialog.showErrorBox('内核启动出错', `${e}`)
+    dialog.showErrorBox(i18next.t('mihomo.error.coreStartFailed'), `${e}`)
   }
 }
 
@@ -200,7 +201,7 @@ export async function keepCoreAlive(): Promise<void> {
       await writeFile(path.join(dataDir(), 'core.pid'), child.pid.toString())
     }
   } catch (e) {
-    dialog.showErrorBox('内核启动出错', `${e}`)
+    dialog.showErrorBox(i18next.t('mihomo.error.coreStartFailed'), `${e}`)
   }
 }
 
@@ -230,7 +231,7 @@ async function checkProfile(): Promise<void> {
         .split('\n')
         .filter((line) => line.includes('level=error'))
         .map((line) => line.split('level=error')[1])
-      throw new Error(`Profile Check Failed:\n${errorLines.join('\n')}`)
+      throw new Error(`${i18next.t('mihomo.error.profileCheckFailed')}:\n${errorLines.join('\n')}`)
     } else {
       throw error
     }

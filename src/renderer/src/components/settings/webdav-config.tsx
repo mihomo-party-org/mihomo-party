@@ -109,7 +109,7 @@ const WebdavConfig: React.FC = () => {
             className="ml-1"
             onPress={handleRestore}
           >
-            {t('webdav.restore')}
+            {t('webdav.restore.title')}
           </Button>
         </div>
       </SettingCard>
