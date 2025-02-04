@@ -33,7 +33,7 @@ import { useTranslation } from 'react-i18next'
 
 const GeneralConfig: React.FC = () => {
   const { t, i18n } = useTranslation()
-  const { data: enable, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
+  const { data: enable = false, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
   const { appConfig, patchAppConfig } = useAppConfig()
   const [customThemes, setCustomThemes] = useState<{ key: string; label: string }[]>()
   const [openCSSEditor, setOpenCSSEditor] = useState(false)
