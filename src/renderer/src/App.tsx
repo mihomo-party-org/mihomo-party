@@ -80,11 +80,13 @@ const App: React.FC = () => {
   const location = useLocation()
   const page = useRoutes(routes)
   const setTitlebar = (): void => {
-    if (!useWindowFrame && platform !== 'darwin') {
+    if (!useWindowFrame) {
       const options = { height: 48 } as TitleBarOverlayOptions
       try {
-        options.color = window.getComputedStyle(document.documentElement).backgroundColor
-        options.symbolColor = window.getComputedStyle(document.documentElement).color
+        if (platform !== 'darwin') {
+          options.color = window.getComputedStyle(document.documentElement).backgroundColor
+          options.symbolColor = window.getComputedStyle(document.documentElement).color
+        }
         setTitleBarOverlay(options)
       } catch (e) {
         // ignore

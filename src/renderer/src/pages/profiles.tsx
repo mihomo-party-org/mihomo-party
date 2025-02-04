@@ -395,7 +395,7 @@ const Profiles: React.FC = () => {
                 mutateProfileConfig={mutateProfileConfig}
                 updateProfileItem={updateProfileItem}
                 info={item}
-                onClick={async () => {
+                onPress={async () => {
                   await changeCurrentProfile(item.id)
                 }}
               />
