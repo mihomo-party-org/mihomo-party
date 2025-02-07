@@ -2,7 +2,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcMainHandlers } from './utils/ipc'
 import windowStateKeeper from 'electron-window-state'
 import { app, shell, BrowserWindow, Menu, dialog, Notification, powerMonitor } from 'electron'
-import { addProfileItem, getAppConfig } from './config'
+import { addProfileItem, getAppConfig, patchAppConfig } from './config'
 import { quitWithoutCore, startCore, stopCore } from './core/manager'
 import { triggerSysProxy } from './sys/sysproxy'
 import icon from '../../resources/icon.png?asset'
@@ -117,6 +117,12 @@ powerMonitor.on('shutdown', async () => {
   app.exit()
 })
 
+// 获取系统语言
+function getSystemLanguage(): 'zh-CN' | 'en-US' {
+  const locale = app.getLocale()
+  return locale.startsWith('zh') ? 'zh-CN' : 'en-US'
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -126,6 +132,12 @@ app.whenReady().then(async () => {
 
   try {
     const appConfig = await getAppConfig()
+    // 如果配置中没有语言设置，则使用系统语言
+    if (!appConfig.language) {
+      const systemLanguage = getSystemLanguage()
+      await patchAppConfig({ language: systemLanguage })
+      appConfig.language = systemLanguage
+    }
     await initI18n({ lng: appConfig.language })
     await initPromise
   } catch (e) {
