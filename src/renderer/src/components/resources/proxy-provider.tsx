@@ -50,6 +50,16 @@ const ProxyProvider: React.FC = () => {
   const providers = useMemo(() => {
     if (!data) return []
     return Object.values(data.providers)
+      .map(provider => {
+        if (provider.vehicleType === 'Inline' || provider.vehicleType === 'File') {
+          return {
+            ...provider,
+            subscriptionInfo: null
+          }
+        }
+        return provider
+      })
+
       .filter(provider => 'subscriptionInfo' in provider)
       .sort((a, b) => {
         if (a.vehicleType === 'File' && b.vehicleType !== 'File') {
