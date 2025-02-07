@@ -69,7 +69,10 @@ const ProxyItem: React.FC<Props> = (props) => {
       {proxyDisplayMode === 'full' ? (
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center pl-1">
-              <div className="text-ellipsis overflow-hidden whitespace-nowrap" title={proxy.name}>
+              <div
+                className="flag-emoji text-ellipsis overflow-hidden whitespace-nowrap"
+                title={proxy.name}
+              >
                 {proxy.name}
               </div>
               {fixed && (
