@@ -108,9 +108,11 @@ const ProxyItem: React.FC<Props> = (props) => {
                 color={delayColor(delay)}
                 onPress={onDelay}
                 variant="light"
-                className="h-full text-sm ml-auto -mt-0.5"
+                className="h-full text-sm ml-auto -mt-0.5 px-2 relative w-min whitespace-nowrap"
               >
-                {delayText(delay)}
+                <div className="w-full h-full flex items-center">
+                  {delayText(delay)}
+                </div>
               </Button>
             </div>
           </div>
@@ -144,9 +146,11 @@ const ProxyItem: React.FC<Props> = (props) => {
               color={delayColor(delay)}
               onPress={onDelay}
               variant="light"
-              className="h-full p-0 text-sm"
+              className="h-[24px] text-sm px-2 relative w-min whitespace-nowrap"
             >
-              {delayText(delay)}
+              <div className="w-full h-full flex items-center">
+                {delayText(delay)}
+              </div>
             </Button>
           </div>
         </div>
