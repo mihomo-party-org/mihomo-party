@@ -16,7 +16,6 @@
     "checksum": "node scripts/checksum.mjs",
     "telegram": "node scripts/telegram.mjs",
     "artifact": "node scripts/artifact.mjs",
-    "migrate-ui": "tsx scripts/migrate-to-heroui.ts",
     "dev": "electron-vite dev",
     "postinstall": "electron-builder install-app-deps",
     "build:win": "electron-vite build && electron-builder --publish never --win",

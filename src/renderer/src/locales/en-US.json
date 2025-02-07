@@ -1,726 +1,484 @@
 {
-  "common": {
-    "settings": "Settings",
-    "profiles": "Profiles",
-    "proxies": "Proxies",
-    "connections": "Connections",
-    "dns": "DNS",
-    "tun": "TUN",
-    "save": "Save",
-    "cancel": "Cancel",
-    "edit": "Edit",
-    "delete": "Delete",
-    "seconds": "seconds",
-    "confirm": "Confirm",
-    "auto": "Auto",
-    "default": "Default",
-    "close": "Close",
-    "pinWindow": "Pin Window",
-    "enterRootPassword": "Please enter root password",
-    "next": "Next",
-    "prev": "Previous",
-    "done": "Done",
-    "notification": {
-      "restartRequired": "Restart required for changes to take effect"
-    },
-    "error": {
-      "appCrash": "Application crashed :( Please submit the following information to the developer to troubleshoot",
-      "copyErrorMessage": "Copy Error Message",
-      "invalidCron": "Invalid Cron expression",
-      "getBackupListFailed": "Failed to get backup list: {{error}}",
-      "restoreFailed": "Failed to restore: {{error}}",
-      "deleteFailed": "Failed to delete: {{error}}",
-      "shortcutRegistrationFailed": "Failed to register shortcut",
-      "shortcutRegistrationFailedWithError": "Failed to register shortcut: {{error}}",
-      "adminRequired": "Please run with administrator privileges for first launch",
-      "initFailed": "Application initialization failed"
-    },
-    "updater": {
-      "versionReady": "v{{version}} Version Ready",
-      "goToDownload": "Go to Download",
-      "update": "Update"
-    }
-  },
-  "settings": {
-    "general": "General Settings",
-    "mihomo": "Mihomo Settings",
-    "language": "Language",
-    "theme": "Theme",
-    "darkMode": "Dark Mode",
-    "lightMode": "Light Mode",
-    "autoStart": "Auto Start",
-    "autoCheckUpdate": "Auto Check Update",
-    "silentStart": "Silent Start",
-    "autoQuitWithoutCore": "Auto Enable Light Mode",
-    "autoQuitWithoutCoreTooltip": "Automatically enter light mode after closing window for specified time",
-    "autoQuitWithoutCoreDelay": "Light Mode Auto Enable Delay",
-    "envType": "Environment Variable Type",
-    "showFloatingWindow": "Show Floating Window",
-    "spinFloatingIcon": "Spin Floating Icon Based on Network Speed",
-    "disableTray": "Disable Tray Icon",
-    "proxyInTray": "Show Proxy Info in Tray Menu",
-    "showTraffic_windows": "Show Network Speed in Taskbar",
-    "showTraffic_mac": "Show Network Speed in Status Bar",
-    "showDockIcon": "Show Dock Icon",
-    "useWindowFrame": "Use System Title Bar",
-    "backgroundColor": "Background Color",
-    "backgroundAuto": "Auto",
-    "backgroundDark": "Dark",
-    "backgroundLight": "Light",
-    "fetchTheme": "Fetch Theme",
-    "importTheme": "Import Theme",
-    "editTheme": "Edit Theme",
-    "selectTheme": "Select Theme",
-    "links": {
-      "docs": "Documentation",
-      "github": "GitHub Repository",
-      "telegram": "Telegram Group"
-    },
-    "title": "Application Settings"
-  },
-  "mihomo": {
-    "userAgent": "Subscription User Agent",
-    "userAgentPlaceholder": "Default: clash.meta",
-    "delayTest": {
-      "url": "Delay Test URL",
-      "urlPlaceholder": "Default: https://www.gstatic.com/generate_204",
-      "concurrency": "Delay Test Concurrency",
-      "concurrencyPlaceholder": "Default: 50",
-      "timeout": "Delay Test Timeout",
-      "timeoutPlaceholder": "Default: 5000"
-    },
-    "gist": {
-      "title": "Sync Runtime Config to Gist",
-      "copyUrl": "Copy Gist URL",
-      "token": "GitHub Token"
-    },
-    "proxyColumns": {
-      "title": "Proxy Display Columns",
-      "auto": "Auto",
-      "one": "One Column",
-      "two": "Two Columns",
-      "three": "Three Columns",
-      "four": "Four Columns"
-    },
-    "cpuPriority": {
-      "title": "Core Process Priority",
-      "realtime": "Realtime",
-      "high": "High",
-      "aboveNormal": "Above Normal",
-      "normal": "Normal",
-      "belowNormal": "Below Normal",
-      "low": "Low"
-    },
-    "workDir": {
-      "title": "Separate Work Directory for Different Subscriptions",
-      "tooltip": "Enable to avoid conflicts when different subscriptions have proxy groups with the same name"
-    },
-    "controlDns": "Control DNS Settings",
-    "controlSniff": "Control Domain Sniffing",
-    "autoCloseConnection": "Auto Close Connection",
-    "pauseSSID": {
-      "title": "Direct Connection for Specific WiFi SSIDs",
-      "placeholder": "Enter SSID"
-    },
-    "title": "Core Settings",
-    "restart": "Restart Core",
-    "memory": "Memory Usage",
-    "coreVersion": "Core Version",
-    "upgradeCore": "Upgrade Core",
-    "CoreAuthLost": "Core Authorization Lost",
-    "coreUpgradeSuccess": "Core upgrade successful. If you want to use virtual network card (Tun), please go to the virtual network card page to manually authorize the Core again",
-    "alreadyLatestVersion": "Already Latest Version",
-    "selectCoreVersion": "Select Core Version",
-    "stableVersion": "Stable",
-    "alphaVersion": "Alpha",
-    "mixedPort": "Mixed Port",
-    "confirm": "Confirm",
-    "socksPort": "Socks Port",
-    "httpPort": "Http Port",
-    "redirPort": "Redir Port",
-    "externalController": "External Controller Address",
-    "externalControllerSecret": "External Controller Secret",
-    "ipv6": "IPv6",
-    "allowLanConnection": "Allow LAN Connection",
-    "allowedIpSegments": "Allowed IP Segments",
-    "disallowedIpSegments": "Disallowed IP Segments",
-    "userVerification": "User Verification",
-    "skipAuthPrefixes": "Skip Auth IP Segments",
-    "useRttDelayTest": "Use RTT Delay Test",
-    "tcpConcurrent": "TCP Concurrent",
-    "storeSelectedNode": "Store Selected Node",
-    "storeFakeIp": "Store Fake IP",
-    "logRetentionDays": "Log Retention Days",
-    "logLevel": "Log Level",
-    "selectLogLevel": "Select Log Level",
-    "silent": "Silent",
-    "error": {
-      "coreStartFailed": "Core start failed",
-      "profileCheckFailed": "Profile Check Failed"
-    },
-    "warning": "Warning",
-    "info": "Info",
-    "debug": "Debug",
-    "findProcess": "Find Process",
-    "selectFindProcessMode": "Select Process Find Mode",
-    "strict": "Auto",
-    "off": "Off",
-    "always": "Always",
-    "username": {
-      "placeholder": "Username"
-    },
-    "password": {
-      "placeholder": "Password"
-    },
-    "ipSegment": {
-      "placeholder": "IP Segment"
-    },
-    "interface": {
-      "title": "Network Information"
-    }
-  },
-  "substore": {
-    "title": "Sub-Store",
-    "openInBrowser": "Open in Browser",
-    "enable": "Enable Sub-Store",
-    "allowLan": "Allow LAN Access",
-    "useCustomBackend": "Use Custom Sub-Store Backend",
-    "customBackendUrl": {
-      "title": "Custom Sub-Store Backend URL",
-      "placeholder": "Must include protocol"
-    },
-    "useProxy": "Enable Proxy for All Sub-Store Requests",
-    "sync": {
-      "title": "Schedule Subscription/File Sync",
-      "placeholder": "Cron expression"
-    },
-    "restore": {
-      "title": "Schedule Config Restore",
-      "placeholder": "Cron expression"
-    },
-    "backup": {
-      "title": "Schedule Config Backup",
-      "placeholder": "Cron expression"
-    }
-  },
-  "webdav": {
-    "title": "WebDAV Backup",
-    "url": "WebDAV URL",
-    "dir": "WebDAV Backup Directory",
-    "username": "WebDAV Username",
-    "password": "WebDAV Password",
-    "backup": "Backup",
-    "restore": {
-      "title": "Restore Backup",
-      "noBackups": "No backups available"
-    },
-    "notification": {
-      "backupSuccess": {
-        "title": "Backup Successful",
-        "body": "Backup file has been uploaded to WebDAV"
-      }
-    }
-  },
-  "shortcuts": {
-    "title": "Keyboard Shortcuts",
-    "toggleWindow": "Toggle Window",
-    "toggleFloatingWindow": "Toggle Floating Window",
-    "toggleSystemProxy": "Toggle System Proxy",
-    "toggleTun": "Toggle TUN",
-    "toggleRuleMode": "Toggle Rule Mode",
-    "toggleGlobalMode": "Toggle Global Mode",
-    "toggleDirectMode": "Toggle Direct Mode",
-    "toggleLightMode": "Toggle Light Mode",
-    "restartApp": "Restart App",
-    "input": {
-      "placeholder": "Click to input shortcut"
-    }
-  },
-  "sider": {
-    "title": "Sidebar Settings",
-    "cards": {
-      "systemProxy": "Sys Proxy",
-      "tun": "TUN",
-      "profiles": "Profiles",
-      "proxies": "Proxy Groups",
-      "rules": "Rules",
-      "resources": "Ext. Res.",
-      "override": "Override",
-      "connections": "Connections",
-      "core": "Core Settings",
-      "dns": "DNS",
-      "sniff": "Sniffing",
-      "logs": "Logs",
-      "substore": "Sub-Store",
-      "config": "Runtime Config",
-      "emptyProfile": "Empty Profile",
-      "viewRuntimeConfig": "View Runtime Config",
-      "remote": "Remote",
-      "local": "Local",
-      "trafficUsage": "Traffic Usage Progress",
-      "neverExpire": "Never Expire",
-      "outbound": {
-        "title": "Outbound Mode",
-        "rule": "Rule",
-        "global": "Global",
-        "direct": "Direct"
-      }
-    },
-    "size": {
-      "large": "Large",
-      "small": "Small",
-      "hidden": "Hidden"
-    }
-  },
-  "actions": {
-    "guide": {
-      "title": "Open Guide",
-      "button": "Open Guide"
-    },
-    "update": {
-      "title": "Check for Updates",
-      "button": "Check for Updates",
-      "upToDate": {
-        "title": "Up to Date",
-        "body": "No updates available"
-      }
-    },
-    "reset": {
-      "title": "Reset App",
-      "button": "Reset App",
-      "tooltip": "Delete all configurations and restore the app to its initial state"
-    },
-    "heapSnapshot": {
-      "title": "Create Heap Snapshot",
-      "button": "Create Heap Snapshot",
-      "tooltip": "Create a heap snapshot of the main process for memory issue debugging"
-    },
-    "lightMode": {
-      "title": "Light Mode",
-      "button": "Light Mode",
-      "tooltip": "Completely exit the app while keeping only the core process"
-    },
-    "restartApp": "Restart App",
-    "quit": {
-      "title": "Quit App",
-      "button": "Quit App"
-    },
-    "version": {
-      "title": "App Version"
-    }
-  },
-  "theme": {
-    "editor": {
-      "title": "Edit Theme"
-    }
-  },
-  "proxies": {
-    "title": "Proxy Groups & Nodes",
-    "card": {
-      "title": "ProxyGrp"
-    },
-    "delay": {
-      "test": "Test",
-      "timeout": "Timeout"
-    },
-    "unpin": "Unpin",
-    "order": {
-      "default": "Default",
-      "delay": "Delay",
-      "name": "Name"
-    },
-    "mode": {
-      "full": "Detailed Info",
-      "simple": "Simple Info",
-      "direct": "Direct Mode"
-    },
-    "search": {
-      "placeholder": "Search Proxies"
-    },
-    "locate": "Locate Current Proxy"
-  },
-  "sniffer": {
-    "title": "Domain Sniffing Settings",
-    "parsePureIP": "Sniff Unmapped IP Addresses",
-    "forceDNSMapping": "Sniff Real IP Mappings",
-    "overrideDestination": "Override Connection Address",
-    "sniff": {
-      "title": "HTTP Port Sniffing",
-      "tls": "TLS Port Sniffing",
-      "quic": "QUIC Port Sniffing",
-      "ports": {
-        "placeholder": "Port numbers, separated by commas"
-      }
-    },
-    "skipDomain": {
-      "title": "Skip Domain Sniffing",
-      "placeholder": "Example: +.push.apple.com"
-    },
-    "forceDomain": {
-      "title": "Force Domain Sniffing",
-      "placeholder": "Example: v2ex.com"
-    },
-    "skipDstAddress": {
-      "title": "Skip Destination Address Sniffing",
-      "placeholder": "Example: 1.1.1.1/32"
-    },
-    "skipSrcAddress": {
-      "title": "Skip Source Address Sniffing",
-      "placeholder": "Example: 192.168.1.1/24"
-    }
-  },
-  "sysproxy": {
-    "title": "System Proxy",
-    "host": {
-      "title": "Proxy Host",
-      "placeholder": "Default 127.0.0.1, do not modify unless necessary"
-    },
-    "mode": {
-      "title": "Proxy Mode",
-      "manual": "Manual",
-      "pac": "PAC"
-    },
-    "uwp": {
-      "title": "UWP Tool",
-      "open": "Open UWP Tool"
-    },
-    "pac": {
-      "edit": "Edit PAC Script"
-    },
-    "bypass": {
-      "title": "Proxy Bypass",
-      "addDefault": "Add Default Bypass",
-      "placeholder": "Example: *.baidu.com"
-    }
-  },
-  "tun": {
-    "title": "TUN",
-    "firewall": {
-      "title": "Reset Firewall",
-      "reset": "Reset Firewall"
-    },
-    "core": {
-      "title": "Manual  Authorization",
-      "auth": "Authorize Core"
-    },
-    "dns": {
-      "autoSet": "Auto Set System DNS"
-    },
-    "stack": {
-      "title": "Tun Mode Stack"
-    },
-    "device": {
-      "title": "Tun Device Name"
-    },
-    "strictRoute": "Strict Route",
-    "autoRoute": "Auto Set Global Route",
-    "autoRedirect": "Auto Set TCP Redirect",
-    "autoDetectInterface": "Auto Detect Interface",
-    "dnsHijack": "DNS Hijack",
-    "excludeAddress": {
-      "title": "Exclude Custom Networks",
-      "placeholder": "Example: 172.20.0.0/16"
-    },
-    "notifications": {
-      "coreAuthSuccess": "Core Authorization Successful",
-      "firewallResetSuccess": "Firewall Reset Successful"
-    },
-    "error": {
-      "tunPermissionDenied": "TUN interface start failed, please try to manually grant core permissions"
-    }
-  },
-  "dns": {
-    "title": "DNS Settings",
-    "enhancedMode": {
-      "title": "Domain Mapping Mode",
-      "fakeIp": "Fake IP",
-      "redirHost": "Real IP",
-      "normal": "No Mapping"
-    },
-    "fakeIp": {
-      "range": "Response Range",
-      "rangePlaceholder": "Example: 198.18.0.1/16",
-      "filter": "Real IP Response",
-      "filterPlaceholder": "Example: +.lan"
-    },
-    "respectRules": "Respect Rules",
-    "defaultNameserver": "DNS Server Domain Resolution",
-    "defaultNameserverPlaceholder": "Example: 223.5.5.5, IP only",
-    "proxyServerNameserver": "Proxy Server Domain Resolution",
-    "proxyServerNameserverPlaceholder": "Example: tls://dns.alidns.com",
-    "nameserver": "Default Resolution Server",
-    "nameserverPlaceholder": "Example: tls://dns.alidns.com",
-    "directNameserver": "Direct Resolution Server",
-    "directNameserverPlaceholder": "Example: tls://dns.alidns.com",
-    "nameserverPolicy": {
-      "title": "Override DNS Policy",
-      "list": "DNS Policy List",
-      "domainPlaceholder": "Domain",
-      "serverPlaceholder": "DNS Server"
-    },
-    "systemHosts": {
-      "title": "Use System Hosts"
-    },
-    "customHosts": {
-      "title": "Custom Hosts",
-      "list": "Hosts List",
-      "domainPlaceholder": "Domain",
-      "valuePlaceholder": "Domain or IP"
-    }
-  },
-  "profiles": {
-    "title": "Profile Management",
-    "updateAll": "Update All Profiles",
-    "useProxy": "Proxy",
-    "import": "Import",
-    "open": "Open",
-    "new": "New",
-    "newProfile": "New Profile",
-    "substore": {
-      "visit": "Visit Sub-Store"
-    },
-    "error": {
-      "unsupportedFileType": "Unsupported file type",
-      "urlParamMissing": "Missing parameter: url",
-      "importFailed": "Subscription import failed"
-    },
-    "emptyProfile": "Empty Profile",
-    "viewRuntimeConfig": "View Current Runtime Config",
-    "neverExpire": "Never Expire",
-    "remote": "Remote",
-    "local": "Local",
-    "trafficUsage": "Traffic Usage Progress",
-    "editInfo": {
-      "title": "Edit Information",
-      "name": "Name",
-      "url": "Subscription URL",
-      "useProxy": "Use Proxy to Update",
-      "interval": "Upd. Interval (min)",
-      "override": {
-        "title": "Override",
-        "global": "Global",
-        "noAvailable": "No available overrides",
-        "add": "Add Override"
-      }
-    },
-    "editFile": {
-      "title": "Edit Profile",
-      "notice": "Note: Changes made here will be reset after profile update. For custom configurations, please use",
-      "override": "Override",
-      "feature": "feature"
-    },
-    "openFile": "Open File",
-    "home": "Home",
-    "traffic": {
-      "usage": "{{used}}/{{total}}",
-      "unlimited": "Unlimited",
-      "expired": "Expired",
-      "remainingDays": "{{days}} days",
-      "lastUpdate": "Last updated: {{time}}"
-    },
-    "notification": {
-      "importSuccess": "Subscription imported successfully"
-    }
-  },
-  "outbound": {
-    "title": "Outbound Mode",
-    "modes": {
-      "rule": "Rule",
-      "global": "Global",
-      "direct": "Direct"
-    }
-  },
-  "rules": {
-    "title": "Rules",
-    "filter": "Filter Rules"
-  },
-  "override": {
-    "title": "Override",
-    "import": "Import",
-    "docs": "Documentation",
-    "repository": "Override Repository",
-    "unsupportedFileType": "Unsupported file type",
-    "actions": {
-      "open": "Open",
-      "newYaml": "New YAML",
-      "newJs": "New JavaScript"
-    },
-    "defaultContent": {
-      "yaml": "# https://mihomo.party/docs/guide/override/yaml",
-      "js": "// https://mihomo.party/docs/guide/override/javascript\nfunction main(config) {\n  return config\n}"
-    },
-    "newFile": {
-      "yaml": "New YAML",
-      "js": "New JS"
-    },
-    "editInfo": {
-      "title": "Edit Information",
-      "name": "Name",
-      "url": "URL",
-      "global": "Global Enable"
-    },
-    "editFile": {
-      "title": "Edit Override {{type}}",
-      "script": "Script",
-      "config": "Config"
-    },
-    "execLog": {
-      "title": "Execution Log",
-      "close": "Close"
-    },
-    "menuItems": {
-      "editInfo": "Edit Information",
-      "editFile": "Edit File",
-      "openFile": "Open File",
-      "execLog": "Execution Log",
-      "delete": "Delete"
-    },
-    "labels": {
-      "global": "Global"
-    }
-  },
-  "connections": {
-    "title": "Connections",
-    "upload": "Upload",
-    "download": "Download",
-    "closeAll": "Close All Connections",
-    "active": "Active",
-    "closed": "Closed",
-    "filter": "Filter",
-    "orderBy": "Order By",
-    "time": "Time",
-    "uploadAmount": "Up Amount",
-    "downloadAmount": "Down Amount",
-    "uploadSpeed": "Up Speed",
-    "downloadSpeed": "Down Speed",
-    "detail": {
-      "title": "Connection Details",
-      "establishTime": "Establish Time",
-      "rule": "Rule",
-      "proxyChain": "Proxy Chain",
-      "connectionType": "Connection Type",
-      "host": "Host",
-      "sniffHost": "Sniff Host",
-      "processName": "Process Name",
-      "processPath": "Process Path",
-      "sourceIP": "Source IP",
-      "sourceGeoIP": "Source GeoIP",
-      "sourceASN": "Source ASN",
-      "destinationIP": "Destination IP",
-      "destinationGeoIP": "Destination GeoIP",
-      "destinationASN": "Destination ASN",
-      "sourcePort": "Source Port",
-      "destinationPort": "Destination Port",
-      "inboundIP": "Inbound IP",
-      "inboundPort": "Inbound Port",
-      "copyRule": "Copy Rule",
-      "inboundName": "Inbound Name",
-      "inboundUser": "Inbound User",
-      "dscp": "DSCP",
-      "remoteDestination": "Remote Destination",
-      "dnsMode": "DNS Mode",
-      "specialProxy": "Special Proxy",
-      "specialRules": "Special Rules",
-      "close": "Close"
-    }
-  },
-  "resources": {
-    "geoData": {
-      "geoip": "GeoIP Database",
-      "geosite": "GeoSite Database",
-      "mmdb": "MMDB Database",
-      "asn": "ASN Database",
-      "mode": "GeoData Mode",
-      "autoUpdate": "Auto Update",
-      "updateInterval": "Update Interval (hours)",
-      "updateSuccess": "GeoData Update Successful"
-    }
-  },
-  "logs": {
-    "title": "Real-time Logs",
-    "filter": "Filter logs",
-    "clear": "Clear logs",
-    "autoScroll": "Auto scroll"
-  },
-  "tray": {
-    "showWindow": "Show Window",
-    "showFloatingWindow": "Show Floating Window",
-    "hideFloatingWindow": "Hide Floating Window",
-    "ruleMode": "Rule Mode",
-    "globalMode": "Global Mode",
-    "directMode": "Direct Mode",
-    "systemProxy": "System Proxy",
-    "tun": "TUN",
-    "profiles": "Profiles",
-    "openDirectories": {
-      "title": "Open Directories",
-      "appDir": "App Directory",
-      "workDir": "Work Directory",
-      "coreDir": "Core Directory",
-      "logDir": "Log Directory"
-    },
-    "copyEnv": "Copy Environment Variables"
-  },
-  "guide": {
-    "welcome": {
-      "title": "Welcome to Mihomo Party",
-      "description": "This is an interactive tutorial. If you are already familiar with the software, you can click the close button in the top right corner. You can always open this tutorial again from the settings."
-    },
-    "sider": {
-      "title": "Navigation Bar",
-      "description": "The left side is the application's navigation bar, which also serves as a dashboard. Here you can switch between different pages and get an overview of commonly used status information."
-    },
-    "card": {
-      "title": "Cards",
-      "description": "Click on the navigation bar cards to jump to the corresponding page. You can also drag and drop the cards to arrange them freely."
-    },
-    "main": {
-      "title": "Main Area",
-      "description": "The right side is the main area of the application, displaying the content of the selected page from the navigation bar."
-    },
-    "profile": {
-      "title": "Profile Management",
-      "description": "The profile management card shows information about the currently running subscription configuration. Click to enter the profile management page where you can manage your subscription configurations."
-    },
-    "import": {
-      "title": "Import Subscription",
-      "description": "Mihomo Party supports various subscription import methods. Enter your subscription link here and click import to import your subscription configuration. If your subscription requires a proxy to update, check the 'Proxy' option before importing (this requires having a working subscription first)."
-    },
-    "substore": {
-      "title": "Sub-Store",
-      "description": "Mihomo Party has deep integration with Sub-Store. You can click this button to enter Sub-Store or directly import your subscriptions managed through Sub-Store. Mihomo Party uses its built-in Sub-Store backend by default. If you have your own Sub-Store backend, you can configure it in the settings page. If you don't use Sub-Store, you can also disable it in the settings."
-    },
-    "localProfile": {
-      "title": "Local Profile",
-      "description": "Click '+' to import a local file or create a new empty configuration for editing."
-    },
-    "sysproxy": {
-      "title": "System Proxy",
-      "description": "After importing a subscription, the core is running and listening on the specified port. You can now use the proxy through the specified port. If you want most applications to automatically use this proxy port, you need to turn on the system proxy switch."
-    },
-    "sysproxySetting": {
-      "title": "System Proxy Settings",
-      "description": "Here you can configure system proxy-related settings and choose the proxy mode. For Windows applications that don't follow system proxy, you can use the 'UWP Tool' to remove local loopback restrictions. For the difference between 'Manual Proxy Mode' and 'PAC Proxy Mode', please search online."
-    },
-    "tun": {
-      "title": "Virtual Network Card",
-      "description": "Virtual network card, commonly known as 'Tun Mode' in similar software, allows you to let the core take control of all traffic for applications that don't follow system proxy settings."
-    },
-    "tunSetting": {
-      "title": "Virtual Network Card Settings",
-      "description": "Here you can modify virtual network card settings. Mihomo Party has theoretically solved all permission issues. If your virtual network card is still not working, try resetting the firewall (Windows) or manually authorizing the core (MacOS/Linux) and then restart the core."
-    },
-    "override": {
-      "title": "Override",
-      "description": "Mihomo Party provides powerful override functionality to customize your imported subscription configurations, such as adding rules and customizing proxy groups. You can directly import override files written by others or write your own. <b>Remember to enable the override file on the subscription you want to override</b>. For override file syntax, please refer to the <a href=\"https://mihomo.party/docs/guide/override\" target=\"_blank\">official documentation</a>."
-    },
-    "dns": {
-      "title": "DNS",
-      "description": "The software takes control of the core's DNS settings by default. If you need to use the DNS settings from your subscription configuration, you can disable 'Control DNS Settings' in the application settings. The same applies to domain sniffing."
-    },
-    "end": {
-      "title": "Tutorial Complete",
-      "description": "Now that you understand the basic usage of the software, import your subscription and start using it. Enjoy!\nYou can also join our official <a href=\"https://t.me/mihomo_party_group\" target=\"_blank\">Telegram group</a> for the latest news."
-    }
-  }
-} 
+  "common.settings": "Settings",
+  "common.profiles": "Profiles",
+  "common.proxies": "Proxies",
+  "common.connections": "Connections",
+  "common.dns": "DNS",
+  "common.tun": "TUN",
+  "common.save": "Save",
+  "common.cancel": "Cancel",
+  "common.edit": "Edit",
+  "common.delete": "Delete",
+  "common.seconds": "seconds",
+  "common.confirm": "Confirm",
+  "common.auto": "Auto",
+  "common.default": "Default",
+  "common.close": "Close",
+  "common.pinWindow": "Pin Window",
+  "common.enterRootPassword": "Please enter root password",
+  "common.next": "Next",
+  "common.prev": "Previous",
+  "common.done": "Done",
+  "common.notification.restartRequired": "Restart required for changes to take effect",
+  "common.error.appCrash": "Application crashed :( Please submit the following information to the developer to troubleshoot",
+  "common.error.copyErrorMessage": "Copy Error Message",
+  "common.error.invalidCron": "Invalid Cron expression",
+  "common.error.getBackupListFailed": "Failed to get backup list: {{error}}",
+  "common.error.restoreFailed": "Failed to restore: {{error}}",
+  "common.error.deleteFailed": "Failed to delete: {{error}}",
+  "common.error.shortcutRegistrationFailed": "Failed to register shortcut",
+  "common.error.shortcutRegistrationFailedWithError": "Failed to register shortcut: {{error}}",
+  "common.error.adminRequired": "Please run with administrator privileges for first launch",
+  "common.error.initFailed": "Application initialization failed",
+  "common.updater.versionReady": "v{{version}} Version Ready",
+  "common.updater.goToDownload": "Go to Download",
+  "common.updater.update": "Update",
+  "settings.general": "General Settings",
+  "settings.mihomo": "Mihomo Settings",
+  "settings.language": "Language",
+  "settings.theme": "Theme",
+  "settings.darkMode": "Dark Mode",
+  "settings.lightMode": "Light Mode",
+  "settings.autoStart": "Auto Start",
+  "settings.autoCheckUpdate": "Auto Check Update",
+  "settings.silentStart": "Silent Start",
+  "settings.autoQuitWithoutCore": "Auto Enable Light Mode",
+  "settings.autoQuitWithoutCoreTooltip": "Automatically enter light mode after closing window for specified time",
+  "settings.autoQuitWithoutCoreDelay": "Light Mode Auto Enable Delay",
+  "settings.envType": "Environment Variable Type",
+  "settings.showFloatingWindow": "Show Floating Window",
+  "settings.spinFloatingIcon": "Spin Floating Icon Based on Network Speed",
+  "settings.disableTray": "Disable Tray Icon",
+  "settings.proxyInTray": "Show Proxy Info in Tray Menu",
+  "settings.showTraffic_windows": "Show Network Speed in Taskbar",
+  "settings.showTraffic_mac": "Show Network Speed in Status Bar",
+  "settings.showDockIcon": "Show Dock Icon",
+  "settings.useWindowFrame": "Use System Title Bar",
+  "settings.backgroundColor": "Background Color",
+  "settings.backgroundAuto": "Auto",
+  "settings.backgroundDark": "Dark",
+  "settings.backgroundLight": "Light",
+  "settings.fetchTheme": "Fetch Theme",
+  "settings.importTheme": "Import Theme",
+  "settings.editTheme": "Edit Theme",
+  "settings.selectTheme": "Select Theme",
+  "settings.links.docs": "Documentation",
+  "settings.links.github": "GitHub Repository",
+  "settings.links.telegram": "Telegram Group",
+  "settings.title": "Application Settings",
+  "mihomo.userAgent": "Subscription User Agent",
+  "mihomo.userAgentPlaceholder": "Default: clash.meta",
+  "mihomo.delayTest.url": "Delay Test URL",
+  "mihomo.delayTest.urlPlaceholder": "Default: https://www.gstatic.com/generate_204",
+  "mihomo.delayTest.concurrency": "Delay Test Concurrency",
+  "mihomo.delayTest.concurrencyPlaceholder": "Default: 50",
+  "mihomo.delayTest.timeout": "Delay Test Timeout",
+  "mihomo.delayTest.timeoutPlaceholder": "Default: 5000",
+  "mihomo.gist.title": "Sync Runtime Config to Gist",
+  "mihomo.gist.copyUrl": "Copy Gist URL",
+  "mihomo.gist.token": "GitHub Token",
+  "mihomo.proxyColumns.title": "Proxy Display Columns",
+  "mihomo.proxyColumns.auto": "Auto",
+  "mihomo.proxyColumns.one": "One Column",
+  "mihomo.proxyColumns.two": "Two Columns",
+  "mihomo.proxyColumns.three": "Three Columns",
+  "mihomo.proxyColumns.four": "Four Columns",
+  "mihomo.cpuPriority.title": "Core Process Priority",
+  "mihomo.cpuPriority.realtime": "Realtime",
+  "mihomo.cpuPriority.high": "High",
+  "mihomo.cpuPriority.aboveNormal": "Above Normal",
+  "mihomo.cpuPriority.normal": "Normal",
+  "mihomo.cpuPriority.belowNormal": "Below Normal",
+  "mihomo.cpuPriority.low": "Low",
+  "mihomo.workDir.title": "Separate Work Directory for Different Subscriptions",
+  "mihomo.workDir.tooltip": "Enable to avoid conflicts when different subscriptions have proxy groups with the same name",
+  "mihomo.controlDns": "Control DNS Settings",
+  "mihomo.controlSniff": "Control Domain Sniffing",
+  "mihomo.autoCloseConnection": "Auto Close Connection",
+  "mihomo.pauseSSID.title": "Direct Connection for Specific WiFi SSIDs",
+  "mihomo.pauseSSID.placeholder": "Enter SSID",
+  "mihomo.title": "Core Settings",
+  "mihomo.restart": "Restart Core",
+  "mihomo.memory": "Memory Usage",
+  "mihomo.coreVersion": "Core Version",
+  "mihomo.upgradeCore": "Upgrade Core",
+  "mihomo.CoreAuthLost": "Core Authorization Lost",
+  "mihomo.coreUpgradeSuccess": "Core upgrade successful. If you want to use virtual network card (Tun), please go to the virtual network card page to manually authorize the Core again",
+  "mihomo.alreadyLatestVersion": "Already Latest Version",
+  "mihomo.selectCoreVersion": "Select Core Version",
+  "mihomo.stableVersion": "Stable",
+  "mihomo.alphaVersion": "Alpha",
+  "mihomo.mixedPort": "Mixed Port",
+  "mihomo.confirm": "Confirm",
+  "mihomo.socksPort": "Socks Port",
+  "mihomo.httpPort": "Http Port",
+  "mihomo.redirPort": "Redir Port",
+  "mihomo.externalController": "External Controller Address",
+  "mihomo.externalControllerSecret": "External Controller Secret",
+  "mihomo.ipv6": "IPv6",
+  "mihomo.allowLanConnection": "Allow LAN Connection",
+  "mihomo.allowedIpSegments": "Allowed IP Segments",
+  "mihomo.disallowedIpSegments": "Disallowed IP Segments",
+  "mihomo.userVerification": "User Verification",
+  "mihomo.skipAuthPrefixes": "Skip Auth IP Segments",
+  "mihomo.useRttDelayTest": "Use RTT Delay Test",
+  "mihomo.tcpConcurrent": "TCP Concurrent",
+  "mihomo.storeSelectedNode": "Store Selected Node",
+  "mihomo.storeFakeIp": "Store Fake IP",
+  "mihomo.logRetentionDays": "Log Retention Days",
+  "mihomo.logLevel": "Log Level",
+  "mihomo.selectLogLevel": "Select Log Level",
+  "mihomo.silent": "Silent",
+  "mihomo.error.coreStartFailed": "Core start failed",
+  "mihomo.error.profileCheckFailed": "Profile Check Failed",
+  "mihomo.warning": "Warning",
+  "mihomo.info": "Info",
+  "mihomo.debug": "Debug",
+  "mihomo.findProcess": "Find Process",
+  "mihomo.selectFindProcessMode": "Select Process Find Mode",
+  "mihomo.strict": "Auto",
+  "mihomo.off": "Off",
+  "mihomo.always": "Always",
+  "mihomo.username.placeholder": "Username",
+  "mihomo.password.placeholder": "Password",
+  "mihomo.ipSegment.placeholder": "IP Segment",
+  "mihomo.interface.title": "Network Information",
+  "substore.title": "Sub-Store",
+  "substore.openInBrowser": "Open in Browser",
+  "substore.enable": "Enable Sub-Store",
+  "substore.allowLan": "Allow LAN Access",
+  "substore.useCustomBackend": "Use Custom Sub-Store Backend",
+  "substore.customBackendUrl.title": "Custom Sub-Store Backend URL",
+  "substore.customBackendUrl.placeholder": "Must include protocol",
+  "substore.useProxy": "Enable Proxy for All Sub-Store Requests",
+  "substore.sync.title": "Schedule Subscription/File Sync",
+  "substore.sync.placeholder": "Cron expression",
+  "substore.restore.title": "Schedule Config Restore",
+  "substore.restore.placeholder": "Cron expression",
+  "substore.backup.title": "Schedule Config Backup",
+  "substore.backup.placeholder": "Cron expression",
+  "webdav.title": "WebDAV Backup",
+  "webdav.url": "WebDAV URL",
+  "webdav.dir": "WebDAV Backup Directory",
+  "webdav.username": "WebDAV Username",
+  "webdav.password": "WebDAV Password",
+  "webdav.backup": "Backup",
+  "webdav.restore.title": "Restore Backup",
+  "webdav.restore.noBackups": "No backups available",
+  "webdav.notification.backupSuccess.title": "Backup Successful",
+  "webdav.notification.backupSuccess.body": "Backup file has been uploaded to WebDAV",
+  "shortcuts.title": "Keyboard Shortcuts",
+  "shortcuts.toggleWindow": "Toggle Window",
+  "shortcuts.toggleFloatingWindow": "Toggle Floating Window",
+  "shortcuts.toggleSystemProxy": "Toggle System Proxy",
+  "shortcuts.toggleTun": "Toggle TUN",
+  "shortcuts.toggleRuleMode": "Toggle Rule Mode",
+  "shortcuts.toggleGlobalMode": "Toggle Global Mode",
+  "shortcuts.toggleDirectMode": "Toggle Direct Mode",
+  "shortcuts.toggleLightMode": "Toggle Light Mode",
+  "shortcuts.restartApp": "Restart App",
+  "shortcuts.input.placeholder": "Click to input shortcut",
+  "sider.title": "Sidebar Settings",
+  "sider.cards.systemProxy": "Sys Proxy",
+  "sider.cards.tun": "TUN",
+  "sider.cards.profiles": "Profiles",
+  "sider.cards.proxies": "Proxy Groups",
+  "sider.cards.rules": "Rules",
+  "sider.cards.resources": "Ext. Res.",
+  "sider.cards.override": "Override",
+  "sider.cards.connections": "Connections",
+  "sider.cards.core": "Core Settings",
+  "sider.cards.dns": "DNS",
+  "sider.cards.sniff": "Sniffing",
+  "sider.cards.logs": "Logs",
+  "sider.cards.substore": "Sub-Store",
+  "sider.cards.config": "Runtime Config",
+  "sider.cards.emptyProfile": "Empty Profile",
+  "sider.cards.viewRuntimeConfig": "View Runtime Config",
+  "sider.cards.remote": "Remote",
+  "sider.cards.local": "Local",
+  "sider.cards.trafficUsage": "Traffic Usage Progress",
+  "sider.cards.neverExpire": "Never Expire",
+  "sider.cards.outbound.title": "Outbound Mode",
+  "sider.cards.outbound.rule": "Rule",
+  "sider.cards.outbound.global": "Global",
+  "sider.cards.outbound.direct": "Direct",
+  "sider.size.large": "Large",
+  "sider.size.small": "Small",
+  "sider.size.hidden": "Hidden",
+  "actions.guide.title": "Open Guide",
+  "actions.guide.button": "Open Guide",
+  "actions.update.title": "Check for Updates",
+  "actions.update.button": "Check for Updates",
+  "actions.update.upToDate.title": "Up to Date",
+  "actions.update.upToDate.body": "No updates available",
+  "actions.reset.title": "Reset App",
+  "actions.reset.button": "Reset App",
+  "actions.reset.tooltip": "Delete all configurations and restore the app to its initial state",
+  "actions.heapSnapshot.title": "Create Heap Snapshot",
+  "actions.heapSnapshot.button": "Create Heap Snapshot",
+  "actions.heapSnapshot.tooltip": "Create a heap snapshot of the main process for memory issue debugging",
+  "actions.lightMode.title": "Light Mode",
+  "actions.lightMode.button": "Light Mode",
+  "actions.lightMode.tooltip": "Completely exit the app while keeping only the core process",
+  "actions.restartApp": "Restart App",
+  "actions.quit.title": "Quit App",
+  "actions.quit.button": "Quit App",
+  "actions.version.title": "App Version",
+  "theme.editor.title": "Edit Theme",
+  "proxies.title": "Proxy Groups & Nodes",
+  "proxies.card.title": "ProxyGrp",
+  "proxies.delay.test": "Test",
+  "proxies.delay.timeout": "Timeout",
+  "proxies.unpin": "Unpin",
+  "proxies.order.default": "Default",
+  "proxies.order.delay": "Delay",
+  "proxies.order.name": "Name",
+  "proxies.mode.full": "Detailed Info",
+  "proxies.mode.simple": "Simple Info",
+  "proxies.mode.direct": "Direct Mode",
+  "proxies.search.placeholder": "Search Proxies",
+  "proxies.locate": "Locate Current Proxy",
+  "sniffer.title": "Domain Sniffing Settings",
+  "sniffer.parsePureIP": "Sniff Unmapped IP Addresses",
+  "sniffer.forceDNSMapping": "Sniff Real IP Mappings",
+  "sniffer.overrideDestination": "Override Connection Address",
+  "sniffer.sniff.title": "HTTP Port Sniffing",
+  "sniffer.sniff.tls": "TLS Port Sniffing",
+  "sniffer.sniff.quic": "QUIC Port Sniffing",
+  "sniffer.sniff.ports.placeholder": "Port numbers, separated by commas",
+  "sniffer.skipDomain.title": "Skip Domain Sniffing",
+  "sniffer.skipDomain.placeholder": "Example: +.push.apple.com",
+  "sniffer.forceDomain.title": "Force Domain Sniffing",
+  "sniffer.forceDomain.placeholder": "Example: v2ex.com",
+  "sniffer.skipDstAddress.title": "Skip Destination Address Sniffing",
+  "sniffer.skipDstAddress.placeholder": "Example: 1.1.1.1/32",
+  "sniffer.skipSrcAddress.title": "Skip Source Address Sniffing",
+  "sniffer.skipSrcAddress.placeholder": "Example: 192.168.1.1/24",
+  "sysproxy.title": "System Proxy",
+  "sysproxy.host.title": "Proxy Host",
+  "sysproxy.host.placeholder": "Default 127.0.0.1, do not modify unless necessary",
+  "sysproxy.mode.title": "Proxy Mode",
+  "sysproxy.mode.manual": "Manual",
+  "sysproxy.mode.pac": "PAC",
+  "sysproxy.uwp.title": "UWP Tool",
+  "sysproxy.uwp.open": "Open UWP Tool",
+  "sysproxy.pac.edit": "Edit PAC Script",
+  "sysproxy.bypass.title": "Proxy Bypass",
+  "sysproxy.bypass.addDefault": "Add Default Bypass",
+  "sysproxy.bypass.placeholder": "Example: *.baidu.com",
+  "tun.title": "TUN",
+  "tun.firewall.title": "Reset Firewall",
+  "tun.firewall.reset": "Reset Firewall",
+  "tun.core.title": "Manual  Authorization",
+  "tun.core.auth": "Authorize Core",
+  "tun.dns.autoSet": "Auto Set System DNS",
+  "tun.stack.title": "Tun Mode Stack",
+  "tun.device.title": "Tun Device Name",
+  "tun.strictRoute": "Strict Route",
+  "tun.autoRoute": "Auto Set Global Route",
+  "tun.autoRedirect": "Auto Set TCP Redirect",
+  "tun.autoDetectInterface": "Auto Detect Interface",
+  "tun.dnsHijack": "DNS Hijack",
+  "tun.excludeAddress.title": "Exclude Custom Networks",
+  "tun.excludeAddress.placeholder": "Example: 172.20.0.0/16",
+  "tun.notifications.coreAuthSuccess": "Core Authorization Successful",
+  "tun.notifications.firewallResetSuccess": "Firewall Reset Successful",
+  "tun.error.tunPermissionDenied": "TUN interface start failed, please try to manually grant core permissions",
+  "dns.title": "DNS Settings",
+  "dns.enhancedMode.title": "Domain Mapping Mode",
+  "dns.enhancedMode.fakeIp": "Fake IP",
+  "dns.enhancedMode.redirHost": "Real IP",
+  "dns.enhancedMode.normal": "No Mapping",
+  "dns.fakeIp.range": "Response Range",
+  "dns.fakeIp.rangePlaceholder": "Example: 198.18.0.1/16",
+  "dns.fakeIp.filter": "Real IP Response",
+  "dns.fakeIp.filterPlaceholder": "Example: +.lan",
+  "dns.respectRules": "Respect Rules",
+  "dns.defaultNameserver": "DNS Server Domain Resolution",
+  "dns.defaultNameserverPlaceholder": "Example: 223.5.5.5, IP only",
+  "dns.proxyServerNameserver": "Proxy Server Domain Resolution",
+  "dns.proxyServerNameserverPlaceholder": "Example: tls://dns.alidns.com",
+  "dns.nameserver": "Default Resolution Server",
+  "dns.nameserverPlaceholder": "Example: tls://dns.alidns.com",
+  "dns.directNameserver": "Direct Resolution Server",
+  "dns.directNameserverPlaceholder": "Example: tls://dns.alidns.com",
+  "dns.nameserverPolicy.title": "Override DNS Policy",
+  "dns.nameserverPolicy.list": "DNS Policy List",
+  "dns.nameserverPolicy.domainPlaceholder": "Domain",
+  "dns.nameserverPolicy.serverPlaceholder": "DNS Server",
+  "dns.systemHosts.title": "Use System Hosts",
+  "dns.customHosts.title": "Custom Hosts",
+  "dns.customHosts.list": "Hosts List",
+  "dns.customHosts.domainPlaceholder": "Domain",
+  "dns.customHosts.valuePlaceholder": "Domain or IP",
+  "profiles.title": "Profile Management",
+  "profiles.updateAll": "Update All Profiles",
+  "profiles.useProxy": "Proxy",
+  "profiles.import": "Import",
+  "profiles.open": "Open",
+  "profiles.new": "New",
+  "profiles.newProfile": "New Profile",
+  "profiles.substore.visit": "Visit Sub-Store",
+  "profiles.error.unsupportedFileType": "Unsupported file type",
+  "profiles.error.urlParamMissing": "Missing parameter: url",
+  "profiles.error.importFailed": "Subscription import failed",
+  "profiles.emptyProfile": "Empty Profile",
+  "profiles.viewRuntimeConfig": "View Current Runtime Config",
+  "profiles.neverExpire": "Never Expire",
+  "profiles.remote": "Remote",
+  "profiles.local": "Local",
+  "profiles.trafficUsage": "Traffic Usage Progress",
+  "profiles.editInfo.title": "Edit Information",
+  "profiles.editInfo.name": "Name",
+  "profiles.editInfo.url": "Subscription URL",
+  "profiles.editInfo.useProxy": "Use Proxy to Update",
+  "profiles.editInfo.interval": "Upd. Interval (min)",
+  "profiles.editInfo.override.title": "Override",
+  "profiles.editInfo.override.global": "Global",
+  "profiles.editInfo.override.noAvailable": "No available overrides",
+  "profiles.editInfo.override.add": "Add Override",
+  "profiles.editFile.title": "Edit Profile",
+  "profiles.editFile.notice": "Note: Changes made here will be reset after profile update. For custom configurations, please use",
+  "profiles.editFile.override": "Override",
+  "profiles.editFile.feature": "feature",
+  "profiles.openFile": "Open File",
+  "profiles.home": "Home",
+  "profiles.traffic.usage": "{{used}}/{{total}}",
+  "profiles.traffic.unlimited": "Unlimited",
+  "profiles.traffic.expired": "Expired",
+  "profiles.traffic.remainingDays": "{{days}} days",
+  "profiles.traffic.lastUpdate": "Last updated: {{time}}",
+  "profiles.notification.importSuccess": "Subscription imported successfully",
+  "outbound.title": "Outbound Mode",
+  "outbound.modes.rule": "Rule",
+  "outbound.modes.global": "Global",
+  "outbound.modes.direct": "Direct",
+  "rules.title": "Rules",
+  "rules.filter": "Filter Rules",
+  "override.title": "Override",
+  "override.import": "Import",
+  "override.docs": "Documentation",
+  "override.repository": "Override Repository",
+  "override.unsupportedFileType": "Unsupported file type",
+  "override.actions.open": "Open",
+  "override.actions.newYaml": "New YAML",
+  "override.actions.newJs": "New JavaScript",
+  "override.defaultContent.yaml": "# https://mihomo.party/docs/guide/override/yaml",
+  "override.defaultContent.js": "// https://mihomo.party/docs/guide/override/javascript\nfunction main(config) {\n  return config\n}",
+  "override.newFile.yaml": "New YAML",
+  "override.newFile.js": "New JS",
+  "override.editInfo.title": "Edit Information",
+  "override.editInfo.name": "Name",
+  "override.editInfo.url": "URL",
+  "override.editInfo.global": "Global Enable",
+  "override.editFile.title": "Edit Override {{type}}",
+  "override.editFile.script": "Script",
+  "override.editFile.config": "Config",
+  "override.execLog.title": "Execution Log",
+  "override.execLog.close": "Close",
+  "override.menuItems.editInfo": "Edit Information",
+  "override.menuItems.editFile": "Edit File",
+  "override.menuItems.openFile": "Open File",
+  "override.menuItems.execLog": "Execution Log",
+  "override.menuItems.delete": "Delete",
+  "override.labels.global": "Global",
+  "connections.title": "Connections",
+  "connections.upload": "Upload",
+  "connections.download": "Download",
+  "connections.closeAll": "Close All Connections",
+  "connections.active": "Active",
+  "connections.closed": "Closed",
+  "connections.filter": "Filter",
+  "connections.orderBy": "Order By",
+  "connections.time": "Time",
+  "connections.uploadAmount": "Up Amount",
+  "connections.downloadAmount": "Down Amount",
+  "connections.uploadSpeed": "Up Speed",
+  "connections.downloadSpeed": "Down Speed",
+  "connections.detail.title": "Connection Details",
+  "connections.detail.establishTime": "Establish Time",
+  "connections.detail.rule": "Rule",
+  "connections.detail.proxyChain": "Proxy Chain",
+  "connections.detail.connectionType": "Connection Type",
+  "connections.detail.host": "Host",
+  "connections.detail.sniffHost": "Sniff Host",
+  "connections.detail.processName": "Process Name",
+  "connections.detail.processPath": "Process Path",
+  "connections.detail.sourceIP": "Source IP",
+  "connections.detail.sourceGeoIP": "Source GeoIP",
+  "connections.detail.sourceASN": "Source ASN",
+  "connections.detail.destinationIP": "Destination IP",
+  "connections.detail.destinationGeoIP": "Destination GeoIP",
+  "connections.detail.destinationASN": "Destination ASN",
+  "connections.detail.sourcePort": "Source Port",
+  "connections.detail.destinationPort": "Destination Port",
+  "connections.detail.inboundIP": "Inbound IP",
+  "connections.detail.inboundPort": "Inbound Port",
+  "connections.detail.copyRule": "Copy Rule",
+  "connections.detail.inboundName": "Inbound Name",
+  "connections.detail.inboundUser": "Inbound User",
+  "connections.detail.dscp": "DSCP",
+  "connections.detail.remoteDestination": "Remote Destination",
+  "connections.detail.dnsMode": "DNS Mode",
+  "connections.detail.specialProxy": "Special Proxy",
+  "connections.detail.specialRules": "Special Rules",
+  "connections.detail.close": "Close",
+  "resources.geoData.geoip": "GeoIP Database",
+  "resources.geoData.geosite": "GeoSite Database",
+  "resources.geoData.mmdb": "MMDB Database",
+  "resources.geoData.asn": "ASN Database",
+  "resources.geoData.mode": "GeoData Mode",
+  "resources.geoData.autoUpdate": "Auto Update",
+  "resources.geoData.updateInterval": "Update Interval (hours)",
+  "resources.geoData.updateSuccess": "GeoData Update Successful",
+  "logs.title": "Real-time Logs",
+  "logs.filter": "Filter logs",
+  "logs.clear": "Clear logs",
+  "logs.autoScroll": "Auto scroll",
+  "tray.showWindow": "Show Window",
+  "tray.showFloatingWindow": "Show Floating Window",
+  "tray.hideFloatingWindow": "Hide Floating Window",
+  "tray.ruleMode": "Rule Mode",
+  "tray.globalMode": "Global Mode",
+  "tray.directMode": "Direct Mode",
+  "tray.systemProxy": "System Proxy",
+  "tray.tun": "TUN",
+  "tray.profiles": "Profiles",
+  "tray.openDirectories.title": "Open Directories",
+  "tray.openDirectories.appDir": "App Directory",
+  "tray.openDirectories.workDir": "Work Directory",
+  "tray.openDirectories.coreDir": "Core Directory",
+  "tray.openDirectories.logDir": "Log Directory",
+  "tray.copyEnv": "Copy Environment Variables",
+  "guide.welcome.title": "Welcome to Mihomo Party",
+  "guide.welcome.description": "This is an interactive tutorial. If you are already familiar with the software, you can click the close button in the top right corner. You can always open this tutorial again from the settings.",
+  "guide.sider.title": "Navigation Bar",
+  "guide.sider.description": "The left side is the application's navigation bar, which also serves as a dashboard. Here you can switch between different pages and get an overview of commonly used status information.",
+  "guide.card.title": "Cards",
+  "guide.card.description": "Click on the navigation bar cards to jump to the corresponding page. You can also drag and drop the cards to arrange them freely.",
+  "guide.main.title": "Main Area",
+  "guide.main.description": "The right side is the main area of the application, displaying the content of the selected page from the navigation bar.",
+  "guide.profile.title": "Profile Management",
+  "guide.profile.description": "The profile management card shows information about the currently running subscription configuration. Click to enter the profile management page where you can manage your subscription configurations.",
+  "guide.import.title": "Import Subscription",
+  "guide.import.description": "Mihomo Party supports various subscription import methods. Enter your subscription link here and click import to import your subscription configuration. If your subscription requires a proxy to update, check the 'Proxy' option before importing (this requires having a working subscription first).",
+  "guide.substore.title": "Sub-Store",
+  "guide.substore.description": "Mihomo Party has deep integration with Sub-Store. You can click this button to enter Sub-Store or directly import your subscriptions managed through Sub-Store. Mihomo Party uses its built-in Sub-Store backend by default. If you have your own Sub-Store backend, you can configure it in the settings page. If you don't use Sub-Store, you can also disable it in the settings.",
+  "guide.localProfile.title": "Local Profile",
+  "guide.localProfile.description": "Click '+' to import a local file or create a new empty configuration for editing.",
+  "guide.sysproxy.title": "System Proxy",
+  "guide.sysproxy.description": "After importing a subscription, the core is running and listening on the specified port. You can now use the proxy through the specified port. If you want most applications to automatically use this proxy port, you need to turn on the system proxy switch.",
+  "guide.sysproxySetting.title": "System Proxy Settings",
+  "guide.sysproxySetting.description": "Here you can configure system proxy-related settings and choose the proxy mode. For Windows applications that don't follow system proxy, you can use the 'UWP Tool' to remove local loopback restrictions. For the difference between 'Manual Proxy Mode' and 'PAC Proxy Mode', please search online.",
+  "guide.tun.title": "Virtual Network Card",
+  "guide.tun.description": "Virtual network card, commonly known as 'Tun Mode' in similar software, allows you to let the core take control of all traffic for applications that don't follow system proxy settings.",
+  "guide.tunSetting.title": "Virtual Network Card Settings",
+  "guide.tunSetting.description": "Here you can modify virtual network card settings. Mihomo Party has theoretically solved all permission issues. If your virtual network card is still not working, try resetting the firewall (Windows) or manually authorizing the core (MacOS/Linux) and then restart the core.",
+  "guide.override.title": "Override",
+  "guide.override.description": "Mihomo Party provides powerful override functionality to customize your imported subscription configurations, such as adding rules and customizing proxy groups. You can directly import override files written by others or write your own. <b>Remember to enable the override file on the subscription you want to override</b>. For override file syntax, please refer to the <a href=\"https://mihomo.party/docs/guide/override\" target=\"_blank\">official documentation</a>.",
+  "guide.dns.title": "DNS",
+  "guide.dns.description": "The software takes control of the core's DNS settings by default. If you need to use the DNS settings from your subscription configuration, you can disable 'Control DNS Settings' in the application settings. The same applies to domain sniffing.",
+  "guide.end.title": "Tutorial Complete",
+  "guide.end.description": "Now that you understand the basic usage of the software, import your subscription and start using it. Enjoy!\nYou can also join our official <a href=\"https://t.me/mihomo_party_group\" target=\"_blank\">Telegram group</a> for the latest news."
+}
