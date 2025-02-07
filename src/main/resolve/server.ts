@@ -2,12 +2,15 @@ import { getAppConfig, getControledMihomoConfig } from '../config'
 import { Worker } from 'worker_threads'
 import { mihomoWorkDir, resourcesFilesDir, subStoreDir, substoreLogPath } from '../utils/dirs'
 import subStoreIcon from '../../../resources/subStoreIcon.png?asset'
-import { createWriteStream } from 'fs'
+import { createWriteStream, existsSync, mkdirSync } from 'fs'
+import { writeFile, rm, cp } from 'fs/promises'
 import http from 'http'
 import net from 'net'
 import path from 'path'
 import { nativeImage } from 'electron'
 import express from 'express'
+import axios from 'axios'
+import AdmZip from 'adm-zip'
 
 export let pacPort: number
 export let subStorePort: number
@@ -133,5 +136,68 @@ export async function startSubStoreBackendServer(): Promise<void> {
 export async function stopSubStoreBackendServer(): Promise<void> {
   if (subStoreBackendWorker) {
     subStoreBackendWorker.terminate()
+  }
+}
+
+export async function downloadSubStore(): Promise<void> {
+  const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
+  const frontendDir = path.join(resourcesFilesDir(), 'sub-store-frontend')
+  const backendPath = path.join(resourcesFilesDir(), 'sub-store.bundle.js')
+  const tempDir = path.join(resourcesFilesDir(), 'temp')
+
+  try {
+    // 下载后端文件
+    const backendRes = await axios.get(
+      'https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store.bundle.js',
+      {
+        responseType: 'arraybuffer',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        proxy: {
+          protocol: 'http',
+          host: '127.0.0.1',
+          port: mixedPort
+        }
+      }
+    )
+    await writeFile(backendPath, Buffer.from(backendRes.data))
+
+    // 下载前端文件
+    const frontendRes = await axios.get(
+      'https://github.com/sub-store-org/Sub-Store-Front-End/releases/latest/download/dist.zip',
+      {
+        responseType: 'arraybuffer',
+        headers: { 'Content-Type': 'application/octet-stream' },
+        proxy: {
+          protocol: 'http',
+          host: '127.0.0.1',
+          port: mixedPort
+        }
+      }
+    )
+
+    // 创建临时目录
+    if (existsSync(tempDir)) {
+      await rm(tempDir, { recursive: true })
+    }
+    mkdirSync(tempDir, { recursive: true })
+
+    // 先解压到临时目录
+    const zip = new AdmZip(Buffer.from(frontendRes.data))
+    zip.extractAllTo(tempDir, true)
+
+    // 确保目标目录存在并清空
+    if (existsSync(frontendDir)) {
+      await rm(frontendDir, { recursive: true })
+    }
+    mkdirSync(frontendDir, { recursive: true })
+
+    // 将 dist 目录中的内容移动到目标目录
+    await cp(path.join(tempDir, 'dist'), frontendDir, { recursive: true })
+
+    // 清理临时目录
+    await rm(tempDir, { recursive: true })
+  } catch (error) {
+    console.error('substore.downloadFailed:', error)
+    throw error
   }
 }

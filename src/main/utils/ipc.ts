@@ -50,6 +50,7 @@ import {
   startSubStoreBackendServer,
   stopSubStoreFrontendServer,
   stopSubStoreBackendServer,
+  downloadSubStore,
   subStoreFrontendPort,
   subStorePort
 } from '../resolve/server'
@@ -202,6 +203,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('stopSubStoreFrontendServer', () => ipcErrorWrapper(stopSubStoreFrontendServer)())
   ipcMain.handle('startSubStoreBackendServer', () => ipcErrorWrapper(startSubStoreBackendServer)())
   ipcMain.handle('stopSubStoreBackendServer', () => ipcErrorWrapper(stopSubStoreBackendServer)())
+  ipcMain.handle('downloadSubStore', () => ipcErrorWrapper(downloadSubStore)())
 
   ipcMain.handle('subStorePort', () => subStorePort)
   ipcMain.handle('subStoreFrontendPort', () => subStoreFrontendPort)
