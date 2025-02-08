@@ -48,8 +48,8 @@ const ConnCard: React.FC<Props> = (props) => {
   useEffect(() => {
     setChartColor(
       match
-        ? `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-primary-foreground')})`
-        : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-foreground')})`
+        ? `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--heroui-primary-foreground')})`
+        : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--heroui-foreground')})`
     )
   }, [theme, systemTheme, match])
 
@@ -57,8 +57,8 @@ const ConnCard: React.FC<Props> = (props) => {
     setTimeout(() => {
       setChartColor(
         match
-          ? `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-primary-foreground')})`
-          : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-foreground')})`
+          ? `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--heroui-primary-foreground')})`
+          : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--heroui-foreground')})`
       )
     }, 200)
   }, [customTheme])
