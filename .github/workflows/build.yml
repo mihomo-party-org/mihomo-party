@@ -1,14 +1,13 @@
 name: Build
 on:
   push:
-    branches:
-      - master
     tags:
       - v*
     paths-ignore:
       - 'README.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/workflows/issues.yml'
+  workflow_dispatch:
 
 permissions: write-all
 
