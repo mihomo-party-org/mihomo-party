@@ -69,8 +69,10 @@ const ProxyItem: React.FC<Props> = (props) => {
       {proxyDisplayMode === 'full' ? (
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center pl-1">
-              <div className="text-ellipsis overflow-hidden whitespace-nowrap" title={proxy.name}>
-                {proxy.name}
+              <div className="text-ellipsis overflow-hidden whitespace-nowrap">
+                <div className="flag-emoji inline" title={proxy.name}>
+                  {proxy.name}
+                </div>
               </div>
               {fixed && (
                 <Button
@@ -110,14 +112,14 @@ const ProxyItem: React.FC<Props> = (props) => {
                 variant="light"
                 className="h-full text-sm ml-auto -mt-0.5 px-2 relative w-min whitespace-nowrap"
               >
-                <div className="w-full h-full flex items-center">
+                <div className="w-full h-full flex items-center justify-end">
                   {delayText(delay)}
                 </div>
               </Button>
             </div>
           </div>
         ) : (
-        <div className="flex justify-between items-center pl-1 p-1">
+        <div className="flex justify-between items-center pl-1">
           <div className="text-ellipsis overflow-hidden whitespace-nowrap">
             <div className="flag-emoji inline" title={proxy.name}>
               {proxy.name}
@@ -148,7 +150,7 @@ const ProxyItem: React.FC<Props> = (props) => {
               variant="light"
               className="h-[24px] text-sm px-2 relative w-min whitespace-nowrap"
             >
-              <div className="w-full h-full flex items-center">
+              <div className="w-full h-full flex items-center justify-end">
                 {delayText(delay)}
               </div>
             </Button>
