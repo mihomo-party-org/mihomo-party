@@ -8,22 +8,22 @@
 }
 
 .driver-popover {
-  background-color: hsl(var(--nextui-content2)) !important;
+  background-color: hsl(var(--heroui-content2)) !important;
   border-radius: 8px !important;
-  color: hsl(var(--nextui-foreground)) !important;
+  color: hsl(var(--heroui-foreground)) !important;
 }
 
 .driver-popover a {
-  color: hsl(var(--nextui-primary)) !important;
+  color: hsl(var(--heroui-primary)) !important;
   text-decoration: underline !important;
 }
 
 .driver-popover-close-btn {
-  color: hsl(var(--nextui-foreground)) !important;
+  color: hsl(var(--heroui-foreground)) !important;
 }
 
 .driver-popover-progress-text {
-  color: hsl(var(--nextui-default-500)) !important;
+  color: hsl(var(--heroui-default-500)) !important;
 }
 
 .driver-popover-prev-btn {
@@ -33,7 +33,7 @@
   padding: 8px !important;
   border-radius: 5px !important;
   font-size: 12px !important;
-  background-color: hsl(var(--nextui-primary)) !important;
+  background-color: hsl(var(--heroui-primary)) !important;
 }
 
 .driver-popover-next-btn {
@@ -43,23 +43,23 @@
   padding: 8px !important;
   border-radius: 5px !important;
   font-size: 12px !important;
-  background-color: hsl(var(--nextui-primary)) !important;
+  background-color: hsl(var(--heroui-primary)) !important;
 }
 
 .driver-popover-arrow-side-bottom {
-  border-bottom-color: hsl(var(--nextui-content2)) !important;
+  border-bottom-color: hsl(var(--heroui-content2)) !important;
 }
 
 .driver-popover-arrow-side-top {
-  border-top-color: hsl(var(--nextui-content2)) !important;
+  border-top-color: hsl(var(--heroui-content2)) !important;
 }
 
 .driver-popover-arrow-side-left {
-  border-left-color: hsl(var(--nextui-content2)) !important;
+  border-left-color: hsl(var(--heroui-content2)) !important;
 }
 
 .driver-popover-arrow-side-right {
-  border-right-color: hsl(var(--nextui-content2)) !important;
+  border-right-color: hsl(var(--heroui-content2)) !important;
 }
 
 .app-nodrag {
