@@ -46,7 +46,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
   'redir-port': 0,
   'tproxy-port': 0,
   'allow-lan': false,
-  'unified-delay': false,
+  'unified-delay': true,
   'tcp-concurrent': false,
   'log-level': 'info',
   'find-process-mode': 'strict',

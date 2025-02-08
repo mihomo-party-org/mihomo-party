@@ -7,6 +7,7 @@ import { getControledMihomoConfig } from '../config'
 import { existsSync } from 'fs'
 import { mainWindow } from '..'
 import { floatingWindow } from './floatingWindow'
+import { t } from 'i18next'
 
 let insertedCSSKeyMain: string | undefined = undefined
 let insertedCSSKeyFloating: string | undefined = undefined
@@ -28,7 +29,7 @@ export async function resolveThemes(): Promise<{ key: string; label: string }[]>
   if (themes.find((theme) => theme.key === 'default.css')) {
     return themes
   } else {
-    return [{ key: 'default.css', label: '默认' }, ...themes]
+    return [{ key: 'default.css', label: t('common.default') }, ...themes]
   }
 }
 
