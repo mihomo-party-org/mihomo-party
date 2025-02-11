@@ -2,10 +2,6 @@ export const defaultConfig: IAppConfig = {
   core: 'mihomo',
   silentStart: false,
   appTheme: 'system',
-  disableLoopbackDetector: false,
-  skipSafePathCheck: false,
-  disableEmbedCA: false,
-  disableSystemCA: false,
   useWindowFrame: false,
   proxyInTray: true,
   maxLogDays: 7,
@@ -21,6 +17,7 @@ export const defaultConfig: IAppConfig = {
   controlDns: true,
   controlSniff: true,
   nameserverPolicy: {},
+  hosts: [],
   siderOrder: [
     'sysproxy',
     'tun',
@@ -37,7 +34,9 @@ export const defaultConfig: IAppConfig = {
     'substore'
   ],
   siderWidth: 250,
-  sysProxy: { enable: false, mode: 'manual' }
+  sysProxy: { enable: false, mode: 'manual' },
+  disableLoopbackDetector: false,
+  skipSafePathCheck: false
 }
 
 export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
@@ -50,7 +49,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
   'redir-port': 0,
   'tproxy-port': 0,
   'allow-lan': false,
-  'unified-delay': true,
+  'unified-delay': false,
   'tcp-concurrent': false,
   'log-level': 'info',
   'find-process-mode': 'strict',
@@ -66,7 +65,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'auto-route': true,
     'auto-redirect': false,
     'auto-detect-interface': true,
-    'dns-hijack': ['any:53', 'tcp://any:53'],
+    'dns-hijack': ['any:53'],
     'route-exclude-address': [],
     mtu: 1500
   },
@@ -78,8 +77,9 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'fake-ip-filter': ['*', '+.lan', '+.local', 'time.*.com', 'ntp.*.com', '+.market.xiaomi.com'],
     'use-hosts': false,
     'use-system-hosts': false,
-    nameserver: ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query'],
-    'proxy-server-nameserver': ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query'],
+    'default-nameserver': ['tls://223.5.5.5'],
+    nameserver: ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'],
+    'proxy-server-nameserver': ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'],
     'direct-nameserver': []
   },
   sniffer: {
@@ -89,14 +89,11 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'override-destination': false,
     sniff: {
       HTTP: {
-        ports: [80, '8080-8880'],
+        ports: [80, 443],
         'override-destination': false
       },
       TLS: {
-        ports: [443, 8443]
-      },
-      QUIC: {
-        ports: [443, 8443]
+        ports: [443]
       }
     },
     'skip-domain': ['+.push.apple.com'],
