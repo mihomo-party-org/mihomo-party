@@ -86,7 +86,7 @@ const GeneralConfig: React.FC = () => {
             selectedKeys={[language]}
             aria-label={t('settings.language')}
             onSelectionChange={async (v) => {
-              const newLang = Array.from(v)[0] as 'zh-CN' | 'en-US' | 'ru-RU'
+              const newLang = Array.from(v)[0] as 'zh-CN' | 'en-US' | 'ru-RU' | 'fa-IR'
               await patchAppConfig({ language: newLang })
               i18n.changeLanguage(newLang)
             }}
@@ -94,6 +94,7 @@ const GeneralConfig: React.FC = () => {
             <SelectItem key="zh-CN">中文简体</SelectItem>
             <SelectItem key="en-US">English</SelectItem>
             <SelectItem key="ru-RU">Русский</SelectItem>
+            <SelectItem key="fa-IR">فارسی</SelectItem>
           </Select>
         </SettingItem>
         <SettingItem title={t('settings.autoStart')} divider>
