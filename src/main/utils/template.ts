@@ -17,7 +17,6 @@ export const defaultConfig: IAppConfig = {
   controlDns: true,
   controlSniff: true,
   nameserverPolicy: {},
-  hosts: [],
   siderOrder: [
     'sysproxy',
     'tun',
@@ -34,9 +33,7 @@ export const defaultConfig: IAppConfig = {
     'substore'
   ],
   siderWidth: 250,
-  sysProxy: { enable: false, mode: 'manual' },
-  disableLoopbackDetector: false,
-  skipSafePathCheck: false
+  sysProxy: { enable: false, mode: 'manual' }
 }
 
 export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
@@ -49,7 +46,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
   'redir-port': 0,
   'tproxy-port': 0,
   'allow-lan': false,
-  'unified-delay': false,
+  'unified-delay': true,
   'tcp-concurrent': false,
   'log-level': 'info',
   'find-process-mode': 'strict',
@@ -77,9 +74,8 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'fake-ip-filter': ['*', '+.lan', '+.local', 'time.*.com', 'ntp.*.com', '+.market.xiaomi.com'],
     'use-hosts': false,
     'use-system-hosts': false,
-    'default-nameserver': ['tls://223.5.5.5'],
-    nameserver: ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'],
-    'proxy-server-nameserver': ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'],
+    nameserver: ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query'],
+    'proxy-server-nameserver': ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query'],
     'direct-nameserver': []
   },
   sniffer: {
