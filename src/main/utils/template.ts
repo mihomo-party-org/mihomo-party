@@ -2,10 +2,6 @@ export const defaultConfig: IAppConfig = {
   core: 'mihomo',
   silentStart: false,
   appTheme: 'system',
-  disableLoopbackDetector: false,
-  skipSafePathCheck: false,
-  disableEmbedCA: false,
-  disableSystemCA: false,
   useWindowFrame: false,
   proxyInTray: true,
   maxLogDays: 7,
@@ -66,7 +62,7 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'auto-route': true,
     'auto-redirect': false,
     'auto-detect-interface': true,
-    'dns-hijack': ['any:53', 'tcp://any:53'],
+    'dns-hijack': ['any:53'],
     'route-exclude-address': [],
     mtu: 1500
   },
@@ -89,14 +85,11 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'override-destination': false,
     sniff: {
       HTTP: {
-        ports: [80, '8080-8880'],
+        ports: [80, 443],
         'override-destination': false
       },
       TLS: {
-        ports: [443, 8443]
-      },
-      QUIC: {
-        ports: [443, 8443]
+        ports: [443]
       }
     },
     'skip-domain': ['+.push.apple.com'],
