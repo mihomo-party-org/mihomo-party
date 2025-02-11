@@ -1,6 +1,7 @@
 import i18next from 'i18next'
 import enUS from '../renderer/src/locales/en-US.json'
 import zhCN from '../renderer/src/locales/zh-CN.json'
+import ruRU from '../renderer/src/locales/ru-RU.json'
 
 export const resources = {
   'en-US': {
@@ -8,6 +9,9 @@ export const resources = {
   },
   'zh-CN': {
     translation: zhCN
+  },
+  'ru-RU': {
+    translation: ruRU
   }
 }
 
