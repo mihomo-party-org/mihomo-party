@@ -93,6 +93,7 @@ const GeneralConfig: React.FC = () => {
           >
             <SelectItem key="zh-CN">中文简体</SelectItem>
             <SelectItem key="en-US">English</SelectItem>
+            <SelectItem key="ru-RU">Русский</SelectItem>
           </Select>
         </SettingItem>
         <SettingItem title={t('settings.autoStart')} divider>
