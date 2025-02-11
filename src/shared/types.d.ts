@@ -295,7 +295,7 @@ interface IAppConfig {
   directModeShortcut?: string
   restartAppShortcut?: string
   quitWithoutCoreShortcut?: string
-  language?: 'zh-CN' | 'en-US' | 'ru-RU'
+  language?: 'zh-CN' | 'en-US' | 'ru-RU' | 'fa-IR'
 }
 
 interface IMihomoTunConfig {
