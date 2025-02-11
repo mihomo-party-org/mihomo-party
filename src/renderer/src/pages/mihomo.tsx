@@ -137,7 +137,13 @@ const Mihomo: React.FC = () => {
               aria-label={t('mihomo.selectCoreVersion')}
               selectedKeys={new Set([core])}
               onSelectionChange={async (v) => {
-                handleConfigChangeWithRestart('core', v.currentKey as 'mihomo' | 'mihomo-alpha')
+                // 获取用户选择的新内核版本
+                const newCore = v.currentKey as 'mihomo' | 'mihomo-alpha'
+                // 只有当选择的版本与当前版本不同时才执行切换
+                // 这样可以避免在选择当前版本时触发不必要的重启
+                if (newCore !== core) {
+                  handleConfigChangeWithRestart('core', newCore)
+                }
               }}
             >
               <SelectItem key="mihomo">{t(CoreMap['mihomo'])}</SelectItem>
