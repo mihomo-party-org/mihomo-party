@@ -3,4 +3,41 @@ chown root:admin $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo
 chown root:admin $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo-alpha
 chmod +s $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo
 chmod +s $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo-alpha
+
+mkdir -p /Library/PrivilegedHelperTools
+cp $2/Mihomo\ Party.app/Contents/Resources/files/party.mihomo.helper /Library/PrivilegedHelperTools/party.mihomo.helper
+chown root:wheel /Library/PrivilegedHelperTools/party.mihomo.helper
+chmod 544 /Library/PrivilegedHelperTools/party.mihomo.helper
+cat << EOF > /Library/LaunchDaemons/party.mihomo.helper.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>Label</key>
+        <string>party.mihomo.helper</string>
+        <key>MachServices</key>
+        <dict>
+                <key>party.mihomo.helper</key>
+                <true/>
+        </dict>
+        <key>KeepAlive</key>
+        <true/>
+        <key>Program</key>
+        <string>/Library/PrivilegedHelperTools/party.mihomo.helper</string>
+        <key>ProgramArguments</key>
+        <array>
+                <string>/Library/PrivilegedHelperTools/party.mihomo.helper</string>
+        </array>
+        <key>StandardErrorPath</key>
+        <string>/tmp/party.mihomo.helper.err</string>
+        <key>StandardOutPath</key>
+        <string>/tmp/party.mihomo.helper.log</string>
+    </dict>
+</plist>
+EOF
+chown root:wheel /Library/LaunchDaemons/party.mihomo.helper.plist
+chmod 644 /Library/LaunchDaemons/party.mihomo.helper.plist
+launchctl unload /Library/LaunchDaemons/party.mihomo.helper.plist
+launchctl load /Library/LaunchDaemons/party.mihomo.helper.plist
+launchctl start party.mihomo.helper
 exit 0

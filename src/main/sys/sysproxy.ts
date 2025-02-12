@@ -6,9 +6,11 @@ import { execFile } from 'child_process'
 import path from 'path'
 import { resourcesFilesDir } from '../utils/dirs'
 import { net } from 'electron'
+import axios from 'axios'
 
 let defaultBypass: string[]
 let triggerSysProxyTimer: NodeJS.Timeout | null = null
+const helperSocketPath = '/tmp/mihomo-party-helper.sock'
 
 if (process.platform === 'linux')
   defaultBypass = ['localhost', '127.0.0.1', '192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '::1']
@@ -79,6 +81,14 @@ async function enableSysProxy(): Promise<void> {
         } catch {
           triggerAutoProxy(true, `http://${host || '127.0.0.1'}:${pacPort}/pac`)
         }
+      } else if (process.platform === 'darwin') {
+        await axios.post(
+          'http://localhost/pac',
+          { url: `http://${host || '127.0.0.1'}:${pacPort}/pac` },
+          {
+            socketPath: helperSocketPath
+          }
+        )
       } else {
         triggerAutoProxy(true, `http://${host || '127.0.0.1'}:${pacPort}/pac`)
       }
@@ -97,6 +107,14 @@ async function enableSysProxy(): Promise<void> {
         } catch {
           triggerManualProxy(true, host || '127.0.0.1', port, bypass.join(','))
         }
+      } else if (process.platform === 'darwin') {
+        await axios.post(
+          'http://localhost/global',
+          { host: host || '127.0.0.1', port: port.toString(), bypass: bypass.join(',') },
+          {
+            socketPath: helperSocketPath
+          }
+        )
       } else {
         triggerManualProxy(true, host || '127.0.0.1', port, bypass.join(','))
       }
@@ -115,6 +133,10 @@ async function disableSysProxy(): Promise<void> {
       triggerAutoProxy(false, '')
       triggerManualProxy(false, '', 0, '')
     }
+  } else if (process.platform === 'darwin') {
+    await axios.get('http://localhost/off', {
+      socketPath: helperSocketPath
+    })
   } else {
     triggerAutoProxy(false, '')
     triggerManualProxy(false, '', 0, '')
