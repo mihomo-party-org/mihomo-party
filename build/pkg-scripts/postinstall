@@ -1,14 +1,41 @@
 #!/bin/sh
-chown root:admin $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo
-chown root:admin $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo-alpha
-chmod +s $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo
-chmod +s $2/Mihomo\ Party.app/Contents/Resources/sidecar/mihomo-alpha
+set -e
 
+# 检查 root 权限
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root"
+    exit 1
+fi
+
+# 判断 $2 是否以 .app 结尾
+if [[ $2 == *".app" ]]; then
+    APP_PATH="$2"
+else
+    APP_PATH="$2/Mihomo Party.app"
+fi
+HELPER_PATH="/Library/PrivilegedHelperTools/party.mihomo.helper"
+LAUNCH_DAEMON="/Library/LaunchDaemons/party.mihomo.helper.plist"
+
+# 设置核心文件权限
+chown root:admin "$APP_PATH/Contents/Resources/sidecar/mihomo"
+chown root:admin "$APP_PATH/Contents/Resources/sidecar/mihomo-alpha"
+chmod +s "$APP_PATH/Contents/Resources/sidecar/mihomo"
+chmod +s "$APP_PATH/Contents/Resources/sidecar/mihomo-alpha"
+
+# 创建目录并复制 helper
 mkdir -p /Library/PrivilegedHelperTools
-cp $2/Mihomo\ Party.app/Contents/Resources/files/party.mihomo.helper /Library/PrivilegedHelperTools/party.mihomo.helper
-chown root:wheel /Library/PrivilegedHelperTools/party.mihomo.helper
-chmod 544 /Library/PrivilegedHelperTools/party.mihomo.helper
-cat << EOF > /Library/LaunchDaemons/party.mihomo.helper.plist
+if [ ! -f "$APP_PATH/Contents/Resources/files/party.mihomo.helper" ]; then
+    echo "Helper file not found"
+    exit 1
+fi
+
+cp "$APP_PATH/Contents/Resources/files/party.mihomo.helper" "$HELPER_PATH"
+chown root:wheel "$HELPER_PATH"
+chmod 544 "$HELPER_PATH"
+
+# 创建并配置 LaunchDaemon
+mkdir -p /Library/LaunchDaemons
+cat << EOF > "$LAUNCH_DAEMON"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -23,10 +50,10 @@ cat << EOF > /Library/LaunchDaemons/party.mihomo.helper.plist
         <key>KeepAlive</key>
         <true/>
         <key>Program</key>
-        <string>/Library/PrivilegedHelperTools/party.mihomo.helper</string>
+        <string>${HELPER_PATH}</string>
         <key>ProgramArguments</key>
         <array>
-                <string>/Library/PrivilegedHelperTools/party.mihomo.helper</string>
+                <string>${HELPER_PATH}</string>
         </array>
         <key>StandardErrorPath</key>
         <string>/tmp/party.mihomo.helper.err</string>
@@ -35,9 +62,21 @@ cat << EOF > /Library/LaunchDaemons/party.mihomo.helper.plist
     </dict>
 </plist>
 EOF
-chown root:wheel /Library/LaunchDaemons/party.mihomo.helper.plist
-chmod 644 /Library/LaunchDaemons/party.mihomo.helper.plist
-launchctl unload /Library/LaunchDaemons/party.mihomo.helper.plist
-launchctl load /Library/LaunchDaemons/party.mihomo.helper.plist
-launchctl start party.mihomo.helper
+
+chown root:wheel "$LAUNCH_DAEMON"
+chmod 644 "$LAUNCH_DAEMON"
+
+# 加载并启动服务
+launchctl unload "$LAUNCH_DAEMON" || true
+if ! launchctl load "$LAUNCH_DAEMON"; then
+    echo "Failed to load helper service"
+    exit 1
+fi
+
+if ! launchctl start party.mihomo.helper; then
+    echo "Failed to start helper service"
+    exit 1
+fi
+
+echo "Installation completed successfully"
 exit 0
