@@ -1,10 +1,11 @@
 import { exec } from 'child_process'
 import { promisify } from 'util'
-import { getAppConfig, patchControledMihomoConfig } from '../config'
+import { getAppConfig, patchControledMihomoConfig, patchAppConfig } from '../config'
 import { patchMihomoConfig } from '../core/mihomoApi'
 import { mainWindow } from '..'
 import { ipcMain, net } from 'electron'
 import { getDefaultDevice } from '../core/manager'
+import { triggerSysProxy } from './sysproxy'
 
 export async function getCurrentSSID(): Promise<string | undefined> {
   if (process.platform === 'win32') {
@@ -40,18 +41,35 @@ export async function checkSSID(): Promise<void> {
     if (currentSSID === lastSSID) return
     lastSSID = currentSSID
     if (currentSSID && pauseSSID.includes(currentSSID)) {
-      await patchControledMihomoConfig({ mode: 'direct' })
+      console.log(`[SSID Check] Matched SSID: ${currentSSID}, switching to direct mode`)
+      // 关闭虚拟网卡
+      await patchControledMihomoConfig({ mode: 'direct', tun: { enable: false } })
       await patchMihomoConfig({ mode: 'direct' })
+      try {
+        await triggerSysProxy(false)
+        await patchAppConfig({ sysProxy: { enable: false } })
+      } catch (e) {
+        alert(e)
+      }
       mainWindow?.webContents.send('controledMihomoConfigUpdated')
+      mainWindow?.webContents.send('appConfigUpdated')
       ipcMain.emit('updateTrayMenu')
     } else {
-      await patchControledMihomoConfig({ mode: 'rule' })
+      console.log(`[SSID Check] No matched SSID, switching to rule mode`)
+      await patchControledMihomoConfig({ mode: 'rule', tun: { enable: true } })
       await patchMihomoConfig({ mode: 'rule' })
+      try {
+        await triggerSysProxy(true)
+        await patchAppConfig({ sysProxy: { enable: true } })
+      } catch (e) {
+        alert(e)
+      }
       mainWindow?.webContents.send('controledMihomoConfigUpdated')
+      mainWindow?.webContents.send('appConfigUpdated')
       ipcMain.emit('updateTrayMenu')
     }
-  } catch {
-    // ignore
+  } catch (error) {
+    console.error('[SSID Check] Error:', error)
   }
 }
 
