@@ -42,19 +42,12 @@ cat << EOF > "$LAUNCH_DAEMON"
 <dict>
         <key>Label</key>
         <string>party.mihomo.helper</string>
-        <key>MachServices</key>
-        <dict>
-                <key>party.mihomo.helper</key>
-                <true/>
-        </dict>
+        <key>AssociatedBundleIdentifiers</key>
+        <string>party.mihomo.app</string>
         <key>KeepAlive</key>
         <true/>
         <key>Program</key>
         <string>${HELPER_PATH}</string>
-        <key>ProgramArguments</key>
-        <array>
-                <string>${HELPER_PATH}</string>
-        </array>
         <key>StandardErrorPath</key>
         <string>/tmp/party.mihomo.helper.err</string>
         <key>StandardOutPath</key>
