@@ -326,8 +326,8 @@ export async function startSubStoreBackendServer(): Promise<void> {
 export async function stopSubStoreBackendServer(): Promise<void> {
   return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('stopSubStoreBackendServer'))
 }
-export async function downloadSubStore(): Promise<void> {
-  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('downloadSubStore'))
+export async function downloadSubStore(password?: string): Promise<void> {
+  return ipcErrorWrapper(await window.electron.ipcRenderer.invoke('downloadSubStore', password))
 }
 
 export async function subStorePort(): Promise<number> {

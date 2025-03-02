@@ -203,8 +203,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('stopSubStoreFrontendServer', () => ipcErrorWrapper(stopSubStoreFrontendServer)())
   ipcMain.handle('startSubStoreBackendServer', () => ipcErrorWrapper(startSubStoreBackendServer)())
   ipcMain.handle('stopSubStoreBackendServer', () => ipcErrorWrapper(stopSubStoreBackendServer)())
-  ipcMain.handle('downloadSubStore', () => ipcErrorWrapper(downloadSubStore)())
-
+  ipcMain.handle('downloadSubStore', (_e, password) => ipcErrorWrapper(downloadSubStore)(password))
   ipcMain.handle('subStorePort', () => subStorePort)
   ipcMain.handle('subStoreFrontendPort', () => subStoreFrontendPort)
   ipcMain.handle('subStoreSubs', () => ipcErrorWrapper(subStoreSubs)())
@@ -259,7 +258,7 @@ export function registerIpcMainHandlers(): void {
   })
   ipcMain.handle('quitWithoutCore', ipcErrorWrapper(quitWithoutCore))
   ipcMain.handle('quitApp', () => app.quit())
-  
+
   // Add language change handler
   ipcMain.handle('changeLanguage', async (_e, lng) => {
     await i18next.changeLanguage(lng)

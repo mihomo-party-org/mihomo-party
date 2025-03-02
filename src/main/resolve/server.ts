@@ -1,6 +1,12 @@
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { Worker } from 'worker_threads'
-import { mihomoWorkDir, resourcesFilesDir, subStoreDir, substoreLogPath } from '../utils/dirs'
+import {
+  dataDir,
+  mihomoWorkDir,
+  resourcesFilesDir,
+  subStoreDir,
+  substoreLogPath
+} from '../utils/dirs'
 import subStoreIcon from '../../../resources/subStoreIcon.png?asset'
 import { createWriteStream, existsSync, mkdirSync } from 'fs'
 import { writeFile, rm, cp } from 'fs/promises'
@@ -11,6 +17,9 @@ import { nativeImage } from 'electron'
 import express from 'express'
 import axios from 'axios'
 import AdmZip from 'adm-zip'
+import { promisify } from 'util'
+import { exec } from 'child_process'
+import { platform } from 'os'
 
 export let pacPort: number
 export let subStorePort: number
@@ -139,14 +148,22 @@ export async function stopSubStoreBackendServer(): Promise<void> {
   }
 }
 
-export async function downloadSubStore(): Promise<void> {
+export async function downloadSubStore(password?: string): Promise<void> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
   const frontendDir = path.join(resourcesFilesDir(), 'sub-store-frontend')
   const backendPath = path.join(resourcesFilesDir(), 'sub-store.bundle.js')
-  const tempDir = path.join(resourcesFilesDir(), 'temp')
+  const tempDir = path.join(dataDir(), 'temp')
+  const execPromise = promisify(exec)
 
   try {
+    // 创建临时目录
+    if (existsSync(tempDir)) {
+      await rm(tempDir, { recursive: true })
+    }
+    mkdirSync(tempDir, { recursive: true })
+
     // 下载后端文件
+    const tempBackendPath = path.join(tempDir, 'sub-store.bundle.js')
     const backendRes = await axios.get(
       'https://github.com/sub-store-org/Sub-Store/releases/latest/download/sub-store.bundle.js',
       {
@@ -159,9 +176,9 @@ export async function downloadSubStore(): Promise<void> {
         }
       }
     )
-    await writeFile(backendPath, Buffer.from(backendRes.data))
-
+    await writeFile(tempBackendPath, Buffer.from(backendRes.data))
     // 下载前端文件
+    const tempFrontendDir = path.join(tempDir, 'dist')
     const frontendRes = await axios.get(
       'https://github.com/sub-store-org/Sub-Store-Front-End/releases/latest/download/dist.zip',
       {
@@ -174,25 +191,36 @@ export async function downloadSubStore(): Promise<void> {
         }
       }
     )
-
-    // 创建临时目录
-    if (existsSync(tempDir)) {
-      await rm(tempDir, { recursive: true })
-    }
-    mkdirSync(tempDir, { recursive: true })
-
     // 先解压到临时目录
     const zip = new AdmZip(Buffer.from(frontendRes.data))
     zip.extractAllTo(tempDir, true)
 
-    // 确保目标目录存在并清空
-    if (existsSync(frontendDir)) {
-      await rm(frontendDir, { recursive: true })
+    // 如果是 Linux 平台，使用 sudo cp 移动文件
+    if (platform() === 'linux') {
+      try {
+        await execPromise(`echo "${password}" | sudo -S cp  "${tempBackendPath}" "${backendPath}"`)
+        // 确保目标目录存在并清空
+        if (existsSync(frontendDir)) {
+          await execPromise(`echo "${password}" | sudo -S rm -r "${frontendDir}"`)
+        }
+        await execPromise(`echo "${password}" | sudo -S mkdir "${frontendDir}"`)
+        // 将 dist 目录中的内容移动到目标目录
+        await execPromise(
+          `echo "${password}" | sudo -S cp -r "${tempFrontendDir}"/* "${frontendDir}/"`
+        )
+      } catch (error) {
+        console.error('substore.downloadFailed:', error)
+        throw error
+      }
+    } else {
+      // 非 Linux 平台
+      await cp(tempBackendPath, backendPath)
+      if (existsSync(frontendDir)) {
+        await rm(frontendDir, { recursive: true })
+      }
+      mkdirSync(frontendDir, { recursive: true })
+      await cp(path.join(tempDir, 'dist'), frontendDir, { recursive: true })
     }
-    mkdirSync(frontendDir, { recursive: true })
-
-    // 将 dist 目录中的内容移动到目标目录
-    await cp(path.join(tempDir, 'dist'), frontendDir, { recursive: true })
 
     // 清理临时目录
     await rm(tempDir, { recursive: true })
