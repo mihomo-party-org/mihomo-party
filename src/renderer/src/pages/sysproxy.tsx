@@ -92,14 +92,21 @@ const Sysproxy: React.FC = () => {
   }
 
   const onSave = async (): Promise<void> => {
-    // check valid TODO
-    await patchAppConfig({ sysProxy: values })
+    setChanged(false)
+    
+    // 保存当前的开关状态，以便在失败时恢复
+    const previousState = values.enable
+    
     try {
+      await patchAppConfig({ sysProxy: values })
       await triggerSysProxy(true)
+      
       await patchAppConfig({ sysProxy: { enable: true } })
-      setChanged(false)
     } catch (e) {
+      setValues({ ...values, enable: previousState })
+      setChanged(true)
       alert(e)
+      
       await patchAppConfig({ sysProxy: { enable: false } })
     }
   }
