@@ -15,6 +15,7 @@ export const GroupsProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     errorRetryCount: 10,
     refreshInterval: 2000,
     dedupingInterval: 1000,
+    keepPreviousData: true,
     revalidateOnFocus: false
   })
 
