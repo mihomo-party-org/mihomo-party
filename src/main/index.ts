@@ -6,7 +6,7 @@ import { addProfileItem, getAppConfig, patchAppConfig } from './config'
 import { quitWithoutCore, startCore, stopCore } from './core/manager'
 import { triggerSysProxy } from './sys/sysproxy'
 import icon from '../../resources/icon.png?asset'
-import { createTray } from './resolve/tray'
+import { createTray, hideDockIcon, showDockIcon } from './resolve/tray'
 import { init } from './utils/init'
 import { join } from 'path'
 import { initShortcut } from './resolve/shortcut'
@@ -269,10 +269,21 @@ export async function createWindow(): Promise<void> {
     mainWindow?.webContents.reload()
   })
 
+  mainWindow.on('show', () => {
+    showDockIcon()
+  })
+
   mainWindow.on('close', async (event) => {
     event.preventDefault()
     mainWindow?.hide()
-    const { autoQuitWithoutCore = false, autoQuitWithoutCoreDelay = 60 } = await getAppConfig()
+    const {
+      autoQuitWithoutCore = false,
+      autoQuitWithoutCoreDelay = 60,
+      useDockIcon = true
+    } = await getAppConfig()
+    if (!useDockIcon) {
+      hideDockIcon()
+    }
     if (autoQuitWithoutCore) {
       if (quitTimeout) {
         clearTimeout(quitTimeout)
