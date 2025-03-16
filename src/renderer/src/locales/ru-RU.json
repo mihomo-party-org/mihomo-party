@@ -139,6 +139,7 @@
   "mihomo.debug": "Отладка",
   "mihomo.error.coreStartFailed": "Ошибка запуска ядра",
   "mihomo.error.profileCheckFailed": "Проверка профиля не удалась",
+  "mihomo.error.externalControllerListenError": "Ошибка прослушивания внешнего контроллера",
   "mihomo.findProcess": "Поиск процесса",
   "mihomo.selectFindProcessMode": "Выберите режим поиска процесса",
   "mihomo.strict": "Авто",

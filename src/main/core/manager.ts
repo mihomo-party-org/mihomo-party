@@ -145,6 +145,12 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
         reject(i18next.t('tun.error.tunPermissionDenied'))
       }
 
+      if ((process.platform !== 'win32' && str.includes('External controller unix listen error')) ||
+        (process.platform === 'win32' && str.includes('External controller pipe listen error'))
+      ) {
+        reject(new Error('mihomo.error.externalControllerListenError'))
+      }
+
       if (
         (process.platform !== 'win32' && str.includes('RESTful API unix listening at')) ||
         (process.platform === 'win32' && str.includes('RESTful API pipe listening at'))

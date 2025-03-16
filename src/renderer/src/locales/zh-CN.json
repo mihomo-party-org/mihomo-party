@@ -139,6 +139,7 @@
   "mihomo.debug": "调试",
   "mihomo.error.coreStartFailed": "内核启动出错",
   "mihomo.error.profileCheckFailed": "配置检查失败",
+  "mihomo.error.externalControllerListenError": "外部控制监听失败",
   "mihomo.findProcess": "查找进程",
   "mihomo.selectFindProcessMode": "选择进程查找模式",
   "mihomo.strict": "自动",

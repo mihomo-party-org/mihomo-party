@@ -139,6 +139,7 @@
   "mihomo.debug": "Debug",
   "mihomo.error.coreStartFailed": "Core start failed",
   "mihomo.error.profileCheckFailed": "Profile Check Failed",
+  "mihomo.error.externalControllerListenError": "External controller listen error",
   "mihomo.findProcess": "Find Process",
   "mihomo.selectFindProcessMode": "Select Process Find Mode",
   "mihomo.strict": "Auto",
