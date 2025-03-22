@@ -139,6 +139,7 @@
   "mihomo.debug": "اشکال‌زدایی",
   "mihomo.error.coreStartFailed": "راه‌اندازی هسته با خطا مواجه شد",
   "mihomo.error.profileCheckFailed": "بررسی پروفایل با خطا مواجه شد",
+  "mihomo.error.externalControllerListenError": "خطا در گوش‌دادن به کنترل‌کننده خارجی",
   "mihomo.findProcess": "یافتن فرآیند",
   "mihomo.selectFindProcessMode": "انتخاب حالت یافتن فرآیند",
   "mihomo.strict": "خودکار",
