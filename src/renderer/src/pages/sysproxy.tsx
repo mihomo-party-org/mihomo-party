@@ -11,44 +11,6 @@ import React from 'react'
 import { MdDeleteForever } from 'react-icons/md'
 import { useTranslation } from 'react-i18next'
 
-const defaultBypass: string[] =
-  platform === 'linux'
-    ? ['localhost', '127.0.0.1', '192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '::1']
-    : platform === 'darwin'
-      ? [
-          '127.0.0.1',
-          '192.168.0.0/16',
-          '10.0.0.0/8',
-          '172.16.0.0/12',
-          'localhost',
-          '*.local',
-          '*.crashlytics.com',
-          '<local>'
-        ]
-      : [
-          'localhost',
-          '127.*',
-          '192.168.*',
-          '10.*',
-          '172.16.*',
-          '172.17.*',
-          '172.18.*',
-          '172.19.*',
-          '172.20.*',
-          '172.21.*',
-          '172.22.*',
-          '172.23.*',
-          '172.24.*',
-          '172.25.*',
-          '172.26.*',
-          '172.27.*',
-          '172.28.*',
-          '172.29.*',
-          '172.30.*',
-          '172.31.*',
-          '<local>'
-        ]
-
 const defaultPacScript = `
 function FindProxyForURL(url, host) {
   return "PROXY 127.0.0.1:%mixed-port%; SOCKS5 127.0.0.1:%mixed-port%; DIRECT;";
@@ -56,6 +18,44 @@ function FindProxyForURL(url, host) {
 `
 
 const Sysproxy: React.FC = () => {
+  const defaultBypass: string[] =
+    platform === 'linux'
+      ? ['localhost', '127.0.0.1', '192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '::1']
+      : platform === 'darwin'
+        ? [
+            '127.0.0.1',
+            '192.168.0.0/16',
+            '10.0.0.0/8',
+            '172.16.0.0/12',
+            'localhost',
+            '*.local',
+            '*.crashlytics.com',
+            '<local>'
+          ]
+        : [
+            'localhost',
+            '127.*',
+            '192.168.*',
+            '10.*',
+            '172.16.*',
+            '172.17.*',
+            '172.18.*',
+            '172.19.*',
+            '172.20.*',
+            '172.21.*',
+            '172.22.*',
+            '172.23.*',
+            '172.24.*',
+            '172.25.*',
+            '172.26.*',
+            '172.27.*',
+            '172.28.*',
+            '172.29.*',
+            '172.30.*',
+            '172.31.*',
+            '<local>'
+          ]
+
   const { t } = useTranslation()
   const { appConfig, patchAppConfig } = useAppConfig()
   const { sysProxy } = appConfig || ({ sysProxy: { enable: false } } as IAppConfig)
@@ -93,20 +93,20 @@ const Sysproxy: React.FC = () => {
 
   const onSave = async (): Promise<void> => {
     setChanged(false)
-    
+
     // 保存当前的开关状态，以便在失败时恢复
     const previousState = values.enable
-    
+
     try {
       await patchAppConfig({ sysProxy: values })
       await triggerSysProxy(true)
-      
+
       await patchAppConfig({ sysProxy: { enable: true } })
     } catch (e) {
       setValues({ ...values, enable: previousState })
       setChanged(true)
       alert(e)
-      
+
       await patchAppConfig({ sysProxy: { enable: false } })
     }
   }
