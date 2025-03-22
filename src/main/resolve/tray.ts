@@ -309,7 +309,7 @@ export async function createTray(): Promise<void> {
   tray?.setIgnoreDoubleClickEvents(true)
   if (process.platform === 'darwin') {
     if (!useDockIcon) {
-      app.dock.hide()
+      hideDockIcon()
     }
     ipcMain.on('trayIconUpdate', async (_, png: string) => {
       const image = nativeImage.createFromDataURL(png).resize({ height: 16 })
@@ -386,4 +386,16 @@ export async function closeTrayIcon(): Promise<void> {
     tray.destroy()
   }
   tray = null
+}
+
+export async function showDockIcon(): Promise<void> {
+  if (process.platform === 'darwin' && !app.dock.isVisible()) {
+    await app.dock.show()
+  }
+}
+
+export async function hideDockIcon(): Promise<void> {
+  if (process.platform === 'darwin' && app.dock.isVisible()) {
+    app.dock.hide()
+  }
 }
