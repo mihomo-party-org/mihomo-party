@@ -1,12 +1,6 @@
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { Worker } from 'worker_threads'
-import {
-  dataDir,
-  mihomoWorkDir,
-  resourcesFilesDir,
-  subStoreDir,
-  substoreLogPath
-} from '../utils/dirs'
+import { mihomoWorkDir, resourcesFilesDir, subStoreDir, substoreLogPath } from '../utils/dirs'
 import subStoreIcon from '../../../resources/subStoreIcon.png?asset'
 import { createWriteStream, existsSync, mkdirSync } from 'fs'
 import { writeFile, rm, cp } from 'fs/promises'
@@ -18,8 +12,9 @@ import express from 'express'
 import axios from 'axios'
 import AdmZip from 'adm-zip'
 import { promisify } from 'util'
-import { exec } from 'child_process'
+import { execFile } from 'child_process'
 import { platform } from 'os'
+import { is } from '@electron-toolkit/utils'
 
 export let pacPort: number
 export let subStorePort: number
@@ -148,12 +143,12 @@ export async function stopSubStoreBackendServer(): Promise<void> {
   }
 }
 
-export async function downloadSubStore(password?: string): Promise<void> {
+export async function downloadSubStore(): Promise<void> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
   const frontendDir = path.join(resourcesFilesDir(), 'sub-store-frontend')
   const backendPath = path.join(resourcesFilesDir(), 'sub-store.bundle.js')
-  const tempDir = path.join(dataDir(), 'temp')
-  const execPromise = promisify(exec)
+  const tempDir = path.join(resourcesFilesDir(), 'temp')
+  const execFilePromise = promisify(execFile)
 
   try {
     // 创建临时目录
@@ -195,25 +190,20 @@ export async function downloadSubStore(password?: string): Promise<void> {
     const zip = new AdmZip(Buffer.from(frontendRes.data))
     zip.extractAllTo(tempDir, true)
 
-    // 如果是 Linux 平台，使用 sudo cp 移动文件
-    if (platform() === 'linux') {
+    if (platform() === 'linux' && !is.dev) {
       try {
-        await execPromise(`echo "${password}" | sudo -S cp  "${tempBackendPath}" "${backendPath}"`)
-        // 确保目标目录存在并清空
-        if (existsSync(frontendDir)) {
-          await execPromise(`echo "${password}" | sudo -S rm -r "${frontendDir}"`)
-        }
-        await execPromise(`echo "${password}" | sudo -S mkdir "${frontendDir}"`)
-        // 将 dist 目录中的内容移动到目标目录
-        await execPromise(
-          `echo "${password}" | sudo -S cp -r "${tempFrontendDir}"/* "${frontendDir}/"`
-        )
+        const bashCmd = [
+          `cp "${tempBackendPath}" "${backendPath}"`,
+          `rm -rf "${frontendDir}"`,
+          `mkdir -p "${frontendDir}"`,
+          `cp -r "${tempFrontendDir}"/* "${frontendDir}/"`
+        ].join(' && ')
+        await execFilePromise('pkexec', ['bash', '-c', bashCmd])
       } catch (error) {
         console.error('substore.downloadFailed:', error)
         throw error
       }
     } else {
-      // 非 Linux 平台
       await cp(tempBackendPath, backendPath)
       if (existsSync(frontendDir)) {
         await rm(frontendDir, { recursive: true })
@@ -221,8 +211,6 @@ export async function downloadSubStore(password?: string): Promise<void> {
       mkdirSync(frontendDir, { recursive: true })
       await cp(path.join(tempDir, 'dist'), frontendDir, { recursive: true })
     }
-
-    // 清理临时目录
     await rm(tempDir, { recursive: true })
   } catch (error) {
     console.error('substore.downloadFailed:', error)
