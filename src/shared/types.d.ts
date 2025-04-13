@@ -461,6 +461,7 @@ interface IProfileItem {
   useProxy?: boolean
   extra?: ISubscriptionUserInfo
   substore?: boolean
+  allowFixedInterval?: boolean
 }
 
 interface ISubStoreSub {

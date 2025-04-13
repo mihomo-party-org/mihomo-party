@@ -350,6 +350,7 @@
   "profiles.editInfo.url": "URL подписки",
   "profiles.editInfo.useProxy": "Использовать прокси для обновления",
   "profiles.editInfo.interval": "Интервал обн. (мин)",
+  "profiles.editInfo.fixedInterval": "Фиксированный интервал обновления",
   "profiles.editInfo.override.title": "Переопределение",
   "profiles.editInfo.override.global": "Глобальный",
   "profiles.editInfo.override.noAvailable": "Нет доступных переопределений",

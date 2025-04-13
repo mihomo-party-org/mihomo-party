@@ -108,6 +108,15 @@ const EditInfoModal: React.FC<Props> = (props) => {
                   }}
                 />
               </SettingItem>
+              <SettingItem title={t('profiles.editInfo.fixedInterval')}>
+                <Switch
+                  size="sm"
+                  isSelected={values.allowFixedInterval ?? false}
+                  onValueChange={(v) => {
+                    setValues({ ...values, allowFixedInterval: v })
+                  }}
+                />
+              </SettingItem>
             </>
           )}
           <SettingItem title={t('profiles.editInfo.override.title')}>
