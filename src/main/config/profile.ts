@@ -114,6 +114,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
     interval: item.interval || 0,
     override: item.override || [],
     useProxy: item.useProxy || false,
+    allowFixedInterval: item.allowFixedInterval || false,
     updated: new Date().getTime()
   } as IProfileItem
   switch (newItem.type) {
@@ -162,7 +163,9 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
         newItem.home = headers['profile-web-page-url']
       }
       if (headers['profile-update-interval']) {
-        newItem.interval = parseInt(headers['profile-update-interval']) * 60
+        if (!item.allowFixedInterval) {
+          newItem.interval = parseInt(headers['profile-update-interval']) * 60
+        }
       }
       if (headers['subscription-userinfo']) {
         newItem.extra = parseSubinfo(headers['subscription-userinfo'])
