@@ -15,7 +15,7 @@
   "common.default": "Default",
   "common.close": "Close",
   "common.pinWindow": "Pin Window",
-  "common.enterRootPassword": "Please enter root password",
+  "common.enterAdminPassword": "Please enter the administrator password",
   "common.next": "Next",
   "common.prev": "Previous",
   "common.done": "Done",

@@ -23,7 +23,7 @@ const BasePasswordModal: React.FC<Props> = (props) => {
   return (
     <Modal backdrop="blur" classNames={{ backdrop: 'top-[48px]' }} hideCloseButton isOpen={true}>
       <ModalContent>
-        <ModalHeader className="flex app-drag">{t('common.enterRootPassword')}</ModalHeader>
+        <ModalHeader className="flex app-drag">{t('common.enterAdminPassword')}</ModalHeader>
         <ModalBody>
           <Input fullWidth type="password" value={password} onValueChange={setPassword} />
         </ModalBody>
