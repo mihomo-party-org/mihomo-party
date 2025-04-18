@@ -1,6 +1,12 @@
 import { getAppConfig, getControledMihomoConfig } from '../config'
 import { Worker } from 'worker_threads'
-import { mihomoWorkDir, resourcesFilesDir, subStoreDir, substoreLogPath } from '../utils/dirs'
+import {
+  dataDir,
+  mihomoWorkDir,
+  resourcesFilesDir,
+  subStoreDir,
+  substoreLogPath
+} from '../utils/dirs'
 import subStoreIcon from '../../../resources/subStoreIcon.png?asset'
 import { createWriteStream, existsSync, mkdirSync } from 'fs'
 import { writeFile, rm, cp } from 'fs/promises'
@@ -147,7 +153,7 @@ export async function downloadSubStore(): Promise<void> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
   const frontendDir = path.join(resourcesFilesDir(), 'sub-store-frontend')
   const backendPath = path.join(resourcesFilesDir(), 'sub-store.bundle.js')
-  const tempDir = path.join(resourcesFilesDir(), 'temp')
+  const tempDir = path.join(dataDir(), 'temp')
   const execFilePromise = promisify(execFile)
 
   try {
