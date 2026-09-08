@@ -484,7 +484,7 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
     override: item.override || [],
     useProxy: item.useProxy || false,
     allowFixedInterval: item.allowFixedInterval || false,
-    autoUpdate: item.autoUpdate ?? false,
+    autoUpdate: item.autoUpdate ?? true,
     authToken: item.authToken,
     userAgent: item.userAgent,
     ageSecretKey: item.ageSecretKey,
