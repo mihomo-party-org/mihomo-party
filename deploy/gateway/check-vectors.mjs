@@ -7,7 +7,12 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 import assert from 'node:assert/strict'
-import { buildSignInput, verifySignature } from './src/crypto.mjs'
+import {
+  buildSignInput,
+  verifySignature,
+  signDiscovery,
+  verifyDiscoveryEnvelope
+} from './src/crypto.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const fixture = join(here, '../../src/main/resolve/plugin/__fixtures__/sign-vectors.json')
@@ -26,4 +31,21 @@ for (const v of vectors) {
   )
 }
 
-console.log(`check-vectors: OK — ${vectors.length} client vectors verified against gateway crypto`)
+const discoveryFixture = join(
+  here,
+  '../../src/main/resolve/plugin/__fixtures__/discovery-vectors.json'
+)
+const discoveryVectors = JSON.parse(readFileSync(discoveryFixture, 'utf-8'))
+for (const v of discoveryVectors) {
+  const seed = Buffer.from(v.seedB64, 'base64')
+  assert.equal(
+    signDiscovery(Buffer.from(v.payloadJson, 'utf-8'), seed),
+    v.signed,
+    `discovery envelope mismatch (${v.name})`
+  )
+  assert.equal(verifyDiscoveryEnvelope(v.signed, v.pubKeyB64).toString('utf-8'), v.payloadJson)
+}
+
+console.log(
+  `check-vectors: OK — ${vectors.length} sign vectors + ${discoveryVectors.length} discovery vectors verified against gateway crypto`
+)

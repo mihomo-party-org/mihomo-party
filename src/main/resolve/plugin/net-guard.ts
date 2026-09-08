@@ -1,5 +1,6 @@
 import { lookup as dnsLookup, type LookupAddress } from 'dns'
 import { isIP, type LookupFunction } from 'net'
+import { CPX_GUARD_REFUSED, codedError } from './errors'
 
 function isPrivateIpv4(ip: string): boolean {
   const parts = ip.split('.').map((s) => Number(s))
@@ -10,7 +11,7 @@ function isPrivateIpv4(ip: string): boolean {
   if (a === 127) return true
   if (a === 169 && b === 254) return true // link-local + cloud metadata
   if (a === 172 && b >= 16 && b <= 31) return true
-  if (a === 192 && b === 0) return true // IETF protocol assignments
+  if (a === 192 && b === 0 && parts[2] === 0) return true // IETF protocol assignments 192.0.0.0/24
   if (a === 192 && b === 0 && parts[2] === 2) return true // TEST-NET-1
   if (a === 192 && b === 168) return true
   if (a === 100 && b >= 64 && b <= 127) return true // CGNAT
@@ -73,16 +74,26 @@ function isPrivateIpv6(ip: string): boolean {
   if (h.slice(0, 7).every((x) => x === 0) && h[7] === 1) return true // ::1 loopback
   if ((h[0] & 0xffc0) === 0xfe80) return true // link-local fe80::/10
   if ((h[0] & 0xfe00) === 0xfc00) return true // ULA fc00::/7
+  if ((h[0] & 0xffc0) === 0xfec0) return true // deprecated site-local fec0::/10 (reserved, still routed on some LANs)
   if (h[0] === 0x0100 && h[1] === 0 && h[2] === 0 && h[3] === 0) return true // discard 100::/64
   if (h[0] === 0x2001 && h[1] === 0x0db8) return true // documentation 2001:db8::/32
   if (h[0] === 0x2002) return true // 6to4, fail closed for embedded special-use IPv4
   if ((h[0] & 0xff00) === 0xff00) return true // multicast ff00::/8
   // IPv4-mapped ::ffff:a.b.c.d (decimal OR hex form both expand here)
   if (h[0] === 0 && h[1] === 0 && h[2] === 0 && h[3] === 0 && h[4] === 0 && h[5] === 0xffff) {
-    const v4 = `${(h[6] >> 8) & 0xff}.${h[6] & 0xff}.${(h[7] >> 8) & 0xff}.${h[7] & 0xff}`
-    return isPrivateIpv4(v4)
+    return isPrivateIpv4(embeddedIpv4(h))
+  }
+  // NAT64：本地翻译前缀 64:ff9b:1::/48（RFC 8215，IANA 标为非全局可达）整体视为非公网；
+  // 公认前缀 64:ff9b::/96（RFC 6052）按其内嵌的 IPv4 判定
+  if (h[0] === 0x0064 && h[1] === 0xff9b) {
+    if (h[2] === 1) return true
+    if (h[2] === 0 && h[3] === 0 && h[4] === 0 && h[5] === 0) return isPrivateIpv4(embeddedIpv4(h))
   }
   return false
+}
+
+function embeddedIpv4(h: number[]): string {
+  return `${(h[6] >> 8) & 0xff}.${h[6] & 0xff}.${(h[7] >> 8) & 0xff}.${h[7] & 0xff}`
 }
 
 export function isPrivateIp(ip: string): boolean {
@@ -115,6 +126,27 @@ const defaultResolveAll: ResolveAll = (hostname) =>
     })
   })
 
+// 解析全部地址；无地址 → ENOTFOUND 类错误；任一地址为私网 → CPX_GUARD_REFUSED（终态）。
+// guarded lookup 与 §1.4 的代理路由预检共用同一套判定。
+export async function resolveAllPublicOrThrow(
+  hostname: string,
+  resolveAll: ResolveAll = defaultResolveAll
+): Promise<LookupAddress[]> {
+  const addrs = await resolveAll(hostname)
+  if (!addrs || addrs.length === 0) {
+    throw codedError('No addresses resolved', 'ENOTFOUND', 'pre-send')
+  }
+  const bad = addrs.find((a) => isPrivateIp(a.address))
+  if (bad) {
+    throw codedError(
+      `Refusing to connect to non-public address: ${bad.address}`,
+      CPX_GUARD_REFUSED,
+      'pre-send'
+    )
+  }
+  return addrs
+}
+
 // 返回一个 Node 风格 lookup：先解析全部地址，全部为公网才放行，并把连接钉到已校验地址，挡 DNS rebinding。
 // 必须尊重 options.all：Node 的 autoSelectFamily（Happy Eyeballs，现代 Node/Electron 默认开启）会用
 // { all: true } 调用 lookup 并期望回调返回 LookupAddress[]；此时若只回单个地址，Node 抛
@@ -127,17 +159,8 @@ export function createGuardedLookup(resolveAll: ResolveAll = defaultResolveAll):
       address: string | LookupAddress[],
       family?: number
     ) => void
-    resolveAll(hostname)
+    resolveAllPublicOrThrow(hostname, resolveAll)
       .then((addrs) => {
-        if (!addrs || addrs.length === 0) {
-          cb(new Error('No addresses resolved'), '', 0)
-          return
-        }
-        const bad = addrs.find((a) => isPrivateIp(a.address))
-        if (bad) {
-          cb(new Error(`Refusing to connect to non-public address: ${bad.address}`), '', 0)
-          return
-        }
         if (opts.all) cb(null, addrs)
         else cb(null, addrs[0].address, addrs[0].family)
       })

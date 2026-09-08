@@ -1,7 +1,8 @@
 import { getAppConfig } from '../../config/app'
 import { MAX_PLUGIN_FILE_BYTES } from './constants'
-import { requestOnce } from './http-client'
+import { requestOnce, type PluginProxy } from './http-client'
 import { createGuardedLookup, isForbiddenHost } from './net-guard'
+import { resolveLocalProxy } from './route'
 
 function parseDownloadUrl(url: string): URL {
   let parsed: URL
@@ -20,12 +21,9 @@ function parseDownloadUrl(url: string): URL {
 export async function fetchRemotePlugin(url: string): Promise<string> {
   const parsed = parseDownloadUrl(url)
   const { subscriptionTimeout = 30000, pluginUseProxy } = await getAppConfig()
-  let proxy: { host: string; port: number } | undefined
-  if (pluginUseProxy) {
-    const { getControledMihomoConfig } = await import('../../config/controledMihomo')
-    const { 'mixed-port': port = 7890 } = await getControledMihomoConfig()
-    proxy = { host: '127.0.0.1', port }
-  }
+  // 与插件请求同一套本地代理解析：端口校验（混合端口关闭 → 代理不可用）与核心 inbound 认证凭据
+  let proxy: PluginProxy | undefined
+  if (pluginUseProxy) proxy = await resolveLocalProxy()
 
   const response = await requestOnce(parsed.toString(), {
     method: 'GET',

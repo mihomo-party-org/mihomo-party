@@ -389,3 +389,66 @@ test('revoke: bad signature on an existing device → 403 and device stays bound
   assert.equal(jsonOf(res).error, 'bad_signature')
   assert.ok(deps.db.getDevice(dev.deviceId))
 })
+
+// ---------- §4 provider messages ----------
+test('challenge: device_revoked carries the configured message, and none when unset', () => {
+  const withMsg = { ...setup(), messages: { device_revoked: '订阅已到期，续费后请重新登录。' } }
+  const res = mockRes()
+  challenge({ deviceId: randomUUID() }, res, withMsg)
+  assert.equal(res.status, 403)
+  assert.deepEqual(jsonOf(res), {
+    error: 'device_revoked',
+    message: '订阅已到期，续费后请重新登录。'
+  })
+
+  const res2 = mockRes()
+  challenge({ deviceId: randomUUID() }, res2, setup())
+  assert.deepEqual(jsonOf(res2), { error: 'device_revoked' })
+})
+
+test('gateway_retired and device_limit carry their messages when configured', () => {
+  const deps = {
+    ...setup({ retired: true }),
+    messages: { gateway_retired: 'moved', device_limit: 'too many devices' }
+  }
+  const res = mockRes()
+  challenge({ deviceId: randomUUID() }, res, deps)
+  assert.deepEqual(jsonOf(res), { error: 'gateway_retired', message: 'moved' })
+
+  const live = { ...setup(), messages: { device_limit: 'too many devices' } }
+  bind(live)
+  bind(live) // alice's limit is 2
+  const { code, verifier } = mintCode(live)
+  const res2 = mockRes()
+  enroll(
+    {
+      code,
+      code_verifier: verifier,
+      redirect_uri: REDIRECT,
+      client_id: CLIENT,
+      deviceId: newDevice().deviceId,
+      devicePubKey: newDevice().pubKey
+    },
+    res2,
+    live
+  )
+  assert.equal(res2.status, 403)
+  assert.deepEqual(jsonOf(res2), { error: 'device_limit', message: 'too many devices' })
+})
+
+// ---------- §5a X-CPX-Discovery on /config ----------
+test('config: sets X-CPX-Discovery only when a signed discovery document is configured', async () => {
+  const withDoc = { ...setup(), discovery: { signed: 'AAAA.BBBB', payload: {} } }
+  const dev = bind(withDoc)
+  const res = mockRes()
+  await config(signedBody(withDoc, dev, OP_CONFIG), res, withDoc)
+  assert.equal(res.status, 200)
+  assert.equal(res.headers['x-cpx-discovery'], 'AAAA.BBBB')
+
+  const plain = setup()
+  const dev2 = bind(plain)
+  const res2 = mockRes()
+  await config(signedBody(plain, dev2, OP_CONFIG), res2, plain)
+  assert.equal(res2.status, 200)
+  assert.equal(res2.headers['x-cpx-discovery'], undefined)
+})

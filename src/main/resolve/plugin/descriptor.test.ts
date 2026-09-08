@@ -97,4 +97,72 @@ describe('parseDescriptor', () => {
   it('rejects missing/empty provider.name', () => {
     expect(() => parseDescriptor(file({ provider: { name: '' } }))).toThrow()
   })
+
+  // §3 discoveryUrls
+  it('accepts 1..8 backup discovery origins and normalizes them', () => {
+    const d = parseDescriptor(
+      file({ discoveryUrls: ['https://cdn.xx.com/', 'https://gw.xx.com:8443'] })
+    )
+    expect(d.discoveryUrls).toEqual(['https://cdn.xx.com', 'https://gw.xx.com:8443'])
+  })
+  it('rejects 9 discovery origins', () => {
+    const nine = Array.from({ length: 9 }, (_, i) => `https://d${i}.xx.com`)
+    expect(() => parseDescriptor(file({ discoveryUrls: nine }))).toThrow(/discoveryUrls/)
+  })
+  it('rejects an empty discoveryUrls list', () => {
+    expect(() => parseDescriptor(file({ discoveryUrls: [] }))).toThrow(/discoveryUrls/)
+  })
+  it('rejects a discovery origin with a path', () => {
+    expect(() => parseDescriptor(file({ discoveryUrls: ['https://cdn.xx.com/wk'] }))).toThrow(
+      /discoveryUrls/
+    )
+  })
+  it('rejects a discovery origin equal to the loginUrl origin', () => {
+    expect(() => parseDescriptor(file({ discoveryUrls: ['https://panel.xx.com'] }))).toThrow(
+      /loginUrl origin/
+    )
+  })
+  it('rejects a private discovery origin', () => {
+    expect(() => parseDescriptor(file({ discoveryUrls: ['https://10.0.0.1'] }))).toThrow(
+      /discoveryUrls/
+    )
+  })
+  it('rejects duplicate discovery origins (after normalization)', () => {
+    expect(() =>
+      parseDescriptor(file({ discoveryUrls: ['https://cdn.xx.com', 'https://cdn.xx.com/'] }))
+    ).toThrow(/duplicates/)
+  })
+
+  // §4 provider.description
+  it('accepts provider.description and sanitizes it', () => {
+    const d = parseDescriptor(
+      file({ provider: { name: 'X', description: '  line1\u0001\nline2  ' } })
+    )
+    expect(d.provider.description).toBe('line1\nline2')
+  })
+  it('truncates provider.description to 500 code points', () => {
+    const d = parseDescriptor(file({ provider: { name: 'X', description: '字'.repeat(501) } }))
+    expect(Array.from(d.provider.description ?? '')).toHaveLength(500)
+  })
+  it('drops an empty provider.description and rejects a non-string one', () => {
+    expect(
+      parseDescriptor(file({ provider: { name: 'X', description: '   ' } })).provider.description
+    ).toBeUndefined()
+    expect(() => parseDescriptor(file({ provider: { name: 'X', description: 1 } }))).toThrow()
+  })
+
+  // §5 providerPubKey
+  it('accepts a 32-byte standard-base64 providerPubKey', () => {
+    const key = Buffer.alloc(32, 9).toString('base64')
+    expect(parseDescriptor(file({ providerPubKey: key })).providerPubKey).toBe(key)
+  })
+  it('rejects a providerPubKey that is not exactly 32 canonical base64 bytes', () => {
+    expect(() =>
+      parseDescriptor(file({ providerPubKey: Buffer.alloc(31, 9).toString('base64') }))
+    ).toThrow(/providerPubKey/)
+    expect(() =>
+      parseDescriptor(file({ providerPubKey: Buffer.alloc(32, 9).toString('base64url') }))
+    ).toThrow(/providerPubKey/)
+    expect(() => parseDescriptor(file({ providerPubKey: 42 }))).toThrow(/providerPubKey/)
+  })
 })

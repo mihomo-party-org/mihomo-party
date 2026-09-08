@@ -70,3 +70,59 @@ test('verifySignature returns false on a garbage signature instead of throwing',
   assert.equal(verifySignature(VEC.pubKeyB64, input, 'not-base64-!!!'), false)
   assert.equal(verifySignature('bad-pubkey', input, VEC.sigB64), false)
 })
+
+// ---------- §5a signed discovery: interop with the client vectors ----------
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+import {
+  signDiscovery,
+  verifyDiscoveryEnvelope,
+  pubKeyFromSeed,
+  DISCOVERY_SIGN_PREFIX
+} from './crypto.mjs'
+
+const here = dirname(fileURLToPath(import.meta.url))
+const discoveryVectors = JSON.parse(
+  readFileSync(
+    join(here, '../../../src/main/resolve/plugin/__fixtures__/discovery-vectors.json'),
+    'utf-8'
+  )
+)
+
+test('gateway crypto reproduces the client discovery vectors byte-for-byte', () => {
+  assert.ok(discoveryVectors.length > 0)
+  assert.equal(
+    DISCOVERY_SIGN_PREFIX.toString('hex'),
+    Buffer.from('CPX2-DISCOVERY\u0000').toString('hex')
+  )
+  for (const v of discoveryVectors) {
+    const seed = Buffer.from(v.seedB64, 'base64')
+    assert.equal(pubKeyFromSeed(seed), v.pubKeyB64)
+    const payloadBytes = Buffer.from(v.payloadJson, 'utf-8')
+    assert.equal(signDiscovery(payloadBytes, seed), v.signed)
+    const back = verifyDiscoveryEnvelope(v.signed, v.pubKeyB64)
+    assert.equal(back.toString('utf-8'), v.payloadJson)
+    assert.equal(createHash('sha256').update(back).digest('hex'), v.digestHex)
+  }
+})
+
+test('verifyDiscoveryEnvelope rejects tampering, wrong key, bad format', () => {
+  const v = discoveryVectors[0]
+  const [p, sig] = v.signed.split('.')
+  assert.throws(() => verifyDiscoveryEnvelope(`${p}.${sig}.x`, v.pubKeyB64), /"\."/)
+  assert.throws(
+    () => verifyDiscoveryEnvelope(`${p.replace(/=+$/, '')}.${sig}`, v.pubKeyB64),
+    /canonical/
+  )
+  const bad = Buffer.from(sig, 'base64')
+  bad[3] ^= 1
+  assert.throws(
+    () => verifyDiscoveryEnvelope(`${p}.${bad.toString('base64')}`, v.pubKeyB64),
+    /verification/
+  )
+  assert.throws(
+    () => verifyDiscoveryEnvelope(v.signed, discoveryVectors[1].pubKeyB64),
+    /verification/
+  )
+})

@@ -44,6 +44,26 @@ describe('fetchRemotePlugin', () => {
     expect(requestOnce.mock.calls[0][1].proxy).toEqual({ host: '127.0.0.1', port: 17890 })
   })
 
+  it('R2-ISS-066: carries the core inbound credentials to the local proxy, like plugin requests do', async () => {
+    getAppConfig.mockResolvedValue({ subscriptionTimeout: 5000, pluginUseProxy: true })
+    getControledMihomoConfig.mockResolvedValue({ 'mixed-port': 17890, authentication: ['u:p:w'] })
+    await fetchRemotePlugin('https://provider.example/app.cpx')
+    expect(requestOnce.mock.calls[0][1].proxy).toEqual({
+      host: '127.0.0.1',
+      port: 17890,
+      auth: { user: 'u', pass: 'p:w' }
+    })
+  })
+
+  it('R2-ISS-066: a disabled mixed-port makes the proxied download fail instead of targeting port 80', async () => {
+    getAppConfig.mockResolvedValue({ subscriptionTimeout: 5000, pluginUseProxy: true })
+    getControledMihomoConfig.mockResolvedValue({ 'mixed-port': 0 })
+    await expect(fetchRemotePlugin('https://provider.example/app.cpx')).rejects.toMatchObject({
+      code: 'CPX_PROXY_CONNECT_FAILED'
+    })
+    expect(requestOnce).not.toHaveBeenCalled()
+  })
+
   it.each([
     'http://provider.example/app.cpx',
     'https://user:password@provider.example/app.cpx',

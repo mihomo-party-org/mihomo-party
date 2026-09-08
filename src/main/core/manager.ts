@@ -962,17 +962,27 @@ async function checkProfile(
   )
 }
 
+export interface CheckProfileOptions {
+  // 调用方的预算 signal：中止后校验子进程被终止，校验按失败处理（调用方不得再写入）
+  signal?: AbortSignal
+  // 校验子进程的硬上限（毫秒）：防止一次 `-t` 无限期占住调用方持有的锁
+  timeoutMs?: number
+}
+
 export async function checkProfileConfig(
   configPath: string,
   core: string = 'mihomo',
-  ageSecretKey?: string
+  ageSecretKey?: string,
+  opts: CheckProfileOptions = {}
 ): Promise<void> {
   const corePath = mihomoCorePath(core)
   await syncSmartModelToTestDir()
 
   try {
     await execFilePromise(corePath, ['-t', '-f', configPath, '-d', mihomoTestDir()], {
-      env: buildCoreEnv(undefined, ageSecretKey)
+      env: buildCoreEnv(undefined, ageSecretKey),
+      signal: opts.signal,
+      timeout: opts.timeoutMs
     })
   } catch (error) {
     managerLogger.error('Profile check failed', error)

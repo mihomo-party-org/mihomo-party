@@ -93,3 +93,144 @@ test('an unknown command returns non-zero and prints usage', async () => {
   assert.notEqual(code, 0)
   assert.match(h.text(), /usage/i)
 })
+
+// ---------- §5a offline signing ----------
+import { verifyDiscoveryEnvelope } from './crypto.mjs'
+
+function fsHarness() {
+  const files = new Map()
+  const h = harness()
+  h.deps.readFile = (p) => {
+    if (!files.has(p)) throw new Error(`ENOENT ${p}`)
+    const entry = files.get(p)
+    return typeof entry === 'string' ? entry : entry.data
+  }
+  h.deps.writeFile = (p, data, opts) => {
+    if (opts?.flag === 'wx' && files.has(p)) {
+      throw Object.assign(new Error(`EEXIST: file already exists, open '${p}'`), { code: 'EEXIST' })
+    }
+    files.set(p, { data, mode: opts?.mode, flag: opts?.flag })
+  }
+  h.deps.readStdin = async () => files.get('<stdin>')?.data ?? ''
+  return { ...h, files }
+}
+
+test('keygen writes a 0600 seed file and prints the public key; never prints the seed', async () => {
+  const h = fsHarness()
+  const code = await runAdmin(['keygen', '--out', '/tmp/seed'], h.deps)
+  assert.equal(code, 0)
+  const seedFile = h.files.get('/tmp/seed')
+  assert.equal(seedFile.mode, 0o600)
+  const seed = Buffer.from(seedFile.data.trim(), 'base64')
+  assert.equal(seed.length, 32)
+  assert.match(h.text(), /providerPubKey: [A-Za-z0-9+/]+=*/)
+  assert.ok(!h.text().includes(seedFile.data.trim()))
+})
+
+test('keygen refuses to run without --out', async () => {
+  const h = fsHarness()
+  assert.notEqual(await runAdmin(['keygen'], h.deps), 0)
+})
+
+test('sign-discovery reads the seed from a file or stdin and emits an envelope the client accepts', async () => {
+  const h = fsHarness()
+  await runAdmin(['keygen', '--out', '/k/seed'], h.deps)
+  const pub = h.text().match(/providerPubKey: (\S+)/)[1]
+  const payload = {
+    spec: 'cpx-plugin/2',
+    seq: 3,
+    gateways: ['https://gw.example.net'],
+    endpoints: { enroll: '/enroll', challenge: '/challenge', config: '/config', revoke: '/revoke' }
+  }
+  h.files.set('/k/payload.json', JSON.stringify(payload))
+  const lines1 = h.lines.length
+  const code = await runAdmin(
+    ['sign-discovery', '/k/payload.json', '--seed-file', '/k/seed', '--out', '/k/envelope'],
+    h.deps
+  )
+  assert.equal(code, 0)
+  const envelope = h.lines[lines1]
+  assert.equal(h.files.get('/k/envelope').data.trim(), envelope)
+  const bytes = verifyDiscoveryEnvelope(envelope, pub)
+  assert.deepEqual(JSON.parse(bytes.toString('utf-8')), payload)
+
+  // stdin path produces the same signature (Ed25519 is deterministic)
+  h.files.set('<stdin>', { data: h.files.get('/k/seed').data })
+  const lines2 = h.lines.length
+  assert.equal(await runAdmin(['sign-discovery', '/k/payload.json'], h.deps), 0)
+  assert.equal(h.lines[lines2], envelope)
+})
+
+test('sign-discovery rejects a bad seed and a malformed payload', async () => {
+  const h = fsHarness()
+  h.files.set('/k/seed', { data: 'not-a-seed' })
+  h.files.set(
+    '/k/payload.json',
+    JSON.stringify({ spec: 'cpx-plugin/2', seq: 1, gateways: ['https://a'], endpoints: {} })
+  )
+  assert.notEqual(
+    await runAdmin(['sign-discovery', '/k/payload.json', '--seed-file', '/k/seed'], h.deps),
+    0
+  )
+  h.files.set('/k/seed', { data: Buffer.alloc(32, 1).toString('base64') })
+  h.files.set('/k/bad.json', JSON.stringify({ spec: 'cpx-plugin/2', seq: 0, gateways: [] }))
+  assert.notEqual(
+    await runAdmin(['sign-discovery', '/k/bad.json', '--seed-file', '/k/seed'], h.deps),
+    0
+  )
+})
+
+test('ISS-016: keygen creates the seed file exclusively and refuses an existing path', async () => {
+  const h = fsHarness()
+  assert.equal(await runAdmin(['keygen', '--out', '/k/seed'], h.deps), 0)
+  assert.equal(h.files.get('/k/seed').flag, 'wx')
+  assert.equal(h.files.get('/k/seed').mode, 0o600)
+  const before = h.files.get('/k/seed').data
+  assert.notEqual(await runAdmin(['keygen', '--out', '/k/seed'], h.deps), 0)
+  assert.equal(h.files.get('/k/seed').data, before)
+  assert.match(h.text(), /refusing to overwrite/)
+})
+
+test('ISS-018: sign-discovery refuses a payload the client would reject', async () => {
+  const h = fsHarness()
+  await runAdmin(['keygen', '--out', '/k/seed'], h.deps)
+  h.files.set(
+    '/k/bad1.json',
+    JSON.stringify({
+      spec: 'cpx-plugin/2',
+      seq: 1,
+      gateways: ['https://10.0.0.1'],
+      endpoints: {
+        enroll: '/enroll',
+        challenge: '/challenge',
+        config: '/config',
+        revoke: '/revoke'
+      }
+    })
+  )
+  assert.notEqual(
+    await runAdmin(['sign-discovery', '/k/bad1.json', '--seed-file', '/k/seed'], h.deps),
+    0
+  )
+  assert.match(h.text(), /public https origin/)
+  h.files.set(
+    '/k/bad2.json',
+    JSON.stringify({
+      spec: 'cpx-plugin/2',
+      seq: 1,
+      gateways: ['https://gw.example.net'],
+      endpoints: {
+        enroll: '/enroll',
+        challenge: '/challenge',
+        config: '/config',
+        revoke: '/revoke'
+      },
+      extra: true
+    })
+  )
+  assert.notEqual(
+    await runAdmin(['sign-discovery', '/k/bad2.json', '--seed-file', '/k/seed'], h.deps),
+    0
+  )
+  assert.match(h.text(), /unknown key/)
+})

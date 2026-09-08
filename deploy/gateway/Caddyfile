@@ -1,8 +1,13 @@
-# Caddy obtains and renews a Let's Encrypt certificate for {$DOMAIN} automatically.
-# It terminates TLS and reverse-proxies to the gateway container on the internal network.
+# Caddy obtains and renews Let's Encrypt certificates for every domain in {$DOMAINS} automatically
+# ("a.example.com, b.example.net" — comma+space or space separated, never a bare "a,b": the value
+# is substituted verbatim as site addresses; deploy.sh normalizes it from DOMAINS or DOMAIN in .env).
+# It terminates TLS
+# and reverse-proxies ALL of those domains to the SAME gateway container — the gateway keeps
+# authorize codes, nonces and rate limits in process memory, so every gateway origin listed in
+# GATEWAY_ORIGINS must land on this single process. Multiple replicas are not supported.
 # To receive cert-expiry notices, add a global block above:  { email you@example.com }
 
-{$DOMAIN} {
+{$DOMAINS} {
 	encode gzip
 	reverse_proxy gateway:8080
 }

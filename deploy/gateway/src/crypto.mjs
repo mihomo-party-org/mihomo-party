@@ -3,9 +3,11 @@
 // signatures produced by the app verify here (see check-vectors.mjs for the proof).
 import {
   createHash,
+  createPrivateKey,
   createPublicKey,
   randomBytes,
   scryptSync,
+  sign,
   timingSafeEqual,
   verify
 } from 'node:crypto'
@@ -70,6 +72,63 @@ export function buildSignInput(op, deviceId, nonceId, nonce, ts) {
     nonce,
     tsB
   ])
+}
+
+// ---- Signed discovery document (client design §5a) ----
+// Domain-separation prefix: "CPX2-DISCOVERY" followed by a NUL byte, then the exact payload bytes.
+export const DISCOVERY_SIGN_PREFIX = Buffer.from('CPX2-DISCOVERY\u0000', 'utf-8')
+export const DISCOVERY_MAX_PAYLOAD_BYTES = 4096
+const ED25519_PKCS8_PREFIX = Buffer.from('302e020100300506032b657004220420', 'hex')
+
+export function generateSeed() {
+  return randomBytes(32)
+}
+
+function keyFromSeed(seed) {
+  return createPrivateKey({
+    key: Buffer.concat([ED25519_PKCS8_PREFIX, seed]),
+    format: 'der',
+    type: 'pkcs8'
+  })
+}
+
+export function pubKeyFromSeed(seed) {
+  const jwk = createPublicKey(keyFromSeed(seed)).export({ format: 'jwk' })
+  return Buffer.from(jwk.x, 'base64url').toString('base64')
+}
+
+export function isCanonicalB64(s) {
+  if (typeof s !== 'string' || !/^[A-Za-z0-9+/]+={0,2}$/.test(s)) return false
+  return Buffer.from(s, 'base64').toString('base64') === s
+}
+
+// Offline: sign the exact payload bytes and produce the envelope "<payloadB64>.<sigB64>".
+export function signDiscovery(payloadBytes, seed) {
+  if (payloadBytes.length < 1 || payloadBytes.length > DISCOVERY_MAX_PAYLOAD_BYTES) {
+    throw new Error(`discovery payload must be 1..${DISCOVERY_MAX_PAYLOAD_BYTES} bytes`)
+  }
+  const sig = sign(null, Buffer.concat([DISCOVERY_SIGN_PREFIX, payloadBytes]), keyFromSeed(seed))
+  return `${payloadBytes.toString('base64')}.${sig.toString('base64')}`
+}
+
+// Format checks + signature verification of an envelope; returns the payload bytes.
+export function verifyDiscoveryEnvelope(signed, pubKeyB64) {
+  if (typeof signed !== 'string') throw new Error('signed must be a string')
+  const parts = signed.split('.')
+  if (parts.length !== 2) throw new Error('signed must contain exactly one "."')
+  const [payloadB64, sigB64] = parts
+  if (!isCanonicalB64(payloadB64) || !isCanonicalB64(sigB64)) {
+    throw new Error('signed: non-canonical base64')
+  }
+  const payloadBytes = Buffer.from(payloadB64, 'base64')
+  if (payloadBytes.length < 1 || payloadBytes.length > DISCOVERY_MAX_PAYLOAD_BYTES) {
+    throw new Error('signed: payload size out of range')
+  }
+  if (Buffer.from(sigB64, 'base64').length !== 64) throw new Error('signed: bad signature length')
+  if (!verifySignature(pubKeyB64, Buffer.concat([DISCOVERY_SIGN_PREFIX, payloadBytes]), sigB64)) {
+    throw new Error('signed: signature verification failed')
+  }
+  return payloadBytes
 }
 
 // Ed25519 verify. pubKey is the raw 32-byte point (standard base64), sig is raw 64 bytes (standard base64).

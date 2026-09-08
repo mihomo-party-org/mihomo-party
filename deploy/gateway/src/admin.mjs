@@ -1,6 +1,7 @@
 // Admin command logic, decoupled from I/O so it is testable. The bin wrapper
 // (../admin.mjs) supplies a real db, a no-echo password reader, and console writers.
-import { hashPassword } from './crypto.mjs'
+import { generateSeed, hashPassword, pubKeyFromSeed, signDiscovery } from './crypto.mjs'
+import { validateDiscoveryPayload } from './discovery.mjs'
 
 const USAGE = `Usage: cpx-admin <command> ...
   add-user <username> <subUrl> [--limit N]
@@ -10,7 +11,10 @@ const USAGE = `Usage: cpx-admin <command> ...
   del-user <username>
   list-users [--show-sub]
   list-devices <username>
-  revoke-device <deviceId>`
+  revoke-device <deviceId>
+  keygen --out <seed-file>                       (offline; seed file is written with mode 0600)
+  sign-discovery <payload.json> [--seed-file <path>] [--out <envelope>]
+                                                 (offline; seed from --seed-file or stdin)`
 
 function parse(rest) {
   const pos = []
@@ -18,6 +22,8 @@ function parse(rest) {
   for (let i = 0; i < rest.length; i++) {
     const t = rest[i]
     if (t === '--limit') flags.limit = rest[++i]
+    else if (t === '--out') flags.out = rest[++i]
+    else if (t === '--seed-file') flags.seedFile = rest[++i]
     else if (t === '--show-sub') flags.showSub = true
     else if (t.startsWith('--')) flags[t.slice(2)] = true
     else pos.push(t)
@@ -120,6 +126,69 @@ export async function runAdmin(args, deps) {
       if (!need(deviceId, 'revoke-device requires <deviceId>')) return 1
       db.delDevice(deviceId)
       out(`revoked device ${deviceId}`)
+      return 0
+    }
+    // ---- §5a offline discovery signing (no db access) ----
+    case 'keygen': {
+      if (!need(flags.out, 'keygen requires --out <seed-file> (the seed is never printed)'))
+        return 1
+      const seed = generateSeed()
+      try {
+        // exclusive create: never truncate/reuse an existing file (which would keep its old
+        // permissions) and never follow a pre-placed symlink
+        deps.writeFile(flags.out, seed.toString('base64') + '\n', { mode: 0o600, flag: 'wx' })
+      } catch (e) {
+        err(
+          e?.code === 'EEXIST'
+            ? `refusing to overwrite existing file ${flags.out}`
+            : `cannot write ${flags.out}: ${e?.message ?? e}`
+        )
+        return 1
+      }
+      out(`wrote seed to ${flags.out} (mode 0600) — keep it offline`)
+      out(`providerPubKey: ${pubKeyFromSeed(seed)}`)
+      return 0
+    }
+    case 'sign-discovery': {
+      const [payloadPath] = pos
+      if (!need(payloadPath, 'sign-discovery requires <payload.json>')) return 1
+      const seedText = String(
+        flags.seedFile ? deps.readFile(flags.seedFile) : await deps.readStdin()
+      ).trim()
+      const seed = Buffer.from(seedText, 'base64')
+      if (
+        !need(
+          seed.length === 32 && seed.toString('base64') === seedText,
+          'seed must be 32 raw bytes in standard base64'
+        )
+      ) {
+        return 1
+      }
+      let payload
+      try {
+        payload = JSON.parse(String(deps.readFile(payloadPath)))
+      } catch {
+        err(`cannot parse ${payloadPath}`)
+        return 1
+      }
+      // the same field rules the client enforces — a document that fails here would be rejected
+      // by every keyed client after publication
+      try {
+        payload = validateDiscoveryPayload(payload)
+      } catch (e) {
+        err(e.message)
+        return 1
+      }
+      let signed
+      try {
+        signed = signDiscovery(Buffer.from(JSON.stringify(payload), 'utf-8'), seed)
+      } catch (e) {
+        err(e.message)
+        return 1
+      }
+      if (flags.out) deps.writeFile(flags.out, signed + '\n', { mode: 0o644 })
+      out(signed)
+      err(`providerPubKey: ${pubKeyFromSeed(seed)}`)
       return 0
     }
     default:

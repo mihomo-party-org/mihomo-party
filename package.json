@@ -53,7 +53,6 @@
     "file-icon-info": "^1.1.1",
     "flag-icons": "^7.5.0",
     "http-proxy-agent": "^9.1.0",
-    "https-proxy-agent": "^9.1.0",
     "i18next": "^26.3.6",
     "iconv-lite": "^0.7.3",
     "js-yaml": "^5.2.3",

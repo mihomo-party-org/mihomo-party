@@ -37,8 +37,8 @@ export function sendJson(res, status, obj) {
   res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' }).end(body)
 }
 
-export function sendText(res, status, body, contentType = 'text/plain; charset=utf-8') {
-  res.writeHead(status, { 'content-type': contentType }).end(body)
+export function sendText(res, status, body, contentType = 'text/plain; charset=utf-8', extra = {}) {
+  res.writeHead(status, { 'content-type': contentType, ...extra }).end(body)
 }
 
 export function sendHtml(res, status, html) {

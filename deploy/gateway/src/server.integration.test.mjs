@@ -35,8 +35,14 @@ before(async () => {
     nonces: createNonceStore(),
     rateLimiter: createRateLimiter({ max: 100, windowMs: 1000 }),
     fetchSubscription: async () => CLASH,
+    // §5a: a pre-signed envelope; the integration test only checks plumbing, the crypto tests verify it
+    discovery: {
+      signed: 'cGF5bG9hZA==.c2ln',
+      payload: { spec: 'cpx-plugin/2', seq: 1, gateways: ['https://gw.test', 'https://gw2.test'] }
+    },
     config: {
       publicOrigin: 'https://gw.test',
+      gatewayOrigins: ['https://gw.test', 'https://gw2.test'],
       clockSkewMs: 300000,
       retired: false,
       subTimeoutMs: 5000,
@@ -100,7 +106,10 @@ test('full flow: well-known → authorize → enroll → challenge → config �
   assert.equal(wk.status, 200)
   const wkBody = JSON.parse(wk.body)
   assert.equal(wkBody.gateway, 'https://gw.test')
+  assert.deepEqual(wkBody.gateways, ['https://gw.test', 'https://gw2.test'])
+  assert.equal(wkBody.gateway, wkBody.gateways[0])
   assert.equal(wkBody.endpoints.config, '/config')
+  assert.equal(wkBody.signed, 'cGF5bG9hZA==.c2ln')
 
   // 2. PKCE login params
   const verifier = randomBytes(32).toString('base64url')

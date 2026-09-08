@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { parseGatewayOrigin, isValidEndpointPath } from './gateway-url'
+import {
+  parseGatewayOrigin,
+  parseGatewayList,
+  isValidEndpointPath,
+  normalizeEndpointPath
+} from './gateway-url'
 
 describe('parseGatewayOrigin', () => {
   it('accepts a plain https origin and returns it normalized', () => {
@@ -32,6 +37,21 @@ describe('parseGatewayOrigin', () => {
   })
 })
 
+describe('normalizeEndpointPath (R2-ISS-004/031)', () => {
+  it('resolves . and .. to the path the request will use, idempotently', () => {
+    expect(normalizeEndpointPath('/v1/../config')).toBe('/config')
+    expect(normalizeEndpointPath('/./revoke')).toBe('/revoke')
+    expect(normalizeEndpointPath('/config')).toBe('/config')
+  })
+  it('keeps a path that collapses to "//x" on the same origin and stays idempotent', () => {
+    const once = normalizeEndpointPath('/a/..//enroll')
+    expect(once).toBe('/.//enroll')
+    expect(normalizeEndpointPath(once)).toBe(once)
+    expect(isValidEndpointPath(once)).toBe(true)
+    expect(new URL(once, 'https://gw.example').host).toBe('gw.example')
+  })
+})
+
 describe('isValidEndpointPath', () => {
   it('accepts a relative path starting with /', () => {
     expect(isValidEndpointPath('/config')).toBe(true)
@@ -50,5 +70,21 @@ describe('isValidEndpointPath', () => {
     expect(isValidEndpointPath('/\\evil.example/config')).toBe(false)
     expect(isValidEndpointPath('/\\localhost/config')).toBe(false)
     expect(isValidEndpointPath('/foo\\bar')).toBe(false)
+  })
+})
+
+describe('parseGatewayList', () => {
+  it('normalizes and deduplicates 1..3 origins', () => {
+    expect(parseGatewayList(['https://a.com/', 'https://b.com', 'https://a.com'])).toEqual([
+      'https://a.com',
+      'https://b.com'
+    ])
+  })
+  it('rejects empty, oversized, non-array, and lists with any invalid origin', () => {
+    expect(parseGatewayList([])).toBeNull()
+    expect(parseGatewayList(['https://a', 'https://b', 'https://c', 'https://d'])).toBeNull()
+    expect(parseGatewayList('https://a.com')).toBeNull()
+    expect(parseGatewayList(['https://a.com', 'http://b.com'])).toBeNull()
+    expect(parseGatewayList(['https://a.com', 'https://localhost'])).toBeNull()
   })
 })

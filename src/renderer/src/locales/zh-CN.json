@@ -836,6 +836,8 @@
     "provider": "机场",
     "site": "官网",
     "loginUrl": "登录域名",
+    "discoveryHosts": "备用发现域名",
+    "providerMessage": "机场消息",
     "installNotice": "安装后将在系统浏览器打开该域名登录；密码只输入在机场官网，本应用不会接触你的密码。",
     "login": "登录",
     "relogin": "重新登录",
@@ -845,7 +847,19 @@
     "needsLoginTip": "已安装，请登录以获取订阅",
     "reauthTip": "登录已失效，请重新登录",
     "useProxy": "走代理",
-    "useProxyWarning": "插件请求经由本地混合端口代理发出。仍校验 https、主机、重定向和大小，但无法验证代理最终解析到的 IP，SSRF 防护降级。",
+    "defaultUseProxy": "新装插件默认走代理",
+    "routeMode": "路由",
+    "route": {
+      "auto": "自动",
+      "direct": "直连",
+      "proxy": "走代理"
+    },
+    "errorReason": {
+      "blocked": "已阻止：网关解析到内网地址，未发出任何请求",
+      "network": "上次更新失败：网关不可达或超时",
+      "server": "上次更新失败：网关返回错误"
+    },
+    "useProxyWarning": "请求经由本地混合端口代理发出，无法验证代理最终解析到的 IP（SSRF 防护降级）。自动模式只在直连失败后才尝试代理，且先在本地确认目标解析为公网地址。剩余风险与显式代理模式相同：预检与代理解析之间的 DNS rebinding；本地解析失败的目标仍会放行经代理。",
     "remove": "删除",
     "removeConfirm": "确认删除该插件及其订阅？",
     "status": {

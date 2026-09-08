@@ -836,6 +836,8 @@
     "provider": "機場",
     "site": "官網",
     "loginUrl": "登入網域",
+    "discoveryHosts": "備用發現網域",
+    "providerMessage": "機場訊息",
     "installNotice": "安裝後將在系統瀏覽器開啟該網域登入；密碼只輸入在機場官網，本應用不會接觸你的密碼。",
     "login": "登入",
     "relogin": "重新登入",
@@ -845,7 +847,19 @@
     "needsLoginTip": "已安裝，請登入以取得訂閱",
     "reauthTip": "登入已失效，請重新登入",
     "useProxy": "走代理",
-    "useProxyWarning": "外掛請求經由本機混合埠代理發出。仍校驗 https、主機、重新導向與大小，但無法驗證代理最終解析到的 IP，SSRF 防護降級。",
+    "defaultUseProxy": "新安裝外掛預設走代理",
+    "routeMode": "路由",
+    "route": {
+      "auto": "自動",
+      "direct": "直連",
+      "proxy": "走代理"
+    },
+    "errorReason": {
+      "blocked": "已阻止：閘道解析到內網位址，未發出任何請求",
+      "network": "上次更新失敗：閘道無法連線或逾時",
+      "server": "上次更新失敗：閘道回傳錯誤"
+    },
+    "useProxyWarning": "請求經由本機混合埠代理發出，無法驗證代理最終解析到的 IP（SSRF 防護降級）。自動模式只在直連失敗後才嘗試代理，且先在本機確認目標解析為公網位址。剩餘風險與明確代理模式相同：預檢與代理解析之間的 DNS rebinding；本機解析失敗的目標仍會放行經代理。",
     "remove": "刪除",
     "removeConfirm": "確認刪除該外掛及其訂閱？",
     "status": {

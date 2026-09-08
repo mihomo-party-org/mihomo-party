@@ -1,6 +1,10 @@
 import { isForbiddenHost } from './net-guard'
+import { parseGatewayOrigin } from './gateway-url'
+import { MAX_PROVIDER_DESCRIPTION, sanitizeProviderText } from './text'
+import { isB64Bytes } from './encoding'
 
 const ICON_MAX_LEN = 64 * 1024
+const MAX_DISCOVERY_URLS = 8
 const ICON_PREFIXES = [
   'data:image/png;base64,',
   'data:image/jpeg;base64,',
@@ -46,6 +50,28 @@ function assertHttpsUrl(v: unknown, where: string): URL {
   return u
 }
 
+// §3：备用发现源。每项为公网 https origin（parseGatewayOrigin 规则），1..8 个，去重，不得与 loginUrl 同 origin。
+// 信任级别与 loginUrl 相同——都是用户导入时接受的静态信任根。
+function validateDiscoveryUrls(v: unknown, loginOrigin: string): string[] | undefined {
+  if (v === undefined) return undefined
+  if (!Array.isArray(v) || v.length < 1 || v.length > MAX_DISCOVERY_URLS) {
+    fail(`discoveryUrls must list 1..${MAX_DISCOVERY_URLS} public https origins`)
+  }
+  const out: string[] = []
+  for (const item of v) {
+    const origin = parseGatewayOrigin(item)
+    if (!origin) {
+      fail(
+        'discoveryUrls entries must be public https origins with no path/query/fragment/userinfo'
+      )
+    }
+    if (origin === loginOrigin) fail('discoveryUrls must not repeat the loginUrl origin')
+    if (out.includes(origin)) fail('discoveryUrls must not contain duplicates')
+    out.push(origin)
+  }
+  return out
+}
+
 export function parseDescriptor(jsonText: string): IPluginDescriptor {
   let raw: unknown
   try {
@@ -62,18 +88,36 @@ export function parseDescriptor(jsonText: string): IPluginDescriptor {
   }
   if (raw.v !== 2) fail('v must be 2')
   if (raw.spec !== 'cpx-plugin/2') fail('spec must be "cpx-plugin/2"')
-  assertOnlyKeys(raw, ['magic', 'v', 'spec', 'loginUrl', 'provider'], 'descriptor')
+  assertOnlyKeys(
+    raw,
+    ['magic', 'v', 'spec', 'loginUrl', 'provider', 'discoveryUrls', 'providerPubKey'],
+    'descriptor'
+  )
+  // §5：签名一旦在 .cpx 中声明即强制校验；公钥必须是规范 base64 的 32 字节
+  if (raw.providerPubKey !== undefined && !isB64Bytes(raw.providerPubKey, 32)) {
+    fail('providerPubKey must be a 32-byte Ed25519 public key in standard base64')
+  }
 
   const loginUrl = assertHttpsUrl(raw.loginUrl, 'loginUrl')
   if (loginUrl.search || loginUrl.hash) fail('loginUrl must not contain query or fragment')
+  const discoveryUrls = validateDiscoveryUrls(raw.discoveryUrls, loginUrl.origin)
 
   if (!isObject(raw.provider)) fail('provider must be an object')
-  assertOnlyKeys(raw.provider, ['name', 'icon', 'site'], 'provider')
+  assertOnlyKeys(raw.provider, ['name', 'icon', 'site', 'description'], 'provider')
   if (typeof raw.provider.name !== 'string' || raw.provider.name.length === 0) {
     fail('provider.name required')
   }
   validateIcon(raw.provider.icon)
   if (raw.provider.site !== undefined) assertHttpsUrl(raw.provider.site, 'provider.site')
+  if (raw.provider.description !== undefined && typeof raw.provider.description !== 'string') {
+    fail('provider.description must be a string')
+  }
+  // §4.2：机场静态说明，清洗规则同 message，截断 500 码点；清洗后为空则视为未提供
+  const description = sanitizeProviderText(raw.provider.description, MAX_PROVIDER_DESCRIPTION)
 
-  return raw as unknown as IPluginDescriptor
+  const descriptor = raw as unknown as IPluginDescriptor
+  if (discoveryUrls) descriptor.discoveryUrls = discoveryUrls
+  if (description) descriptor.provider.description = description
+  else delete descriptor.provider.description
+  return descriptor
 }

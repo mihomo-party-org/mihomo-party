@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { isPrivateIp, isForbiddenHost, createGuardedLookup } from './net-guard'
+import {
+  isPrivateIp,
+  isForbiddenHost,
+  createGuardedLookup,
+  resolveAllPublicOrThrow
+} from './net-guard'
 
 describe('isForbiddenHost', () => {
   it('forbids localhost and its variants', () => {
@@ -129,5 +134,53 @@ describe('createGuardedLookup', () => {
       lookup('rebind.example', { all: true }, (err, addresses) => resolve({ err, addresses }))
     })
     expect(r.err).toBeTruthy()
+  })
+})
+
+describe('resolveAllPublicOrThrow', () => {
+  it('returns all addresses when every one is public', async () => {
+    const addrs = await resolveAllPublicOrThrow('gw.front.com', async () => [
+      { address: '1.1.1.1', family: 4 },
+      { address: '2606:4700::1', family: 6 }
+    ])
+    expect(addrs).toHaveLength(2)
+  })
+  it('throws CPX_GUARD_REFUSED when any address is private', async () => {
+    await expect(
+      resolveAllPublicOrThrow('gw.front.com', async () => [
+        { address: '1.1.1.1', family: 4 },
+        { address: '192.168.1.1', family: 4 }
+      ])
+    ).rejects.toMatchObject({ code: 'CPX_GUARD_REFUSED', phase: 'pre-send' })
+  })
+  it('throws an ENOTFOUND-coded error when nothing resolves', async () => {
+    await expect(resolveAllPublicOrThrow('gw.front.com', async () => [])).rejects.toMatchObject({
+      code: 'ENOTFOUND'
+    })
+  })
+})
+
+describe('R2-ISS-044: 192.0.0.0/16 is not reserved as a whole', () => {
+  it('R2-ISS-062: the deprecated site-local range fec0::/10 is non-public', () => {
+    expect(isPrivateIp('fec0::1')).toBe(true)
+    expect(isPrivateIp('feff:ffff::1')).toBe(true) // top of the /10
+    expect(isPrivateIp('fe80::1')).toBe(true) // link-local still covered
+    expect(isPrivateIp('fe00::1')).toBe(false) // just outside both ranges
+    expect(isForbiddenHost('[fec0::1]')).toBe(true)
+  })
+
+  it('R2-ISS-058: NAT64 — the local-use prefix 64:ff9b:1::/48 is non-public; the well-known prefix follows its embedded IPv4', () => {
+    expect(isPrivateIp('64:ff9b:1::c0a8:1')).toBe(true) // 192.168.0.1 behind a local NAT64
+    expect(isPrivateIp('64:ff9b:1:ffff::1')).toBe(true) // anywhere in the /48
+    expect(isPrivateIp('64:ff9b::c0a8:1')).toBe(true) // well-known prefix embedding 192.168.0.1
+    expect(isPrivateIp('64:ff9b::808:808')).toBe(false) // well-known prefix embedding 8.8.8.8
+    expect(isPrivateIp('64:ff9c::1')).toBe(false) // adjacent public space untouched
+  })
+
+  it('rejects only the IETF /24 and TEST-NET-1, not public 192.0.x.x space', () => {
+    expect(isPrivateIp('192.0.0.5')).toBe(true) // 192.0.0.0/24 IETF protocol assignments
+    expect(isPrivateIp('192.0.2.1')).toBe(true) // TEST-NET-1
+    expect(isPrivateIp('192.0.78.24')).toBe(false) // public (192.0.64.0/18)
+    expect(isPrivateIp('192.0.1.1')).toBe(false)
   })
 })

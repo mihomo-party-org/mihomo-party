@@ -1,39 +1,34 @@
-import type { LookupFunction } from 'net'
+import type { IncomingHttpHeaders } from 'http'
 import { parse } from '../../utils/yaml'
-import { createGuardedLookup } from './net-guard'
-import { requestOnce } from './http-client'
 import { buildSignInput, signRequest, OP_CONFIG, OP_REVOKE } from './device'
+import {
+  CPX_GUARD_REFUSED,
+  GatewayError,
+  codeOf,
+  isUnreachableCode,
+  phaseOf,
+  statusOf,
+  type GatewayErrorKind
+} from './errors'
+import type { RoutedRequester } from './operation'
+import { MAX_PROVIDER_MESSAGE, sanitizeProviderText } from './text'
+import { isB64Bytes } from './encoding'
+import { warnLog } from './log'
+
+export { GatewayError, type GatewayErrorKind } from './errors'
 
 const MAX_BYTES = 10 * 1024 * 1024
-
-export interface GatewayNet {
-  timeout: number
-  lookup?: LookupFunction
-  proxy?: { host: string; port: number }
-}
 
 export interface GatewayTarget {
   gateway: string
   endpoints: IGatewayEndpoints
 }
 
-export type GatewayErrorKind = 'revoked' | 'retired' | 'unreachable' | 'transient'
-
-export class GatewayError extends Error {
-  kind: GatewayErrorKind
-  status?: number
-  constructor(kind: GatewayErrorKind, message: string, status?: number) {
-    super(message)
-    this.name = 'GatewayError'
-    this.kind = kind
-    this.status = status
-  }
-}
-
 interface RawResult {
   status: number
   json: Record<string, unknown> | undefined
   text: string
+  headers: IncomingHttpHeaders
 }
 
 function urlOf(t: GatewayTarget, ep: keyof IGatewayEndpoints): string {
@@ -45,47 +40,34 @@ function urlOf(t: GatewayTarget, ep: keyof IGatewayEndpoints): string {
   return u.toString()
 }
 
-function lookupFor(net: GatewayNet): LookupFunction | undefined {
-  return net.proxy ? undefined : (net.lookup ?? createGuardedLookup())
-}
-
-// DNS 解析失败 / 连接拒绝 / TLS 失败 → 缓存网关“不可达/已退役”信号（spec §5），交由编排层重新发现。
-// 超时（'Request timed out' / ETIMEDOUT）、5xx、429、SSRF/重定向/大小拦截仍按瞬时失败退避，不在此列。
-const UNREACHABLE_CODES = new Set([
-  'ENOTFOUND',
-  'EAI_AGAIN',
-  'ECONNREFUSED',
-  'ECONNRESET',
-  'EHOSTUNREACH',
-  'ENETUNREACH',
-  'EHOSTDOWN',
-  'ENETDOWN',
-  'EPIPE',
-  'EPROTO'
-])
-
-function isUnreachable(e: NodeJS.ErrnoException): boolean {
-  const code = e.code ?? ''
-  if (UNREACHABLE_CODES.has(code)) return true
-  // Node 的 TLS/证书错误 code 形如 ERR_TLS_*, ERR_SSL_*, CERT_*, SELF_SIGNED_*, UNABLE_TO_*, DEPTH_ZERO_*
-  return /^(ERR_TLS|ERR_SSL|CERT_|SELF_SIGNED_|UNABLE_TO_|DEPTH_ZERO_)/.test(code)
-}
-
-async function postJson(url: string, body: unknown, net: GatewayNet): Promise<RawResult> {
-  let res: { status: number; body: string }
+// 错误映射（§1.6）：CPX_GUARD_REFUSED → blocked（终态）；已收到响应头后才失败 → 有 status 的 transient
+// （410 → retired），服务器已到达，不换网关（§2.4）；UNREACHABLE_CODES / TLS → unreachable（缓存网关
+// “不可达/已退役”信号，交由编排层重新发现，spec §5）；CPX_TIMEOUT 与其余 → transient（无 status）。
+async function postJson(
+  url: string,
+  body: unknown,
+  requester: RoutedRequester
+): Promise<RawResult> {
+  let res: { status: number; body: string; headers: IncomingHttpHeaders }
   try {
-    res = await requestOnce(url, {
+    res = await requester.request(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-      timeout: net.timeout,
-      maxBytes: MAX_BYTES,
-      lookup: lookupFor(net),
-      proxy: net.proxy
+      maxBytes: MAX_BYTES
     })
   } catch (e) {
+    if (e instanceof GatewayError) throw e
     const err = e as NodeJS.ErrnoException
-    throw new GatewayError(isUnreachable(err) ? 'unreachable' : 'transient', err.message)
+    const code = codeOf(err)
+    const status = statusOf(err)
+    let kind: GatewayErrorKind
+    if (code === CPX_GUARD_REFUSED) kind = 'blocked'
+    else if (status === 410) kind = 'retired'
+    else if (status !== undefined) kind = 'transient'
+    else if (isUnreachableCode(code)) kind = 'unreachable'
+    else kind = 'transient'
+    throw new GatewayError(kind, err.message, status, phaseOf(err))
   }
   let json: Record<string, unknown> | undefined
   try {
@@ -97,18 +79,28 @@ async function postJson(url: string, body: unknown, net: GatewayNet): Promise<Ra
   } catch {
     json = undefined
   }
-  return { status: res.status, json, text: res.body }
+  return { status: res.status, json, text: res.body, headers: res.headers ?? {} }
+}
+
+// 所有错误类别（retired / revoked / 有 status 的 transient）都可以携带机场 message（§4.2）
+function withProviderMessage(err: GatewayError, r: RawResult): GatewayError {
+  const message = sanitizeProviderText(r.json?.message, MAX_PROVIDER_MESSAGE)
+  if (message) err.providerMessage = message
+  return err
 }
 
 function classify(r: RawResult): GatewayError | null {
   if (r.status === 410 || r.json?.error === 'gateway_retired') {
-    return new GatewayError('retired', 'gateway retired', r.status)
+    return withProviderMessage(new GatewayError('retired', 'gateway retired', r.status), r)
   }
   if (r.json?.error === 'revoked' || r.json?.error === 'device_revoked') {
-    return new GatewayError('revoked', 'device revoked', r.status)
+    return withProviderMessage(new GatewayError('revoked', 'device revoked', r.status), r)
   }
   if (r.status < 200 || r.status >= 300) {
-    return new GatewayError('transient', `gateway status ${r.status}`, r.status)
+    return withProviderMessage(
+      new GatewayError('transient', `gateway status ${r.status}`, r.status),
+      r
+    )
   }
   return null
 }
@@ -116,13 +108,6 @@ function classify(r: RawResult): GatewayError | null {
 // 不透明 ASCII token（可见 ASCII，无空白/控制字符），长度 1..max
 function isAsciiToken(s: string, max: number): boolean {
   return s.length > 0 && s.length <= max && /^[\x21-\x7e]+$/.test(s)
-}
-
-// 标准 base64（带 padding），且解码后恰为 n 字节、再编码可还原（拒非规范编码）
-function isB64Bytes(s: string, n: number): boolean {
-  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(s)) return false
-  const buf = Buffer.from(s, 'base64')
-  return buf.length === n && buf.toString('base64') === s
 }
 
 function isClashConfig(yamlText: string): boolean {
@@ -134,7 +119,23 @@ function isClashConfig(yamlText: string): boolean {
   }
   if (typeof parsed !== 'object' || parsed === null) return false
   const obj = parsed as Record<string, unknown>
-  return Boolean(obj['proxies'] || obj['proxy-providers'])
+  // 只做基本结构校验：proxies 必须是数组、proxy-providers 必须是映射。真值检查会让
+  // `proxies: some-string` / `proxy-providers: true` 这类无法加载的内容覆盖仍可用的旧订阅。
+  // 先拒绝任何"给出了但类型错误"的字段，再要求至少存在一个合法字段——否则一个合法字段会放行另一个错误字段。
+  const proxies = obj['proxies']
+  const providers = obj['proxy-providers']
+  const isPlainObject = (v: unknown): boolean =>
+    typeof v === 'object' && v !== null && !Array.isArray(v)
+  // proxies 必须是对象数组，proxy-providers 必须是对象到对象的映射：拒绝 [null] / ["x"] / {p: true}
+  // 这类结构上无法加载的内容，避免覆盖仍可用的旧订阅。（完整语义校验见 backlog：接入核心 checkProfileConfig。）
+  if (proxies !== undefined) {
+    if (!Array.isArray(proxies) || !proxies.every(isPlainObject)) return false
+  }
+  if (providers !== undefined) {
+    if (!isPlainObject(providers)) return false
+    if (!Object.values(providers as Record<string, unknown>).every(isPlainObject)) return false
+  }
+  return proxies !== undefined || providers !== undefined
 }
 
 export interface EnrollBody {
@@ -146,8 +147,12 @@ export interface EnrollBody {
   deviceId: string
 }
 
-export async function enroll(t: GatewayTarget, body: EnrollBody, net: GatewayNet): Promise<void> {
-  const r = await postJson(urlOf(t, 'enroll'), body, net)
+export async function enroll(
+  t: GatewayTarget,
+  body: EnrollBody,
+  requester: RoutedRequester
+): Promise<void> {
+  const r = await postJson(urlOf(t, 'enroll'), body, requester)
   const err = classify(r)
   if (err) throw err
 }
@@ -155,9 +160,9 @@ export async function enroll(t: GatewayTarget, body: EnrollBody, net: GatewayNet
 export async function challenge(
   t: GatewayTarget,
   deviceId: string,
-  net: GatewayNet
+  requester: RoutedRequester
 ): Promise<{ nonceId: string; nonce: string; exp: number }> {
-  const r = await postJson(urlOf(t, 'challenge'), { deviceId }, net)
+  const r = await postJson(urlOf(t, 'challenge'), { deviceId }, requester)
   const err = classify(r)
   if (err) throw err
   const j = r.json
@@ -185,9 +190,9 @@ async function signedPost(
   ep: 'config' | 'revoke',
   op: number,
   dev: DeviceCred,
-  net: GatewayNet
+  requester: RoutedRequester
 ): Promise<RawResult> {
-  const ch = await challenge(t, dev.deviceId, net)
+  const ch = await challenge(t, dev.deviceId, requester)
   const nonceBuf = Buffer.from(ch.nonce, 'base64')
   const ts = Date.now()
   const input = buildSignInput(op, dev.deviceId, ch.nonceId, nonceBuf, ts)
@@ -195,26 +200,46 @@ async function signedPost(
   return postJson(
     urlOf(t, ep),
     { deviceId: dev.deviceId, nonceId: ch.nonceId, nonce: ch.nonce, ts, sig },
-    net
+    requester
   )
+}
+
+export interface ConfigResult {
+  yaml: string
+  // §5：/config 成功响应可选的 X-CPX-Discovery 头（"<payloadB64>.<sigB64>"），只取单一字符串头
+  discovery?: string
+}
+
+const DISCOVERY_HEADER = 'x-cpx-discovery'
+
+function singleHeader(headers: IncomingHttpHeaders, name: string): string | undefined {
+  const v = headers[name]
+  if (typeof v === 'string') return v
+  if (Array.isArray(v)) void warnLog(`${name}: multiple header values ignored`)
+  return undefined
 }
 
 export async function fetchConfig(
   t: GatewayTarget,
   dev: DeviceCred,
-  net: GatewayNet
-): Promise<string> {
-  const r = await signedPost(t, 'config', OP_CONFIG, dev, net)
+  requester: RoutedRequester
+): Promise<ConfigResult> {
+  const r = await signedPost(t, 'config', OP_CONFIG, dev, requester)
   const err = classify(r)
   if (err) throw err
   if (!isClashConfig(r.text)) {
     throw new GatewayError('transient', 'subscription is not a valid clash config', r.status)
   }
-  return r.text
+  const discovery = singleHeader(r.headers, DISCOVERY_HEADER)
+  return discovery === undefined ? { yaml: r.text } : { yaml: r.text, discovery }
 }
 
-export async function revoke(t: GatewayTarget, dev: DeviceCred, net: GatewayNet): Promise<void> {
-  const r = await signedPost(t, 'revoke', OP_REVOKE, dev, net)
+export async function revoke(
+  t: GatewayTarget,
+  dev: DeviceCred,
+  requester: RoutedRequester
+): Promise<void> {
+  const r = await signedPost(t, 'revoke', OP_REVOKE, dev, requester)
   const err = classify(r)
   if (err) throw err
 }

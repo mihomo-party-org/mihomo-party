@@ -38,8 +38,16 @@ interface GenerateProfileOptions {
   baseProfile?: IMihomoConfig
   ageSecretKey?: string
   profileOverrideIds?: string[]
+  // 调用方已读取的全局 override id 集合：给出时不再自行读取，生成所用的集合与调用方记录的完全一致
+  //（插件订阅校验用它把"参与校验的集合"绑定到校验本身）
+  globalOverrideIds?: string[]
   outputPath?: string
   updateRuntimeConfig?: boolean
+}
+
+export async function globalOverrideIdsNow(): Promise<string[]> {
+  const { items = [] } = (await getOverrideConfig()) || {}
+  return items.filter((item) => item.global).map((item) => item.id)
 }
 
 // 辅助函数：处理带偏移量的规则
@@ -129,7 +137,7 @@ export async function generateProfile(
     await Promise.all([
       getProfileItem(profileId),
       options.baseProfile ?? getProfile(profileId),
-      getOrderedOverrideIds(profileId, options.profileOverrideIds),
+      getOrderedOverrideIds(profileId, options.profileOverrideIds, options.globalOverrideIds),
       getControledMihomoConfig()
     ])
   const ageSecretKey = options.ageSecretKey ?? currentProfileItem?.ageSecretKey ?? ''
@@ -315,13 +323,13 @@ async function prepareProfileWorkDir(current: string | undefined): Promise<void>
 
 async function getOrderedOverrideIds(
   current: string | undefined,
-  profileOverrideIds?: string[]
+  profileOverrideIds?: string[],
+  globalOverrideIds?: string[]
 ): Promise<{
   normal: string[]
   smart: string[]
 }> {
-  const { items = [] } = (await getOverrideConfig()) || {}
-  const globalOverride = items.filter((item) => item.global).map((item) => item.id)
+  const globalOverride = globalOverrideIds ?? (await globalOverrideIdsNow())
   const override = profileOverrideIds ?? (await getProfileItem(current))?.override ?? []
   const orderedOverrideIds = [...new Set(globalOverride.concat(override))]
 

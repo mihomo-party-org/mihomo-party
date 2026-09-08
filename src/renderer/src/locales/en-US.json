@@ -836,6 +836,8 @@
     "provider": "Provider",
     "site": "Website",
     "loginUrl": "Login domain",
+    "discoveryHosts": "Backup discovery domains",
+    "providerMessage": "Message from provider",
     "installNotice": "After install, your system browser opens this domain to log in. Your password is only entered on the provider's site — this app never touches it.",
     "login": "Log In",
     "relogin": "Log In Again",
@@ -845,7 +847,19 @@
     "needsLoginTip": "Installed — log in to fetch the subscription",
     "reauthTip": "Session expired, please log in again",
     "useProxy": "Via Proxy",
-    "useProxyWarning": "Plugin requests go through the local mixed-port proxy. https, host, redirect and size checks still apply, but the final resolved IP cannot be verified, so SSRF protection is reduced.",
+    "defaultUseProxy": "New plugins default to proxy",
+    "routeMode": "Route",
+    "route": {
+      "auto": "Auto",
+      "direct": "Direct",
+      "proxy": "Via proxy"
+    },
+    "errorReason": {
+      "blocked": "Blocked: the gateway resolved to a private address, so no request was sent",
+      "network": "Last update failed: the gateway was unreachable or timed out",
+      "server": "Last update failed: the gateway returned an error"
+    },
+    "useProxyWarning": "Requests go through the local mixed-port proxy, so the final resolved IP cannot be verified (SSRF protection is reduced). In Auto mode the proxy is only tried after a direct attempt fails, and only once the target resolves to a public address locally. Remaining risks, same as explicit proxy mode: DNS rebinding between that check and the proxy's own lookup, and a target that fails to resolve locally is still allowed through the proxy.",
     "remove": "Remove",
     "removeConfirm": "Remove this plugin and its subscription?",
     "status": {

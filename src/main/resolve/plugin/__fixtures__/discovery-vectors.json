@@ -1,0 +1,24 @@
+[
+  {
+    "name": "full payload (seq 12, two gateways, loginUrl + discoveryUrls)",
+    "seedB64": "BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwc=",
+    "pubKeyB64": "6kpsY+KcUgq+9VB7Ey7F+ZVHdq6+vnuSQh7qaRRG0iw=",
+    "payloadJson": "{\"spec\":\"cpx-plugin/2\",\"seq\":12,\"gateways\":[\"https://gw1.example.net\",\"https://gw2-cdn.example.com\"],\"endpoints\":{\"enroll\":\"/enroll\",\"challenge\":\"/challenge\",\"config\":\"/config\",\"revoke\":\"/revoke\"},\"loginUrl\":\"https://panel-new.example.com/oauth/authorize\",\"discoveryUrls\":[\"https://gw2-cdn.example.com\"]}",
+    "payloadB64": "eyJzcGVjIjoiY3B4LXBsdWdpbi8yIiwic2VxIjoxMiwiZ2F0ZXdheXMiOlsiaHR0cHM6Ly9ndzEuZXhhbXBsZS5uZXQiLCJodHRwczovL2d3Mi1jZG4uZXhhbXBsZS5jb20iXSwiZW5kcG9pbnRzIjp7ImVucm9sbCI6Ii9lbnJvbGwiLCJjaGFsbGVuZ2UiOiIvY2hhbGxlbmdlIiwiY29uZmlnIjoiL2NvbmZpZyIsInJldm9rZSI6Ii9yZXZva2UifSwibG9naW5VcmwiOiJodHRwczovL3BhbmVsLW5ldy5leGFtcGxlLmNvbS9vYXV0aC9hdXRob3JpemUiLCJkaXNjb3ZlcnlVcmxzIjpbImh0dHBzOi8vZ3cyLWNkbi5leGFtcGxlLmNvbSJdfQ==",
+    "signInputHex": "435058322d444953434f56455259007b2273706563223a226370782d706c7567696e2f32222c22736571223a31322c226761746577617973223a5b2268747470733a2f2f6777312e6578616d706c652e6e6574222c2268747470733a2f2f6777322d63646e2e6578616d706c652e636f6d225d2c22656e64706f696e7473223a7b22656e726f6c6c223a222f656e726f6c6c222c226368616c6c656e6765223a222f6368616c6c656e6765222c22636f6e666967223a222f636f6e666967222c227265766f6b65223a222f7265766f6b65227d2c226c6f67696e55726c223a2268747470733a2f2f70616e656c2d6e65772e6578616d706c652e636f6d2f6f617574682f617574686f72697a65222c22646973636f7665727955726c73223a5b2268747470733a2f2f6777322d63646e2e6578616d706c652e636f6d225d7d",
+    "sigB64": "3NPFClefXW3UFuREs7TNeYZgow0xolF18w7JNICCZ0CrCPfDsezhDfOkpwfzkPD32NaUUdRW7nW0AQV46MeVBg==",
+    "signed": "eyJzcGVjIjoiY3B4LXBsdWdpbi8yIiwic2VxIjoxMiwiZ2F0ZXdheXMiOlsiaHR0cHM6Ly9ndzEuZXhhbXBsZS5uZXQiLCJodHRwczovL2d3Mi1jZG4uZXhhbXBsZS5jb20iXSwiZW5kcG9pbnRzIjp7ImVucm9sbCI6Ii9lbnJvbGwiLCJjaGFsbGVuZ2UiOiIvY2hhbGxlbmdlIiwiY29uZmlnIjoiL2NvbmZpZyIsInJldm9rZSI6Ii9yZXZva2UifSwibG9naW5VcmwiOiJodHRwczovL3BhbmVsLW5ldy5leGFtcGxlLmNvbS9vYXV0aC9hdXRob3JpemUiLCJkaXNjb3ZlcnlVcmxzIjpbImh0dHBzOi8vZ3cyLWNkbi5leGFtcGxlLmNvbSJdfQ==.3NPFClefXW3UFuREs7TNeYZgow0xolF18w7JNICCZ0CrCPfDsezhDfOkpwfzkPD32NaUUdRW7nW0AQV46MeVBg==",
+    "digestHex": "30a3eef1f9d427b126aad827bdb2982a818e0370f4e1aab8ce8598f82dbaf511"
+  },
+  {
+    "name": "minimal payload (seq 1, single gateway)",
+    "seedB64": "CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg=",
+    "pubKeyB64": "E5j2LG0aRXxRumpLXz29L2n8qTIWIY3ImX5Ba9F9k8o=",
+    "payloadJson": "{\"spec\":\"cpx-plugin/2\",\"seq\":1,\"gateways\":[\"https://gw.example.net\"],\"endpoints\":{\"enroll\":\"/enroll\",\"challenge\":\"/challenge\",\"config\":\"/config\",\"revoke\":\"/revoke\"}}",
+    "payloadB64": "eyJzcGVjIjoiY3B4LXBsdWdpbi8yIiwic2VxIjoxLCJnYXRld2F5cyI6WyJodHRwczovL2d3LmV4YW1wbGUubmV0Il0sImVuZHBvaW50cyI6eyJlbnJvbGwiOiIvZW5yb2xsIiwiY2hhbGxlbmdlIjoiL2NoYWxsZW5nZSIsImNvbmZpZyI6Ii9jb25maWciLCJyZXZva2UiOiIvcmV2b2tlIn19",
+    "signInputHex": "435058322d444953434f56455259007b2273706563223a226370782d706c7567696e2f32222c22736571223a312c226761746577617973223a5b2268747470733a2f2f67772e6578616d706c652e6e6574225d2c22656e64706f696e7473223a7b22656e726f6c6c223a222f656e726f6c6c222c226368616c6c656e6765223a222f6368616c6c656e6765222c22636f6e666967223a222f636f6e666967222c227265766f6b65223a222f7265766f6b65227d7d",
+    "sigB64": "c3QQcgGazY1b7F1ncVjNb7KUHYITL7VJ+RjSildSpR23h5QBt1GlpujMXGAbxtHHBwBKYVvq4X2qOuRO/0MhCw==",
+    "signed": "eyJzcGVjIjoiY3B4LXBsdWdpbi8yIiwic2VxIjoxLCJnYXRld2F5cyI6WyJodHRwczovL2d3LmV4YW1wbGUubmV0Il0sImVuZHBvaW50cyI6eyJlbnJvbGwiOiIvZW5yb2xsIiwiY2hhbGxlbmdlIjoiL2NoYWxsZW5nZSIsImNvbmZpZyI6Ii9jb25maWciLCJyZXZva2UiOiIvcmV2b2tlIn19.c3QQcgGazY1b7F1ncVjNb7KUHYITL7VJ+RjSildSpR23h5QBt1GlpujMXGAbxtHHBwBKYVvq4X2qOuRO/0MhCw==",
+    "digestHex": "a5fcfc90393206ac80ad425da5092d9db46a32e0e12ece330e4440541b749c72"
+  }
+]

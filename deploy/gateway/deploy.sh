@@ -20,14 +20,24 @@ if [ ! -f .env ]; then
   echo "Wrote .env (DOMAIN=${DOMAIN})."
 fi
 
-DOMAIN=$(grep -E '^DOMAIN=' .env | cut -d= -f2-)
+# sed prints nothing (and exits 0) when a key is absent, so `set -e` does not abort on a .env
+# that sets only one of DOMAIN / DOMAINS (docker compose accepts either).
+DOMAIN=$(sed -n 's/^DOMAIN=//p' .env | tail -n 1 | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')
+DOMAINS=$(sed -n 's/^DOMAINS=//p' .env | tail -n 1)
+DOMAINS=${DOMAINS:-$DOMAIN}
+# Caddy takes {$DOMAINS} verbatim as site addresses and rejects "a,b" without a space:
+# normalize any comma list to "a, b".
+DOMAINS=$(printf '%s' "$DOMAINS" | sed -E 's/[[:space:]]*,[[:space:]]*/, /g; s/^[[:space:]]+|[[:space:]]+$//g')
+DOMAIN=${DOMAIN:-${DOMAINS%%,*}}
+[ -n "$DOMAIN" ] || { echo "DOMAIN or DOMAINS must be set in .env" >&2; exit 1; }
+export DOMAINS
 
 echo "Building and starting containers..."
 docker compose up -d --build
 
 cat <<EOF
 
-✅ Deployed. DOMAIN=${DOMAIN}
+✅ Deployed. DOMAIN=${DOMAIN} (Caddy serves: ${DOMAINS})
 
 Next steps:
   1) Wait ~30s for Caddy to obtain the TLS certificate, then verify discovery:

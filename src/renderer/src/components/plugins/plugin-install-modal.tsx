@@ -169,6 +169,16 @@ const PluginInstallModal: React.FC<Props> = ({ onClose, initialFile, initialData
               <div>
                 {t('plugins.loginUrl')}: <b>{hostOf(preview.loginUrl)}</b>
               </div>
+              {preview.description && (
+                <div className="text-foreground-500 whitespace-pre-line break-words">
+                  {preview.description}
+                </div>
+              )}
+              {preview.discoveryHosts && preview.discoveryHosts.length > 0 && (
+                <div className="break-all">
+                  {t('plugins.discoveryHosts')}: {preview.discoveryHosts.join(', ')}
+                </div>
+              )}
               <div className="mt-2 text-warning">{t('plugins.installNotice')}</div>
             </div>
           )}
@@ -180,7 +190,7 @@ const PluginInstallModal: React.FC<Props> = ({ onClose, initialFile, initialData
               isSelected={pluginUseProxy}
               onValueChange={(v) => patchAppConfig({ pluginUseProxy: v })}
             >
-              {t('plugins.useProxy')}
+              {t('plugins.defaultUseProxy')}
             </Checkbox>
           </Tooltip>
           <div className="flex items-center gap-2">

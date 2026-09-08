@@ -6,7 +6,8 @@ services:
       - '80:80'
       - '443:443'
     environment:
-      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
+      # Comma-separated domains Caddy serves; falls back to the single DOMAIN.
+      DOMAINS: ${DOMAINS:-${DOMAIN:?set DOMAIN (or DOMAINS) in .env}}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data

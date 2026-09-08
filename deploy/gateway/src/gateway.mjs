@@ -6,6 +6,13 @@ import { sendJson, sendText } from './http.mjs'
 
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 
+// §4: error JSON may carry a provider-written `message` (client sanitizes and caps it at 200
+// code points). Attached only when MESSAGES_FILE defines one for that error.
+function errorBody(deps, error) {
+  const message = deps.messages?.[error]
+  return message ? { error, message } : { error }
+}
+
 function isB64Bytes(s, n) {
   if (typeof s !== 'string' || !/^[A-Za-z0-9+/]+={0,2}$/.test(s)) return false
   return Buffer.from(s, 'base64').length === n
@@ -32,7 +39,7 @@ export function enroll(body, res, deps) {
   const existing = deps.db.getDevice(body.deviceId)
   const isRebind = existing && existing.username === bound.username
   if (!isRebind && deps.db.countDevices(bound.username) >= user.deviceLimit) {
-    return sendJson(res, 403, { error: 'device_limit' })
+    return sendJson(res, 403, errorBody(deps, 'device_limit'))
   }
   deps.db.upsertDevice({
     deviceId: body.deviceId,
@@ -43,9 +50,9 @@ export function enroll(body, res, deps) {
 }
 
 export function challenge(body, res, deps) {
-  if (deps.config.retired) return sendJson(res, 410, { error: 'gateway_retired' })
+  if (deps.config.retired) return sendJson(res, 410, errorBody(deps, 'gateway_retired'))
   const device = deps.db.getDevice(body?.deviceId)
-  if (!device) return sendJson(res, 403, { error: 'device_revoked' })
+  if (!device) return sendJson(res, 403, errorBody(deps, 'device_revoked'))
   const issued = deps.nonces.issue(device.deviceId)
   if (!issued) return sendJson(res, 429, { error: 'too_many_nonces' })
   sendJson(res, 200, issued)
@@ -75,9 +82,9 @@ function verifySignedRequest(body, op, device, deps) {
 }
 
 export async function config(body, res, deps) {
-  if (deps.config.retired) return sendJson(res, 410, { error: 'gateway_retired' })
+  if (deps.config.retired) return sendJson(res, 410, errorBody(deps, 'gateway_retired'))
   const device = deps.db.getDevice(body?.deviceId)
-  if (!device) return sendJson(res, 403, { error: 'device_revoked' })
+  if (!device) return sendJson(res, 403, errorBody(deps, 'device_revoked'))
   const bad = verifySignedRequest(body, OP_CONFIG, device, deps)
   if (bad) return sendJson(res, bad.status, { error: bad.error })
 
@@ -88,7 +95,9 @@ export async function config(body, res, deps) {
       maxBytes: deps.config.subMaxBytes,
       ca: deps.config.originCa
     })
-    sendText(res, 200, yaml, 'text/yaml; charset=utf-8')
+    // §5a: push the pre-signed discovery document in-band; keyed clients verify it themselves.
+    const extra = deps.discovery ? { 'x-cpx-discovery': deps.discovery.signed } : {}
+    sendText(res, 200, yaml, 'text/yaml; charset=utf-8', extra)
   } catch {
     sendJson(res, 502, { error: 'upstream' })
   }

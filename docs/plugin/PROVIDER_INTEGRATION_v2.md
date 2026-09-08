@@ -117,25 +117,30 @@ For an existing panel, the usual additions are:
 
 Field rules:
 
-| Field           | Rule                                                                                                          |
-| --------------- | ------------------------------------------------------------------------------------------------------------- |
-| `magic`         | String `"CPXF"`                                                                                               |
-| `v`             | Number `2`                                                                                                    |
-| `spec`          | String `"cpx-plugin/2"`                                                                                       |
-| Top-level keys  | Only `magic`, `v`, `spec`, `loginUrl`, `provider`                                                             |
-| `loginUrl`      | HTTPS URL; no query, fragment, or userinfo; host must not be private, loopback, `localhost`, or `*.localhost` |
-| `provider`      | Object; only `name`, `icon`, `site`                                                                           |
-| `provider.name` | Required non-empty string                                                                                     |
-| `provider.icon` | Optional data URI; only PNG/JPEG/WEBP; total string length <= 65536                                           |
-| `provider.site` | Optional HTTPS URL; same host restrictions as `loginUrl`; path is allowed                                     |
+| Field                  | Rule                                                                                                                                                                                                                                                       |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `magic`                | String `"CPXF"`                                                                                                                                                                                                                                            |
+| `v`                    | Number `2`                                                                                                                                                                                                                                                 |
+| `spec`                 | String `"cpx-plugin/2"`                                                                                                                                                                                                                                    |
+| Top-level keys         | Only `magic`, `v`, `spec`, `loginUrl`, `provider`, `discoveryUrls`, `providerPubKey`                                                                                                                                                                       |
+| `loginUrl`             | HTTPS URL; no query, fragment, or userinfo; host must not be private, loopback, `localhost`, or `*.localhost`                                                                                                                                              |
+| `discoveryUrls`        | Optional. 1..8 public HTTPS origins (no path/query/fragment/userinfo), deduplicated, none equal to the `loginUrl` origin. Backup discovery sources, see §5. **Only clients from the release that added it accept this key; older clients reject the file** |
+| `providerPubKey`       | Optional. Ed25519 raw 32-byte public key, standard base64 with padding. Once present the client **requires** a signed discovery document (§5a) and rejects unsigned ones. Use one key per `.cpx` lineage. **Older clients reject the file**                |
+| `provider`             | Object; only `name`, `icon`, `site`, `description`                                                                                                                                                                                                         |
+| `provider.name`        | Required non-empty string                                                                                                                                                                                                                                  |
+| `provider.icon`        | Optional data URI; only PNG/JPEG/WEBP; total string length <= 65536                                                                                                                                                                                        |
+| `provider.site`        | Optional HTTPS URL; same host restrictions as `loginUrl`; path is allowed                                                                                                                                                                                  |
+| `provider.description` | Optional string shown to the user; sanitized like error `message` (§6) and capped at 500 code points. **Older clients reject the file**                                                                                                                    |
 
 `loginUrl` is the OAuth authorize endpoint, not a generic login page. The client appends OAuth parameters to it.
 
 Generator:
 
 ```bash
-node scripts/plugin/gen-cpx.mjs <loginUrl> <providerName> [site] [output]
+node scripts/plugin/gen-cpx.mjs <loginUrl> <providerName> [site] [output] [--discovery <origin>]...
 ```
+
+`--discovery` may be repeated; each value becomes one entry of `discoveryUrls`.
 
 ### Distribution Options
 
@@ -192,6 +197,7 @@ Response:
 {
   "spec": "cpx-plugin/2",
   "gateway": "https://gw.front.example.net",
+  "gateways": ["https://gw.front.example.net", "https://gw2-cdn.example.com"],
   "endpoints": {
     "enroll": "/enroll",
     "challenge": "/challenge",
@@ -203,27 +209,106 @@ Response:
 
 Field rules:
 
-| Field       | Rule                                                                                                                                             |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `spec`      | String `"cpx-plugin/2"`                                                                                                                          |
-| `gateway`   | HTTPS origin only: scheme, host, optional port; no path, query, fragment, or userinfo; public host                                               |
-| `endpoints` | Must contain `enroll`, `challenge`, `config`, `revoke`; each value is a relative path starting with `/`; no absolute URL, `?`, `#`, or backslash |
+| Field       | Rule                                                                                                                                                                                                       |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spec`      | String `"cpx-plugin/2"`                                                                                                                                                                                    |
+| `gateway`   | HTTPS origin only: scheme, host, optional port; no path, query, fragment, or userinfo; public host. **Must equal the normalized `gateways[0]`** when `gateways` is present                                 |
+| `gateways`  | Optional. 1..3 HTTPS origins with the same rules as `gateway`, deduplicated. Absent → the client uses `[gateway]`. Any invalid entry, an empty list, or more than 3 entries invalidates the whole document |
+| `endpoints` | Must contain `enroll`, `challenge`, `config`, `revoke`; each value is a relative path starting with `/`; no absolute URL, `?`, `#`, or backslash. The same endpoints apply to every gateway                |
 
 The discovery request uses HTTPS only, does not follow redirects, and caps the response body at 64 KiB. Non-2xx, invalid JSON, or invalid fields are discovery failures.
 
-### Gateway Rotation
+Old clients only read `gateway`; new clients read `gateways` and fall back to `[gateway]`. Generate both from the same list so they never disagree.
 
-To rotate the gateway, update `/.well-known/cpx-gateway`.
+**Multiple gateways must share state.** All `gateways` must point at the same backend state (authorize codes, devices, nonces): the client may take a nonce from `/challenge` on one gateway and post `/config` on another after a timeout. The reference deployment terminates TLS for every gateway domain in Caddy and forwards them all to one gateway process; it does not support multiple replicas.
 
-The client rediscovers and retries once when the cached gateway returns:
+### Gateway Rotation and Switching
 
-- HTTP `410`;
-- JSON `{"error":"gateway_retired"}`;
-- network-level failure, such as DNS failure, connection failure, or TLS handshake failure.
+To rotate gateways, update `/.well-known/cpx-gateway`.
 
-Plain 5xx, 429, and timeouts are treated as transient failures. They do not trigger rediscovery.
+Within one client operation (a complete business action such as challenge + config), the client tries the cached gateways in order — the last gateway that worked first, then the rest — and moves to the next candidate when the current one returns:
 
-Rediscovery requires the login host to be reachable.
+- HTTP `410` or JSON `{"error":"gateway_retired"}`;
+- a network-level failure: DNS failure, connection failure, TLS handshake failure;
+- a timeout (no HTTP response at all).
+
+Any HTTP response other than the retired marker stops the operation: plain 5xx, 429, or `revoked` are never reasons to try another gateway. Only when **every** cached gateway failed in the switch-worthy way does the client rediscover **once** and try the new list, skipping targets it already tried in the same operation (same origin **and** same endpoints). If that still fails the operation ends as transient and backs off.
+
+Each gateway origin is also routed independently: the client may reach one gateway directly and another through its local proxy (see §6).
+
+Rediscovery requires a discovery source to be reachable (the login host, and any `discoveryUrls` from the descriptor).
+
+### Multiple Discovery Sources
+
+The login host is a single point of failure for rediscovery: if it is blocked, an enrolled device can no longer learn about a new gateway. The descriptor may therefore list backup sources in `discoveryUrls` (§3). They carry the same trust as `loginUrl` — both are static roots the user accepted at import time.
+
+Discovery order is `[origin of loginUrl, ...discoveryUrls]`; every source is asked for `https://<origin>/.well-known/cpx-gateway`. **Any** failure at one source — network error, non-2xx, invalid JSON, invalid fields, or a client-side guard refusal — moves on to the next source; a backup may be a plain static file on a CDN, so `404` simply means "not provided here". When every source fails, the last error wins. Each source is its own origin, so route selection (§6) is independent per source.
+
+A backup source only needs to serve the JSON document at that path over public HTTPS. Any CDN or object storage works, and the gateway itself already serves it, so listing a gateway origin in `discoveryUrls` is the simplest option. Backup sources help already-enrolled devices recover; a **new** login still needs the login host, because the OAuth page opens in the system browser.
+
+### 5a. Signed Discovery Document
+
+With `providerPubKey` in the descriptor the trust root moves from a host name to a key: a discovery document is accepted from anywhere — the login host, any gateway, a static CDN file, or the `/config` response — as long as it verifies under that key and its sequence number is not older than what the client already accepted. This makes the login host replaceable and lets `gateways`, `endpoints`, `loginUrl` and `discoveryUrls` rotate without touching the `.cpx` file.
+
+**Envelope.** One string `"<payloadB64>.<sigB64>"`:
+
+- `payloadB64`: the UTF-8 bytes of the payload JSON, standard base64 with padding.
+- `sigB64`: the Ed25519 signature (64 bytes) over `"CPX2-DISCOVERY\0" || payloadBytes` — the ASCII prefix followed by a NUL byte, then the exact payload bytes — standard base64 with padding. The prefix separates discovery documents from any other message signed with the same key.
+- Exactly one `.`. Both halves must be **canonical** base64 (decoding and re-encoding reproduces the input). The payload is at most **4 KiB**; after base64 and signature the envelope is about 5.6 KiB, inside the usual 8 KiB per-header limit of CDNs and reverse proxies.
+
+The signer serializes the payload itself and signs those bytes; the client verifies the received bytes before parsing them. No canonicalization (JCS or similar) is involved on either side.
+
+**Payload.**
+
+```json
+{
+  "spec": "cpx-plugin/2",
+  "seq": 12,
+  "gateways": ["https://gw1.example.net", "https://gw2-cdn.example.com"],
+  "endpoints": {
+    "enroll": "/enroll",
+    "challenge": "/challenge",
+    "config": "/config",
+    "revoke": "/revoke"
+  },
+  "loginUrl": "https://panel-new.example.com/oauth/authorize",
+  "discoveryUrls": ["https://gw2-cdn.example.com"]
+}
+```
+
+| Field           | Rule                                                                                                                                                                                                                                                                                                                                                                  |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spec`          | `"cpx-plugin/2"`                                                                                                                                                                                                                                                                                                                                                      |
+| `seq`           | Integer, `1 ≤ seq ≤ 2^53−1`. Strictly increase it on every change                                                                                                                                                                                                                                                                                                     |
+| `gateways`      | Same rules as §5 (1..3 public HTTPS origins)                                                                                                                                                                                                                                                                                                                          |
+| `endpoints`     | Same rules as §5; an optional `bootstrap` path is reserved for a later phase                                                                                                                                                                                                                                                                                          |
+| `loginUrl`      | Optional; same rules as the descriptor field. When accepted it replaces the stored login URL; the next login opens the new one                                                                                                                                                                                                                                        |
+| `discoveryUrls` | Optional; absent = unchanged, `[]` = clear, otherwise the descriptor rules (1..8). When the payload also carries `loginUrl`, the list must not contain that URL's origin — the whole document is invalid otherwise, so remove it before signing. When the payload omits `loginUrl`, the client drops entries equal to its currently stored login origin at apply time |
+
+No other keys are allowed.
+
+**Where it is served** — two places, same format, same verification:
+
+1. The well-known document gains an optional top-level `signed`. Keep `gateway` / `gateways` / `endpoints` for unkeyed and older clients; a keyed client compares them with the payload and rejects the whole source if they disagree, so generate both from the same payload.
+2. A successful `/config` response may carry the header `X-CPX-Discovery: <payloadB64>.<sigB64>`. Send it as a single header value; the client ignores repeated headers.
+
+**What the client does.**
+
+| `providerPubKey` in `.cpx` | `signed` in well-known | Behaviour                                                              |
+| -------------------------- | ---------------------- | ---------------------------------------------------------------------- |
+| no                         | any                    | unsigned path (§5); `signed` and `X-CPX-Discovery` are ignored         |
+| yes                        | no                     | **this source fails** (downgrade protection); the next source is tried |
+| yes                        | yes                    | verify → parse → sequence check → apply                                |
+
+The client stores the last accepted `seq` together with the SHA-256 of the payload bytes. For an incoming document: no stored value → accept; `seq` higher → accept; same `seq` and same digest → accept as an idempotent re-application; same `seq` but a different digest → reject (two different documents with one number, e.g. inconsistent CDN copies); lower `seq` → reject. A rejected well-known source is skipped like any other discovery failure. A rejected or malformed `X-CPX-Discovery` header is only logged: the authenticated `/config` response is never discarded because of it.
+
+The sequence number protects against the **network** replaying an older document; it is not a defense against someone with write access to the client's own files.
+
+**Applying an accepted document.** Gateways and endpoints go into the client's encrypted cache first; then `loginUrl`, `discoveryUrls`, `seq` and the digest are written to the plugin record in one step. The sequence number is the commit marker: if anything fails in between, the marker does not advance and the next arrival of the same document repairs the record idempotently. On a fresh login the discovery document is applied **before** the browser opens, so a rotated `loginUrl` takes effect immediately and a cancelled login cannot be talked back into an older document afterwards.
+
+**Key management.** Sign offline. The gateway process holds no private key; it only serves a pre-signed envelope file (`DISCOVERY_SIGNED_FILE` in the reference gateway, used both for `signed` and for the header). `cpx-admin keygen` and `cpx-admin sign-discovery <payload.json>` (or `scripts/plugin/sign-discovery.mjs`) read the seed from a file or stdin, never from the command line. Use a separate key for every `.cpx` lineage: documents signed with the same key are interchangeable between the plugins that share it. Key rotation is not part of this version — a lost or leaked key means issuing a new `.cpx`.
+
+**Publish order.** Serve the signed well-known first, then distribute the `.cpx` containing `providerPubKey`. In the other order every keyed client fails discovery until `signed` appears.
 
 ---
 
@@ -235,14 +320,31 @@ No Authorization header is used. No bearer token is issued. Device identity is b
 
 Client error classification:
 
-| Class       | Condition                                                  | Client action                             |
-| ----------- | ---------------------------------------------------------- | ----------------------------------------- |
-| `retired`   | HTTP `410`, or JSON `{"error":"gateway_retired"}`          | Rediscover gateway and retry once         |
-| `revoked`   | JSON `{"error":"revoked"}` or `{"error":"device_revoked"}` | Mark as needs re-authentication           |
-| `transient` | Other non-2xx, timeout, network error                      | Back off and retry; login state unchanged |
-| success     | 2xx without an error marker                                | Continue                                  |
+| Class         | Condition                                                                                    | Client action                                                             |
+| ------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `retired`     | HTTP `410`, or JSON `{"error":"gateway_retired"}`                                            | Try the next cached gateway; rediscover once when all are exhausted       |
+| `revoked`     | JSON `{"error":"revoked"}` or `{"error":"device_revoked"}`                                   | Mark as needs re-authentication                                           |
+| `unreachable` | DNS failure, connection failure, TLS handshake failure                                       | Try the next route, then the next gateway; rediscover once when exhausted |
+| `transient`   | Other non-2xx (5xx, 429, bare 401/403), or a timeout                                         | Timeout: next route / next gateway. Any HTTP response: back off and retry |
+| `blocked`     | The gateway host resolved to a private/loopback address (client-side guard, nothing is sent) | Back off; the user must fix the target or explicitly choose proxy mode    |
+| success       | 2xx without an error marker                                                                  | Continue                                                                  |
 
 For expired accounts, disabled users, or revoked devices, include `revoked` or `device_revoked` in the JSON body. A bare `401` or `403` is treated as transient.
+
+**Optional `message`.** Any error JSON may add a human-readable `message` that the client shows on the plugin card next to its own fixed status text:
+
+```json
+{
+  "error": "revoked",
+  "message": "Your subscription expired on 2026-09-01. Renew and log in again."
+}
+```
+
+The client only reads `message` when it is a string; it trims it, strips control characters except newline (U+000A), truncates to 200 code points, and treats an empty result as absent. It is rendered as plain text (no Markdown, no links). The message is stored with the plugin until the next successful operation clears it. The same sanitizing rules apply to the static `provider.description` in `.cpx` (cap 500 code points), which is shown on the install page and on the card.
+
+**Routes.** Each request leaves the client either directly or through the user's local proxy. In the default _auto_ mode the client remembers the route that last worked for a plugin, tries it first, and switches to the other one only on a network-level failure or a timeout — never on an HTTP response. Stickiness is per origin: once a gateway origin has answered on a route, the rest of the operation keeps using that route for it. Before any request goes through the proxy, the client resolves the gateway host locally and refuses hosts that resolve to private addresses (`blocked`). Two residual risks remain, both shared with the explicit proxy mode: DNS rebinding between that check and the proxy's own lookup, and hosts that fail to resolve locally are still allowed through the proxy.
+
+**`/enroll` is never replayed.** The authorize `code` is consumed by the first request that reaches the gateway. The client therefore only tries another route or another gateway for `/enroll` when the request provably never left the client (connection refused / DNS / TLS failure before the request was written). A timeout, a connection reset after sending, or any HTTP response ends the login; the user simply logs in again for a fresh code.
 
 ---
 
@@ -278,7 +380,7 @@ Notes:
 - `deviceId` is client-generated. Do not replace it.
 - A user may have multiple devices. Apply a device-count limit or cleanup policy.
 - If enroll succeeds but the first config fetch fails, keep the device binding.
-- Re-login creates a new key pair and a new device binding.
+- Re-login creates a new key pair and a new device binding. The client then revokes the device it replaced (see §10), so a user who logs in repeatedly on one machine does not accumulate bindings.
 
 ---
 
@@ -354,13 +456,20 @@ Server steps:
 
 Successful `/config` response is not JSON. The client parses it as Clash YAML and requires an object containing at least `proxies` or `proxy-providers`.
 
+A successful response may additionally carry the header `X-CPX-Discovery: <payloadB64>.<sigB64>` (§5a). The client reads it only for plugins with `providerPubKey`, only as a single header value, and a failed verification is logged and ignored — the YAML body is still applied.
+
 Do not return the subscription URL, origin API host, or origin token.
 
 ---
 
 ## 10. `POST {gateway}/revoke`
 
-Purpose: unbind a device. The client calls this best-effort when the user deletes the plugin.
+Purpose: unbind a device. The client calls it best-effort in two situations:
+
+- the user deletes the plugin — for the current device and any device still waiting in the list below;
+- a re-login replaced the device — for the **previous** device, signed with the previous key, right after the login completes. If that call fails, the client keeps the old credentials and retries after later successful `/config` fetches, one device per attempt.
+
+A `/challenge` answer of `revoked` / `device_revoked` for the old device counts as "already unbound" and ends the retries. Nothing new is required of the gateway beyond §7 and the idempotency rule below; the only visible change is that `/revoke` now also arrives after re-logins, for a device that is no longer the account's newest one — unbind that `deviceId` only.
 
 Request body is the same as `/config`.
 
@@ -413,6 +522,8 @@ Implementation notes:
 | `op`                               | `uint8`; config=1, revoke=2                                                       |
 | `code`                             | Opaque authorize code, length <= 2048                                             |
 | `code_challenge` / `code_verifier` | RFC 7636 base64url, no padding; verifier length 43-128, charset `[A-Za-z0-9-._~]` |
+| `providerPubKey`                   | Ed25519 public key, 32 raw bytes, standard base64 with padding                    |
+| `signed` / `X-CPX-Discovery`       | `<payloadB64>.<sigB64>`; both halves canonical standard base64 with padding       |
 
 Only PKCE fields use base64url without padding. Binary protocol fields use standard base64 with padding.
 
@@ -470,6 +581,17 @@ echo json_encode(['error' => 'revoked']);
 
 ---
 
+Signed discovery document (§5a), done offline:
+
+```php
+$payload = json_encode($doc, JSON_UNESCAPED_SLASHES); // sign exactly these bytes
+$sig     = sodium_crypto_sign_detached("CPX2-DISCOVERY\0" . $payload, $secretKey);
+$signed  = base64_encode($payload) . '.' . base64_encode($sig);
+// providerPubKey for the .cpx: base64_encode(sodium_crypto_sign_publickey($keypair))
+```
+
+---
+
 ## 14. Test Vectors
 
 File:
@@ -501,6 +623,14 @@ Regenerate vectors:
 node scripts/plugin/gen-sign-vectors.mjs
 ```
 
+Signed discovery vectors (§5a):
+
+```text
+src/main/resolve/plugin/__fixtures__/discovery-vectors.json
+```
+
+Each entry contains `seedB64`, `pubKeyB64`, `payloadJson`, `payloadB64`, `signInputHex` (prefix + payload), `sigB64`, `signed` and `digestHex`. Verify that signing `signInputHex` with the seed reproduces `sigB64`, that `signed` verifies under `pubKeyB64`, and that SHA-256 of the payload bytes equals `digestHex`. Regenerate with `node scripts/plugin/gen-discovery-vectors.mjs`.
+
 ---
 
 ## 15. Launch Checklist
@@ -522,6 +652,9 @@ Login host:
 Gateway:
 
 - [ ] `gateway` is a public HTTPS origin.
+- [ ] if `gateways` is present it lists 1..3 public HTTPS origins and `gateway` equals `gateways[0]`.
+- [ ] every listed gateway reaches the same backend state (codes, devices, nonces); no independent replicas.
+- [ ] if the `.cpx` carries `providerPubKey`: the well-known already serves `signed`, the top-level fields match the payload, and the signed document went live **before** the `.cpx` was distributed.
 - [ ] endpoint paths are relative and contain no backslash, query, or fragment.
 - [ ] `/enroll` verifies PKCE, code, redirect URI, and client ID.
 - [ ] `/challenge` issues 32-byte standard-base64 nonce values with short TTL and pool limits.

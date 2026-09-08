@@ -3,17 +3,24 @@ import { existsSync } from 'fs'
 import { overrideConfigPath, overridePath } from '../utils/dirs'
 import * as chromeRequest from '../utils/chromeRequest'
 import { parse, stringify } from '../utils/yaml'
-import { atomicWriteFile, WriteQueue } from '../utils/safeFile'
+import { atomicWriteFile } from '../utils/safeFile'
 import { DEFAULT_MIHOMO_PORTS } from '../../shared/appConfig'
 import { getControledMihomoConfig } from './controledMihomo'
+import { runtimeConfigWriteQueue } from './runtimeConfigQueue'
 
 let overrideConfig: IOverrideConfig // override.yaml
-const overrideConfigWriteQueue = new WriteQueue()
+// 每次经写队列提交的写入 +1：一次迟到的冷加载 / 强制读取不得用旧内容覆盖比它新的缓存（与 profile.ts 同型）
+let overrideConfigVersion = 0
+// 与 profile.yaml 共用（见 runtimeConfigQueue.ts）
+const overrideConfigWriteQueue = runtimeConfigWriteQueue
 
 export async function getOverrideConfig(force = false): Promise<IOverrideConfig> {
   if (force || !overrideConfig) {
+    const seen = overrideConfigVersion
     const data = await readFile(overrideConfigPath(), 'utf-8')
-    overrideConfig = parse(data) || { items: [] }
+    const loaded = (parse(data) || { items: [] }) as IOverrideConfig
+    // 读取期间有写入提交：磁盘与缓存都已比这次读取新，保留缓存
+    if (overrideConfigVersion === seen || !overrideConfig) overrideConfig = loaded
   }
   if (typeof overrideConfig !== 'object') overrideConfig = { items: [] }
   if (!Array.isArray(overrideConfig.items)) overrideConfig.items = []
@@ -25,6 +32,7 @@ export async function setOverrideConfig(config: IOverrideConfig): Promise<void> 
     const nextConfig = JSON.parse(JSON.stringify(config)) as IOverrideConfig
     await atomicWriteFile(overrideConfigPath(), stringify(nextConfig), { encoding: 'utf8' })
     overrideConfig = nextConfig
+    overrideConfigVersion++
   })
 }
 
@@ -42,6 +50,7 @@ export async function updateOverrideConfig(
     const nextConfig = updater(JSON.parse(JSON.stringify(currentConfig)) as IOverrideConfig)
     await atomicWriteFile(overrideConfigPath(), stringify(nextConfig), { encoding: 'utf8' })
     overrideConfig = nextConfig
+    overrideConfigVersion++
   })
 }
 

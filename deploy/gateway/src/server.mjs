@@ -11,6 +11,7 @@ import { fetchSubscription } from './origin.mjs'
 import { readBody, parseForm, parseJson, clientIp, sendJson } from './http.mjs'
 import { authorizeGet, authorizePost } from './auth.mjs'
 import { enroll, challenge, config as configHandler, revoke } from './gateway.mjs'
+import { parseDiscoveryEnvelope } from './discovery.mjs'
 
 const BODY_MAX = 64 * 1024
 const ENDPOINTS = {
@@ -28,10 +29,18 @@ export function createHandler(deps) {
       const method = req.method
 
       if (method === 'GET' && path === '/.well-known/cpx-gateway') {
+        // `gateway` stays a string for old clients and MUST equal gateways[0] (client rejects
+        // the whole document otherwise); both are generated from the same list.
+        // With a signed document, every public field is generated from its payload (§5a).
+        const gateways = deps.discovery
+          ? deps.discovery.payload.gateways
+          : (deps.config.gatewayOrigins ?? [deps.config.publicOrigin])
         return sendJson(res, 200, {
           spec: 'cpx-plugin/2',
-          gateway: deps.config.publicOrigin,
-          endpoints: ENDPOINTS
+          gateway: gateways[0],
+          gateways,
+          endpoints: ENDPOINTS,
+          ...(deps.discovery ? { signed: deps.discovery.signed } : {})
         })
       }
 
@@ -60,9 +69,59 @@ export function createHandler(deps) {
   }
 }
 
+const MESSAGE_KEYS = ['device_revoked', 'device_limit', 'gateway_retired']
+
+// Only the three known keys, only strings, trimmed, non-empty. Anything else is ignored.
+export function parseMessages(text) {
+  let raw
+  try {
+    raw = JSON.parse(text)
+  } catch {
+    throw new Error('MESSAGES_FILE is not valid JSON')
+  }
+  if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
+    throw new Error('MESSAGES_FILE must be a JSON object')
+  }
+  const out = {}
+  for (const k of MESSAGE_KEYS) {
+    if (typeof raw[k] === 'string' && raw[k].trim()) out[k] = raw[k].trim()
+  }
+  return out
+}
+
+// Parse the envelope file served as well-known `signed` and the X-CPX-Discovery header. The
+// signature is not verified here (the process has no key material); the client verifies. The
+// payload is decoded so that `gateway` / `gateways` / `endpoints` can be generated from it, which
+// keeps the top-level fields consistent with the signed document — a keyed client rejects the
+// whole source when they disagree.
+export function parseDiscoverySigned(text) {
+  let parsed
+  try {
+    parsed = parseDiscoveryEnvelope(text)
+  } catch (e) {
+    throw new Error(`DISCOVERY_SIGNED_FILE: ${e.message}`)
+  }
+  for (const k of Object.keys(ENDPOINTS)) {
+    if (parsed.payload.endpoints[k] !== ENDPOINTS[k]) {
+      throw new Error(
+        `DISCOVERY_SIGNED_FILE: endpoints.${k} must be "${ENDPOINTS[k]}" (the path this gateway serves)`
+      )
+    }
+  }
+  return parsed
+}
+
 export function buildDeps(config) {
   const originCa = config.originCaFile ? readFileSync(config.originCaFile) : undefined
+  const messages = config.messagesFile
+    ? parseMessages(readFileSync(config.messagesFile, 'utf-8'))
+    : {}
+  const discovery = config.discoverySignedFile
+    ? parseDiscoverySigned(readFileSync(config.discoverySignedFile, 'utf-8'))
+    : undefined
   return {
+    messages,
+    discovery,
     db: openDb(config.dbPath),
     codes: createCodeStore({ ttlMs: config.codeTtlMs }),
     nonces: createNonceStore({ ttlMs: config.nonceTtlMs, poolMax: config.noncePoolMax }),
@@ -80,7 +139,9 @@ function main() {
   const config = loadConfig()
   const deps = buildDeps(config)
   createServer(deps).listen(config.port, '0.0.0.0', () => {
-    console.log(`cpx-gateway listening on :${config.port} (public origin ${config.publicOrigin})`)
+    console.log(
+      `cpx-gateway listening on :${config.port} (gateways ${config.gatewayOrigins.join(', ')})`
+    )
   })
 }
 
