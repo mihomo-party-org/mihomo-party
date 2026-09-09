@@ -14,6 +14,17 @@ let overrideConfigVersion = 0
 // 与 profile.yaml 共用（见 runtimeConfigQueue.ts）
 const overrideConfigWriteQueue = runtimeConfigWriteQueue
 
+// Legacy YAML can contain numeric IDs (including .inf). Convert them before
+// JSON cloning turns non-finite numbers into null, breaking the sortable UI.
+function normalizeOverrideIds(config: IOverrideConfig): IOverrideConfig {
+  if (Array.isArray(config.items)) {
+    config.items = config.items.map((item) =>
+      item && typeof item.id === 'number' ? { ...item, id: String(item.id) } : item
+    )
+  }
+  return config
+}
+
 export async function getOverrideConfig(force = false): Promise<IOverrideConfig> {
   if (force || !overrideConfig) {
     const seen = overrideConfigVersion
@@ -24,12 +35,12 @@ export async function getOverrideConfig(force = false): Promise<IOverrideConfig>
   }
   if (typeof overrideConfig !== 'object') overrideConfig = { items: [] }
   if (!Array.isArray(overrideConfig.items)) overrideConfig.items = []
-  return JSON.parse(JSON.stringify(overrideConfig)) as IOverrideConfig
+  return JSON.parse(JSON.stringify(normalizeOverrideIds(overrideConfig))) as IOverrideConfig
 }
 
 export async function setOverrideConfig(config: IOverrideConfig): Promise<void> {
   await overrideConfigWriteQueue.run(async () => {
-    const nextConfig = JSON.parse(JSON.stringify(config)) as IOverrideConfig
+    const nextConfig = JSON.parse(JSON.stringify(normalizeOverrideIds(config))) as IOverrideConfig
     await atomicWriteFile(overrideConfigPath(), stringify(nextConfig), { encoding: 'utf8' })
     overrideConfig = nextConfig
     overrideConfigVersion++
@@ -47,7 +58,9 @@ export async function updateOverrideConfig(
       throw new Error('Override config is invalid')
     }
     if (!Array.isArray(currentConfig.items)) currentConfig.items = []
-    const nextConfig = updater(JSON.parse(JSON.stringify(currentConfig)) as IOverrideConfig)
+    const nextConfig = updater(
+      JSON.parse(JSON.stringify(normalizeOverrideIds(currentConfig))) as IOverrideConfig
+    )
     await atomicWriteFile(overrideConfigPath(), stringify(nextConfig), { encoding: 'utf8' })
     overrideConfig = nextConfig
     overrideConfigVersion++
