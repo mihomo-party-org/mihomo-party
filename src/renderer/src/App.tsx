@@ -11,6 +11,7 @@ import { applyTheme, setNativeTheme, setTitleBarOverlay } from '@renderer/utils/
 import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
 import { useTrafficLogger } from '@renderer/hooks/use-traffic-logger'
+import { useDnsOverrideAutoDisabledNotice } from '@renderer/hooks/use-dns-override-notice'
 import { createTourDriver, getDriver, startTourIfNeeded } from '@renderer/utils/tour'
 import { hasPendingPluginFile, subscribePluginFile } from '@renderer/utils/plugin-file-open'
 import 'driver.js/dist/driver.css'
@@ -54,6 +55,7 @@ const App: React.FC = () => {
     rememberSelectedSiderCard = false
   } = appConfig || {}
   useTrafficLogger(enableTrafficLogger)
+  useDnsOverrideAutoDisabledNotice()
   const narrowWidth = platform === 'darwin' ? 70 : 60
   const [siderWidthValue, setSiderWidthValue] = useState(siderWidth)
   const siderWidthValueRef = useRef(siderWidthValue)

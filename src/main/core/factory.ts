@@ -26,6 +26,7 @@ import { createLogger } from '../utils/logger'
 import { decryptAgeContent } from '../utils/age'
 import { DEFAULT_CONTROL_DNS, DEFAULT_CONTROL_SNIFF } from '../../shared/appConfig'
 import { atomicWriteFile } from '../utils/safeFile'
+import { evaluateDnsOverrideGuard, type DnsOverrideGuardResult } from './dnsOverrideGuard'
 
 const factoryLogger = createLogger('Factory')
 const SMART_OVERRIDE_ID = 'smart-core-override'
@@ -43,6 +44,12 @@ interface GenerateProfileOptions {
   globalOverrideIds?: string[]
   outputPath?: string
   updateRuntimeConfig?: boolean
+}
+
+export interface GenerateProfileResult {
+  profileId: string | undefined
+  // 随本次配置成功应用后同步。
+  dnsGuard: DnsOverrideGuardResult
 }
 
 export async function globalOverrideIdsNow(): Promise<string[]> {
@@ -127,7 +134,7 @@ function ensureSmartProxyServerTunExclude(profile: IMihomoConfig, enabled: boole
 export async function generateProfile(
   pendingControledMihomoConfig?: Partial<IMihomoConfig>,
   options: GenerateProfileOptions = {}
-): Promise<string | undefined> {
+): Promise<GenerateProfileResult> {
   // 第一阶段：并行读取互不依赖的配置（强制重读 profileConfig 完成后再进入第二阶段，保证缓存一致）。
   const [profileConfig, appConfig] = await Promise.all([getProfileConfig(true), getAppConfig()])
   const { current } = profileConfig
@@ -142,6 +149,20 @@ export async function generateProfile(
     ])
   const ageSecretKey = options.ageSecretKey ?? currentProfileItem?.ageSecretKey ?? ''
   let controledMihomoConfig = pendingControledMihomoConfig ?? fetchedControledMihomoConfig
+  const {
+    diffWorkDir = false,
+    controlDns: controlDnsSetting = DEFAULT_CONTROL_DNS,
+    controlSniff = DEFAULT_CONTROL_SNIFF,
+    useNameserverPolicy
+  } = appConfig
+  // DNS 保护先于覆写和脚本处理，开关在内核应用成功后同步。
+  const dnsGuard = evaluateDnsOverrideGuard(
+    profileId ?? 'default',
+    baseProfile,
+    controlDnsSetting,
+    options.updateRuntimeConfig !== false
+  )
+  const { controlDns } = dnsGuard
   const profileWithNormalOverride = await applyOverrides(
     baseProfile,
     overrideIds.normal,
@@ -154,12 +175,6 @@ export async function generateProfile(
     ageSecretKey
   )
 
-  const {
-    diffWorkDir = false,
-    controlDns = DEFAULT_CONTROL_DNS,
-    controlSniff = DEFAULT_CONTROL_SNIFF,
-    useNameserverPolicy
-  } = appConfig
   // 根据开关状态过滤控制配置
   controledMihomoConfig = { ...controledMihomoConfig }
   if (!controlDns) {
@@ -223,7 +238,7 @@ export async function generateProfile(
     runtimeConfig = profile
     runtimeConfigStr = nextRuntimeConfigStr
   }
-  return profileId
+  return { profileId, dnsGuard }
 }
 
 async function applyRuleOverride(

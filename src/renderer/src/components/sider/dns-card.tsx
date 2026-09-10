@@ -1,13 +1,14 @@
-import { Button, Card, CardBody, CardFooter, Tooltip } from '@heroui/react'
+import { Button, Card, CardBody, CardFooter, Spinner, Tooltip } from '@heroui/react'
 import { toast } from '@renderer/components/base/toast'
 import BorderSwitch from '@renderer/components/base/border-switch'
+import BaseConfirmModal from '@renderer/components/base/base-confirm-modal'
 import { LuServer } from 'react-icons/lu'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { mihomoHotReloadConfig } from '@renderer/utils/ipc'
+import { setControlDns } from '@renderer/utils/ipc'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_CONTROL_DNS } from '../../../../shared/appConfig'
 
@@ -16,8 +17,11 @@ interface Props {
 }
 const DNSCard: React.FC<Props> = (props) => {
   const { t } = useTranslation()
-  const { appConfig, patchAppConfig } = useAppConfig()
+  const { appConfig, mutateAppConfig } = useAppConfig()
   const { iconOnly } = props
+  const [applying, setApplying] = useState(false)
+  // 弹窗保存待确认指纹，开关以后端状态为准。
+  const [confirmation, setConfirmation] = useState<string | null>(null)
   const {
     dnsCardStatus = 'col-span-1',
     controlDns = DEFAULT_CONTROL_DNS,
@@ -37,13 +41,22 @@ const DNSCard: React.FC<Props> = (props) => {
     id: 'dns'
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
-  const onChange = async (controlDns: boolean): Promise<void> => {
+  const apply = async (enabled: boolean, confirmed?: string): Promise<void> => {
+    if (applying) return
+    setApplying(true)
     try {
-      await patchAppConfig({ controlDns })
-      await mihomoHotReloadConfig()
+      const result = await setControlDns(enabled, confirmed)
+      // 来源变化时保留弹窗，换用新指纹。
+      setConfirmation(result.status === 'confirm-required' ? result.confirmation : null)
     } catch (e) {
       toast.error(String(e))
+    } finally {
+      setApplying(false)
+      mutateAppConfig()
     }
+  }
+  const onChange = (controlDns: boolean): void => {
+    void apply(controlDns)
   }
 
   if (iconOnly) {
@@ -95,12 +108,15 @@ const DNSCard: React.FC<Props> = (props) => {
                 className={`${match ? 'text-primary-foreground' : 'text-foreground'} text-[24px] font-bold`}
               />
             </Button>
-            <BorderSwitch
-              isShowBorder={match && controlDns}
-              isSelected={controlDns}
-              isDisabled={false}
-              onValueChange={onChange}
-            />
+            <div className="flex items-center">
+              {applying && <Spinner size="sm" color={match ? 'white' : 'primary'} />}
+              <BorderSwitch
+                isShowBorder={match && controlDns}
+                isSelected={controlDns}
+                isDisabled={applying}
+                onValueChange={onChange}
+              />
+            </div>
           </div>
         </CardBody>
         <CardFooter className="pt-1">
@@ -111,6 +127,20 @@ const DNSCard: React.FC<Props> = (props) => {
           </h3>
         </CardFooter>
       </Card>
+      <BaseConfirmModal
+        isOpen={confirmation !== null}
+        title={t('dns.overrideGuard.confirmTitle')}
+        content={t('dns.overrideGuard.confirmContent')}
+        cancelText={t('dns.overrideGuard.keepOff')}
+        confirmText={t('dns.overrideGuard.enableAnyway')}
+        isLoading={applying}
+        onCancel={() => {
+          if (!applying) setConfirmation(null)
+        }}
+        onConfirm={() => {
+          if (confirmation) void apply(true, confirmation)
+        }}
+      />
     </div>
   )
 }

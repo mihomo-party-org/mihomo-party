@@ -1,4 +1,4 @@
-export { getAppConfig, patchAppConfig, subscribeAppConfig } from './app'
+export { getAppConfig, patchAppConfig, subscribeAppConfig, syncAppConfigAfterApply } from './app'
 export { getControledMihomoConfig, patchControledMihomoConfig } from './controledMihomo'
 export {
   getProfile,

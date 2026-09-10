@@ -8,11 +8,14 @@ interface Props {
   onCancel: () => void
   onConfirm: () => void
   isOpen: boolean
+  cancelText?: string
+  confirmText?: string
+  isLoading?: boolean
 }
 
 const BaseConfirmModal: React.FC<Props> = (props) => {
   const { t } = useTranslation()
-  const { title, content, onCancel, onConfirm, isOpen } = props
+  const { title, content, onCancel, onConfirm, isOpen, cancelText, confirmText, isLoading } = props
 
   return (
     <Modal backdrop="blur" classNames={{ backdrop: 'top-[48px]' }} hideCloseButton isOpen={isOpen}>
@@ -22,11 +25,11 @@ const BaseConfirmModal: React.FC<Props> = (props) => {
           <p>{content}</p>
         </ModalBody>
         <ModalFooter>
-          <Button size="sm" variant="light" onPress={onCancel}>
-            {t('common.cancel')}
+          <Button size="sm" variant="light" isDisabled={isLoading} onPress={onCancel}>
+            {cancelText ?? t('common.cancel')}
           </Button>
-          <Button size="sm" color="danger" onPress={onConfirm}>
-            {t('common.confirm')}
+          <Button size="sm" color="danger" isLoading={isLoading} onPress={onConfirm}>
+            {confirmText ?? t('common.confirm')}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -91,6 +91,7 @@ import {
   setupFirewall
 } from '../sys/misc'
 import { getRuntimeConfig, getRuntimeConfigStr } from '../core/factory'
+import { setControlDns, takeDnsOverrideAutoDisabledNotice } from '../core/dnsOverrideGuard'
 import {
   listWebdavBackups,
   webdavBackup,
@@ -271,6 +272,8 @@ const asyncHandlers: Record<string, AsyncFn> = {
   patchAppConfig,
   getControledMihomoConfig,
   patchControledMihomoConfig,
+  setControlDns,
+  takeDnsOverrideAutoDisabledNotice,
   // Profile
   getProfileConfig,
   setProfileConfig,

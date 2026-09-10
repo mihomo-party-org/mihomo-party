@@ -62,6 +62,8 @@ interface IpcApi {
   // Config
   getAppConfig: (force?: boolean) => Promise<IAppConfig>
   patchAppConfig: (patch: Partial<IAppConfig>) => Promise<void>
+  setControlDns: (enabled: boolean, confirmation?: string) => Promise<IControlDnsApplyResult>
+  takeDnsOverrideAutoDisabledNotice: () => Promise<boolean>
   getControledMihomoConfig: (force?: boolean) => Promise<Partial<IMihomoConfig>>
   patchControledMihomoConfig: (patch: Partial<IMihomoConfig>) => Promise<void>
   resetAppConfig: () => Promise<void>
@@ -238,6 +240,8 @@ export const {
   // Config
   getAppConfig,
   patchAppConfig,
+  setControlDns,
+  takeDnsOverrideAutoDisabledNotice,
   getControledMihomoConfig,
   patchControledMihomoConfig,
   resetAppConfig,

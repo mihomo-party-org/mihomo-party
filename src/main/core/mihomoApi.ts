@@ -11,6 +11,7 @@ import { recordTrafficUsage } from '../traffic/recorder'
 import { createLogger } from '../utils/logger'
 import { mihomoWorkConfigPath } from '../utils/dirs'
 import { generateProfile, getRuntimeConfig } from './factory'
+import { syncControlDnsAfterApply } from './dnsOverrideGuard'
 import { getMihomoIpcPath, hasCoreProcess, restartCore } from './manager'
 
 const mihomoApiLogger = createLogger('MihomoApi')
@@ -438,7 +439,7 @@ export const mihomoHotReloadConfig = async (): Promise<void> => {
   // Smart 覆写脚本由应用配置生成，必须先同步再生成配置，
   // 否则界面上改动的 Smart 选项会沿用旧脚本，要等到下次重启内核才生效
   await manageSmartOverride()
-  const current = await generateProfile()
+  const { profileId: current, dnsGuard } = await generateProfile()
   const { diffWorkDir = false } = await getAppConfig()
   const configPath = diffWorkDir ? mihomoWorkConfigPath(current) : mihomoWorkConfigPath('work')
   mihomoApiLogger.info(`hot reload config path: ${configPath}`)
@@ -452,6 +453,11 @@ export const mihomoHotReloadConfig = async (): Promise<void> => {
     return
   }
   mihomoApiLogger.info('hot reload config completed')
+  try {
+    await syncControlDnsAfterApply(dnsGuard)
+  } catch (error) {
+    mihomoApiLogger.warn('Failed to sync DNS override state after hot reload', error)
+  }
   try {
     const { scheduleRuntimeConfigUpload } = await import('../resolve/gistApi')
     scheduleRuntimeConfigUpload()

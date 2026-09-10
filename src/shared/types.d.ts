@@ -541,6 +541,10 @@ interface IMihomoConfig {
   profile: IMihomoProfileConfig
 }
 
+// DNS 覆写切换结果；用户确认后原样回传来源指纹。
+type IControlDnsApplyResult =
+  { status: 'applied' } | { status: 'confirm-required'; confirmation: string }
+
 interface IProfileConfig {
   current?: string
   items: IProfileItem[]

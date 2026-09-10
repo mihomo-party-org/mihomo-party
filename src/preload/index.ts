@@ -37,6 +37,8 @@ const validInvokeChannels = [
   'patchAppConfig',
   'getControledMihomoConfig',
   'patchControledMihomoConfig',
+  'setControlDns',
+  'takeDnsOverrideAutoDisabledNotice',
   'resetAppConfig',
   // Profile
   'getProfileConfig',
@@ -183,7 +185,8 @@ const validListenChannels = [
   'rulesUpdated',
   'updateDownloadProgress',
   'pluginConfigUpdated',
-  'openPluginFile'
+  'openPluginFile',
+  'dnsOverrideAutoDisabled'
 ] as const
 
 // 允许的 send channels 白名单

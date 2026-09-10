@@ -46,6 +46,7 @@ import {
   getAxios
 } from './mihomoApi'
 import { generateProfile } from './factory'
+import { syncControlDnsAfterApply, type DnsOverrideGuardResult } from './dnsOverrideGuard'
 import { syncSmartModelToTestDir } from './smartModel'
 import {
   checkAdminRestartForTun as checkAdminRestartForTunWithRestart,
@@ -422,6 +423,7 @@ interface CoreConfig {
   detached: boolean
   startupMode: CoreStartupMode
   startupHook?: CoreStartupHook
+  dnsGuard: DnsOverrideGuardResult
 }
 
 function buildCoreEnv(safePath?: string, ageSecretKey?: string): NodeJS.ProcessEnv {
@@ -463,7 +465,7 @@ async function prepareCore(detached: boolean, skipStop = false): Promise<CoreCon
   await manageSmartOverride()
 
   // generateProfile 返回实际使用的 current
-  const current = await generateProfile()
+  const { profileId: current, dnsGuard } = await generateProfile()
   const ageSecretKey = (await getProfileItem(current))?.ageSecretKey || ''
   if (testProfileOnStart) {
     await checkProfile(current, core, diffWorkDir, ageSecretKey)
@@ -508,7 +510,8 @@ async function prepareCore(detached: boolean, skipStop = false): Promise<CoreCon
     ageSecretKey,
     detached,
     startupMode,
-    startupHook
+    startupHook,
+    dnsGuard
   }
 }
 
@@ -754,6 +757,14 @@ async function startCoreInternal(detached = false, skipStop = false): Promise<Co
 
   const readiness = new Promise<Promise<void>[]>((resolve, reject) => {
     setupCoreListeners(proc, config, hookWaiter, resolve, reject)
+  }).then(async (value) => {
+    // API 就绪后同步本次 DNS 保护结果。
+    try {
+      await syncControlDnsAfterApply(config.dnsGuard)
+    } catch (error) {
+      managerLogger.warn('Failed to sync DNS override state after core start', error)
+    }
+    return value
   })
   const activeCancel = cancelActiveStartup
   readiness.then(

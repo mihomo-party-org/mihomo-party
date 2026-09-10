@@ -49,7 +49,8 @@ const addDetailedToast = (type: ToastType, message: string, title?: string): voi
 export const toast = {
   success: (message: string, title?: string): void => addToast('success', message, title),
   error: (message: string, title?: string): void => addToast('error', message, title, 1800),
-  warning: (message: string, title?: string): void => addToast('warning', message, title),
+  warning: (message: string, title?: string, duration?: number): void =>
+    addToast('warning', message, title, duration),
   info: (message: string, title?: string): void => addToast('info', message, title),
   detailedError: (message: string, title?: string): void =>
     addDetailedToast('error', message, title)
