@@ -128,7 +128,7 @@ export const sysProxyBypassValidator = (
 // Rule values
 
 export const geositeValidator: BooleanValidator = (value) => isNamedIdentifier(value)
-export const geoipValidator: BooleanValidator = (value) => validator.isISO31661Alpha2(value)
+export const geoipValidator: BooleanValidator = (value) => isNamedIdentifier(value)
 export const asnValidator = integerValidator(1, 4_294_967_295)
 export const uidValidator = integerValidator(0, 65_535)
 export const dscpValidator = integerValidator(0, 63)
