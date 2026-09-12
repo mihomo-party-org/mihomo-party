@@ -588,6 +588,11 @@ function setupCoreListeners(
     if (startupSettled) return
     startupSettled = true
     if (startupTimer) clearTimeout(startupTimer)
+    if (child === proc) {
+      child = null
+      proc.kill('SIGTERM')
+      stopCoreProcessWatchdog(proc.pid)
+    }
     reject(reason)
   }
 
@@ -696,27 +701,12 @@ function setupCoreListeners(
       (process.platform === 'win32' && str.includes('RESTful API pipe listening at'))
 
     if (isApiReady) {
-      resolveStartup([
-        new Promise((innerResolve) => {
-          proc.stdout?.on('data', async (innerData) => {
-            if (
-              innerData
-                .toString()
-                .toLowerCase()
-                .includes('start initial compatible provider default')
-            ) {
-              completeCoreStartup()
-                .then(() => innerResolve())
-                .catch((error) => {
-                  managerLogger.warn('Failed to complete core startup', error)
-                  innerResolve()
-                })
-            }
-          })
-        })
-      ])
-
-      await startMihomoApiStreams()
+      try {
+        await startMihomoApiStreams()
+        resolveStartup([completeCoreStartup()])
+      } catch (error) {
+        rejectStartup(error)
+      }
     }
   })
 

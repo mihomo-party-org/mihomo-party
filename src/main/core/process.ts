@@ -159,10 +159,9 @@ export async function waitForCoreReady(): Promise<void> {
       }
 
       if (i === CORE_READY_MAX_RETRIES - 1) {
-        managerLogger.warn(
-          `Core not ready after ${CORE_READY_MAX_RETRIES} attempts, proceeding anyway`
+        throw new Error(
+          `Core not ready after ${CORE_READY_MAX_RETRIES} attempts (${CORE_READY_MAX_RETRIES * CORE_READY_RETRY_INTERVAL_MS}ms)`
         )
-        return
       }
 
       await new Promise((resolve) => setTimeout(resolve, CORE_READY_RETRY_INTERVAL_MS))
