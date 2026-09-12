@@ -613,6 +613,11 @@ function setupCoreListeners(
     await patchMihomoConfig({ 'log-level': logLevel })
   }
 
+  proc.once('error', (error) => {
+    managerLogger.error('Core process error', error)
+    rejectStartup(new Error(`Failed to start core process: ${error.message}`))
+  })
+
   proc.on('close', async (code, signal) => {
     managerLogger.info(`Core closed, code: ${code}, signal: ${signal}`)
     stopCoreProcessWatchdog(proc.pid)
